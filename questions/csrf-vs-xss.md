@@ -1,6 +1,7 @@
 ---
 id: csrf-vs-xss
 title: "CSRF와 XSS는 어떻게 다르고 쿠키 옵션만으로 막을 수 있나요?"
+difficulty: 하
 category: 보안
 tags:
   - "CSRF"

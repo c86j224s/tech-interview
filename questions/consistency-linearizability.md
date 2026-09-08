@@ -1,6 +1,7 @@
 ---
 id: consistency-linearizability
 title: "최종 일관성과 강한 일관성은 어떤 기준으로 선택하나요?"
+difficulty: 하
 category: 분산 시스템
 tags:
   - "일관성"

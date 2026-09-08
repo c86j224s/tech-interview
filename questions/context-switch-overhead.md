@@ -1,6 +1,7 @@
 ---
 id: context-switch-overhead
 title: "컨텍스트 스위치가 많으면 반드시 성능 문제가 있는 건가요?"
+difficulty: 하
 category: 운영체제
 tags:
   - "컨텍스트 스위칭"

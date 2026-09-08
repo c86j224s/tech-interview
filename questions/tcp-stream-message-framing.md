@@ -1,6 +1,7 @@
 ---
 id: tcp-stream-message-framing
 title: "TCP로 메시지를 두 번 보내면 받는 쪽에서도 두 번에 나눠 읽게 되나요?"
+difficulty: 하
 category: 네트워크
 tags:
   - TCP

@@ -1,6 +1,7 @@
 ---
 id: transaction-and-lost-update
 title: "여러 쿼리를 트랜잭션으로 묶으면 동시 요청으로 인한 데이터 충돌도 막을 수 있나요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - 트랜잭션

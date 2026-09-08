@@ -1,6 +1,7 @@
 ---
 id: circuit-breaker
 title: "재시도를 쓰는데도 서킷 브레이커가 필요한 이유는 무엇인가요?"
+difficulty: 하
 category: 분산 시스템
 tags:
   - "서킷 브레이커"

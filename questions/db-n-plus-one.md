@@ -1,6 +1,7 @@
 ---
 id: db-n-plus-one
 title: "N+1 조회는 왜 문제이고 무조건 JOIN으로 바꾸면 되나요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - "N+1"

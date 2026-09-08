@@ -45,7 +45,7 @@ npm run preview
 4. 감점 포인트 — 불릿으로 작성합니다.
 5. 더 파고들 거리 — 불릿으로 작성합니다.
 
-YAML 프런트매터에 `id`, `title`, `category`, `tags`, `related`를 기록합니다. 전체 질문과 ID만 담은 [`question-index.json`](question-index.json)을 먼저 확인해 의미가 겹치는 질문을 피합니다. 추가·삭제·제목 수정 시 인덱스도 함께 갱신합니다.
+YAML 프런트매터에 `id`, `title`, `difficulty`, `category`, `tags`, `related`를 기록합니다. 난이도는 기본 개념·사용 계약을 확인하는 `하`와 내부 동작·예외 조건을 확인하는 `중하`로 구분합니다. 목록에서는 난이도·카테고리·태그·검색어를 함께 적용할 수 있습니다. 전체 질문과 ID만 담은 [`question-index.json`](question-index.json)을 먼저 확인해 의미가 겹치는 질문을 피합니다. 추가·삭제·제목 수정 시 인덱스도 함께 갱신합니다.
 
 ```sh
 npm run validate

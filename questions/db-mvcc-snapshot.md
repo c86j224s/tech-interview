@@ -1,6 +1,7 @@
 ---
 id: db-mvcc-snapshot
 title: "MVCC를 사용하면 읽기와 쓰기가 서로 방해하지 않나요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - "MVCC"

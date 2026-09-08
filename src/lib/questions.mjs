@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 
 const root = pathToFileURL(`${process.cwd()}/`);
 const directory = new URL('questions/', root);
+export const difficulties = ['하', '중하'];
 const sectionNames = ['구두 답변', '득점 포인트', '감점 포인트', '더 파고들 거리'];
 const normalize = (value) => value.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{Z}\s]/gu, '');
 
@@ -30,6 +31,7 @@ export function loadQuestions() {
     const fail = (message) => { throw new Error(`${id}: ${message}`); };
     if (data.id !== id || data.title !== question || !content.trimStart().startsWith(`# ${question}\n`)) fail('ID 또는 제목 불일치');
     if (typeof data.category !== 'string' || !data.category.trim()) fail('카테고리 누락');
+    if (!difficulties.includes(data.difficulty)) fail('난이도는 하 또는 중하로 지정하세요.');
     for (const key of ['tags', 'related']) {
       if (!Array.isArray(data[key]) || data[key].some((value) => typeof value !== 'string' || !value.trim()) || new Set(data[key]).size !== data[key].length) fail(`${key} 형식 오류`);
     }

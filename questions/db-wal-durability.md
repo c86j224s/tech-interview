@@ -1,6 +1,7 @@
 ---
 id: db-wal-durability
 title: "DB가 커밋했다고 응답하면 디스크에 모든 데이터가 기록된 건가요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - "WAL"

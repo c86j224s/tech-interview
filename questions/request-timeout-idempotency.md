@@ -1,6 +1,7 @@
 ---
 id: request-timeout-idempotency
 title: "요청이 타임아웃됐을 때 그대로 재시도해도 되나요?"
+difficulty: 하
 category: 분산 시스템
 tags:
   - 타임아웃

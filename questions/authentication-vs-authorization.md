@@ -1,6 +1,7 @@
 ---
 id: authentication-vs-authorization
 title: "인증과 인가는 어떻게 다르고, 로그인한 사용자에게도 인가 검사가 필요한 이유는 무엇인가요?"
+difficulty: 하
 category: 보안
 tags:
   - 인증

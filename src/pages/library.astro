@@ -1,17 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { questions, categories, tags } from '../lib/questions.mjs';
+import { questions, categories, tags, difficulties } from '../lib/questions.mjs';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Layout title="전체 질문" page="library">
   <section class="page-intro library-intro"><div><p class="eyebrow">YOUR CS QUESTION LIBRARY</p><h1 class="intro-title">궁금한 개념부터, <em>하나씩.</em></h1><p class="intro-description">기본 원리에서 설계의 판단 기준까지, {questions.length}개의 질문을 만나 보세요.</p></div><button type="button" class="button button-dark" data-random>랜덤으로 시작하기 <span aria-hidden="true">↗</span></button></section>
   <section class="library-controls" aria-label="질문 검색과 필터">
+    <div class="difficulty-controls"><label for="difficulty">난이도</label><select id="difficulty"><option value="">전체 난이도</option>{difficulties.map((level) => <option value={level}>{level}</option>)}</select><p>하 · 기본 개념과 사용 계약　 /　 중하 · 내부 동작과 예외 조건</p></div>
     <div class="search-row"><label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">질문 검색</span><input type="search" id="search" placeholder="어떤 개념이 궁금한가요?" autocomplete="off" /><kbd aria-hidden="true">/</kbd></label><label class="tag-select"><span class="sr-only">태그 선택</span><select id="tag"><option value="">모든 태그</option>{tags.map((tag) => <option value={tag}>{tag}</option>)}</select></label></div>
     <div class="category-filters" role="group" aria-label="카테고리 필터"><button type="button" data-category="" aria-pressed="true">전체 <span>{questions.length}</span></button>{categories.map((category) => <button type="button" data-category={category} aria-pressed="false">{category}<span>{questions.filter((question) => question.category === category).length}</span></button>)}</div>
   </section>
   <div class="library-result-bar"><p id="result-count" role="status" aria-live="polite">전체 <strong>{questions.length}</strong>개의 질문</p><button type="button" class="reset-button" id="reset">필터 초기화 ↺</button></div>
-  <div class="library-grid">{questions.map((question) => <article class="library-card" data-question-card data-category={question.category} data-tags={JSON.stringify(question.tags)} data-title={question.title}>
-    <div class="library-card-top"><span class="category-label">{question.category}</span><span class="card-number">{String(question.number).padStart(2, '0')}</span></div>
+  <div class="library-grid">{questions.map((question) => <article class="library-card" data-question-card data-difficulty={question.difficulty} data-category={question.category} data-tags={JSON.stringify(question.tags)} data-title={question.title}>
+    <div class="library-card-top"><span class="category-label">{question.category} <span class="difficulty-badge" data-difficulty={question.difficulty}>{question.difficulty}</span></span><span class="card-number">{String(question.number).padStart(2, '0')}</span></div>
     <h2><a href={`${base}/questions/${question.id}/`}>{question.title}</a></h2>
     <div class="card-tags">{question.tags.slice(0, 3).map((tag) => <span>#{tag}</span>)}{question.tags.length > 3 && <span>+{question.tags.length - 3}</span>}</div>
     <div class="library-card-bottom"><span>구두 답변 약 2–3분</span><span class="card-arrow" aria-hidden="true">↗</span></div>
@@ -21,6 +22,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <script>
   const search = document.querySelector<HTMLInputElement>('#search')!;
   const tag = document.querySelector<HTMLSelectElement>('#tag')!;
+  const difficulty = document.querySelector<HTMLSelectElement>('#difficulty')!;
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-category]:not([data-question-card])')];
   const cards = [...document.querySelectorAll<HTMLElement>('[data-question-card]')];
   const count = document.querySelector<HTMLElement>('#result-count')!;
@@ -33,16 +35,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     for (const card of cards) {
       const cardTags: string[] = JSON.parse(card.dataset.tags || '[]');
       const text = normalize(`${card.dataset.title} ${card.dataset.category} ${cardTags.join(' ')}`);
-      const matches = (!category || card.dataset.category === category) && (!tag.value || cardTags.includes(tag.value)) && terms.every((term) => text.includes(term));
+      const matches = (!difficulty.value || card.dataset.difficulty === difficulty.value) && (!category || card.dataset.category === category) && (!tag.value || cardTags.includes(tag.value)) && terms.every((term) => text.includes(term));
       card.hidden = !matches;
       if (matches) visible++;
     }
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.category === category)));
-    count.textContent = `${search.value || category || tag.value ? '검색 결과' : '전체'} ${visible}개의 질문`;
+    count.textContent = `${search.value || category || tag.value || difficulty.value ? '검색 결과' : '전체'} ${visible}개의 질문`;
     empty.hidden = visible > 0;
     if (updateUrl) {
       const url = new URL(location.href);
-      for (const [key, value] of [['q', search.value], ['category', category], ['tag', tag.value]]) {
+      for (const [key, value] of [['q', search.value], ['category', category], ['tag', tag.value], ['difficulty', difficulty.value]]) {
         if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
       }
       history.replaceState(null, '', url);
@@ -53,11 +55,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     search.value = params.get('q') || '';
     category = buttons.some((button) => button.dataset.category === params.get('category')) ? params.get('category') || '' : '';
     tag.value = params.get('tag') || '';
+    difficulty.value = params.get('difficulty') || '';
     render(false);
   }
-  const reset = () => { search.value = ''; tag.value = ''; category = ''; render(); };
+  const reset = () => { search.value = ''; tag.value = ''; difficulty.value = ''; category = ''; render(); };
   search.addEventListener('input', () => render());
   tag.addEventListener('change', () => render());
+  difficulty.addEventListener('change', () => render());
   buttons.forEach((button) => button.addEventListener('click', () => { category = button.dataset.category || ''; render(); }));
   document.querySelector('#reset')?.addEventListener('click', reset);
   document.querySelector('#empty-reset')?.addEventListener('click', reset);

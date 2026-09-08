@@ -1,6 +1,7 @@
 ---
 id: cpp-coroutine-frame-lifetime
 title: "C++ 코루틴에서 중단 중인 객체와 버퍼의 수명은 어떻게 관리하나요?"
+difficulty: 하
 category: 언어·런타임
 tags:
   - "C++"

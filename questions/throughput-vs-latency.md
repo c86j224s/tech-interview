@@ -1,6 +1,7 @@
 ---
 id: throughput-vs-latency
 title: "처리량과 응답 시간은 어떻게 다르며, 평균 응답 시간만으로 성능을 판단해도 되나요?"
+difficulty: 하
 category: 성능
 tags:
   - 처리량

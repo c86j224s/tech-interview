@@ -1,6 +1,7 @@
 ---
 id: composite-index-column-order
 title: "복합 인덱스의 컬럼 순서는 왜 중요하고, 어떤 기준으로 정하나요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - 인덱스

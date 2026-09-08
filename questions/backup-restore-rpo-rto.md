@@ -1,6 +1,7 @@
 ---
 id: backup-restore-rpo-rto
 title: "백업이 성공했다면 장애 복구 준비가 됐다고 볼 수 있나요?"
+difficulty: 하
 category: 설계
 tags:
   - "백업"

@@ -1,6 +1,7 @@
 ---
 id: db-query-plan-regression
 title: "코드를 안 바꿨는데 쿼리가 갑자기 느려질 수 있나요?"
+difficulty: 하
 category: 데이터베이스
 tags:
   - "실행 계획"

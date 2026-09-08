@@ -1,6 +1,7 @@
 ---
 id: mutex-vs-serial-execution
 title: "뮤텍스로 보호하는 것과 작업을 큐에 넣어 순서대로 실행하는 것은 어떤 차이가 있나요?"
+difficulty: 하
 category: 동시성
 tags:
   - 뮤텍스

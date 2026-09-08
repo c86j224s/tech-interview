@@ -1,6 +1,7 @@
 ---
 id: cache-aside-consistency
 title: "데이터베이스를 수정한 뒤 캐시를 삭제하면 오래된 값이 다시 캐시에 들어갈 가능성은 없나요?"
+difficulty: 하
 category: 분산 시스템
 tags:
   - 캐시

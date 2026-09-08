@@ -1,6 +1,7 @@
 ---
 id: cpu-cache-false-sharing
 title: "서로 다른 변수를 수정하는 스레드끼리도 성능에 영향을 줄 수 있나요?"
+difficulty: 하
 category: 성능
 tags:
   - "캐시 라인"
