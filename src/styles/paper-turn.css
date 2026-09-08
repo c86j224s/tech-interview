@@ -1,0 +1,41 @@
+.paper-turn-overlay {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.paper-turn-front {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: var(--bg);
+  will-change: clip-path;
+}
+
+.paper-turn-fold {
+  position: absolute;
+  overflow: visible;
+  max-width: none;
+  filter: drop-shadow(10px 15px 13px rgb(28 18 45 / 22%));
+  will-change: opacity;
+}
+
+html[data-turning] {
+  overflow: hidden;
+}
+
+html[data-turning] .question-card {
+  box-shadow: none;
+}
+
+[data-random][aria-busy="true"] {
+  opacity: .65;
+  cursor: wait;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-turn-overlay { display: none; }
+}

@@ -3,10 +3,22 @@ import fs from 'node:fs';
 
 const index = JSON.parse(fs.readFileSync('question-index.json', 'utf8'));
 
+test('히어로 홈에서 연습을 시작하고 주제별 질문을 탐색한다', async ({ page }) => {
+  await page.goto('./');
+  await expect(page.locator('h1')).toContainText('알고 있다면,');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('link', { name: '한 질문, 시작하기' }).click();
+  await expect(page).toHaveURL(/\/practice\/$/);
+  await expect(page.locator('h1')).toHaveText(index[0].question);
+  await page.getByRole('link', { name: '말로 풀어보는 CS 홈' }).click();
+  await page.locator('.topic-ribbon').getByRole('link', { name: '네트워크' }).click();
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(2);
+});
+
 test('질문을 먼저 보고 답변을 펼친 뒤 다른 질문으로 이동한다', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('./');
+  await page.goto('practice/');
   await expect(page.locator('h1')).toHaveText(index[0].question);
   await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
   await page.locator('#answer > summary').click();
@@ -18,6 +30,33 @@ test('질문을 먼저 보고 답변을 펼친 뒤 다른 질문으로 이동한
   await expect(page).toHaveURL(/\/questions\/(?!async-api-and-blocking)[a-z-]+\/$/);
   await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
   expect(errors).toEqual([]);
+});
+
+test('종이 넘김이 끝난 뒤 반복 이동과 뒤로 가기가 동작한다', async ({ page }) => {
+  await page.goto('practice/');
+  await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+  await expect(page.locator('.paper-turn-overlay')).toBeAttached();
+  await expect(page.locator('.paper-turn-front .related-section')).toBeAttached();
+  await expect(page.locator('.paper-turn-front .question-card')).toBeAttached();
+  await expect(page.locator('.paper-turn-overlay')).toHaveCount(0);
+  const first = page.url();
+  await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+  await expect(page.locator('.paper-turn-overlay')).toBeAttached();
+  await expect(page.locator('.paper-turn-front .related-section')).toBeAttached();
+  await expect(page.locator('.paper-turn-front .question-card')).toBeAttached();
+  await expect(page.locator('.paper-turn-overlay')).toHaveCount(0);
+  expect(page.url()).not.toBe(first);
+  await page.goBack();
+  await expect(page).toHaveURL(first);
+  await expect(page.locator('.question-card')).toBeVisible();
+});
+
+test('모션 감소 설정에서는 종이 효과 없이 질문을 이동한다', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('practice/');
+  await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+  await expect(page).toHaveURL(/\/questions\//);
+  await expect(page.locator('.paper-turn-overlay')).toHaveCount(0);
 });
 
 test('검색, 카테고리, 태그, 빈 결과와 초기화가 동작한다', async ({ page }) => {
@@ -70,7 +109,7 @@ test('저장소 접근이 차단돼도 화면과 테마 전환이 동작한다',
   await page.addInitScript(() => Object.defineProperty(window, 'localStorage', { get() { throw new Error('storage blocked'); } }));
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('./');
+  await page.goto('practice/');
   await expect(page.locator('h1')).toBeVisible();
   await page.locator('.theme-toggle').click();
   await page.locator('summary').click();

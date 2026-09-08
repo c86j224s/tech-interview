@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/paper-turn.css';
 import { questions } from '../lib/questions.mjs';
 const { title = '말로 풀어보는 CS', page = 'practice', currentId = '' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -27,7 +28,7 @@ const questionUrls = questions.map((question) => ({ id: question.id, url: `${bas
         <span>말로 풀어보는 <b>CS</b></span>
       </a>
       <nav aria-label="주요 메뉴">
-        <a href={home} aria-current={page === 'practice' ? 'page' : undefined}>질문 연습</a>
+        <a href={`${base}/practice/`} aria-current={page === 'practice' ? 'page' : undefined}>질문 연습</a>
         <a href={`${base}/library/`} aria-current={page === 'library' ? 'page' : undefined}>전체 목록 <span class="nav-count">{questions.length}</span></a>
       </nav>
       <button class="theme-toggle" type="button" aria-label="화면 테마 전환" title="화면 테마 전환"><span aria-hidden="true">◐</span></button>
@@ -47,13 +48,7 @@ const questionUrls = questions.map((question) => ({ id: question.id, url: `${bas
         updateThemeLabel();
       });
       matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeLabel);
-      const routes: { id: string; url: string }[] = JSON.parse(document.getElementById('question-routes')?.textContent || '[]');
-      document.querySelectorAll<HTMLButtonElement>('[data-random]').forEach((button) => {
-        button.addEventListener('click', () => {
-          const candidates = routes.filter((route) => route.id !== document.body.dataset.currentId);
-          if (candidates.length) location.assign(candidates[Math.floor(Math.random() * candidates.length)].url);
-        });
-      });
+      import '../scripts/paper-turn';
     </script>
   </body>
 </html>
