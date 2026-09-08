@@ -14,7 +14,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="library-card-top"><span class="category-label">{question.category}</span><span class="card-number">{String(question.number).padStart(2, '0')}</span></div>
     <h2><a href={`${base}/questions/${question.id}/`}>{question.title}</a></h2>
     <div class="card-tags">{question.tags.slice(0, 3).map((tag) => <span>#{tag}</span>)}{question.tags.length > 3 && <span>+{question.tags.length - 3}</span>}</div>
-    <div class="library-card-bottom"><span>구두 답변 1–3분</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+    <div class="library-card-bottom"><span>구두 답변 약 2–3분</span><span class="card-arrow" aria-hidden="true">↗</span></div>
   </article>)}</div>
   <div class="empty-state" id="empty-state" hidden><span aria-hidden="true">⌕</span><h2>아직 일치하는 질문이 없어요.</h2><p>다른 검색어를 입력하거나 필터를 초기화해 보세요.</p><button type="button" class="button button-dark" id="empty-reset">전체 질문 보기</button></div>
 </Layout>

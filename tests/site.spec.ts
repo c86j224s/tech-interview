@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
+import matter from 'gray-matter';
 
 const index = JSON.parse(fs.readFileSync('question-index.json', 'utf8'));
+const content = index.map((entry: { id: string; question: string }) => ({
+  ...entry,
+  ...matter(fs.readFileSync(`questions/${entry.id}.md`, 'utf8')).data,
+}));
+const firstQuestion = index.find((entry: { id: string }) => entry.id === 'async-api-and-blocking');
+const categoryCount = (category: string) => content.filter((entry: { category: string }) => entry.category === category).length;
+const tagCount = (tag: string) => content.filter((entry: { tags: string[] }) => entry.tags.includes(tag)).length;
 
 test('히어로 홈에서 연습을 시작하고 주제별 질문을 탐색한다', async ({ page }) => {
   await page.goto('./');
@@ -9,17 +17,17 @@ test('히어로 홈에서 연습을 시작하고 주제별 질문을 탐색한�
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: '한 질문, 시작하기' }).click();
   await expect(page).toHaveURL(/\/practice\/$/);
-  await expect(page.locator('h1')).toHaveText(index[0].question);
+  await expect(page.locator('h1')).toHaveText(firstQuestion.question);
   await page.getByRole('link', { name: '말로 풀어보는 CS 홈' }).click();
   await page.locator('.topic-ribbon').getByRole('link', { name: '네트워크' }).click();
-  await expect(page.locator('[data-question-card]:visible')).toHaveCount(2);
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(categoryCount('네트워크'));
 });
 
 test('질문을 먼저 보고 답변을 펼친 뒤 다른 질문으로 이동한다', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('practice/');
-  await expect(page.locator('h1')).toHaveText(index[0].question);
+  await expect(page.locator('h1')).toHaveText(firstQuestion.question);
   await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
   await page.locator('#answer > summary').click();
   await expect(page.locator('#answer-0')).toBeVisible();
@@ -64,8 +72,8 @@ test('검색, 카테고리, 태그, 빈 결과와 초기화가 동작한다', as
   const cards = page.locator('[data-question-card]:visible');
   await expect(cards).toHaveCount(index.length);
   await page.getByRole('button', { name: '분산 시스템' }).click();
-  await expect(cards).toHaveCount(3);
-  await page.getByRole('searchbox', { name: '질문 검색' }).fill('타임아웃');
+  await expect(cards).toHaveCount(categoryCount('분산 시스템'));
+  await page.getByRole('searchbox', { name: '질문 검색' }).fill('요청이 타임아웃됐을 때');
   await expect(cards).toHaveCount(1);
   await page.getByLabel('태그 선택').selectOption('TCP');
   await expect(cards).toHaveCount(0);
@@ -80,6 +88,7 @@ test('검색, 카테고리, 태그, 빈 결과와 초기화가 동작한다', as
 });
 
 test('모든 문항 주소와 연관 링크가 열리고 모바일에서 넘치지 않는다', async ({ page }) => {
+  test.setTimeout(Math.max(30_000, index.length * 1_000));
   for (const entry of index) {
     const response = await page.goto(`questions/${entry.id}/`);
     expect(response?.status()).toBe(200);
@@ -93,7 +102,7 @@ test('모든 문항 주소와 연관 링크가 열리고 모바일에서 넘치�
 
 test('직접 태그 링크, 답변 앵커와 테마 유지가 동작한다', async ({ page }) => {
   await page.goto('library/?tag=TCP');
-  await expect(page.locator('[data-question-card]:visible')).toHaveCount(1);
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(tagCount('TCP'));
   await page.goto('questions/async-api-and-blocking/#answer-2');
   await expect(page.locator('#answer-2')).toBeVisible();
   await page.emulateMedia({ colorScheme: 'light' });
