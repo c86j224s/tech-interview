@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Question from '../../components/Question.astro';
+import { questions } from '../../lib/questions.mjs';
+export function getStaticPaths() { return questions.map((question) => ({ params: { id: question.id }, props: { question } })); }
+const { question } = Astro.props;
+---
+<Layout title={question.title} currentId={question.id}>
+  <section class="page-intro compact-intro"><div><p class="eyebrow">ONE QUESTION AT A TIME.</p><p class="intro-title">천천히 생각하고, <em>분명하게.</em></p></div></section>
+  <Question question={question} />
+</Layout>

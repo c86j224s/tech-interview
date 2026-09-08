@@ -1,0 +1,58 @@
+[
+  {
+    "id": "async-api-and-blocking",
+    "question": "비동기 API를 사용하면 호출한 스레드는 블로킹되지 않나요?"
+  },
+  {
+    "id": "authentication-vs-authorization",
+    "question": "인증과 인가는 어떻게 다르고, 로그인한 사용자에게도 인가 검사가 필요한 이유는 무엇인가요?"
+  },
+  {
+    "id": "cache-aside-consistency",
+    "question": "데이터베이스를 수정한 뒤 캐시를 삭제하면 오래된 값이 다시 캐시에 들어갈 가능성은 없나요?"
+  },
+  {
+    "id": "composite-index-column-order",
+    "question": "복합 인덱스의 컬럼 순서는 왜 중요하고, 어떤 기준으로 정하나요?"
+  },
+  {
+    "id": "deadlock-prevention",
+    "question": "교착 상태는 어떤 조건에서 발생하고, 락을 사용하는 코드에서는 어떻게 예방하나요?"
+  },
+  {
+    "id": "goroutine-lifecycle-and-leaks",
+    "question": "고루틴은 가볍다는데, 요청마다 계속 만들어도 괜찮나요?"
+  },
+  {
+    "id": "hash-sharding-and-resharding",
+    "question": "키를 해싱해서 데이터를 샤딩하면 부하가 고르게 분산되나요? 샤드 수가 바뀌면 어떻게 되나요?"
+  },
+  {
+    "id": "io-readiness-vs-completion",
+    "question": "I/O 준비 통지와 완료 통지는 무엇이 다르며, 서버 코드는 어떻게 달라지나요?"
+  },
+  {
+    "id": "mutex-vs-serial-execution",
+    "question": "뮤텍스로 보호하는 것과 작업을 큐에 넣어 순서대로 실행하는 것은 어떤 차이가 있나요?"
+  },
+  {
+    "id": "process-vs-thread",
+    "question": "프로세스와 스레드는 어떻게 다르고, 서버에서는 어떤 기준으로 선택하나요?"
+  },
+  {
+    "id": "request-timeout-idempotency",
+    "question": "요청이 타임아웃됐을 때 그대로 재시도해도 되나요?"
+  },
+  {
+    "id": "tcp-stream-message-framing",
+    "question": "TCP로 메시지를 두 번 보내면 받는 쪽에서도 두 번에 나눠 읽게 되나요?"
+  },
+  {
+    "id": "throughput-vs-latency",
+    "question": "처리량과 응답 시간은 어떻게 다르며, 평균 응답 시간만으로 성능을 판단해도 되나요?"
+  },
+  {
+    "id": "transaction-and-lost-update",
+    "question": "여러 쿼리를 트랜잭션으로 묶으면 동시 요청으로 인한 데이터 충돌도 막을 수 있나요?"
+  }
+]
