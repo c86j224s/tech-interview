@@ -1,6 +1,6 @@
 ---
 id: db-mvcc-snapshot
-title: "MVCC를 사용하면 읽기와 쓰기가 서로 방해하지 않나요?"
+title: "긴 조회와 갱신이 동시에 실행되는 DB에서 MVCC를 사용합니다. 읽는 데이터의 시점은 어떻게 정해지며, 읽기와 쓰기의 대기나 유지 비용이 모두 사라지나요?"
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["transaction-and-lost-update"]
 ---
 
-# MVCC를 사용하면 읽기와 쓰기가 서로 방해하지 않나요?
+# 긴 조회와 갱신이 동시에 실행되는 DB에서 MVCC를 사용합니다. 읽는 데이터의 시점은 어떻게 정해지며, 읽기와 쓰기의 대기나 유지 비용이 모두 사라지나요?
 
 ## 구두 답변
 

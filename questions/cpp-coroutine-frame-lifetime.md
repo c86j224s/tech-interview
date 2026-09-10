@@ -1,6 +1,6 @@
 ---
 id: cpp-coroutine-frame-lifetime
-title: "C++ 코루틴에서 중단 중인 객체와 버퍼의 수명은 어떻게 관리하나요?"
+title: "C++ 코루틴이 비동기 I/O를 기다리는 동안 호출자가 종료됩니다. 나중에 코루틴이 재개될 때 참조하던 객체와 버퍼가 유효하도록 수명을 어떻게 관리하나요?"
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["io-readiness-vs-completion","cpp-shared-pointer-lifetime"]
 ---
 
-# C++ 코루틴에서 중단 중인 객체와 버퍼의 수명은 어떻게 관리하나요?
+# C++ 코루틴이 비동기 I/O를 기다리는 동안 호출자가 종료됩니다. 나중에 코루틴이 재개될 때 참조하던 객체와 버퍼가 유효하도록 수명을 어떻게 관리하나요?
 
 ## 구두 답변
 

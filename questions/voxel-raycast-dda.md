@@ -1,13 +1,13 @@
 ---
 id: voxel-raycast-dda
-title: "복셀 raycast의 3D DDA가 다음 셀 경계를 계산해 방문하는 순서와 모서리·경계 예외를 어떻게 처리하나요?"
+title: "복셀 맵에서 광선이 통과하는 셀을 빠짐없이 검사하려 합니다. 3D DDA는 다음 셀을 어떻게 고르며 광선이 셀의 면·모서리에 걸리면 어떻게 처리하나요?"
 difficulty: 하
 category: 게임 서버
 tags: ["복셀","raycast","DDA"]
 related: ["voxel-chunk-boundaries"]
 ---
 
-# 복셀 raycast의 3D DDA가 다음 셀 경계를 계산해 방문하는 순서와 모서리·경계 예외를 어떻게 처리하나요?
+# 복셀 맵에서 광선이 통과하는 셀을 빠짐없이 검사하려 합니다. 3D DDA는 다음 셀을 어떻게 고르며 광선이 셀의 면·모서리에 걸리면 어떻게 처리하나요?
 
 ## 구두 답변
 

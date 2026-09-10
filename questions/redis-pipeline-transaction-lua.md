@@ -1,13 +1,13 @@
 ---
 id: redis-pipeline-transaction-lua
-title: "Redis 파이프라이닝, MULTI/EXEC, Lua는 무엇이 다른가요?"
+title: "Redis에 여러 명령을 보내는 왕복 비용을 줄이면서 조회 결과에 따른 갱신도 안전하게 처리하려 합니다. 파이프라이닝·MULTI/EXEC·Lua 중 무엇을 선택하나요?"
 difficulty: 중하
 category: 데이터베이스
 tags: ["Redis","파이프라이닝","트랜잭션","Lua"]
 related: ["transaction-and-lost-update", "redis-cluster-hash-tags", "request-timeout-idempotency"]
 ---
 
-# Redis 파이프라이닝, MULTI/EXEC, Lua는 무엇이 다른가요?
+# Redis에 여러 명령을 보내는 왕복 비용을 줄이면서 조회 결과에 따른 갱신도 안전하게 처리하려 합니다. 파이프라이닝·MULTI/EXEC·Lua 중 무엇을 선택하나요?
 
 ## 구두 답변
 

@@ -1,13 +1,13 @@
 ---
 id: karpenter-node-provisioning
-title: "Pod replica를 늘리는 HPA/KEDA와 스케줄되지 못한 Pod를 놓을 노드를 만드는 Karpenter는 확장 과정에서 어떤 역할을 하나요?"
+title: "HPA가 Pod 수를 늘렸지만 배치할 노드 자원이 없어 Pending으로 남았습니다. Karpenter는 무엇을 보고 노드를 만들며 Pod 확장과는 어떻게 연결되나요?"
 difficulty: 하
 category: 인프라
 tags: ["Karpenter","노드","스케줄링"]
 related: ["k8s-hpa-scaling","keda-hpa-role"]
 ---
 
-# Pod replica를 늘리는 HPA/KEDA와 스케줄되지 못한 Pod를 놓을 노드를 만드는 Karpenter는 확장 과정에서 어떤 역할을 하나요?
+# HPA가 Pod 수를 늘렸지만 배치할 노드 자원이 없어 Pending으로 남았습니다. Karpenter는 무엇을 보고 노드를 만들며 Pod 확장과는 어떻게 연결되나요?
 
 ## 구두 답변
 

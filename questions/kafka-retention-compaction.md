@@ -1,13 +1,13 @@
 ---
 id: kafka-retention-compaction
-title: "Kafka에서 retention으로 오래된 로그를 지우는 것과 log compaction으로 키의 과거 값을 정리하는 것은 어떻게 다른가요?"
+title: "Kafka에 오래된 이벤트를 정리하면서 키별 최신 상태는 남기려 합니다. 시간·크기 기반 retention과 log compaction은 무엇을 각각 보존하나요?"
 difficulty: 하
 category: 분산 시스템
 tags: ["Kafka","retention","compaction"]
 related: ["kafka-partition-offset"]
 ---
 
-# Kafka에서 retention으로 오래된 로그를 지우는 것과 log compaction으로 키의 과거 값을 정리하는 것은 어떻게 다른가요?
+# Kafka에 오래된 이벤트를 정리하면서 키별 최신 상태는 남기려 합니다. 시간·크기 기반 retention과 log compaction은 무엇을 각각 보존하나요?
 
 ## 구두 답변
 

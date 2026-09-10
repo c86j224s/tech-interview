@@ -1,6 +1,6 @@
 ---
 id: python-asyncio-blocking
-title: "asyncio 서버에서 동기 호출이나 CPU 계산이 전체 요청을 막는 이유와 격리 방법은 무엇인가요?"
+title: "asyncio 요청 처리 중 동기 HTTP 호출이나 긴 계산을 넣었더니 다른 요청까지 멈춥니다. 이벤트 루프에서 무엇이 막히며 어떤 실행 방식으로 분리하나요?"
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["async-api-and-blocking"]
 ---
 
-# asyncio 서버에서 동기 호출이나 CPU 계산이 전체 요청을 막는 이유와 격리 방법은 무엇인가요?
+# asyncio 요청 처리 중 동기 HTTP 호출이나 긴 계산을 넣었더니 다른 요청까지 멈춥니다. 이벤트 루프에서 무엇이 막히며 어떤 실행 방식으로 분리하나요?
 
 ## 구두 답변
 

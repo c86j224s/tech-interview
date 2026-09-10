@@ -1,6 +1,6 @@
 ---
 id: structured-concurrency-fanout
-title: "여러 하위 비동기 호출 중 하나가 실패할 때 필수·선택 결과와 자식 작업 수명을 어떻게 관리하나요?"
+title: "요청 하나에서 여러 하위 API를 호출하는데 하나가 실패하거나 사용자가 연결을 끊었습니다. 꼭 필요한 결과와 선택 결과를 나누고 남은 작업의 수명을 어떻게 관리하나요?"
 difficulty: 하
 category: 설계
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["deadline-cancellation-propagation","go-channel-close-ownership"]
 ---
 
-# 여러 하위 비동기 호출 중 하나가 실패할 때 필수·선택 결과와 자식 작업 수명을 어떻게 관리하나요?
+# 요청 하나에서 여러 하위 API를 호출하는데 하나가 실패하거나 사용자가 연결을 끊었습니다. 꼭 필요한 결과와 선택 결과를 나누고 남은 작업의 수명을 어떻게 관리하나요?
 
 ## 구두 답변
 

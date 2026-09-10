@@ -1,6 +1,6 @@
 ---
 id: context-switch-overhead
-title: "컨텍스트 스위치가 많으면 반드시 성능 문제가 있는 건가요?"
+title: "서버의 컨텍스트 스위치 횟수가 늘었습니다. 정상적인 I/O 대기인지 과도한 스레드 경쟁인지 구분하려면 어떤 지표를 함께 봐야 하나요?"
 difficulty: 하
 category: 운영체제
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["process-vs-thread","throughput-vs-latency"]
 ---
 
-# 컨텍스트 스위치가 많으면 반드시 성능 문제가 있는 건가요?
+# 서버의 컨텍스트 스위치 횟수가 늘었습니다. 정상적인 I/O 대기인지 과도한 스레드 경쟁인지 구분하려면 어떤 지표를 함께 봐야 하나요?
 
 ## 구두 답변
 

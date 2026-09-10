@@ -1,13 +1,13 @@
 ---
 id: karpenter-consolidation
-title: "Karpenter consolidation은 비어 있는 노드 삭제와 달리 실행 중인 Pod에 어떤 변화를 일으키나요?"
+title: "Karpenter로 사용률이 낮은 노드를 줄이려는데 그 위에 Pod가 실행 중입니다. consolidation은 어떤 이동을 일으키며 중단과 재배치를 어떻게 대비하나요?"
 difficulty: 중하
 category: 인프라
 tags: ["Karpenter","consolidation","비용"]
 related: ["k8s-pdb-eviction"]
 ---
 
-# Karpenter consolidation은 비어 있는 노드 삭제와 달리 실행 중인 Pod에 어떤 변화를 일으키나요?
+# Karpenter로 사용률이 낮은 노드를 줄이려는데 그 위에 Pod가 실행 중입니다. consolidation은 어떤 이동을 일으키며 중단과 재배치를 어떻게 대비하나요?
 
 ## 구두 답변
 

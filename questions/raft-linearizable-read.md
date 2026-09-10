@@ -1,13 +1,13 @@
 ---
 id: raft-linearizable-read
-title: "Raft 클러스터에서 리더가 로컬 메모리를 읽을 때 선형화 가능한 최신 값을 보장하려면 무엇을 확인해야 하나요?"
+title: "네트워크 단절 뒤에도 이전 Raft 리더가 읽기 요청을 받고 있습니다. 로컬 상태를 바로 반환해도 되며, 최신성을 보장하려면 무엇을 확인해야 하나요?"
 difficulty: 중하
 category: 분산 시스템
 tags: ["Raft","ReadIndex","선형화 가능성"]
 related: ["raft-log-commit-apply","consistency-linearizability"]
 ---
 
-# Raft 클러스터에서 리더가 로컬 메모리를 읽을 때 선형화 가능한 최신 값을 보장하려면 무엇을 확인해야 하나요?
+# 네트워크 단절 뒤에도 이전 Raft 리더가 읽기 요청을 받고 있습니다. 로컬 상태를 바로 반환해도 되며, 최신성을 보장하려면 무엇을 확인해야 하나요?
 
 ## 구두 답변
 

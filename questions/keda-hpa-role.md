@@ -1,13 +1,13 @@
 ---
 id: keda-hpa-role
-title: "Kafka lag나 큐 길이로 Pod를 확장할 때 KEDA와 HPA는 각각 어떤 신호와 제어를 담당하나요?"
+title: "CPU는 낮아도 Kafka lag가 쌓이는 소비자 서비스를 확장하려 합니다. KEDA와 HPA는 어떤 지표와 제어를 각각 맡으며 Pod 수를 어떻게 바꾸나요?"
 difficulty: 하
 category: 인프라
 tags: ["KEDA","HPA","자동 확장"]
 related: ["k8s-hpa-scaling","kafka-lag-interpretation"]
 ---
 
-# Kafka lag나 큐 길이로 Pod를 확장할 때 KEDA와 HPA는 각각 어떤 신호와 제어를 담당하나요?
+# CPU는 낮아도 Kafka lag가 쌓이는 소비자 서비스를 확장하려 합니다. KEDA와 HPA는 어떤 지표와 제어를 각각 맡으며 Pod 수를 어떻게 바꾸나요?
 
 ## 구두 답변
 
@@ -26,7 +26,7 @@ HPA(메트릭에 따라 workload의 replica 수를 조절하는 Kubernetes 컨�
 ## 감점 포인트
 
 - KEDA가 HPA와 무관한 별도 확장기로 항상 동시에 제어한다고 말한다.
-- 큐 길이가 업무 비용과 회복 시간을 언제나 정확히 대표한다고 말한다.
+- 큐 길이가 메시지별 처리 비용과 회복 시간을 언제나 정확히 대표한다고 말한다.
 - 같은 workload에 여러 autoscaler를 무조건 붙인다.
 
 ## 더 파고들 거리

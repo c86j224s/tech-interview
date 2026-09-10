@@ -1,13 +1,13 @@
 ---
 id: argocd-prune-rollback
-title: "Argo CD의 prune과 Git revert를 사용할 때 무엇을 주의하나요?"
+title: "Git에서 리소스 정의를 삭제한 뒤 Argo CD로 동기화하려 합니다. 클러스터에서 무엇이 삭제될 수 있고, 문제가 생겨 Git을 되돌리면 어디까지 복구되나요?"
 difficulty: 중하
 category: 인프라
 tags: ["Argo CD","prune","롤백"]
 related: ["feature-flag-rollout","argocd-gitops-reconcile"]
 ---
 
-# Argo CD의 prune과 Git revert를 사용할 때 무엇을 주의하나요?
+# Git에서 리소스 정의를 삭제한 뒤 Argo CD로 동기화하려 합니다. 클러스터에서 무엇이 삭제될 수 있고, 문제가 생겨 Git을 되돌리면 어디까지 복구되나요?
 
 ## 구두 답변
 

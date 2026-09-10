@@ -1,13 +1,13 @@
 ---
 id: redis-bigkey-scan
-title: "Redis 운영 환경에서 KEYS와 큰 키 삭제가 지연을 만드는 이유와 안전한 조사·삭제 방법은 무엇인가요?"
+title: "운영 Redis에서 큰 키를 찾고 삭제하려는데 다른 요청이 멈출까 걱정됩니다. KEYS와 큰 키 삭제는 왜 지연을 만들며 어떻게 나눠 조사하고 정리하나요?"
 difficulty: 중하
 category: 성능
 tags: ["Redis","big key","SCAN"]
 related: ["redis-thread-model"]
 ---
 
-# Redis 운영 환경에서 KEYS와 큰 키 삭제가 지연을 만드는 이유와 안전한 조사·삭제 방법은 무엇인가요?
+# 운영 Redis에서 큰 키를 찾고 삭제하려는데 다른 요청이 멈출까 걱정됩니다. KEYS와 큰 키 삭제는 왜 지연을 만들며 어떻게 나눠 조사하고 정리하나요?
 
 ## 구두 답변
 

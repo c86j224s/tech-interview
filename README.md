@@ -37,6 +37,8 @@ npm run preview
 
 ## 문항 관리
 
+현재 300문항을 제공합니다. 300문항으로 확장하면서 참고한 저장소와 보강 범위는 [주제 선정 자료](docs/topic-sources.md)에 정리했습니다.
+
 [`questions/`](questions/)에 문항 하나당 Markdown 파일 하나를 저장합니다. 각 문항은 다음 구성입니다.
 
 1. 일반화된 기술 질문

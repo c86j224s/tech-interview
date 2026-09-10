@@ -1,13 +1,13 @@
 ---
 id: sqlserver-rcsi-snapshot
-title: "SQL Server에서 RCSI와 SNAPSHOT 격리는 반복 읽기의 시점과 쓰기 충돌을 어떻게 다르게 만들나요?"
+title: "SQL Server 트랜잭션에서 같은 행을 두 번 읽는 사이 다른 요청이 값을 바꿨습니다. RCSI와 SNAPSHOT은 두 번째 읽기와 이후 쓰기 충돌을 어떻게 다르게 처리하나요?"
 difficulty: 중하
 category: 데이터베이스
 tags: ["SQL Server","RCSI","SNAPSHOT"]
 related: ["db-mvcc-snapshot","transaction-and-lost-update"]
 ---
 
-# SQL Server에서 RCSI와 SNAPSHOT 격리는 반복 읽기의 시점과 쓰기 충돌을 어떻게 다르게 만들나요?
+# SQL Server 트랜잭션에서 같은 행을 두 번 읽는 사이 다른 요청이 값을 바꿨습니다. RCSI와 SNAPSHOT은 두 번째 읽기와 이후 쓰기 충돌을 어떻게 다르게 처리하나요?
 
 ## 구두 답변
 

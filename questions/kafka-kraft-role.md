@@ -1,13 +1,13 @@
 ---
 id: kafka-kraft-role
-title: "KRaft 컨트롤러 쿼럼의 합의와 Kafka 데이터 파티션의 복제·ACK는 어떤 상태를 각각 결정하나요?"
+title: "Kafka에서 컨트롤러 노드 장애와 데이터 파티션 리더 장애가 각각 발생했습니다. KRaft의 합의와 파티션 복제는 어떤 상태를 관리하며 어떻게 역할이 다른가요?"
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","KRaft","메타데이터"]
 related: ["raft-log-commit-apply","kafka-acks-isr"]
 ---
 
-# KRaft 컨트롤러 쿼럼의 합의와 Kafka 데이터 파티션의 복제·ACK는 어떤 상태를 각각 결정하나요?
+# Kafka에서 컨트롤러 노드 장애와 데이터 파티션 리더 장애가 각각 발생했습니다. KRaft의 합의와 파티션 복제는 어떤 상태를 관리하며 어떻게 역할이 다른가요?
 
 ## 구두 답변
 

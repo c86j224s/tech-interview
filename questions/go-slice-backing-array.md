@@ -1,6 +1,6 @@
 ---
 id: go-slice-backing-array
-title: "Go 슬라이스를 복사했는데 원본 값이 바뀌는 이유는 무엇인가요?"
+title: "Go 슬라이스를 다른 변수에 대입한 뒤 복사본의 원소를 바꿨더니 원본도 바뀝니다. 어떤 저장 공간을 공유하며 독립된 복사본은 어떻게 만드나요?"
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -10,7 +10,7 @@ tags:
 related: ["go-interface-typed-nil", "goroutine-lifecycle-and-leaks"]
 ---
 
-# Go 슬라이스를 복사했는데 원본 값이 바뀌는 이유는 무엇인가요?
+# Go 슬라이스를 다른 변수에 대입한 뒤 복사본의 원소를 바꿨더니 원본도 바뀝니다. 어떤 저장 공간을 공유하며 독립된 복사본은 어떻게 만드나요?
 
 ## 구두 답변
 

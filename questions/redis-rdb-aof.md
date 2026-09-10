@@ -1,13 +1,13 @@
 ---
 id: redis-rdb-aof
-title: "Redis의 RDB와 AOF 설정이 장애 시 유실 범위·복구 시간·운영 자원에 어떤 차이를 만드나요?"
+title: "Redis 재시작 때 최근 쓰기가 일부 사라져 지속성 설정을 바꾸려 합니다. RDB와 AOF는 유실 범위·복구 시간·디스크 비용을 어떻게 바꾸나요?"
 difficulty: 하
 category: 데이터베이스
 tags: ["Redis","RDB","AOF","지속성"]
 related: ["db-wal-durability"]
 ---
 
-# Redis의 RDB와 AOF 설정이 장애 시 유실 범위·복구 시간·운영 자원에 어떤 차이를 만드나요?
+# Redis 재시작 때 최근 쓰기가 일부 사라져 지속성 설정을 바꾸려 합니다. RDB와 AOF는 유실 범위·복구 시간·디스크 비용을 어떻게 바꾸나요?
 
 ## 구두 답변
 

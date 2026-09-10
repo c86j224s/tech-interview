@@ -1,13 +1,13 @@
 ---
 id: paxos-prepare-accept
-title: "Paxos에서 prepare와 accept는 어떤 기록을 보호하며, 새 proposer가 이전에 수락된 값을 이어받아야 하는 이유는 무엇인가요?"
+title: "Paxos에서 제안자가 응답을 받기 전에 멈추고 새 제안자가 시작했습니다. 이미 수락된 값과 충돌하지 않도록 prepare와 accept에서 무엇을 확인하고 기록하나요?"
 difficulty: 하
 category: 분산 시스템
 tags: ["Paxos","합의","ballot"]
 related: ["consensus-vs-replication"]
 ---
 
-# Paxos에서 prepare와 accept는 어떤 기록을 보호하며, 새 proposer가 이전에 수락된 값을 이어받아야 하는 이유는 무엇인가요?
+# Paxos에서 제안자가 응답을 받기 전에 멈추고 새 제안자가 시작했습니다. 이미 수락된 값과 충돌하지 않도록 prepare와 accept에서 무엇을 확인하고 기록하나요?
 
 ## 구두 답변
 
