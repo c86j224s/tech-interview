@@ -1,6 +1,8 @@
 ---
 id: jetstream-durable-consumer
 title: "분석과 알림 서비스가 같은 JetStream 메시지를 각각 읽어야 합니다. stream과 durable consumer를 어떻게 나누고 재시작 위치를 유지하나요?"
+answerMinutes: 5
+followups: [{"id":"nats-core-jetstream","prompt":"오프라인 중 유실되어도 되는 알림과 반드시 처리할 주문 이벤트를 어떻게 나누나요?"},{"id":"jetstream-ack-redelivery","prompt":"durable 위치가 있어도 ACK 유실 재전달의 중복 효과를 어떻게 막나요?"},{"id":"kafka-consumer-group","prompt":"서비스별 독립 consumer와 group 내부 인스턴스 분산을 Kafka와 비교해 보세요."}]
 difficulty: 하
 category: 분산 시스템
 tags: ["NATS","JetStream","durable consumer"]
@@ -11,28 +13,43 @@ related: ["nats-core-jetstream"]
 
 ## 구두 답변
 
-stream은 subject에 들어온 메시지를 정책에 따라 저장하고, consumer는 그 기록을 어떤 위치부터 어떤 방식으로 전달하며 무엇이 확인됐는지 관리합니다. durable consumer는 클라이언트 연결보다 긴 수명으로 진행 상태를 유지하는 데 사용합니다. 저장 로그와 읽는 주체의 상태를 구분해야 합니다.
+JetStream에서 stream은 subject 메시지를 저장하는 로그이고 consumer는 어디서부터 전달하며 ACK됐는지를 관리합니다. **내구 소비자**(durable consumer)는 연결보다 긴 이름과 상태를 유지해 재시작 후 이어 읽게 합니다. 분석과 알림이 모두 전체 이벤트를 읽어야 하면 서비스별 독립 consumer를 둡니다.
 
-stream은 메시지 보관함이고 consumer는 그 보관함에서 어떤 메시지를 전달하고 확인했는지 기록하는 읽기 상태입니다. durable은 이 소비 상태에 안정된 이름을 주어 연결이 끊겼다가 다시 와도 이어 쓸 수 있게 하는 설정입니다. 두 서비스가 독립적으로 전부 읽어야 한다면 각각의 소비 상태를 두고, 저장 정책도 그 용도를 허용해야 합니다.
+### stream과 consumer
 
-분석 서비스와 알림 서비스가 같은 stream을 독립적으로 읽는다면 각각 별도의 consumer 상태가 필요할 수 있습니다. 이름을 잘못 공유하면 의도한 독립 소비가 아니라 같은 진행 위치를 공유할 수 있습니다. 반대로 매번 새 consumer를 만들면 기존 진행을 잃고 과거 메시지를 다시 읽을 수 있습니다. 시작 위치와 재생 정책을 명시하겠습니다.
+하나의 stream에 analytics consumer와 notification consumer를 만들면 분석의 진행 위치가 알림을 움직이지 않습니다. 같은 durable 이름을 여러 서비스가 공유하면 독립 fan-out이 아니라 하나의 소비 상태를 나누게 됩니다. 매번 새 consumer를 만들면 과거를 다시 읽거나 위치를 잃을 수 있습니다.
 
-내구 consumer가 있어도 stream의 보관 한도를 넘어 메시지가 삭제되면 무한히 과거를 복구할 수는 없습니다. consumer의 inactivity 정리와 retention 모드도 확인해야 합니다. 저는 배포 재시작 때 진행 위치가 이어지는지, 장기간 중단 뒤 필요한 데이터가 남는지 테스트하겠습니다. durable이라는 이름은 모든 상태가 영원히 보관된다는 뜻이 아니라 설정된 상태 수명의 계약입니다.
+durable 위치를 복원해도 외부 DB commit 뒤 ACK 전에 죽으면 재전달됩니다. 따라서 이벤트 ID와 inbox·고유 제약이 필요합니다. pull은 소비자가 양과 속도를 조절하기 쉽고 push는 ACK·backpressure를 더 주의해야 하지만, 어느 방식도 외부 효과 exactly once를 보장하지 않습니다.
+
+### 보관의 한계
+
+limits·WorkQueue·Interest retention에 따라 메시지 삭제 시점이 다릅니다. 오래 내려간 consumer가 돌아와도 보관 한도를 넘긴 메시지는 durable 이름만으로 복구하지 못합니다. inactivity로 consumer 상태가 정리될 수도 있으므로 durable을 영구 보존으로 해석하지 않습니다.
+
+검증은 한 서비스만 중단, 둘 다 재시작, 보관 기간 초과 중단을 시험합니다. 각 consumer의 위치·재전달·외부 중복과 snapshot·재생 복구 경로를 확인합니다.
+
+### 보관 정책이 fan-out을 바꿉니다
+
+분석과 알림이 같은 메시지를 각각 읽는 모델은 해당 stream의 보관 정책이 지원해야 합니다. LimitsPolicy는 시간·개수·크기 한도 아래 기록을 남기므로 독립 소비자가 각자 재생할 수 있습니다. InterestPolicy는 관심 소비자의 ACK를 기준으로 보관하며 관심이 없던 시기의 메시지를 나중 소비자가 읽을 수 있다고 가정하면 안 됩니다. WorkQueuePolicy는 작업을 한 소비 경로에서 완료해 제거하는 목적이고 겹치는 필터의 독립 소비자를 같은 작업에 붙이는 방식과 맞지 않습니다.
+
+같은 durable을 여러 워커가 공유하는 것은 한 서비스 내부의 작업 분배입니다. 분석과 알림이 각자 전체 이벤트를 처리하려면 서로 다른 소비 상태와 권한을 갖고, 각 상태의 전달 시작 정책을 명시해야 합니다. 새 consumer를 만든다고 원래 위치가 자동으로 복원되지 않습니다. 이름과 시작 위치, 필터, ACK 정책이 배포 때마다 바뀌지 않게 관리하겠습니다.
+
+재시작 후에는 소비자 존재 여부, ACK floor, 대기·재전달 수, stream의 첫 보관 위치를 비교합니다. 소비 위치가 보관 시작점보다 뒤처져 데이터가 사라졌다면 조용히 최신부터 읽지 않고 원본 스냅샷과 증분 이벤트를 연결해 재구축합니다. inactivity 삭제 같은 상태 정리는 서버 버전과 설정에 따라 확인합니다. 내구 소비자는 연결의 수명보다 오래 사는 처리 상태이지 메시지 자체를 영구 보관하는 장치는 아닙니다.
 
 ## 득점 포인트
 
-- 저장 로그와 전달 상태를 나눈다.
-- consumer 이름과 메시지를 처리할 서비스의 책임을 연결한다.
-- 보관·비활성 정책의 한계를 확인한다.
+- 저장 로그와 소비 상태를 분리한다.
+- 서비스별 consumer와 내부 분산을 구분한다.
+- durable과 retention 수명의 한계를 말한다.
+- 장기 중단·재시작을 검증한다.
 
 ## 감점 포인트
 
 - durable이면 메시지가 영구 보존된다고 말한다.
-- 서로 독립인 서비스를 같은 consumer 이름에 연결한다.
-- 재시작마다 무조건 새 consumer를 만든다.
+- 독립 서비스가 같은 consumer를 공유한다.
+- 재시작마다 새 consumer를 만든다.
 
 ## 더 파고들 거리
 
-- pull consumer와 push consumer는 흐름 제어에서 어떻게 다를까요?
-- WorkQueue·Interest retention은 일반 limits 보관과 무엇이 다른가요?
-- consumer를 삭제하고 다시 만들 때 진행 위치를 어떻게 복구할까요?
+- pull·push 흐름 제어
+- retention별 삭제
+- checkpoint 복구

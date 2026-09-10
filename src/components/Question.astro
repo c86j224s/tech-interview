@@ -10,7 +10,7 @@ const sectionNotes = ['정의를 외우기보다, 원리와 조건을 연결해 
   <div class="practice-main">
     <div class="section-bar"><span class="eyebrow">TODAY’S QUESTION</span><span class="question-position">{String(question.number).padStart(2, '0')} <span>/ {String(questions.length).padStart(2, '0')}</span></span></div>
     <article class="question-card">
-      <div class="question-meta"><a class="category-badge" href={`${base}/library/?category=${encodeURIComponent(question.category)}`}>{question.category}</a><a class="difficulty-badge" data-difficulty={question.difficulty} href={`${base}/library/?difficulty=${encodeURIComponent(question.difficulty)}`}>난이도 {question.difficulty}</a><span class="muted">구두 답변 약 2–3분</span></div>
+      <div class="question-meta"><a class="category-badge" href={`${base}/library/?category=${encodeURIComponent(question.category)}`}>{question.category}</a><a class="difficulty-badge" data-difficulty={question.difficulty} href={`${base}/library/?difficulty=${encodeURIComponent(question.difficulty)}`}>난이도 {question.difficulty}</a><span class="muted">{question.answerMinutes === 5 ? '5분 답변 목표 · 보강본' : '핵심 답변'}</span></div>
       <h1>{question.title}</h1>
       <div class="tag-list">{question.tags.map((tag) => <a href={`${base}/library/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
       <div class="question-prompt"><span class="small-spark" aria-hidden="true">✳</span><p>잠깐, 답변을 보기 전에<br/><strong>먼저 내 말로 설명해 볼까요?</strong></p><span class="prompt-line" aria-hidden="true"></span></div>
@@ -29,11 +29,15 @@ const sectionNotes = ['정의를 외우기보다, 원리와 조건을 연결해 
     <div class="question-actions"><a class="text-link" href={`${base}/library/`}>← 전체 질문 보기</a><button type="button" class="button button-dark" data-random>다른 질문 뽑기 <span aria-hidden="true">↗</span></button></div>
   </div>
   <aside class="practice-aside">
-    <section class="practice-note"><div class="eyebrow">A LITTLE PRACTICE</div><h2>아는 것과<br/>설명하는 것 사이.</h2><p>완벽한 답보다,<br/>이유를 설명하는 연습을 해요.</p><ol><li><span>01</span>질문을 읽고 생각하기</li><li><span>02</span>2–3분 동안 소리 내어 답하기</li><li><span>03</span>핵심 포인트로 점검하기</li></ol><div class="note-decoration" aria-hidden="true">✳</div></section>
-    <section class="related-section"><div class="section-bar"><h2>이어서 생각해 보기</h2><span aria-hidden="true">↘</span></div>{related.length ? related.map((item) => <a class="related-card" href={`${base}/questions/${item.id}/`}><span class="related-category">{item.category} · {item.difficulty}</span><h3>{item.title}</h3><span class="related-arrow" aria-hidden="true">↗</span></a>) : <p class="empty-related">연관 질문을 차근차근 채우고 있어요.<br/><a href={`${base}/library/`}>다른 주제 둘러보기 →</a></p>}</section>
+    <section class="practice-note"><div class="eyebrow">A LITTLE PRACTICE</div><h2>아는 것과<br/>설명하는 것 사이.</h2><p>완벽한 답보다,<br/>이유를 설명하는 연습을 해요.</p><ol><li><span>01</span>질문을 읽고 생각하기</li><li><span>02</span>핵심부터 답하고 약 5분까지 확장하기</li><li><span>03</span>꼬리 질문 하나를 골라 이어 답하기</li></ol><div class="note-decoration" aria-hidden="true">✳</div></section>
+    <section class="related-section"><div class="section-bar"><h2>이어서 설명해 보기</h2><span aria-hidden="true">↘</span></div><p class="related-intro">{question.followups.length ? '지금 답변의 전제를 바꿔, 다음 질문에 이어 답해 보세요.' : '같은 주제의 연관 문항입니다. 현재 답변과의 차이를 비교해 보세요.'}</p>{related.length ? related.map((item) => <a class="related-card" href={`${base}/questions/${item.id}/`}><span class="related-category">{item.followupPrompt ? '꼬리 질문' : '연관 개념'} · {item.category} · {item.difficulty}</span>{item.followupPrompt && <p class="followup-prompt">{item.followupPrompt}</p>}<h3>{item.title}</h3><span class="related-arrow" aria-hidden="true">↗</span></a>) : <p class="empty-related">연관 질문을 차근차근 채우고 있어요.<br/><a href={`${base}/library/`}>다른 주제 둘러보기 →</a></p>}</section>
   </aside>
 </div>
 <style is:global>
+  .related-intro { font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
+  .followup-prompt { margin-top: 9px; font-size: 13px; line-height: 1.85; color: var(--ink); }
+  .related-card:has(.followup-prompt) h3 { font-size: 12px; color: var(--muted); }
+  .spoken-answer h3 { margin: 28px 0 12px; font-size: 16px; color: var(--accent); }
   .prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 22px 0; font-size: 13px; }
   .prose th, .prose td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; min-width: 100px; }
   .prose th { background: var(--accent-soft); }

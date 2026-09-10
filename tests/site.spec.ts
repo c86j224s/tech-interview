@@ -96,8 +96,22 @@ test('모든 문항 주소와 연관 링크가 열리고 모바일에서 넘치�
     await expect(page.locator('h1')).toHaveText(entry.question);
     await page.locator('summary').click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const proseText = await page.locator('.prose').evaluateAll((sections) => sections.map((section) => {
+      const copy = section.cloneNode(true) as HTMLElement;
+      copy.querySelectorAll('pre, code').forEach((node) => node.remove());
+      return copy.textContent || '';
+    }).join('\n'));
+    expect(proseText, `${entry.id}: 볼드 구분자 노출`).not.toContain('**');
+    const source = content.find((item: { id: string }) => item.id === entry.id);
+    if (source.answerMinutes === 5) {
+      await expect(page.locator('.question-meta')).toContainText('5분 답변 목표 · 보강본');
+      await expect(page.locator('.followup-prompt')).toHaveText(source.followups.map((item: { prompt: string }) => item.prompt));
+    }
     const links = await page.locator('.related-card').evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute('href')));
     for (const link of links) expect(index.some((item: { id: string }) => link?.endsWith(`/questions/${item.id}/`))).toBe(true);
+    if (source.followups?.length === 3) {
+      expect(links.map((link) => link?.split('/').filter(Boolean).at(-1))).toEqual(source.followups.map((item: { id: string }) => item.id));
+    }
   }
 });
 
@@ -130,6 +144,40 @@ test('직접 태그 링크, 답변 앵커와 테마 유지가 동작한다', asy
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.getByRole('button', { name: '라이트 모드로 전환' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+});
+
+test('꼬리 질문의 조건을 읽고 다음 문항으로 이어간다', async ({ page }) => {
+  await page.goto('questions/async-api-and-blocking/');
+  await expect(page.locator('.question-meta')).toContainText('5분 답변 목표 · 보강본');
+  const followup = page.locator('.related-card').first();
+  await expect(followup.locator('.related-category')).toContainText('꼬리 질문');
+  await expect(followup.locator('.followup-prompt')).toContainText('DB 대기 요청이 쌓입니다');
+  await followup.click();
+  await expect(page).toHaveURL(/\/questions\/bounded-queue-backpressure\/$/);
+  await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
+  await page.locator('.related-card').first().click();
+  await expect(page).toHaveURL(/\/questions\/deadline-cancellation-propagation\/$/);
+  await page.goBack();
+  await expect(page.locator('h1')).toHaveText(index.find((entry: { id: string }) => entry.id === 'bounded-queue-backpressure').question);
+  await page.goto('questions/binary-search-boundary/');
+  const binary = content.find((entry: { id: string }) => entry.id === 'binary-search-boundary');
+  await expect(page.locator('.question-meta')).toContainText(binary.answerMinutes === 5 ? '5분 답변 목표 · 보강본' : '핵심 답변');
+  await expect(page.locator('.related-card .followup-prompt')).toHaveCount(binary.followups?.length || 0);
+});
+
+test('JavaScript 없이도 보강 답변과 꼬리 질문 링크를 읽는다', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    await page.goto(`${baseURL}questions/transactional-outbox/`);
+    await page.locator('summary').click();
+    await expect(page.locator('.spoken-answer')).toContainText('이중 쓰기(dual write)');
+    await page.locator('.related-card').first().click();
+    await expect(page).toHaveURL(/\/questions\/message-consumer-idempotency\/$/);
+    await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
+  } finally {
+    await context.close();
+  }
 });
 
 test('저장소 접근이 차단돼도 화면과 테마 전환이 동작한다', async ({ page }) => {
