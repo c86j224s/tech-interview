@@ -180,6 +180,22 @@ test('JavaScript 없이도 보강 답변과 꼬리 질문 링크를 읽는다', 
   }
 });
 
+test('AI 에이전트 50문항에서 MCP를 검색하고 꼬리 질문으로 이동한다', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.topic-ribbon').getByRole('link', { name: 'AI 에이전트', exact: true }).click();
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(50);
+  await page.getByRole('searchbox', { name: '질문 검색' }).fill('MCP');
+  const matching = content.filter((entry) => entry.category === 'AI 에이전트' && `${entry.title} ${entry.category} ${entry.tags.join(' ')}`.toLowerCase().includes('mcp'));
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(matching.length);
+  await page.goto('questions/agent-mcp-roles/');
+  await page.locator('summary').click();
+  await expect(page.locator('.spoken-answer')).toContainText('2026-07-28');
+  await expect(page.locator('.related-card .followup-prompt')).toHaveCount(3);
+  await page.locator('.related-card').first().click();
+  await expect(page).toHaveURL(/\/questions\/agent-mcp-primitives\/$/);
+  await expect(page.locator('#answer')).not.toHaveAttribute('open', '');
+});
+
 test('저장소 접근이 차단돼도 화면과 테마 전환이 동작한다', async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(window, 'localStorage', { get() { throw new Error('storage blocked'); } }));
   const errors: string[] = [];

@@ -23,9 +23,10 @@ test('all rendered prose resolves emphasis without changing code literals', asyn
 });
 test('enriched answers keep followup context and readable Markdown structure', async () => {
   const { questions } = await import(loader);
-  assert.equal(questions.length, 300);
+  assert.equal(questions.length, 350);
+  assert.equal(questions.filter(({ category }) => category === 'AI 에이전트').length, 50);
   assert.ok(questions.every(({ answerMinutes }) => answerMinutes === 5));
-  assert.equal(questions.reduce((count, { followups }) => count + followups.length, 0), 900);
+  assert.equal(questions.reduce((count, { followups }) => count + followups.length, 0), questions.length * 3);
   for (const question of questions.filter(({ answerMinutes }) => answerMinutes === 5)) {
     assert.equal(question.followups.length, 3, `${question.id}: three contextual followups`);
     const markdown = fs.readFileSync(path.join('questions', `${question.id}.md`), 'utf8');
