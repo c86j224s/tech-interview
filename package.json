@@ -9,7 +9,7 @@
     "build": "npm run validate && astro build",
     "preview": "astro preview --host 127.0.0.1",
     "test": "npm run test:content && playwright test",
-    "test:content": "node --test tests/content.test.mjs",
+    "test:content": "node --test tests/*.test.mjs",
     "deploy": "npm run build && node scripts/deploy.mjs"
   },
   "engines": {

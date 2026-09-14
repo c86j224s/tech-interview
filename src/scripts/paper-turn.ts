@@ -1,3 +1,5 @@
+import { createQuestionDeck } from '../lib/random-questions.mjs';
+
 type Point = { x: number; y: number };
 type Route = { id: string; url: string };
 
@@ -69,20 +71,27 @@ function animateSheet(surface: HTMLElement, swap: () => void): Promise<void> {
 }
 
 const routes: Route[] = JSON.parse(document.getElementById('question-routes')?.textContent || '[]');
+let storage: Storage | undefined;
+try { storage = window.sessionStorage; } catch {}
+const deck = createQuestionDeck(routes.map(({ id }) => id), storage);
+deck.visit(document.body.dataset.currentId);
 let busy = false;
 let swapped = false;
 
 // Delegate so the replacement page's random button works without running its scripts again.
 document.addEventListener('click', async (event) => {
-  const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-random]') : null;
-  if (!button || busy) return;
-  const candidates = routes.filter((route) => route.id !== document.body.dataset.currentId);
-  if (!candidates.length) return;
-  const next = candidates[Math.floor(Math.random() * candidates.length)];
+  const button = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-random]') : null;
+  if (!button) return;
+  if (button instanceof HTMLAnchorElement && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return;
+  event.preventDefault();
+  if (busy) return;
+  const nextId = deck.next(document.body.dataset.currentId);
+  const next = routes.find(({ id }) => id === nextId);
+  if (!next) return;
+  busy = true;
   const surface = document.querySelector<HTMLElement>('.practice-layout');
   if (!surface || matchMedia('(prefers-reduced-motion: reduce)').matches) { location.assign(next.url); return; }
-  busy = true;
-  button.disabled = true;
+  if (button instanceof HTMLButtonElement) button.disabled = true;
   button.setAttribute('aria-busy', 'true');
   const main = document.querySelector<HTMLElement>('main')!;
   try {
@@ -113,9 +122,10 @@ document.addEventListener('click', async (event) => {
   } finally {
     main.inert = false;
     busy = false;
-    button.disabled = false;
+    if (button instanceof HTMLButtonElement) button.disabled = false;
     button.removeAttribute('aria-busy');
   }
 });
 
 window.addEventListener('popstate', () => { if (swapped) location.reload(); });
+window.addEventListener('pageshow', (event) => { if (event.persisted) location.reload(); });

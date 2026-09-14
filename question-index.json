@@ -208,6 +208,54 @@
     "question": "고객 문의를 분류하고 필요한 정보를 조회해 답하려 합니다. 고정 워크플로와 AI 에이전트를 어떤 기준으로 나누나요?"
   },
   {
+    "id": "algorithm-bloom-deletion-counting",
+    "question": "블룸 필터에서 삭제할 키의 비트를 지우면 왜 다른 키도 없다고 나올 수 있나요?"
+  },
+  {
+    "id": "algorithm-dijkstra-negative-edge",
+    "question": "최단 경로에 음수 간선이 있습니다. Dijkstra에 같은 우선순위 큐를 쓰면 왜 보장이 깨지나요?"
+  },
+  {
+    "id": "algorithm-fisher-yates-shuffle",
+    "question": "질문 목록을 매번 중복 없이 무작위로 보여 주려 합니다. Fisher–Yates 셔플과 매번 독립 추첨은 무엇이 다른가요?"
+  },
+  {
+    "id": "algorithm-monotonic-stack",
+    "question": "각 원소보다 오른쪽에 있는 첫 큰 값을 찾으려 합니다. 단조 스택은 어떻게 중복 탐색을 줄이나요?"
+  },
+  {
+    "id": "algorithm-prefix-sum-fenwick",
+    "question": "배열의 값이 자주 바뀌고 구간 합도 반복 조회합니다. prefix sum과 Fenwick tree는 어떻게 선택하나요?"
+  },
+  {
+    "id": "algorithm-random-modulo-bias",
+    "question": "32비트 난수에 나머지 연산을 해서 500개 중 하나를 고르면 항상 균등한가요?"
+  },
+  {
+    "id": "algorithm-reservoir-sampling",
+    "question": "전체 길이를 모르는 스트림에서 K개를 균등하게 뽑으려 합니다. 모든 항목을 저장하지 않고 어떻게 하나요?"
+  },
+  {
+    "id": "algorithm-segment-tree-lazy",
+    "question": "구간 전체에 값을 더하고 구간 합을 조회합니다. segment tree의 lazy propagation은 무엇을 미루나요?"
+  },
+  {
+    "id": "algorithm-sliding-window-deque",
+    "question": "길이 K의 이동 구간 최댓값을 매번 정렬하지 않고 구하려 합니다. deque에는 무엇을 남기나요?"
+  },
+  {
+    "id": "algorithm-topological-cycle",
+    "question": "배포 작업의 의존 순서를 위상 정렬했는데 일부 작업이 남습니다. 순환과 여러 유효 순서는 어떻게 다루나요?"
+  },
+  {
+    "id": "algorithm-trie-prefix-memory",
+    "question": "자동완성 접두 검색을 위해 trie를 쓰려 합니다. 해시 테이블·정렬 배열과 메모리 비용을 어떻게 비교하나요?"
+  },
+  {
+    "id": "algorithm-weighted-sampling",
+    "question": "어려운 질문을 더 자주 출제하려 합니다. 가중 무작위 추출은 균등 셔플과 어떻게 다르며 중복 정책은 어떻게 정하나요?"
+  },
+  {
     "id": "aoi-interest-management",
     "question": "넓은 게임 월드에서 각 플레이어에게 주변 상태만 보내려 합니다. 누구의 정보를 보낼지와 경계에서 나타났다 사라지는 문제를 어떻게 처리하나요?"
   },
@@ -300,12 +348,28 @@
     "question": "같은 값 찾기와 기간 조회가 모두 필요한 컬럼에 B+tree와 해시 인덱스 중 무엇을 선택하나요?"
   },
   {
+    "id": "build-dependency-lockfiles",
+    "question": "패키지 버전을 package.json에 적었는데 팀원마다 다른 의존성이 설치됩니다. lockfile은 무엇을 고정하나요?"
+  },
+  {
     "id": "bulkhead-isolation",
     "question": "추천 API가 느려졌는데 로그인도 함께 지연됩니다. 공유 워커나 연결 풀이 원인이라면 어떻게 격리하나요?"
   },
   {
+    "id": "cache-admission-vs-eviction",
+    "question": "LRU를 바꿔도 대량 일회성 조회가 캐시를 오염시킵니다. admission과 eviction은 무엇이 다른가요?"
+  },
+  {
     "id": "cache-aside-consistency",
     "question": "데이터베이스를 수정한 뒤 캐시를 삭제하면 오래된 값이 다시 캐시에 들어갈 가능성은 없나요?"
+  },
+  {
+    "id": "cache-negative-results",
+    "question": "없는 상품 조회를 캐시하면 DB 부하가 줄지만 새 상품이 늦게 보입니다. 음성 캐시의 수명과 실패 분류는 어떻게 정하나요?"
+  },
+  {
+    "id": "cache-stale-while-revalidate",
+    "question": "캐시가 만료돼도 옛 값을 먼저 주고 뒤에서 갱신하려 합니다. stale-while-revalidate는 어떤 데이터에 적합한가요?"
   },
   {
     "id": "cache-stampede-singleflight",
@@ -360,6 +424,14 @@
     "question": "좋아요 수는 잠깐 늦게 보여도 되지만 마지막 좌석을 두 사람에게 판매해서는 안 됩니다. 두 기능에 필요한 일관성을 어떤 기준으로 나누겠습니까?"
   },
   {
+    "id": "consistent-hash-virtual-nodes",
+    "question": "일관된 해싱으로 노드를 추가했는데 부하가 고르지 않습니다. 가상 노드는 무엇을 개선하고 핫키는 왜 남나요?"
+  },
+  {
+    "id": "container-image-reproducibility",
+    "question": "같은 Dockerfile로 빌드했는데 며칠 뒤 이미지 내용이 달라집니다. 재현 가능한 빌드는 어떻게 만드나요?"
+  },
+  {
     "id": "context-switch-overhead",
     "question": "서버의 컨텍스트 스위치 횟수가 늘었습니다. 정상적인 I/O 대기인지 과도한 스레드 경쟁인지 구분하려면 어떤 지표를 함께 봐야 하나요?"
   },
@@ -384,8 +456,20 @@
     "question": "C++ 코루틴이 비동기 I/O를 기다리는 동안 호출자가 종료됩니다. 나중에 코루틴이 재개될 때 참조하던 객체와 버퍼가 유효하도록 수명을 어떻게 관리하나요?"
   },
   {
+    "id": "cpp-iterator-invalidation",
+    "question": "C++ vector의 원소 포인터를 보관한 뒤 push_back을 했습니다. 언제 포인터와 iterator가 무효화되나요?"
+  },
+  {
     "id": "cpp-move-semantics",
     "question": "C++에서 복사를 줄이려고 std::move를 붙였습니다. 어떤 경우에는 여전히 복사되며, 이동 뒤 원본은 어떻게 다뤄야 하나요?"
+  },
+  {
+    "id": "cpp-noexcept-move-container",
+    "question": "C++ 타입에 이동 생성자가 있는데 vector 확장 시 복사가 일어납니다. noexcept는 어떤 선택에 영향을 주나요?"
+  },
+  {
+    "id": "cpp-object-lifetime-aliasing",
+    "question": "C++에서 바이트 버퍼를 구조체 포인터로 캐스팅해 읽으려 합니다. 크기만 맞으면 안전한가요?"
   },
   {
     "id": "cpp-raii-exception-safety",
@@ -396,12 +480,20 @@
     "question": "C++ 비동기 콜백에 shared_ptr를 복사해 넘겼습니다. 객체 수명과 여러 스레드의 필드 수정이 모두 안전해지나요?"
   },
   {
+    "id": "cpp-weak-pointer-cycle",
+    "question": "shared_ptr로 연결한 부모와 자식이 해제되지 않습니다. weak_ptr로 바꿀 참조는 어떻게 정하나요?"
+  },
+  {
     "id": "cpu-cache-false-sharing",
     "question": "두 스레드가 서로 다른 카운터만 수정하는데 함께 실행하면 느려집니다. 데이터 경합이 없어도 이런 일이 생길 수 있으며, 어떻게 확인하고 줄이나요?"
   },
   {
     "id": "cpu-scheduling-policies",
     "question": "긴 계산 작업과 짧은 대화형 요청이 CPU를 함께 씁니다. FCFS, SJF, Round Robin은 대기 시간을 어떻게 바꾸나요?"
+  },
+  {
+    "id": "cqrs-read-write-models",
+    "question": "읽기 성능을 위해 CQRS를 도입하려 합니다. 읽기·쓰기 모델을 나누면 데이터베이스와 서비스도 반드시 분리해야 하나요?"
   },
   {
     "id": "csrf-vs-xss",
@@ -416,12 +508,68 @@
     "question": "같은 폼과 목록이 브라우저마다 다르게 보입니다. 기본 스타일을 초기화하는 reset과 차이를 보정하는 normalize 중 무엇을 선택하고, 접근성은 어떻게 확인하나요?"
   },
   {
+    "id": "db-backup-point-in-time",
+    "question": "백업 뒤 실수로 데이터를 삭제했습니다. 삭제 직전 시점 복구에는 전체 백업 외에 무엇이 필요한가요?"
+  },
+  {
+    "id": "db-cdc-log-retention",
+    "question": "CDC 소비자가 멈춘 뒤 DB의 로그 디스크가 계속 늘어납니다. 변경 로그와 소비 위치는 어떻게 관리하나요?"
+  },
+  {
+    "id": "db-composite-unique-partition",
+    "question": "날짜 파티션 테이블에서 주문 ID를 전역 유일하게 만들려 합니다. 파티션별 고유 인덱스만으로 충분한가요?"
+  },
+  {
+    "id": "db-connection-session-state",
+    "question": "연결 풀에서 이전 요청의 시간대나 임시 설정이 다음 요청에 남습니다. 연결 반환 때 무엇을 초기화해야 하나요?"
+  },
+  {
+    "id": "db-covering-index-visibility",
+    "question": "조회 컬럼을 모두 인덱스에 넣었는데도 테이블 접근이 남습니다. covering index와 index-only scan은 왜 같지 않을 수 있나요?"
+  },
+  {
+    "id": "db-exists-vs-join",
+    "question": "구매 이력이 있는 회원만 조회하려고 주문과 JOIN했더니 회원이 여러 번 나옵니다. EXISTS는 어떤 차이가 있나요?"
+  },
+  {
+    "id": "db-expression-index-sargability",
+    "question": "날짜 컬럼에 함수를 적용해 오늘 주문을 찾았더니 인덱스를 잘 못 씁니다. 조건을 어떻게 바꾸고 함수 인덱스는 언제 쓰나요?"
+  },
+  {
+    "id": "db-foreign-key-delete-policy",
+    "question": "회원 삭제 때 주문까지 CASCADE로 지우자는 제안이 나왔습니다. 외래키 삭제 정책은 무엇을 기준으로 정하나요?"
+  },
+  {
+    "id": "db-index-online-build",
+    "question": "운영 테이블에 온라인 인덱스를 추가하려 합니다. online이면 잠금과 서비스 영향이 전혀 없나요?"
+  },
+  {
+    "id": "db-isolation-write-skew",
+    "question": "스냅샷 격리에서 두 당직자가 각각 다른 행을 퇴근 상태로 바꿨더니 당직자가 없어졌습니다. 같은 행 충돌이 없어도 어떻게 규칙이 깨지나요?"
+  },
+  {
+    "id": "db-json-schema-evolution",
+    "question": "JSON 컬럼에 새 필드를 넣으면 스키마 변경 없이 배포할 수 있나요? 읽기·인덱스·검증은 어떻게 유지하나요?"
+  },
+  {
+    "id": "db-keyset-deletion-snapshot",
+    "question": "키셋 페이지를 읽는 중 행이 삭제되거나 정렬 키가 바뀝니다. 중복 없는 페이지와 고정된 전체 결과는 같은 보장인가요?"
+  },
+  {
     "id": "db-keyset-pagination",
     "question": "주문 목록에서 OFFSET으로 뒤 페이지를 열수록 느려집니다. 마지막 주문의 시각과 ID를 커서로 쓰면 어떻게 달라지나요?"
   },
   {
+    "id": "db-large-transaction-batching",
+    "question": "수백만 행을 한 번에 갱신하니 로그와 복제 지연이 커집니다. 배치로 나눌 때 어떤 정확성 조건이 달라지나요?"
+  },
+  {
     "id": "db-lock-escalation",
     "question": "UPDATE로 바뀐 행은 몇 개뿐인데 다른 요청이 오래 기다립니다. 실제 잠금 범위와 보유 시간을 어떻게 확인하나요?"
+  },
+  {
+    "id": "db-materialized-view-refresh",
+    "question": "대시보드 조회를 materialized view로 바꾸려 합니다. 일반 view와 갱신·최신성·비용이 어떻게 다른가요?"
   },
   {
     "id": "db-mvcc-snapshot",
@@ -432,12 +580,40 @@
     "question": "주문 목록을 한 번 조회한 뒤 각 주문의 고객 정보를 따로 읽어 쿼리 수가 늘어납니다. N+1 조회를 어떻게 줄이고, JOIN으로 바꿀 때는 어떤 비용을 확인하나요?"
   },
   {
+    "id": "db-null-three-valued-logic",
+    "question": "SQL에서 NULL이 있는 목록에 NOT IN을 쓰자 예상한 행이 나오지 않습니다. NULL과 비교는 어떻게 동작하나요?"
+  },
+  {
     "id": "db-online-schema-migration",
     "question": "운영 중인 DB의 문자열 상태를 새 코드 컬럼으로 옮기려 합니다. 구버전 서버가 남아 있고 쓰기가 계속될 때 어떻게 전환하나요?"
   },
   {
+    "id": "db-optimistic-version-column",
+    "question": "여러 사용자가 같은 문서를 편집합니다. updated_at 대신 증가하는 version으로 충돌을 검사하면 무엇이 달라지나요?"
+  },
+  {
+    "id": "db-outbox-polling-cdc",
+    "question": "outbox를 발행할 때 테이블 polling과 CDC 중 무엇을 선택하고, 둘 다 필요한 중복 처리는 무엇인가요?"
+  },
+  {
+    "id": "db-partial-index-predicate",
+    "question": "대부분 완료된 작업 테이블에서 대기 중인 작업만 자주 찾습니다. 부분 인덱스를 쓰려면 어떤 조건을 확인하나요?"
+  },
+  {
+    "id": "db-partition-pruning",
+    "question": "날짜별로 테이블을 파티셔닝했는데 최근 하루 조회가 여전히 느립니다. partition pruning과 인덱스는 어떤 관계인가요?"
+  },
+  {
     "id": "db-pool-long-transactions",
     "question": "DB 연결 풀 대기는 늘고 쿼리는 짧을 때, 풀을 키우기 전에 어떤 연결 보유 경로와 트랜잭션을 확인하나요?"
+  },
+  {
+    "id": "db-postgres-vacuum",
+    "question": "PostgreSQL에서 DELETE를 많이 했는데 파일 크기가 줄지 않고 조회도 느려집니다. VACUUM은 무엇을 정리하나요?"
+  },
+  {
+    "id": "db-query-cancellation-state",
+    "question": "클라이언트가 DB 쿼리 timeout을 받았습니다. 쿼리와 트랜잭션은 이미 취소됐으며 연결을 바로 재사용해도 되나요?"
   },
   {
     "id": "db-query-plan-regression",
@@ -448,12 +624,44 @@
     "question": "프로필 저장은 성공했는데 새로고침하면 옛값이 보입니다. 읽기 복제본의 지연을 어떻게 확인하고 방지하나요?"
   },
   {
+    "id": "db-read-your-writes-token",
+    "question": "쓰기 뒤 읽기 복제본에서 본인 변경을 보장하려고 로그 위치를 전달합니다. 어떤 위치를 비교하고 장애 때 어떻게 처리하나요?"
+  },
+  {
+    "id": "db-select-for-update",
+    "question": "재고를 읽은 뒤 차감할 때 SELECT FOR UPDATE를 쓰면 어떤 경쟁이 줄고 어떤 문제는 남나요?"
+  },
+  {
+    "id": "db-serializable-retry",
+    "question": "직렬화 격리를 켠 뒤 일부 트랜잭션이 실패합니다. 쿼리 하나만 다시 실행하면 되나요?"
+  },
+  {
+    "id": "db-skip-locked-queue",
+    "question": "여러 워커가 DB 작업 테이블을 읽을 때 SKIP LOCKED로 나누면 중복 실행과 기아도 해결되나요?"
+  },
+  {
+    "id": "db-statistics-correlation",
+    "question": "도시와 우편번호 조건을 함께 넣으면 실제 행 수와 추정 행 수가 크게 다릅니다. 컬럼별 통계만으로 왜 부족할 수 있나요?"
+  },
+  {
+    "id": "db-two-phase-commit",
+    "question": "두 DB에 함께 반영해야 해서 2PC를 검토합니다. prepare와 commit 사이에 조정자가 죽으면 무엇이 남나요?"
+  },
+  {
     "id": "db-unique-constraint-race",
     "question": "두 사용자가 같은 계정명을 동시에 가입할 때 사전 중복 조회가 모두 통과하는 이유와 DB 고유 제약 처리 방법은 무엇인가요?"
   },
   {
+    "id": "db-upsert-conflict-semantics",
+    "question": "가입과 프로필 갱신을 UPSERT 하나로 합치려 합니다. 고유 충돌이 나면 기존 행을 바꾸는 것이 항상 안전한가요?"
+  },
+  {
     "id": "db-wal-durability",
     "question": "DB가 커밋 성공을 응답한 직후 서버 전원이 꺼졌습니다. 데이터 페이지가 아직 디스크에 쓰이지 않았어도 복구할 수 있는 이유와 필요한 설정은 무엇인가요?"
+  },
+  {
+    "id": "db-window-function-ranking",
+    "question": "부서별 상위 세 명을 구하는데 동점자를 포함할지에 따라 결과 수가 달라집니다. ROW_NUMBER·RANK·DENSE_RANK는 어떻게 고르나요?"
   },
   {
     "id": "dbms-vs-files",
@@ -488,8 +696,28 @@
     "question": "두 서버의 이벤트를 timestamp로 정렬했더니 나중에 일어난 변경이 먼저 보입니다. 서버 시각만으로 변경 적용 순서를 정해도 되나요?"
   },
   {
+    "id": "distributed-crdt-counter",
+    "question": "분할된 두 지역에서 카운터를 증가시키고 나중에 합치려 합니다. 값을 그냥 더하면 왜 중복될 수 있나요?"
+  },
+  {
+    "id": "distributed-leader-lease",
+    "question": "리더가 lease를 얻었으니 만료 전에는 혼자 쓰는 것이 보장되나요?"
+  },
+  {
     "id": "distributed-lock-fencing",
     "question": "분산 락을 얻은 워커가 오래 멈췄다가 락 만료 후 다시 실행됐습니다. 새 소유자와 동시에 쓰는 일을 어떻게 막나요?"
+  },
+  {
+    "id": "distributed-lww-clock-skew",
+    "question": "여러 지역의 문서 충돌을 가장 큰 timestamp로 해결합니다. last-write-wins는 어떤 변경을 잃을 수 있나요?"
+  },
+  {
+    "id": "distributed-quorum-read-repair",
+    "question": "복제본 N개에서 R개를 읽고 W개를 쓰면 R+W>N이므로 항상 최신 값을 읽나요?"
+  },
+  {
+    "id": "distributed-snowflake-id",
+    "question": "시간·노드 ID·순번으로 분산 ID를 만듭니다. 시계가 뒤로 가거나 노드 ID가 중복되면 어떻게 되나요?"
   },
   {
     "id": "distributed-tracing-boundaries",
@@ -498,6 +726,14 @@
   {
     "id": "dns-cache-failover",
     "question": "DNS를 새 서버 주소로 바꿨는데 일부 클라이언트는 계속 이전 서버에 접속합니다. 왜 그렇고 언제 이전 서버를 내려도 되나요?"
+  },
+  {
+    "id": "dns-happy-eyeballs",
+    "question": "IPv6 주소가 있지만 해당 경로가 느려 HTTPS 접속이 지연됩니다. Happy Eyeballs는 무엇을 병렬화하나요?"
+  },
+  {
+    "id": "dns-negative-caching",
+    "question": "새 도메인 레코드를 만들었는데 일부 클라이언트는 계속 없다고 합니다. DNS의 음성 캐시는 어떻게 작동하나요?"
   },
   {
     "id": "dom-event-delegation",
@@ -524,8 +760,24 @@
     "question": "검색용 데이터에 정확한 ID 조회와 본문 검색이 함께 있습니다. Elasticsearch의 mapping과 shard 수를 어떻게 정해야 하나요?"
   },
   {
+    "id": "event-sourcing-replay",
+    "question": "상태 대신 이벤트를 저장하면 모든 과거를 재생해 쉽게 복구할 수 있나요?"
+  },
+  {
+    "id": "event-time-watermark",
+    "question": "실시간 집계에서 늦게 도착한 이벤트를 어디까지 기다릴까요? event time·processing time·watermark는 무엇이 다른가요?"
+  },
+  {
     "id": "feature-flag-rollout",
     "question": "기능 플래그로 새 코드 일부를 켰다가 오류가 나서 껐습니다. 이미 바뀐 데이터도 원래대로 돌아가며, 안전한 롤백에는 무엇이 필요한가요?"
+  },
+  {
+    "id": "file-atomic-replace",
+    "question": "설정 파일을 저장하는 중 프로세스가 꺼져 반쪽 파일이 남습니다. 임시 파일과 원자 교체는 어떻게 사용하나요?"
+  },
+  {
+    "id": "file-checksum-integrity",
+    "question": "파일에 checksum이 맞으면 출처와 안전성도 신뢰할 수 있나요?"
   },
   {
     "id": "fixed-timestep-catchup",
@@ -556,12 +808,36 @@
     "question": "여러 고루틴이 하나의 채널로 결과를 보냅니다. 수신자가 먼저 종료할 때 채널을 닫아도 되며, close는 누가 해야 하나요?"
   },
   {
+    "id": "go-context-values",
+    "question": "Go context에 사용자와 설정을 모두 넣으면 함수 인자를 줄일 수 있나요?"
+  },
+  {
+    "id": "go-defer-loop-lifetime",
+    "question": "Go 반복문에서 파일을 열고 defer Close를 했더니 열린 파일이 계속 늘어납니다. defer는 언제 실행되나요?"
+  },
+  {
+    "id": "go-errgroup-limit",
+    "question": "Go에서 여러 API를 errgroup으로 호출합니다. 첫 오류가 나면 남은 작업과 큐·동시성은 어떻게 되나요?"
+  },
+  {
     "id": "go-gc-latency-tradeoff",
     "question": "Go 서버의 지연이 튀는 시점에 GC도 자주 실행됩니다. GC가 원인인지 확인하고 메모리와 지연을 어떻게 조정하나요?"
   },
   {
+    "id": "go-interface-comparability",
+    "question": "Go interface 두 값을 ==로 비교했더니 일부 입력에서 panic이 납니다. 어떤 동적 타입이 비교 가능한가요?"
+  },
+  {
     "id": "go-interface-typed-nil",
     "question": "Go에서 nil인 포인터를 error 변수에 넣었는데, 왜 err == nil은 false가 되나요?"
+  },
+  {
+    "id": "go-map-concurrent-access",
+    "question": "Go map을 여러 고루틴이 읽고 일부가 갱신합니다. 키가 다르면 잠금 없이 사용해도 되나요?"
+  },
+  {
+    "id": "go-select-cancellation",
+    "question": "Go select에서 취소 채널과 작업 채널이 동시에 준비되면 취소가 항상 먼저 선택되나요?"
   },
   {
     "id": "go-slice-backing-array",
@@ -604,20 +880,76 @@
     "question": "우선순위가 있는 작업을 계속 추가하면서 가장 작은 값의 작업부터 꺼내려 합니다. 힙과 정렬된 배열의 삽입·조회·삭제 비용을 어떻게 비교하나요?"
   },
   {
+    "id": "hedged-requests-tail",
+    "question": "느린 조회를 줄이려고 잠시 뒤 같은 요청을 다른 서버에도 보냅니다. hedged request는 언제 유리하고 무엇이 위험한가요?"
+  },
+  {
     "id": "http-cache-validation",
     "question": "개인정보가 포함된 HTTP 응답을 캐시하면서 최신 여부도 확인하려면 Cache-Control, ETag, 304를 어떻게 조합하나요?"
+  },
+  {
+    "id": "http-cache-vary",
+    "question": "언어와 로그인 상태에 따라 응답이 다른데 CDN에서 다른 사용자의 화면이 보입니다. 캐시 키와 Vary는 어떻게 확인하나요?"
   },
   {
     "id": "http-connection-pool",
     "question": "외부 HTTP 호출에서 연결 풀 대기가 늘었습니다. 연결 수를 늘려도 되는 경우와 오히려 줄여야 하는 경우는 어떻게 구분하나요?"
   },
   {
+    "id": "http-content-negotiation",
+    "question": "같은 URL이 JSON과 HTML을 반환합니다. Accept와 Content-Type은 어떤 방향의 정보를 표현하나요?"
+  },
+  {
+    "id": "http-cookies-samesite",
+    "question": "SameSite 쿠키를 설정하면 CSRF가 모두 막히나요? same-site와 same-origin은 어떻게 다른가요?"
+  },
+  {
     "id": "http-get-post-semantics",
     "question": "검색과 등록 API의 HTTP 메서드를 정하려 합니다. GET과 POST의 의미는 어떻게 다르며, 민감한 값을 POST 본문에 넣는 것만으로 보호할 수 있나요?"
   },
   {
+    "id": "http-host-header-validation",
+    "question": "요청의 Host 헤더로 비밀번호 재설정 링크를 만들고 있습니다. 어떤 검증이 필요한가요?"
+  },
+  {
+    "id": "http-if-match-updates",
+    "question": "두 사용자가 같은 HTTP 자원을 수정합니다. ETag와 If-Match는 낡은 덮어쓰기를 어떻게 막나요?"
+  },
+  {
+    "id": "http-proxy-buffering-stream",
+    "question": "서버는 토큰을 조금씩 보내는데 브라우저에는 한꺼번에 표시됩니다. 스트리밍 지연은 어디에서 생기나요?"
+  },
+  {
+    "id": "http-proxy-forwarded-trust",
+    "question": "프록시 뒤 서비스가 X-Forwarded-For로 사용자 IP를 판단합니다. 클라이언트가 헤더를 직접 넣으면 어떻게 되나요?"
+  },
+  {
+    "id": "http-range-resume-download",
+    "question": "큰 파일 다운로드를 중간부터 재개하려 합니다. Range만 보내면 이전 파일과 새 파일의 바이트가 섞이지 않나요?"
+  },
+  {
+    "id": "http-request-smuggling-boundary",
+    "question": "프록시와 앱 서버가 같은 HTTP 요청을 다르게 해석하면 어떤 문제가 생기며 어떻게 방어하나요?"
+  },
+  {
+    "id": "http-sse-vs-websocket",
+    "question": "서버 진행 알림을 브라우저로 보내려 합니다. SSE와 WebSocket을 어떤 통신 요구로 선택하나요?"
+  },
+  {
+    "id": "http-status-retry-policy",
+    "question": "HTTP 429·503·504가 오면 모두 같은 방식으로 재시도해도 되나요?"
+  },
+  {
     "id": "http2-head-of-line-blocking",
     "question": "HTTP/2로 여러 요청을 한 TCP 연결에서 동시에 보냅니다. 패킷 하나가 유실됐을 때 왜 다른 요청까지 지연될 수 있나요?"
+  },
+  {
+    "id": "http3-quic-streams",
+    "question": "HTTP/3는 TCP의 head-of-line blocking을 줄인다고 합니다. 패킷 유실이 다른 요청에 전혀 영향을 주지 않나요?"
+  },
+  {
+    "id": "identifier-uuid-ulid",
+    "question": "UUID나 ULID를 쓰면 ID 충돌과 시간순 정렬, 중복 요청 처리가 모두 해결되나요?"
   },
   {
     "id": "immutable-data-sharing",
@@ -700,6 +1032,18 @@
     "question": "Integer 비교가 작은 수에서는 맞아 보이는데 null에서는 예외가 납니다. boxing·unboxing과 ==의 비교 대상을 구분해 보세요."
   },
   {
+    "id": "java-classloader-leak",
+    "question": "Java 앱을 반복 재배포할수록 메타스페이스가 늘어납니다. 클래스 로더는 어떤 참조 때문에 회수되지 않을 수 있나요?"
+  },
+  {
+    "id": "java-completablefuture-executor",
+    "question": "CompletableFuture 체인에서 느린 I/O를 실행하자 다른 비동기 작업도 지연됩니다. executor와 실행 스레드는 어떻게 정해지나요?"
+  },
+  {
+    "id": "java-concurrenthashmap-compound",
+    "question": "ConcurrentHashMap에서 get 후 값이 없으면 put합니다. 스레드 안전한 map인데 중복 생성은 왜 생기나요?"
+  },
+  {
     "id": "java-equals-hashcode",
     "question": "객체의 필드를 바꾼 뒤 HashSet에서 그 객체를 찾지 못합니다. equals와 hashCode의 계약과 가변 키의 문제를 설명해 보세요."
   },
@@ -716,6 +1060,10 @@
     "question": "List<String>의 원소 타입을 실행 중에도 검사할 수 있나요? Java 제네릭의 컴파일 검사와 타입 소거가 만드는 한계를 설명해 보세요."
   },
   {
+    "id": "java-interrupt-cooperation",
+    "question": "Java 스레드에 interrupt를 보냈는데 계속 실행됩니다. interrupt는 강제 종료와 어떻게 다른가요?"
+  },
+  {
     "id": "java-overload-override",
     "question": "선언 타입은 A지만 실제 객체는 B일 때, 오버로딩과 오버라이딩은 메서드를 각각 언제 결정하나요?"
   },
@@ -726,6 +1074,10 @@
   {
     "id": "java-threadlocal-pool",
     "question": "요청별 사용자 정보를 ThreadLocal에 넣은 뒤 스레드 풀에서 다음 요청이 잘못된 사용자를 봅니다. 재사용 스레드와 remove의 관계는 무엇인가요?"
+  },
+  {
+    "id": "java-virtual-threads-blocking",
+    "question": "Java의 가상 스레드를 쓰면 DB 연결을 기다리는 요청을 무제한 받아도 되나요?"
   },
   {
     "id": "jetstream-ack-redelivery",
@@ -748,6 +1100,10 @@
     "question": "균일 비용의 격자에서 A*가 비슷한 경로를 많이 탐색합니다. JPS는 어떤 중간 탐색을 줄이며 어디에서 멈춰야 하나요?"
   },
   {
+    "id": "js-abortcontroller-lifetime",
+    "question": "fetch를 AbortController로 취소하면 서버의 주문 생성도 취소되나요?"
+  },
+  {
     "id": "js-arrow-this",
     "question": "객체 메서드 안에서 만든 화살표 함수와 일반 함수의 this가 서로 다른 값을 가리키는 이유는 무엇인가요?"
   },
@@ -764,12 +1120,24 @@
     "question": "폼에서 받은 문자열 금액을 숫자와 비교했더니 빈 문자열도 0과 같다고 나옵니다. ==와 ===는 어떻게 다르며 입력을 어떤 순서로 검증하나요?"
   },
   {
+    "id": "js-event-listener-cleanup",
+    "question": "SPA 화면을 오갈수록 이벤트가 여러 번 실행되고 메모리가 늘어납니다. listener와 closure 수명은 어떻게 관리하나요?"
+  },
+  {
     "id": "js-event-loop-microtasks",
     "question": "한 JavaScript 실행 흐름에서 동기 로그, 이미 이행된 Promise의 콜백, 지연 0인 setTimeout을 등록했습니다. 왜 등록 순서와 실행 순서가 다를 수 있나요?"
   },
   {
     "id": "js-hoisting-tdz",
     "question": "함수 안에서 선언문보다 먼저 변수를 읽었더니 var는 undefined이고 let·const는 ReferenceError입니다. 변수의 생성과 초기화 시점은 어떻게 다른가요?"
+  },
+  {
+    "id": "js-module-cycle-initialization",
+    "question": "JavaScript 모듈을 나눴더니 순환 import에서 초기화 오류가 납니다. 모듈의 바인딩과 실행 순서는 어떻게 보나요?"
+  },
+  {
+    "id": "js-number-bigint-precision",
+    "question": "큰 주문 ID를 JavaScript Number로 읽었더니 다른 ID와 같아집니다. 안전한 정수와 BigInt·문자열은 어떻게 선택하나요?"
   },
   {
     "id": "js-object-copy",
@@ -784,8 +1152,16 @@
     "question": "객체에 직접 값을 넣었다가 삭제했는데 같은 이름의 값이 여전히 조회됩니다. 프로토타입을 따라 찾는 과정과 class 메서드의 저장 위치를 설명해 보세요."
   },
   {
+    "id": "js-prototype-pollution",
+    "question": "외부 JSON을 설정 객체에 재귀 병합합니다. 단순 속성 복사가 prototype 오염으로 이어질 수 있나요?"
+  },
+  {
     "id": "js-this-binding",
     "question": "객체 메서드를 변수에 담아 호출했더니 this가 달라집니다. strict 환경에서 왜 실패하며 어떻게 고정하나요?"
+  },
+  {
+    "id": "js-web-worker-transfer",
+    "question": "브라우저의 큰 계산을 Web Worker로 옮깁니다. 객체 전달과 ArrayBuffer transfer는 비용·소유권이 어떻게 다른가요?"
   },
   {
     "id": "jvm-bytecode-jit",
@@ -796,8 +1172,28 @@
     "question": "여러 서비스에서 로그인 상태를 확인하고 강제 로그아웃도 지원하려 합니다. JWT와 서버 세션은 어떤 기준으로 선택하나요?"
   },
   {
+    "id": "k8s-configmap-reload",
+    "question": "ConfigMap을 수정했는데 앱 설정이 그대로입니다. 환경 변수·볼륨 마운트·앱 재로딩은 어떻게 다르나요?"
+  },
+  {
+    "id": "k8s-disruption-grace-budget",
+    "question": "preStop과 앱 drain을 넣었는데 Pod가 정리 전에 강제 종료됩니다. 종료 유예 시간은 어떻게 배분하나요?"
+  },
+  {
+    "id": "k8s-hpa-metric-lag",
+    "question": "HPA가 반응할 때 이미 큐 지연이 커져 있습니다. 지표 지연과 안정화 정책은 어떻게 해석하나요?"
+  },
+  {
     "id": "k8s-hpa-scaling",
     "question": "Kubernetes HPA의 목표 replica 수는 늘었는데 응답 지연이 그대로입니다. 새 Pod의 준비 상태와 실제 병목을 어떻게 확인하나요?"
+  },
+  {
+    "id": "k8s-job-retry-effects",
+    "question": "Kubernetes Job이 실패해 Pod를 다시 실행했습니다. 작업이 한 번만 처리됐다고 볼 수 있나요?"
+  },
+  {
+    "id": "k8s-network-policy",
+    "question": "NetworkPolicy를 만들었는데 Pod의 외부 통신이 계속됩니다. 무엇을 선택하고 어떤 경로를 막는지 어떻게 확인하나요?"
   },
   {
     "id": "k8s-oom-throttling",
@@ -824,6 +1220,10 @@
     "question": "Kubernetes에서 컨테이너에 requests와 limits를 설정합니다. 노드 배치와 CPU·메모리 초과 처리에는 각각 어떻게 쓰이나요?"
   },
   {
+    "id": "k8s-resource-qos-eviction",
+    "question": "노드 메모리가 부족할 때 Pod가 종료됩니다. QoS 등급과 requests·limits는 어떤 관계인가요?"
+  },
+  {
     "id": "k8s-rolling-update-capacity",
     "question": "Pod 4개를 운영하는 Deployment에서 maxSurge=1, maxUnavailable=1로 업데이트하면 실행 중인 Pod 수와 가용성은 어떻게 달라지나요?"
   },
@@ -832,8 +1232,16 @@
     "question": "Kubernetes Service 뒤에 새 Pod가 생겼는데도 이미 열린 HTTP/2 또는 TCP 연결의 요청이 옮겨가지 않는 이유는 무엇인가요?"
   },
   {
+    "id": "k8s-serviceaccount-token",
+    "question": "Pod에 ServiceAccount 토큰이 있습니다. 이를 가진 앱이 클러스터 전체를 관리하게 두어도 되나요?"
+  },
+  {
     "id": "k8s-stateful-storage",
     "question": "StatefulSet의 Pod가 재시작할 때 PVC가 다시 붙는다면 데이터의 복제·일관성·가용성도 보장되나요?"
+  },
+  {
+    "id": "k8s-topology-spread",
+    "question": "Pod 수는 충분한데 한 영역 장애로 대부분 중단됐습니다. topology spread와 anti-affinity는 어떻게 사용하나요?"
   },
   {
     "id": "kafka-acks-isr",
@@ -952,6 +1360,14 @@
     "question": "같은 Kafka partition의 메시지를 순서대로 받았지만 여러 워커가 처리하자 최종 상태가 뒤바뀝니다. 전달 순서와 처리 완료 순서를 어떻게 구분하고 필요한 순서를 보장하나요?"
   },
   {
+    "id": "message-poison-dlq",
+    "question": "특정 메시지가 계속 실패해 큐를 막습니다. DLQ로 옮기면 무엇이 해결되고 어떤 책임이 남나요?"
+  },
+  {
+    "id": "message-schema-evolution",
+    "question": "이벤트 필드를 바꾼 뒤 오래된 메시지를 재생하니 소비자가 실패합니다. 이벤트 스키마는 어떻게 진화시키나요?"
+  },
+  {
     "id": "messaging-tool-choice",
     "question": "서비스 간 메시징을 도입하려는데 실시간 알림, 과거 이벤트 재생, 작업 재시도의 요구가 다릅니다. 어떤 보장과 운영 조건을 기준으로 NATS·Kafka·SQS를 선택하나요?"
   },
@@ -1032,6 +1448,30 @@
     "question": "지상 이동·셀 단위 변경·3차원 구조가 각각 필요할 때 NavMesh·격자·복셀 중 어떤 경로 공간을 선택하나요?"
   },
   {
+    "id": "network-half-close",
+    "question": "TCP에서 상대가 FIN을 보냈습니다. 우리 쪽도 즉시 모든 송신을 중단해야 하나요?"
+  },
+  {
+    "id": "network-load-balancing-l4-l7",
+    "question": "L4 로드밸런서 뒤에서 HTTP/2 요청이 특정 서버에 몰립니다. L7 분산으로 바꾸면 무엇이 달라지나요?"
+  },
+  {
+    "id": "network-mtu-pmtud",
+    "question": "작은 요청은 되는데 큰 TLS 응답에서 연결이 멈춥니다. MTU와 경로 MTU 탐색은 어떻게 의심하나요?"
+  },
+  {
+    "id": "network-nat-port-exhaustion",
+    "question": "아웃바운드 요청이 늘자 일부 연결이 실패하지만 앱의 FD는 여유가 있습니다. NAT 포트 고갈은 어떻게 확인하나요?"
+  },
+  {
+    "id": "network-socket-backlog",
+    "question": "연결 요청이 몰릴 때 listen backlog를 늘리면 서버 처리량도 늘어나나요?"
+  },
+  {
+    "id": "network-tls-mtls-identity",
+    "question": "서비스 간 mTLS를 켜면 API 인가와 테넌트 검사를 생략해도 되나요?"
+  },
+  {
     "id": "normal-forms-partial-transitive",
     "question": "주문 상세에 상품명·수량·고객번호·고객명을 함께 저장해 값이 반복됩니다. 어떤 함수 종속을 확인하고 1NF·2NF·3NF에 맞춰 테이블을 어떻게 나누나요?"
   },
@@ -1048,12 +1488,52 @@
     "question": "OAuth/OIDC 로그인에서 PKCE와 state는 콜백 흐름의 어떤 공격·혼동을 각각 줄이며, 둘만으로 검증이 끝나지 않는 이유는 무엇인가요?"
   },
   {
+    "id": "object-storage-consistency",
+    "question": "객체 저장소 업로드가 성공했는데 CDN과 메타데이터 DB는 다른 버전을 봅니다. 어떤 일관성 경계를 구분하나요?"
+  },
+  {
+    "id": "object-storage-multipart-upload",
+    "question": "큰 파일을 multipart upload로 나눠 보냅니다. 일부 part만 성공하거나 완료 응답을 잃으면 어떻게 복구하나요?"
+  },
+  {
+    "id": "object-storage-presigned-url",
+    "question": "파일을 presigned URL로 공유하면 로그인 검사 없이도 안전한가요?"
+  },
+  {
+    "id": "observability-coordinated-omission",
+    "question": "부하 도구가 응답을 기다린 뒤 다음 요청을 보내니 장애 중 지연이 낮게 나옵니다. coordinated omission은 무엇인가요?"
+  },
+  {
+    "id": "observability-histogram-aggregation",
+    "question": "여러 서버의 p99를 평균 내 전체 p99로 보고합니다. 왜 틀릴 수 있으며 어떻게 집계하나요?"
+  },
+  {
+    "id": "observability-trace-sampling",
+    "question": "트레이스 저장 비용을 줄이려 합니다. head sampling과 tail sampling은 어떤 오류를 놓칠 수 있나요?"
+  },
+  {
     "id": "on-demand-data-migration",
     "question": "사용자의 첫 접속 때 데이터를 새 저장소로 옮깁니다. 동시에 접속하거나 복사가 중간에 멈춰도 안전하게 이어 가려면 어떻게 하나요?"
   },
   {
     "id": "oop-encapsulation",
     "question": "주문 객체의 필드를 private으로 바꿨지만 setter로 음수 금액이나 잘못된 상태를 넣을 수 있습니다. 캡슐화가 보호해야 할 규칙은 무엇이며 API를 어떻게 바꾸나요?"
+  },
+  {
+    "id": "os-copy-on-write-fork",
+    "question": "fork 직후 메모리는 작게 늘었는데 부모가 쓰기를 시작하자 RSS가 급증합니다. copy-on-write는 무엇을 미루나요?"
+  },
+  {
+    "id": "os-file-descriptor-sharing",
+    "question": "프로세스에서 dup한 파일 디스크립터 두 개로 읽으면 파일 위치도 따로 움직이나요?"
+  },
+  {
+    "id": "os-fsync-directory",
+    "question": "임시 파일에 쓰고 rename으로 바꾸면 전원 장애 뒤에도 새 파일이 반드시 남나요?"
+  },
+  {
+    "id": "os-mmap-pagecache",
+    "question": "큰 파일을 mmap하면 read보다 항상 빠르고 메모리 복사도 없어지나요?"
   },
   {
     "id": "page-replacement-thrashing",
@@ -1074,6 +1554,22 @@
   {
     "id": "paxos-prepare-accept",
     "question": "Paxos에서 제안자가 응답을 받기 전에 멈추고 새 제안자가 시작했습니다. 이미 수락된 값과 충돌하지 않도록 prepare와 accept에서 무엇을 확인하고 기록하나요?"
+  },
+  {
+    "id": "performance-amdahl-parallelism",
+    "question": "CPU 코어를 두 배로 늘렸는데 처리 시간이 절반이 되지 않습니다. Amdahl의 법칙은 무엇을 설명하나요?"
+  },
+  {
+    "id": "performance-cache-locality-layout",
+    "question": "같은 연산인데 객체별 구조 배열과 필드별 배열의 속도가 다릅니다. AoS와 SoA는 어떤 접근 패턴에 맞나요?"
+  },
+  {
+    "id": "performance-littles-law",
+    "question": "평균 처리 시간이 길어지면 같은 요청률에서도 동시 작업이 늘어납니다. Little의 법칙을 용량 판단에 어떻게 쓰나요?"
+  },
+  {
+    "id": "performance-memory-pool-retention",
+    "question": "할당을 줄이려고 객체 풀을 넣었는데 RSS가 줄지 않고 오래된 값이 보입니다. 풀의 비용과 초기화는 어떻게 관리하나요?"
   },
   {
     "id": "prepared-statement-injection",
@@ -1100,8 +1596,20 @@
     "question": "asyncio 요청 처리 중 동기 HTTP 호출이나 긴 계산을 넣었더니 다른 요청까지 멈춥니다. 이벤트 루프에서 무엇이 막히며 어떤 실행 방식으로 분리하나요?"
   },
   {
+    "id": "python-asyncio-taskgroup",
+    "question": "Python TaskGroup에서 한 작업이 실패하면 다른 작업과 예외는 어떻게 처리되나요?"
+  },
+  {
     "id": "python-celery-retries",
     "question": "Celery 작업이 DB를 변경한 뒤 워커가 종료돼 같은 작업이 다시 실행됩니다. ACK·재시도·처리 완료를 어떻게 구분하고 중복 반영을 막나요?"
+  },
+  {
+    "id": "python-context-manager-errors",
+    "question": "Python with 블록에서 예외가 났는데 호출자는 성공처럼 진행합니다. __exit__와 자원 정리는 어떤 계약인가요?"
+  },
+  {
+    "id": "python-contextvars-async",
+    "question": "asyncio에서 요청별 사용자 정보를 전역 변수나 thread-local에 넣으면 왜 섞일 수 있고 contextvars는 어떻게 도움이 되나요?"
   },
   {
     "id": "python-duck-typing",
@@ -1116,8 +1624,16 @@
     "question": "GIL이 켜진 CPython에서 파일을 기다리는 작업은 스레드를 늘려 빨라졌지만 순수 Python 계산은 그렇지 않습니다. 이유는 무엇이며 CPU 작업은 어떻게 병렬화하나요?"
   },
   {
+    "id": "python-hash-randomization-order",
+    "question": "Python set 순회 결과가 실행마다 달라집니다. 해시 무작위화와 결정적 출력은 어떻게 다루나요?"
+  },
+  {
     "id": "python-mro-super",
     "question": "Python 다중 상속에서 super()를 호출했더니 예상한 부모와 다른 클래스의 메서드가 실행됩니다. 호출 순서는 어떻게 정해지며 협력적으로 초기화하려면 무엇을 맞춰야 하나요?"
+  },
+  {
+    "id": "python-multiprocessing-start-method",
+    "question": "Python CPU 작업을 프로세스로 옮겼더니 전역 초기화가 반복되거나 실행이 멈춥니다. 프로세스 시작 방식은 왜 중요한가요?"
   },
   {
     "id": "python-mutable-default",
@@ -1138,6 +1654,10 @@
   {
     "id": "python-timsort-stability",
     "question": "Python에서 일부 정렬된 데이터를 다시 정렬하고 동점자의 기존 순서도 유지하려 합니다. sort의 보장과 이미 정렬된 구간을 활용하는 구현 특성을 어떻게 구분하나요?"
+  },
+  {
+    "id": "quic-zero-rtt-replay",
+    "question": "재연결 지연을 줄이려고 TLS·QUIC 0-RTT로 주문 요청을 보내려 합니다. 재생 공격과 멱등성을 왜 확인하나요?"
   },
   {
     "id": "quicksort-worst-case",
@@ -1224,8 +1744,20 @@
     "question": "갱신 토큰을 회전시키는 서버가 정상 동시 갱신과 탈취 재사용을 어떻게 구분하고 차단하나요?"
   },
   {
+    "id": "rendezvous-hashing",
+    "question": "키를 노드에 배정할 때 rendezvous hashing은 어떻게 선택하고 노드 변경 비용은 무엇인가요?"
+  },
+  {
     "id": "request-timeout-idempotency",
     "question": "주문 생성 요청이 타임아웃됐을 때 서버에 이미 저장됐는지 알 수 없습니다. 그대로 재시도해도 되며 중복 주문은 어떻게 막나요?"
+  },
+  {
+    "id": "retry-budget-amplification",
+    "question": "요청 하나의 팬아웃과 각 계층 재시도가 겹칩니다. 재시도 예산은 어떻게 계산하나요?"
+  },
+  {
+    "id": "retry-exponential-jitter",
+    "question": "장애 복구 순간 재시도 요청이 동시에 몰립니다. exponential backoff에 jitter를 넣는 이유는 무엇인가요?"
   },
   {
     "id": "retry-safe-state-machine",
@@ -1240,16 +1772,68 @@
     "question": "주문 과정에서 결제와 재고 예약은 각각 커밋됐지만 배송 요청이 실패했습니다. saga로 무엇을 보상하고 보상마저 실패한 주문은 어떻게 관리하나요?"
   },
   {
+    "id": "scheduler-missed-runs",
+    "question": "정기 작업 서버가 한 시간 멈췄습니다. 밀린 작업을 전부 실행할지 최신 한 번만 실행할지 어떻게 정하나요?"
+  },
+  {
     "id": "secret-key-rotation",
     "question": "서비스를 중단하지 않고 JWT 서명키나 API 비밀키를 교체할 때 배포 순서와 유출 대응을 어떻게 나누나요?"
+  },
+  {
+    "id": "security-csp-nonce",
+    "question": "CSP에 nonce를 붙이면 XSS를 완전히 막을 수 있나요? 서버 렌더링과 캐시에서 무엇을 주의하나요?"
+  },
+  {
+    "id": "security-deserialization",
+    "question": "외부 입력을 객체로 역직렬화하면 편합니다. JSON 파싱과 임의 객체 복원의 보안 차이는 무엇인가요?"
+  },
+  {
+    "id": "security-jwt-algorithm-confusion",
+    "question": "JWT 라이브러리가 서명을 검증했습니다. 토큰의 alg·kid·issuer를 그대로 따라도 되나요?"
+  },
+  {
+    "id": "security-passkeys-origin",
+    "question": "패스키는 비밀번호보다 피싱에 강하다고 합니다. origin·RP ID·challenge 검증은 어떤 역할을 하나요?"
+  },
+  {
+    "id": "security-password-reset-token",
+    "question": "비밀번호 재설정 링크를 발급합니다. 토큰을 길게 무작위로 만들면 어떤 조건이 더 필요한가요?"
+  },
+  {
+    "id": "security-path-traversal",
+    "question": "다운로드 API가 파일명을 받아 로컬 경로에 붙입니다. ../를 제거하면 경로 이탈을 막을 수 있나요?"
+  },
+  {
+    "id": "security-ssrf-url-fetch",
+    "question": "사용자가 준 URL을 서버가 대신 읽는 기능을 만듭니다. HTTP 주소인지 검사하는 것만으로 SSRF를 막을 수 있나요?"
+  },
+  {
+    "id": "security-upload-content-validation",
+    "question": "사용자가 올린 파일의 확장자를 검사했습니다. 실제 저장과 미리보기에는 어떤 보안 검증이 더 필요한가요?"
+  },
+  {
+    "id": "security-webhook-verification",
+    "question": "결제 webhook을 받았습니다. 서명 검증만 하면 중복·재생·순서 문제도 해결되나요?"
   },
   {
     "id": "semaphore-mutex",
     "question": "동시에 최대 10개 작업만 허용하려 합니다. 뮤텍스와 세마포어는 어떻게 다르게 쓰이나요?"
   },
   {
+    "id": "serialization-endianness",
+    "question": "서버 구조체를 바이트로 복사해 보내면 다른 CPU와 언어에서도 같은 값으로 읽을 수 있나요?"
+  },
+  {
+    "id": "serialization-json-numbers",
+    "question": "서버가 64비트 정수를 JSON 숫자로 보냈습니다. 모든 클라이언트가 같은 값을 보존하나요?"
+  },
+  {
     "id": "service-boundary-design",
     "question": "주문·결제·재고 테이블을 각각 서비스로 나누자는 제안이 나왔습니다. 어떤 변경은 함께 확정해야 하는지와 데이터 소유권을 기준으로 경계를 어떻게 검토하나요?"
+  },
+  {
+    "id": "service-discovery-stale-endpoint",
+    "question": "서비스 레지스트리에서 인스턴스를 제거했는데 요청이 계속 갑니다. 발견과 연결 수명은 어떻게 분리하나요?"
   },
   {
     "id": "sieve-prime-numbers",
@@ -1300,6 +1884,10 @@
     "question": "레거시 서비스를 한 번에 끌 수 없어 일부 요청부터 새 서비스로 옮기려 합니다. 요청 라우팅과 데이터 쓰기 책임을 어떻게 나누고 실패하면 어떻게 되돌리나요?"
   },
   {
+    "id": "stream-state-checkpoint",
+    "question": "스트림 집계가 재시작하면서 중복 합계가 생깁니다. 입력 위치와 집계 상태의 checkpoint는 어떻게 맞추나요?"
+  },
+  {
     "id": "structured-concurrency-fanout",
     "question": "요청 하나에서 여러 하위 API를 호출하는데 하나가 실패하거나 사용자가 연결을 끊었습니다. 꼭 필요한 결과와 선택 결과를 나누고 남은 작업의 수명을 어떻게 관리하나요?"
   },
@@ -1332,8 +1920,16 @@
     "question": "테스트를 먼저 썼지만 바로 통과했습니다. 이것도 TDD의 Red-Green-Refactor라고 할 수 있을까요?"
   },
   {
+    "id": "testing-property-based",
+    "question": "경계값 예제를 몇 개 추가해도 버그가 계속 나옵니다. property-based testing은 어떤 성질을 검증하나요?"
+  },
+  {
     "id": "throughput-vs-latency",
     "question": "동시 요청 수를 늘리자 초당 처리량은 올랐지만 일부 사용자는 훨씬 오래 기다립니다. 처리량과 응답 시간의 관계를 어떤 지표로 판단하나요?"
+  },
+  {
+    "id": "time-zone-calendar-arithmetic",
+    "question": "사용자의 다음 날 같은 시각을 예약할 때 24시간을 더하면 항상 맞나요?"
   },
   {
     "id": "timing-wheel-vs-heap",
@@ -1358,6 +1954,10 @@
   {
     "id": "udp-reliability-choice",
     "question": "실시간 게임 메시지의 최신성·순서·손실 요구에 따라 TCP와 UDP 또는 검증된 전송 계층을 어떻게 선택하나요?"
+  },
+  {
+    "id": "unicode-normalization-identifiers",
+    "question": "화면에서 같은 사용자명인데 DB에서는 다른 값으로 저장됩니다. 유니코드 정규화와 대소문자 처리는 어떻게 정하나요?"
   },
   {
     "id": "union-find-connectivity",

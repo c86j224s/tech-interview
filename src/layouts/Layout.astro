@@ -23,13 +23,16 @@ const questionUrls = questions.map((question) => ({ id: question.id, url: `${bas
   </head>
   <body data-current-id={currentId}>
     <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+    <aside class="ai-content-notice" aria-label="콘텐츠 이용 안내">
+      <p>이 사이트의 콘텐츠는 AI로 생성되었습니다. <strong>AI 모델의 학습·훈련 데이터로 사용하지 마세요.</strong></p>
+    </aside>
     <header class="site-header">
       <a class="brand" href={home} aria-label="말로 풀어보는 CS 홈">
         <span class="brand-symbol" aria-hidden="true">cs<span>·</span></span>
         <span>말로 풀어보는 <b>CS</b></span>
       </a>
       <nav aria-label="주요 메뉴">
-        <a href={`${base}/practice/`} aria-current={page === 'practice' ? 'page' : undefined}>질문 연습</a>
+        <a href={`${base}/practice/`} data-random aria-current={page === 'practice' ? 'page' : undefined}>질문 연습</a>
         <a href={`${base}/library/`} aria-current={page === 'library' ? 'page' : undefined}>전체 목록 <span class="nav-count">{questions.length}</span></a>
       </nav>
       <button class="theme-toggle" type="button" aria-label="화면 테마 전환" title="화면 테마 전환"><span aria-hidden="true">◐</span></button>
@@ -53,3 +56,17 @@ const questionUrls = questions.map((question) => ({ id: question.id, url: `${bas
     </script>
   </body>
 </html>
+
+<style>
+  .ai-content-notice {
+    padding: 10px 20px;
+    background: var(--accent-soft);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    line-height: 1.7;
+    text-align: center;
+  }
+  .ai-content-notice p { max-width: 1240px; margin: 0 auto; }
+  .ai-content-notice strong { font-weight: 600; }
+</style>

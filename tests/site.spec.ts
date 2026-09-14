@@ -16,8 +16,9 @@ test('히어로 홈에서 연습을 시작하고 주제별 질문을 탐색한�
   await expect(page.locator('h1')).toContainText('알고 있다면,');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link', { name: '한 질문, 시작하기' }).click();
-  await expect(page).toHaveURL(/\/practice\/$/);
-  await expect(page.locator('h1')).toHaveText(firstQuestion.question);
+  await expect(page).toHaveURL(/\/questions\/[a-z0-9-]+\/$/);
+  const selectedId = await page.locator('body').getAttribute('data-current-id');
+  await expect(page.locator('h1')).toHaveText(index.find((entry: { id: string }) => entry.id === selectedId).question);
   await page.getByRole('link', { name: '말로 풀어보는 CS 홈' }).click();
   await page.locator('.topic-ribbon').getByRole('link', { name: '네트워크' }).click();
   await expect(page.locator('[data-question-card]:visible')).toHaveCount(categoryCount('네트워크'));
@@ -57,6 +58,33 @@ test('종이 넘김이 끝난 뒤 반복 이동과 뒤로 가기가 동작한다
   await page.goBack();
   await expect(page).toHaveURL(first);
   await expect(page.locator('.question-card')).toBeVisible();
+});
+
+test('랜덤 덱은 새로고침과 일반 이동 뒤에도 최근 질문을 반복하지 않는다', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('practice/');
+  const seen = new Set([firstQuestion.id]);
+  for (let i = 0; i < 15; i++) {
+    const previous = page.url();
+    await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+    await page.waitForURL((url) => url.href !== previous && /\/questions\/[a-z0-9-]+\/$/.test(url.pathname));
+    const id = await page.locator('body').getAttribute('data-current-id');
+    expect(seen.has(id)).toBe(false);
+    seen.add(id);
+    if (i === 5) await page.reload();
+  }
+  const state = await page.evaluate(() => JSON.parse(sessionStorage.getItem('cs-question-deck-v1') || '{}'));
+  expect(state.remaining.length).toBe(index.length - seen.size);
+});
+
+test('저장소가 막혀도 랜덤 이동은 현재 질문을 제외한다', async ({ page }) => {
+  await page.addInitScript(() => {
+    for (const key of ['localStorage', 'sessionStorage']) Object.defineProperty(window, key, { get() { throw new Error('blocked'); } });
+  });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('practice/');
+  await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+  await expect(page).toHaveURL(/\/questions\/(?!async-api-and-blocking)[a-z0-9-]+\/$/);
 });
 
 test('모션 감소 설정에서는 종이 효과 없이 질문을 이동한다', async ({ page }) => {
@@ -170,6 +198,7 @@ test('JavaScript 없이도 보강 답변과 꼬리 질문 링크를 읽는다', 
   try {
     const page = await context.newPage();
     await page.goto(`${baseURL}questions/transactional-outbox/`);
+    await expect(page.getByRole('complementary', { name: '콘텐츠 이용 안내' })).toContainText('AI 모델의 학습·훈련 데이터로 사용하지 마세요.');
     await page.locator('summary').click();
     await expect(page.locator('.spoken-answer')).toContainText('이중 쓰기(dual write)');
     await page.locator('.related-card').first().click();
@@ -178,6 +207,24 @@ test('JavaScript 없이도 보강 답변과 꼬리 질문 링크를 읽는다', 
   } finally {
     await context.close();
   }
+});
+
+test('AI 생성·학습 금지 안내는 공통 상단에 한 번만 표시된다', async ({ page }) => {
+  for (const route of ['./', 'library/', 'practice/', 'questions/agent-workflow-autonomy/']) {
+    await page.goto(route);
+    const notice = page.getByRole('complementary', { name: '콘텐츠 이용 안내' });
+    await expect(notice).toHaveCount(1);
+    await expect(notice).toBeVisible();
+    await expect(notice).toHaveText('이 사이트의 콘텐츠는 AI로 생성되었습니다. AI 모델의 학습·훈련 데이터로 사용하지 마세요.');
+    expect(await notice.evaluate((element) => element.getBoundingClientRect().bottom <= document.querySelector('.site-header')!.getBoundingClientRect().top)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+  const previous = page.url();
+  await page.getByRole('button', { name: '다른 질문 뽑기' }).click();
+  await page.waitForURL((url) => url.href !== previous);
+  await expect(page.locator('.paper-turn-overlay')).toHaveCount(0);
+  await expect(page.locator('.ai-content-notice')).toHaveCount(1);
+  await expect(page.locator('main .ai-content-notice')).toHaveCount(0);
 });
 
 test('AI 에이전트 50문항에서 MCP를 검색하고 꼬리 질문으로 이동한다', async ({ page }) => {
