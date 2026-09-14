@@ -3,7 +3,7 @@ id: quicksort
 title: 퀵소트의 분할과 최악 시간
 topic: 알고리즘
 summary: 피벗으로 구간을 분할하는 불변식부터 3-way partition, 재귀 종료, introsort까지 살펴봅니다.
-questionIds: [quicksort-worst-case, sorting-stability, cpp-iterator-invalidation]
+questionIds: [quicksort-worst-case, sorting-stability]
 ---
 
 # 퀵소트의 분할과 최악 시간
@@ -63,6 +63,12 @@ quicksort(a, lo, hi):
 | 피벗 배치 | `[2, 1, 3, 4, 5]` | 2 |
 
 이제 3은 확정됐지만 왼쪽 `[2, 1]`은 아직 정렬해야 합니다. 최종 결과가 우연히 대부분 정렬되어 보인다고 분할만으로 전체 정렬이 끝난 것은 아닙니다.
+
+```diagram
+{"title":"분할 뒤 남는 두 정렬 문제","caption":"화살표는 재귀 호출할 구간을 뜻합니다. 피벗 3은 최종 위치에 있으므로 어느 호출에도 다시 포함하지 않습니다.","rows":[[{"id":"input","label":"4 · 2 · 5 · 1 · 3","detail":["닫힌 구간 [0, 4]","마지막 값 3을 피벗으로 선택"]}],[{"id":"partition","label":"2 · 1 │ 3 │ 4 · 5","detail":["분할 반환값 p = 2","작은 구간은 아직 미정렬"]}],[{"id":"left","label":"2 · 1","detail":["quicksort(a, 0, 1)"]},{"id":"right","label":"4 · 5","detail":["quicksort(a, 3, 4)"]}]],"edges":[{"from":"input","to":"partition","label":"한 번 훑기"},{"from":"partition","to":"left","label":"p 왼쪽"},{"from":"partition","to":"right","label":"p 오른쪽"}]}
+```
+
+그림의 맨 아래 두 구간은 서로 겹치지 않습니다. 각 호출이 자기 구간을 정렬하면, 왼쪽 값은 모두 3 이하이고 오른쪽 값은 모두 3보다 크다는 분할 결과와 합쳐져 전체가 정렬됩니다. 별도로 두 구간을 병합할 필요가 없는 이유도 여기에 있습니다.
 
 ## 복잡도와 퇴화
 

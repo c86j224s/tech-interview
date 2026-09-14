@@ -3,6 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import { questions } from './questions.mjs';
+import { renderNoteDiagram } from './note-diagrams.mjs';
 
 export function loadNotes(directory, catalog) {
   const ids = new Set();
@@ -23,6 +24,13 @@ export function loadNotes(directory, catalog) {
     const body = content.trimStart().slice(content.trimStart().indexOf('\n') + 1).trim();
     const toc = [];
     const renderer = new marked.Renderer();
+    const code = renderer.code;
+    let diagramCount = 0;
+    renderer.code = function (token) {
+      if (token.lang !== 'diagram') return code.call(this, token);
+      try { return renderNoteDiagram(token.text, `${data.id}-diagram-${++diagramCount}`); }
+      catch (error) { fail(error.message); }
+    };
     renderer.heading = function (token) {
       const text = this.parser.parseInline(token.tokens);
       if (token.depth !== 2) return `<h${token.depth}>${text}</h${token.depth}>\n`;
@@ -35,7 +43,7 @@ export function loadNotes(directory, catalog) {
     const prose = html.replace(/<pre\b[^>]*>[\s\S]*?<\/pre>/g, '').replace(/<code\b[^>]*>[\s\S]*?<\/code>/g, '');
     if (prose.includes('**')) fail('해결되지 않은 강조 표기');
     // Notes are trusted, repository-authored Markdown, not visitor submissions.
-    return { ...data, html, toc, file: path.relative(directory, file).split(path.sep).join('/') };
+    return { ...data, html, toc, diagramCount, file: path.relative(directory, file).split(path.sep).join('/') };
   });
 }
 

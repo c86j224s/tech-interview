@@ -7,12 +7,18 @@ import { notes, loadNotes, notesForQuestion, questionsForNote } from '../src/lib
 import { questions } from '../src/lib/questions.mjs';
 
 test('notes contain study sections, unique anchors and valid reverse links', () => {
-  assert.equal(notes.length, 12);
+  assert.ok(notes.length >= 12);
+  for (const id of ['quicksort', 'binary-search', 'graph-search', 'heap', 'hash-table', 'transactions', 'indexes', 'idempotency', 'cancellation', 'tcp', 'authentication', 'agent-runtime']) {
+    assert.ok(notes.some((note) => note.id === id), `기존 노트 주소 보존: ${id}`);
+  }
   for (const note of notes) {
     assert.ok(note.toc.length >= 3);
     assert.equal(new Set(note.toc.map(({ id }) => id)).size, note.toc.length);
     for (const heading of note.toc) assert.ok(note.html.includes(`id="${heading.id}"`));
     assert.ok(questionsForNote(note).length > 0);
+    assert.ok(note.diagramCount >= 1, `${note.id}: 원리를 설명하는 그림`);
+    assert.equal((note.html.match(/<figure class="note-diagram">/g) || []).length, note.diagramCount);
+    assert.ok(!note.html.includes('class="language-diagram"'));
     for (const question of questionsForNote(note)) assert.ok(notesForQuestion(question).includes(note));
   }
   const quicksort = notes.find(({ id }) => id === 'quicksort');
@@ -28,6 +34,9 @@ test('note validation rejects missing targets and duplicate note IDs', () => {
   try {
     write('a.md', 'note', 'missing');
     assert.throws(() => loadNotes(directory, [{ id: 'q' }]), /잘못된 연결 문항/);
+    write('a.md', 'note', 'q');
+    fs.appendFileSync(path.join(directory, 'a.md'), '\n```diagram\n{"title":"broken"}\n```\n');
+    assert.throws(() => loadNotes(directory, [{ id: 'q' }]), /a.md: 학습 노트 그림/);
     write('a.md', 'note', 'q');
     write('b.md', 'note', 'q');
     assert.throws(() => loadNotes(directory, [{ id: 'q' }]), /중복/);

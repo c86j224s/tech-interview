@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import matter from 'gray-matter';
 
+const noteFiles = fs.readdirSync('notes', { recursive: true }).filter((file) => String(file).endsWith('.md'));
+const noteContent = noteFiles.map((file) => matter(fs.readFileSync(`notes/${file}`, 'utf8')));
+const noteCount = noteContent.length;
 const index = JSON.parse(fs.readFileSync('question-index.json', 'utf8'));
 const content = index.map((entry: { id: string; question: string }) => ({
   ...entry,
@@ -235,7 +238,7 @@ test('질문에서 학습 노트의 원리·슈도코드를 읽고 연습으로 
   await page.goto('questions/introsort-depth-fallback/');
   await expect(page.locator('.question-notes')).toContainText('퀵소트의 분할과 최악 시간');
   await page.getByRole('navigation', { name: '주요 메뉴' }).getByRole('link', { name: '학습 노트' }).click();
-  await expect(page.locator('.note-card')).toHaveCount(12);
+  await expect(page.locator('.note-card')).toHaveCount(noteCount);
 });
 
 test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크를 제공한다', async ({ browser, baseURL }) => {
@@ -244,16 +247,52 @@ test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크
     const page = await context.newPage();
     await page.goto(`${baseURL}notes/`);
     const links = await page.locator('.note-card h2 a').evaluateAll((nodes) => nodes.map((node) => (node as HTMLAnchorElement).href));
-    expect(links.length).toBe(12);
+    expect(links.length).toBe(noteCount);
     for (const link of links) {
       expect((await page.goto(link))?.status()).toBe(200);
       await expect(page.locator('.note-body')).toBeVisible();
+      const source = noteContent.find((note) => link.endsWith(`/notes/${note.data.id}/`))!;
+      const diagramCount = (source.content.match(/^```diagram$/gm) || []).length;
+      await expect(page.locator('.note-diagram svg')).toHaveCount(diagramCount);
+      for (const figure of await page.locator('.note-diagram').all()) {
+        await expect(figure.getByRole('img')).toBeVisible();
+        await expect(figure.locator('figcaption')).not.toBeEmpty();
+        await figure.locator('summary').click();
+        await expect(figure.locator('.diagram-text ul')).toBeVisible();
+      }
+      await expect(page.locator('.note-body code.language-diagram')).toHaveCount(0);
       await expect(page.locator('#practice-questions a').first()).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.locator('.ai-content-notice')).toHaveCount(1);
     }
   } finally {
     await context.close();
+  }
+});
+
+test('학습 그림은 테마에 맞춰 읽히고 글자 영역이 잘리지 않는다', async ({ page }) => {
+  for (const theme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme: theme as 'light' | 'dark' });
+    for (const note of noteContent.filter((note) => note.content.includes('```diagram'))) {
+      await page.goto(`notes/${note.data.id}/`);
+      const figures = await page.locator('.note-diagram svg').evaluateAll((nodes) => nodes.map((node) => {
+        const svg = node as SVGSVGElement;
+        const view = svg.viewBox.baseVal;
+        const labels = [...svg.querySelectorAll('text')].map((label) => {
+          const box = label.getBBox();
+          const matrix = svg.getScreenCTM()!.inverse().multiply(label.getScreenCTM()!);
+          const corners = [[box.x, box.y], [box.x + box.width, box.y], [box.x, box.y + box.height], [box.x + box.width, box.y + box.height]]
+            .map(([x, y]) => new DOMPoint(x, y).matrixTransform(matrix));
+          return { text: label.textContent, fits: corners.every(({ x, y }) => x >= -1 && y >= -1 && x <= view.width + 1 && y <= view.height + 1) };
+        });
+        return { labels, fill: getComputedStyle(svg.querySelector('.diagram-node-title')!).fill, background: getComputedStyle(svg.querySelector('.diagram-node')!).fill };
+      }));
+      for (const figure of figures) {
+        expect(figure.fill).not.toBe(figure.background);
+        for (const label of figure.labels) expect(label.fits, `${note.data.id}: ${label.text}`).toBe(true);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
   }
 });
 

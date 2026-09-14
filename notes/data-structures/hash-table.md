@@ -3,7 +3,7 @@ id: hash-table
 title: 해시 테이블의 충돌과 확장
 topic: 자료구조
 summary: 해시와 키 비교, chaining·open addressing, tombstone과 점진 재해시를 정리합니다.
-questionIds: [hash-collision-resolution, hash-table-resize, go-map-concurrent-access, java-equals-hashcode, python-hash-randomization-order, db-upsert-conflict-semantics]
+questionIds: [hash-collision-resolution, hash-table-resize, go-map-concurrent-access, java-equals-hashcode, python-hash-randomization-order]
 ---
 
 # 해시 테이블의 충돌과 확장
@@ -39,6 +39,24 @@ find(key):
 중간 항목을 삭제하며 NEVER_USED로 바꾸면 뒤의 충돌 키를 찾기 전에 검색이 멈춥니다. tombstone은 삭제됐지만 탐사는 이어가야 한다는 표식입니다. 삽입 때 재사용할 수 있어도 같은 키가 뒤에 있는지 충분히 확인해 중복을 막아야 합니다.
 
 실제 원소 수/용량과 tombstone을 포함한 탐사상 점유율을 나눠 봅니다. 삭제가 많으면 원소 수는 적어도 탐색이 느릴 수 있습니다.
+
+### 삭제된 자리에서 멈추면 안 되는 이유
+
+용량 5의 테이블에 정수 키를 넣고, 설명을 위해 `hash(key)=key`로 두겠습니다. 1·6·11은 모두 나머지가 1이라 같은 슬롯에서 탐색을 시작합니다. 실제 서비스용 해시 함수를 권장하는 예가 아니라 충돌을 손으로 만들기 위한 설정입니다.
+
+| 연산 | 슬롯 1 | 슬롯 2 | 슬롯 3 | 이유 |
+| --- | --- | --- | --- | --- |
+| 1 삽입 | 1 | 미사용 | 미사용 | 시작 슬롯 사용 |
+| 6 삽입 | 1 | 6 | 미사용 | 1이 있으므로 다음 칸 |
+| 11 삽입 | 1 | 6 | 11 | 두 칸을 지나 다음 칸 |
+| 6 삭제 | 1 | 삭제 표식 | 11 | 뒤의 탐색 경로 보존 |
+| 11 조회 | 1을 비교 | 표식을 통과 | 11 발견 | 미사용 칸이 아니므로 계속 탐색 |
+
+```diagram
+{"title":"충돌 경로 중간의 삭제 표식","caption":"화살표는 키 11의 조회 순서입니다. 슬롯 2를 한 번도 쓰지 않은 칸으로 바꾸면 그곳에서 잘못 종료하여 슬롯 3의 11을 놓칩니다.","rows":[[{"id":"start","label":"슬롯 1 · 키 1","detail":["11 mod 5 = 1","키가 다르므로 계속"]}],[{"id":"deleted","label":"슬롯 2 · 삭제 표식","detail":["비어 있지만 탐색은 계속"]}],[{"id":"found","label":"슬롯 3 · 키 11","detail":["동등 비교 성공"]}]],"edges":[{"from":"start","to":"deleted","label":"다음 슬롯"},{"from":"deleted","to":"found","label":"표식 통과"}]}
+```
+
+삭제 표식은 삽입 후보로 기억해 둘 수 있습니다. 다만 키 11을 갱신할 때 표식에 곧바로 새 11을 넣으면 기존 11과 중복됩니다. 먼저 탐색을 끝내 같은 키가 있는지 확인하고, 없다면 기억한 삭제 칸을 재사용해야 합니다. 모든 칸이 사용됐거나 삭제 표식이어도 슈도코드가 최대 `capacity`번 뒤 끝나는 이유는 미사용 칸을 만날 수 없는 경우까지 처리하기 위해서입니다.
 
 ## 확장과 점진 재해시
 

@@ -8,7 +8,7 @@ const topics = [...new Set(notes.map((note) => note.topic))];
   <section class="notes-intro">
     <span class="eyebrow">UNDERSTAND BEFORE YOU ANSWER</span>
     <h1>답변 너머의 원리, 학습 노트.</h1>
-    <p>면접 답변은 짧게 말하는 연습에, 학습 노트는 원리와 예제·슈도코드를 이해하는 데 사용하세요. 현재 {notes.length}개 노트부터 시작하며, 작성된 노트가 있는 질문에만 링크를 표시합니다.</p>
+    <p>하나의 주제를 원리부터 차근차근 공부하는 공간입니다. 그림으로 구조를 보고, 표와 예제·슈도코드로 실제 동작을 따라가 보세요. 현재 {notes.length}개 노트가 있으며, 연결된 질문으로 돌아가 배운 내용을 말로 풀어볼 수 있습니다.</p>
   </section>
   {topics.map((topic) => <section class="note-practice" aria-label={topic}>
     <h2>{topic}</h2>
@@ -16,7 +16,7 @@ const topics = [...new Set(notes.map((note) => note.topic))];
       <span class="note-topic">{note.topic}</span>
       <h2><a href={`${base}/notes/${note.id}/`}>{note.title}</a></h2>
       <p>{note.summary}</p>
-      <span class="note-count">연결된 연습 질문 {questionsForNote(note).length}개</span>
+      <span class="note-count">{note.diagramCount > 0 && <>그림 {note.diagramCount}개 · </>}연결된 연습 질문 {questionsForNote(note).length}개</span>
     </article>)}</div>
   </section>)}
 </Layout>
