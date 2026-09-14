@@ -11,7 +11,7 @@ test('coverage inventory contains every question exactly once across source fami
 });
 
 test('a note link is never implicitly promoted to reviewed coverage', () => {
-  const entry = studyCoverage.find(({ question }) => question.id === 'quicksort-worst-case');
+  const entry = studyCoverage.find(({ question }) => question.id === 'introsort-depth-fallback');
   assert.ok(entry.linked.length > 0);
   assert.equal(entry.status, 'unreviewed');
   assert.equal(studyCoverage.find(({ question }) => question.id === 'condition-variable-predicate').status, 'covered');

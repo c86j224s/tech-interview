@@ -3,7 +3,7 @@ id: binary-search
 title: 이진 탐색과 경계 불변식
 topic: 알고리즘
 summary: lower_bound와 upper_bound를 반열린 구간과 루프 불변식으로 구현하고 증명합니다.
-questionIds: [binary-search-boundary, algorithm-prefix-sum-fenwick, algorithm-weighted-sampling]
+questionIds: [binary-search-boundary, binary-search-midpoint-overflow, upper-bound-duplicate-range, algorithm-weighted-sampling]
 ---
 
 # 이진 탐색과 경계 불변식
