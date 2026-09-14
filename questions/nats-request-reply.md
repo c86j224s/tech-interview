@@ -2,7 +2,7 @@
 id: nats-request-reply
 title: "NATS로 작업을 요청했는데 no responders 또는 timeout이 반환됩니다. 두 결과는 무엇이 다르며, 재시도 전에 작업이 실행됐는지 어떻게 판단하나요?"
 answerMinutes: 5
-followups: [{"id":"request-timeout-idempotency","prompt":"timeout 뒤 이미 주문을 반영했을 가능성이 있을 때 어떤 키로 재시도하나요?"},{"id":"nats-subject-queue-group","prompt":"여러 responder의 queue group과 첫 응답 채택은 어떻게 다른가요?"},{"id":"deadline-cancellation-propagation","prompt":"deadline 뒤 responder도 취소해야 할 때 신호와 실제 종료를 어떻게 추적하나요?"}]
+followups: [{"id":"nats-inbox-request-lifetime","prompt":"NATS request-reply의 inbox를 재사용합니다. 늦은 응답이 새 요청에 섞이지 않게 어떤 상관 ID와 수명을 두나요?"},{"id":"request-timeout-idempotency","prompt":"timeout 뒤 이미 주문을 반영했을 가능성이 있을 때 어떤 키로 재시도하나요?"},{"id":"nats-subject-queue-group","prompt":"여러 responder의 queue group과 첫 응답 채택은 어떻게 다른가요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["NATS","request-reply","타임아웃"]
@@ -50,6 +50,6 @@ inbox는 요청 수명과 연결되며 늦은 응답이 다음 요청에 섞이�
 
 ## 더 파고들 거리
 
-- inbox 재사용
+- [NATS request-reply의 inbox를 재사용합니다. 늦은 응답이 새 요청에 섞이지 않게 어떤 상관 ID와 수명을 두나요?](/tech-interview/questions/nats-inbox-request-lifetime/)
 - 첫 응답 조건
 - 큰 payload

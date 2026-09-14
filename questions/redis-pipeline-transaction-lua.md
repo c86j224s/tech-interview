@@ -2,7 +2,7 @@
 id: redis-pipeline-transaction-lua
 title: "Redis에 여러 명령을 보내는 왕복 비용을 줄이면서 조회 결과에 따른 갱신도 안전하게 처리하려 합니다. 파이프라이닝·MULTI/EXEC·Lua 중 무엇을 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"redis-cluster-hash-tags","prompt":"Lua·MULTI가 여러 키를 다룰 때 hash tag와 슬롯 이동이 어떤 제약을 만드는지 설명해 보세요."},{"id":"db-unique-constraint-race","prompt":"Redis에서 요청 ID 중복을 막는 것과 DB 고유 제약으로 가입 충돌을 막는 것은 어떻게 다른가요?"},{"id":"request-timeout-idempotency","prompt":"차감은 성공했지만 응답이 유실된 경우 상태 조회와 멱등 기록을 어떤 순서로 사용하나요?"}]
+followups: [{"id":"redis-multi-queue-runtime-errors","prompt":"Redis MULTI의 큐잉 오류와 EXEC 중 실행 오류는 어떤 차이가 있으며 앞선 변경은 rollback되나요?"},{"id":"redis-cluster-hash-tags","prompt":"Lua·MULTI가 여러 키를 다룰 때 hash tag와 슬롯 이동이 어떤 제약을 만드는지 설명해 보세요."},{"id":"db-unique-constraint-race","prompt":"Redis에서 요청 ID 중복을 막는 것과 DB 고유 제약으로 가입 충돌을 막는 것은 어떻게 다른가요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["Redis","파이프라이닝","트랜잭션","Lua"]
@@ -62,6 +62,6 @@ Redis Cluster에서 Lua·다중 키 트랜잭션은 관련 키가 같은 슬롯�
 
 ## 더 파고들 거리
 
-- MULTI 큐잉 오류와 EXEC 실행 오류를 구분해 보세요.
+- [Redis MULTI의 큐잉 오류와 EXEC 중 실행 오류는 어떤 차이가 있으며 앞선 변경은 rollback되나요?](/tech-interview/questions/redis-multi-queue-runtime-errors/)
 - 응답 유실 뒤 요청 기록을 차감과 함께 남길지 설계해 보세요.
 - Cluster에서 재고 키와 멱등 키의 슬롯을 검증해 보세요.

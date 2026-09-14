@@ -2,7 +2,7 @@
 id: consensus-membership-change
 title: "합의 클러스터의 노드를 교체하려고 합니다. 각 서버의 노드 목록만 새 목록으로 바꾸면 왜 위험한가요?"
 answerMinutes: 5
-followups: [{"id":"consensus-quorum-failure","prompt":"구성 변경 중 이전·새 쿼럼을 동시에 만족할 수 없으면 왜 쓰기를 멈춰야 할까요?"},{"id":"raft-term-election","prompt":"제거된 이전 리더의 늦은 메시지를 term과 구성 정보로 어떤 조건에서 거부하겠습니까?"},{"id":"raft-snapshot-compaction","prompt":"새 노드가 로그를 따라잡지 못할 때 snapshot 설치와 구성 변경 순서를 어떻게 조정하겠습니까?"}]
+followups: [{"id":"removed-consensus-node-rejoin","prompt":"합의 구성에서 제거한 노드가 오래된 로그로 돌아왔습니다. 투표·메시지·재등록을 어떻게 처리해야 하나요?"},{"id":"quorum-failure-domain-placement","prompt":"합의 노드 수는 충분하지만 한 랙 장애로 과반을 잃었습니다. 투표자 배치와 장애 허용 수를 어떻게 계산하나요?"},{"id":"consensus-quorum-failure","prompt":"구성 변경 중 이전·새 쿼럼을 동시에 만족할 수 없으면 왜 쓰기를 멈춰야 할까요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["합의","구성 변경","Raft"]
@@ -51,5 +51,5 @@ related: ["consensus-quorum-failure"]
 ## 더 파고들 거리
 
 - 공동 구성 단계별 커밋
-- 제거된 노드 메시지 처리
-- 장애 영역 배치
+- [합의 구성에서 제거한 노드가 오래된 로그로 돌아왔습니다. 투표·메시지·재등록을 어떻게 처리해야 하나요?](/tech-interview/questions/removed-consensus-node-rejoin/)
+- [합의 노드 수는 충분하지만 한 랙 장애로 과반을 잃었습니다. 투표자 배치와 장애 허용 수를 어떻게 계산하나요?](/tech-interview/questions/quorum-failure-domain-placement/)

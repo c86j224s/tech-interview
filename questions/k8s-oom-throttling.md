@@ -2,7 +2,7 @@
 id: k8s-oom-throttling
 title: "Kubernetes의 일부 컨테이너는 OOMKilled로 재시작하고 다른 컨테이너는 살아 있지만 느립니다. 메모리 종료와 CPU 제한을 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-requests-limits","prompt":"requests·limits를 조정할 때 스케줄링 가능성과 실행 중 자원 상한을 어떤 순서로 검토할까요?"},{"id":"go-gc-latency-tradeoff","prompt":"Go heap과 cgroup memory limit 사이 여유가 부족할 때 GC와 OOM을 어떤 지표로 구분할까요?"},{"id":"k8s-probe-contract","prompt":"CPU throttling이나 GC pause로 probe가 실패할 때 liveness와 readiness를 어떻게 잘못 설계하지 않을까요?"}]
+followups: [{"id":"gomemlimit-container-headroom","prompt":"Go 컨테이너에서 GOMEMLIMIT를 limit과 같게 설정했습니다. 런타임 밖 메모리와 피크 여유는 어떻게 계산하나요?"},{"id":"k8s-requests-limits","prompt":"requests·limits를 조정할 때 스케줄링 가능성과 실행 중 자원 상한을 어떤 순서로 검토할까요?"},{"id":"go-gc-latency-tradeoff","prompt":"Go heap과 cgroup memory limit 사이 여유가 부족할 때 GC와 OOM을 어떤 지표로 구분할까요?"}]
 difficulty: 중하
 category: 성능
 tags: ["Kubernetes","OOM","CPU throttling"]
@@ -44,5 +44,5 @@ limit을 바꿔도 request가 자동으로 같은 값으로 바뀌지 않으며,
 ## 더 파고들 거리
 
 - 노드 eviction과 cgroup OOM의 이벤트·복구 경로는 어떻게 다른가요?
-- GOMEMLIMIT와 컨테이너 limit 사이의 여유를 어떤 부하로 정할까요?
+- [Go 컨테이너에서 GOMEMLIMIT를 limit과 같게 설정했습니다. 런타임 밖 메모리와 피크 여유는 어떻게 계산하나요?](/tech-interview/questions/gomemlimit-container-headroom/)
 - CPU throttling으로 deadline 초과가 생길 때 재시도 폭주를 어떻게 막을까요?

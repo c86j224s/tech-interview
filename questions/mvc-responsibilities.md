@@ -2,7 +2,7 @@
 id: mvc-responsibilities
 title: "웹 요청 하나의 컨트롤러가 인증·가격 계산·DB 저장·HTML 렌더링을 모두 맡습니다. MVC에서 책임을 어떻게 나누나요?"
 answerMinutes: 5
-followups: [{"id": "service-boundary-design", "prompt": "MVC 서비스 계층의 책임과 프로세스 단위 서비스의 경계를 어떤 불변식·소유권 기준으로 나눌까요?"}, {"id": "authentication-vs-authorization", "prompt": "컨트롤러에서 인증만 확인하고 주문 소유권 인가를 서비스에 위임해야 하는 이유는 무엇일까요?"}, {"id": "solid-dependency-inversion", "prompt": "업무 서비스가 DB 구현을 직접 알지 않게 만들 때 MVC 계층과 포트의 의존 방향을 어떻게 잡을까요?"}]
+followups: [{"id":"domain-error-http-mapping","prompt":"형식 오류·업무 거절·인프라 장애를 HTTP 응답으로 바꿉니다. 도메인과 controller 사이 책임은 어떻게 나누나요?"},{"id":"service-boundary-design","prompt":"MVC 서비스 계층의 책임과 프로세스 단위 서비스의 경계를 어떤 불변식·소유권 기준으로 나눌까요?"},{"id":"authentication-vs-authorization","prompt":"컨트롤러에서 인증만 확인하고 주문 소유권 인가를 서비스에 위임해야 하는 이유는 무엇일까요?"}]
 difficulty: 하
 category: 설계
 tags: ["MVC","책임 분리","컨트롤러","모델","뷰"]
@@ -48,5 +48,5 @@ MVC는 입력을 받는 경계, 업무 규칙과 상태를 다루는 영역, 사
 ## 더 파고들 거리
 
 - 읽기 전용 조회와 상태 변경 요청에서 서비스와 뷰 모델의 경계를 어떻게 다르게 둘까요?
-- 입력 검증 실패·업무 규칙에 따른 거절·인프라 장애를 HTTP 응답으로 바꾸는 책임은 어느 계층에 둘까요?
+- [형식 오류·업무 거절·인프라 장애를 HTTP 응답으로 바꿉니다. 도메인과 controller 사이 책임은 어떻게 나누나요?](/tech-interview/questions/domain-error-http-mapping/)
 - MVC와 MVVM 또는 육각형 구조를 함께 사용할 때 MVC의 역할을 어떻게 좁혀 정의할까요?

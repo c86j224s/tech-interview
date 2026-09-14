@@ -2,7 +2,7 @@
 id: red-black-tree-invariants
 title: "검색 트리에 삽입과 삭제가 반복돼도 한쪽으로 치우쳐 조회가 느려지지 않게 하려 합니다. Red-Black Tree는 어떤 규칙을 복구해 높이를 제한하나요?"
 answerMinutes: 5
-followups: [{"id":"bst-balance","prompt":"균형 규칙이 없는 BST에 정렬된 키를 넣으면 어떤 모양과 최악 검색 비용이 생기며, 평균과 최악을 어떻게 구분하겠습니까?"},{"id":"btree-hash-index","prompt":"키가 디스크 페이지에 저장되고 기간 조회도 필요하다면, Red-Black Tree 대신 B+tree를 선택할 근거는 무엇입니까?"},{"id":"array-linked-list-choice","prompt":"데이터가 정적이고 전체를 메모리에서 조회한다면, 균형 트리의 갱신 비용과 정렬 배열의 캐시 이득을 어떻게 비교하겠습니까?"}]
+followups: [{"id":"red-black-delete-black-height","prompt":"Red-Black Tree의 검정 노드를 삭제합니다. 삽입과 다른 검정 높이 복구는 어떤 불변식을 유지하나요?"},{"id":"bst-balance","prompt":"균형 규칙이 없는 BST에 정렬된 키를 넣으면 어떤 모양과 최악 검색 비용이 생기며, 평균과 최악을 어떻게 구분하겠습니까?"},{"id":"btree-hash-index","prompt":"키가 디스크 페이지에 저장되고 기간 조회도 필요하다면, Red-Black Tree 대신 B+tree를 선택할 근거는 무엇입니까?"}]
 difficulty: 중하
 category: 자료구조
 tags: ["Red-Black Tree","균형 트리","회전"]
@@ -47,6 +47,6 @@ Red-Black Tree의 핵심은 빨간 노드가 빨간 자식을 갖지 않고, 각
 
 ## 더 파고들 거리
 
-- 검정 노드 삭제가 삽입보다 복잡한 이유를 검정 높이 변화로 설명해 보세요.
+- [Red-Black Tree의 검정 노드를 삭제합니다. 삽입과 다른 검정 높이 복구는 어떤 불변식을 유지하나요?](/tech-interview/questions/red-black-delete-black-height/)
 - 공유 NIL 센티널을 사용할 때 부모 포인터와 동시 접근에서 주의할 점을 말해 보세요.
 - Red-Black Tree의 높이 상한이 검색 비교 횟수와 어떻게 연결되는지 설명해 보세요.

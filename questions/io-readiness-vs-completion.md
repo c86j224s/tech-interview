@@ -2,7 +2,7 @@
 id: io-readiness-vs-completion
 title: "epoll은 읽기 가능 알림을, IOCP는 제출한 읽기의 완료를 줍니다. 데이터를 읽는 시점과 버퍼 관리는 어떻게 달라지나요?"
 answerMinutes: 5
-followups: [{"id": "iocp-immediate-completion", "prompt": "제출한 I/O가 즉시 성공하면서 완료 큐에도 결과가 온다면, 어느 경로가 처리와 정리를 맡을까요?"}, {"id": "condition-variable-predicate", "prompt": "준비 알림이 자원 소유를 보장하지 않는다는 점은 조건 변수에서 깨어난 소비자의 재검사와 어떻게 닮았을까요?"}, {"id": "deadline-cancellation-propagation", "prompt": "취소를 요청했지만 완료가 늦게 도착할 수 있다면, 연결 객체와 버퍼를 언제 반환할까요?"}]
+followups: [{"id":"epoll-oneshot-rearm-owner","prompt":"EPOLLONESHOT으로 연결을 한 worker에게 맡깁니다. 처리·소유권 반환·재무장 순서에서 무엇을 지켜야 하나요?"},{"id":"io-uring-buffer-backpressure","prompt":"io_uring으로 완료 기반 I/O를 쓰면 버퍼 수명과 제출 큐·완료 큐의 backpressure는 어떻게 관리하나요?"},{"id":"iocp-immediate-completion","prompt":"제출한 I/O가 즉시 성공하면서 완료 큐에도 결과가 온다면, 어느 경로가 처리와 정리를 맡을까요?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -69,6 +69,6 @@ epoll의 레벨 트리거는 읽을 것이 남아 있는 조건을 반복해서 
 ## 더 파고들 거리
 
 - IOCP에서 즉시 성공과 나중 완료가 서로 다른 통지 규칙을 가질 때 이중 처리를 어떻게 막을까요?
-- EPOLLONESHOT으로 연결 소유권을 넘길 때 언제 재무장해야 이벤트를 놓치지 않을까요?
+- [EPOLLONESHOT으로 연결을 한 worker에게 맡깁니다. 처리·소유권 반환·재무장 순서에서 무엇을 지켜야 하나요?](/tech-interview/questions/epoll-oneshot-rearm-owner/)
 - 취소와 정상 완료가 동시에 도착할 때 버퍼 반환을 정확히 한 번 수행하려면 어떤 상태가 필요할까요?
-- io_uring에서도 남는 버퍼 수명과 백프레셔 문제는 무엇일까요?
+- [io_uring으로 완료 기반 I/O를 쓰면 버퍼 수명과 제출 큐·완료 큐의 backpressure는 어떻게 관리하나요?](/tech-interview/questions/io-uring-buffer-backpressure/)

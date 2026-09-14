@@ -2,7 +2,7 @@
 id: load-balancer-health-draining
 title: "로드밸런서 헬스 체크가 성공한 서버가 실제 요청을 실패할 수 있고, 배포 중 기존 연결도 실패할 수 있는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id": "graceful-shutdown", "prompt": "readiness 전파 중 기존 요청을 끝내지 못하면 앱·로드밸런서·클라이언트의 기한을 어떻게 조정할까요?"}, {"id": "http-connection-pool", "prompt": "헬스 체크는 통과하지만 특정 외부 연결 풀이 고갈되는 상태를 어떤 readiness 범위로 표현할까요?"}, {"id": "k8s-probe-contract", "prompt": "startup·readiness·liveness를 나눠 장기 초기화와 실제 트래픽 수용을 어떻게 보호할까요?"}]
+followups: [{"id":"readiness-flapping-hysteresis","prompt":"readiness가 켜졌다 꺼지며 남은 서버의 부하가 출렁입니다. 복귀·실패 임계와 실제 용량을 어떻게 조정하나요?"},{"id":"graceful-shutdown","prompt":"readiness 전파 중 기존 요청을 끝내지 못하면 앱·로드밸런서·클라이언트의 기한을 어떻게 조정할까요?"},{"id":"http-connection-pool","prompt":"헬스 체크는 통과하지만 특정 외부 연결 풀이 고갈되는 상태를 어떤 readiness 범위로 표현할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -51,5 +51,5 @@ readiness를 내린 뒤에도 이미 열린 TCP·HTTP/2·WebSocket·스트림은
 ## 더 파고들 거리
 
 - 긴 스트리밍 연결은 일반 요청과 다른 drain·재개 계약을 어떻게 갖나요?
-- flapping readiness가 트래픽을 출렁이게 할 때 어떤 hysteresis를 둘까요?
+- [readiness가 켜졌다 꺼지며 남은 서버의 부하가 출렁입니다. 복귀·실패 임계와 실제 용량을 어떻게 조정하나요?](/tech-interview/questions/readiness-flapping-hysteresis/)
 - 종료 제한 시간을 넘긴 요청을 재시도할 때 중복 효과를 어떻게 막을까요?

@@ -2,7 +2,7 @@
 id: python-duck-typing
 title: "서로 다른 클래스의 객체를 close() 메서드만으로 처리하려 합니다. Python의 Protocol로 무엇을 검사할 수 있으며 런타임에도 같은 계약이 보장되나요?"
 answerMinutes: 5
-followups: [{"id":"python-generator-iterator","prompt":"Protocol이 반환하는 iterator의 재순회 가능성까지 표현하려면 어떤 타입·의미 계약을 추가할까요?"},{"id":"dependency-injection-boundaries","prompt":"Protocol을 실제 외부 API 대역에 적용할 때 정적 타입과 런타임 실패를 어떻게 격리할까요?"},{"id":"go-interface-typed-nil","prompt":"Python의 None을 가진 구현과 Go typed nil 인터페이스를 비교할 때 호출 경계의 함정은 무엇인가요?"}]
+followups: [{"id":"python-protocol-property-generics","prompt":"Python Protocol에 property와 제네릭을 선언합니다. 정적 검사와 런타임 구조 검사는 어디까지 다른가요?"},{"id":"python-generator-iterator","prompt":"Protocol이 반환하는 iterator의 재순회 가능성까지 표현하려면 어떤 타입·의미 계약을 추가할까요?"},{"id":"dependency-injection-boundaries","prompt":"Protocol을 실제 외부 API 대역에 적용할 때 정적 타입과 런타임 실패를 어떻게 격리할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Python","duck typing","Protocol","타입 힌트","런타임 검증"]
@@ -62,6 +62,6 @@ EAFP는 먼저 연산을 시도하고 예상한 실패를 처리하는 관용구
 
 ## 더 파고들 거리
 
-- Protocol에서 property·generic 타입을 표현할 때 정적 검사 범위는 어떻게 달라지나요?
+- [Python Protocol에 property와 제네릭을 선언합니다. 정적 검사와 런타임 구조 검사는 어디까지 다른가요?](/tech-interview/questions/python-protocol-property-generics/)
 - 플러그인 경계에서 EAFP와 사전 hasattr 검사를 어떤 실패 모델로 선택할까요?
 - 정적 타입이 놓치는 멱등 close와 스레드 안전성을 어떤 계약 테스트로 보완할까요?

@@ -2,7 +2,7 @@
 id: ml-overfitting-generalization
 title: "훈련 정확도는 계속 오르는데 검증 정확도는 떨어집니다. 과적합을 어떻게 알아보고 보지 않은 데이터의 일반화를 개선하나요?"
 answerMinutes: 5
-followups: [{"id":"ml-train-validation-test","prompt":"조기 종료·증강·정규화 강도를 여러 번 선택했다면 최종 일반화 성능을 오염 없이 추정하도록 분할과 실험 기록을 어떻게 운영하겠습니까?"},{"id":"ml-classification-metrics","prompt":"전체 검증 정확도는 유지되는데 특정 희소 집단의 재현율만 하락한다면 과적합 신호와 분포 변화 신호를 어떤 지표로 나누겠습니까?"},{"id":"ml-loss-objective","prompt":"정규화 때문에 objective는 좋아졌지만 순수 예측 손실과 운영 지표가 나빠진다면 어느 값을 기준으로 모델을 선택하겠습니까?"}]
+followups: [{"id":"bias-variance-training-curves","prompt":"훈련·검증 성능이 둘 다 낮은 경우와 격차가 큰 경우는 어떤 개선을 각각 먼저 검토하나요?"},{"id":"augmentation-label-invariance","prompt":"데이터 증강이 원래 라벨 의미를 바꿀 수 있습니다. 허용할 변환을 어떤 도메인 근거와 테스트로 고르나요?"},{"id":"ml-train-validation-test","prompt":"조기 종료·증강·정규화 강도를 여러 번 선택했다면 최종 일반화 성능을 오염 없이 추정하도록 분할과 실험 기록을 어떻게 운영하겠습니까?"}]
 difficulty: 하
 category: 머신러닝
 tags: ["머신러닝","과적합","일반화","정규화","검증"]
@@ -43,6 +43,6 @@ related: ["ml-train-validation-test","ml-loss-objective"]
 
 ## 더 파고들 거리
 
-- 편향·분산 관점에서 두 곡선이 모두 낮은 경우와 격차가 큰 경우의 조치를 비교해 보세요.
-- 라벨 의미를 바꾸는 증강이 가능한 도메인에서 허용 변환을 검증하는 테스트를 설계해 보세요.
+- [훈련·검증 성능이 둘 다 낮은 경우와 격차가 큰 경우는 어떤 개선을 각각 먼저 검토하나요?](/tech-interview/questions/bias-variance-training-curves/)
+- [데이터 증강이 원래 라벨 의미를 바꿀 수 있습니다. 허용할 변환을 어떤 도메인 근거와 테스트로 고르나요?](/tech-interview/questions/augmentation-label-invariance/)
 - 시간별 성능과 입력 분포를 함께 기록해 과적합과 분포 변화를 운영 중 구분해 보세요.

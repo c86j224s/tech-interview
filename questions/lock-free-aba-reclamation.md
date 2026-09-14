@@ -2,7 +2,7 @@
 id: lock-free-aba-reclamation
 title: "다른 스레드가 읽고 있을 수 있는 락 프리 스택의 노드를 제거했습니다. 왜 그 메모리를 바로 해제하면 안 되나요?"
 answerMinutes: 5
-followups: [{"id":"atomics-memory-order","prompt":"hazard pointer 게시·재검증과 CAS의 memory order를 어떤 happens-before 관계로 설명할까요?"},{"id":"cpp-shared-pointer-lifetime","prompt":"shared_ptr가 객체 수명을 보호해도 락 프리 링크의 ABA와 필드 경합을 왜 모두 해결하지 못하나요?"},{"id":"condition-variable-predicate","prompt":"락 프리 대기와 조건 변수 대기를 비교할 때 진행 보장과 CPU 소비를 어떻게 판단할까요?"}]
+followups: [{"id":"hazard-pointer-publish-recheck","prompt":"hazard pointer를 게시한 뒤 원본 포인터를 다시 읽어야 합니다. 어떤 회수 경쟁을 막는 절차인가요?"},{"id":"epoch-stalled-reader-memory","prompt":"epoch 안에서 오래 멈춘 독자가 회수를 막습니다. 살아 있는 참조를 강제 해제하지 않고 메모리를 어떻게 제한하나요?"},{"id":"wait-free-lock-free-progress","prompt":"lock-free가 각 스레드의 완료 시간을 보장하나요? wait-free와 전체 진행·개별 기아를 어떻게 구분하나요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -46,6 +46,6 @@ tagged pointer는 논리적 ABA를 감지하는 장치이고, hazard pointer·ep
 
 ## 더 파고들 거리
 
-- hazard pointer를 게시한 뒤 포인터를 다시 읽는 재검증이 왜 필요한가요?
-- epoch에 오래 머무는 스레드를 감지하고 회수 메모리를 제한하는 방법은 무엇인가요?
-- wait-free와 lock-free의 보장을 실제 API 계약으로 어떻게 구분할까요?
+- [hazard pointer를 게시한 뒤 원본 포인터를 다시 읽어야 합니다. 어떤 회수 경쟁을 막는 절차인가요?](/tech-interview/questions/hazard-pointer-publish-recheck/)
+- [epoch 안에서 오래 멈춘 독자가 회수를 막습니다. 살아 있는 참조를 강제 해제하지 않고 메모리를 어떻게 제한하나요?](/tech-interview/questions/epoch-stalled-reader-memory/)
+- [lock-free가 각 스레드의 완료 시간을 보장하나요? wait-free와 전체 진행·개별 기아를 어떻게 구분하나요?](/tech-interview/questions/wait-free-lock-free-progress/)

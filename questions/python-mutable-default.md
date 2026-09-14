@@ -2,7 +2,7 @@
 id: python-mutable-default
 title: "Python 함수의 기본 인자를 빈 리스트로 뒀는데 이전 호출에서 추가한 값이 다음 호출에도 남습니다. 기본값 객체는 언제 만들어지며 어떻게 고치나요?"
 answerMinutes: 5
-followups: [{"id":"python-shallow-deep-copy","prompt":"기본 인자로 받은 리스트를 복사해 저장할 때 얕은 복사와 깊은 복사의 선택 기준은 무엇인가요?"},{"id":"python-generator-iterator","prompt":"기본값을 재사용하는 함수와 generator를 재생성하는 함수는 호출 시점의 상태를 어떻게 다르게 보존할까요?"},{"id":"functional-purity","prompt":"기본값 캐시가 함수 결과를 호출 순서에 의존하게 만들면 순수 함수 계약이 어떻게 깨질까요?"}]
+followups: [{"id":"python-default-evaluation-late-binding","prompt":"가변 기본값 공유와 closure의 late binding은 값이 결정되는 시점에서 어떻게 다른가요?"},{"id":"python-shallow-deep-copy","prompt":"기본 인자로 받은 리스트를 복사해 저장할 때 얕은 복사와 깊은 복사의 선택 기준은 무엇인가요?"},{"id":"python-generator-iterator","prompt":"기본값을 재사용하는 함수와 generator를 재생성하는 함수는 호출 시점의 상태를 어떻게 다르게 보존할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Python","기본 인자","mutable","리스트"]
@@ -66,5 +66,5 @@ print(add_item("b"))
 ## 더 파고들 거리
 
 - dict·set 기본값도 같은 공유를 만드는지 어떻게 확인할까요?
-- 기본값 평가 시점과 클로저의 late binding은 어떤 실행 시점 차이가 있나요?
+- [가변 기본값 공유와 closure의 late binding은 값이 결정되는 시점에서 어떻게 다른가요?](/tech-interview/questions/python-default-evaluation-late-binding/)
 - 의도적 기본값 캐시에 동시성 보호와 무효화를 어떻게 둘까요?

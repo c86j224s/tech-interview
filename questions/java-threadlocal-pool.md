@@ -2,7 +2,7 @@
 id: java-threadlocal-pool
 title: "요청별 사용자 정보를 ThreadLocal에 넣은 뒤 스레드 풀에서 다음 요청이 잘못된 사용자를 봅니다. 재사용 스레드와 remove의 관계는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"java-synchronized-volatile","prompt":"ThreadLocal 값 자체는 분리돼도 값이 가리키는 가변 객체를 여러 작업이 공유하면 무엇을 보호해야 할까요?"},{"id":"structured-concurrency-fanout","prompt":"하위 작업이 다른 풀로 넘어갈 때 요청 컨텍스트를 ThreadLocal 대신 어떤 수명 계약으로 전달할까요?"},{"id":"goroutine-lifecycle-and-leaks","prompt":"정리되지 않은 요청 컨텍스트가 장수 워커에 남는지 어떤 메모리·작업 지표로 확인할까요?"}]
+followups: [{"id":"threadlocal-weak-key-value-retention","prompt":"ThreadLocal 키는 약한 참조인데 장수 worker에서 값이 남습니다. 키 회수와 value 정리의 차이는 무엇인가요?"},{"id":"threadlocal-versus-explicit-context","prompt":"요청 문맥을 ThreadLocal에 넣는 것과 인자로 전달하는 것을 테스트 격리·비동기 전파로 어떻게 비교하나요?"},{"id":"java-synchronized-volatile","prompt":"ThreadLocal 값 자체는 분리돼도 값이 가리키는 가변 객체를 여러 작업이 공유하면 무엇을 보호해야 할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Java","ThreadLocal","스레드 풀","remove","요청 격리"]
@@ -70,6 +70,6 @@ InheritableThreadLocal은 새 자식 스레드 생성 때 값을 이어받는 �
 
 ## 더 파고들 거리
 
-- ThreadLocalMap의 약한 키와 남은 값이 장수 워커에 미치는 영향은 무엇인가요?
+- [ThreadLocal 키는 약한 참조인데 장수 worker에서 값이 남습니다. 키 회수와 value 정리의 차이는 무엇인가요?](/tech-interview/questions/threadlocal-weak-key-value-retention/)
 - 가상 스레드에서 ThreadLocal 비용이 달라져도 정리 계약이 필요한 이유는 무엇인가요?
-- 메서드 인자 전달과 ThreadLocal의 테스트 격리성을 어떻게 비교할까요?
+- [요청 문맥을 ThreadLocal에 넣는 것과 인자로 전달하는 것을 테스트 격리·비동기 전파로 어떻게 비교하나요?](/tech-interview/questions/threadlocal-versus-explicit-context/)

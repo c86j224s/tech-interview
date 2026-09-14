@@ -2,7 +2,7 @@
 id: aoi-interest-management
 title: "넓은 게임 월드에서 각 플레이어에게 주변 상태만 보내려 합니다. 누구의 정보를 보낼지와 경계에서 나타났다 사라지는 문제를 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"spatial-hash-grid","prompt":"AOI 후보 셀을 빠르게 찾은 뒤 거리·시야·팀 같은 정밀 관계가 셀 이동 없이도 바뀌면 어떤 갱신을 수행하겠습니까?"},{"id":"websocket-heartbeat-reconnect","prompt":"AOI 스냅샷을 보내는 연결이 끊겼다가 재접속하면 누락된 진입·이탈 이벤트를 어떤 기준으로 복구하겠습니까?"},{"id":"message-ordering-scope","prompt":"같은 객체의 증분 갱신을 여러 워커가 만들 때 클라이언트가 상태를 역순으로 적용하지 않게 어떤 순서를 보장하겠습니까?"}]
+followups: [{"id":"aoi-incremental-boundary-check","prompt":"공간 셀을 넘지 않았는데 거리나 시야 경계가 바뀌었습니다. 증분 AOI 갱신에서 누락을 어떻게 찾나요?"},{"id":"aoi-large-object-candidates","prompt":"큰 보스와 작은 투사체의 공개 반경이 다릅니다. AOI 후보 검색에서 객체 크기와 수신 반경을 어떻게 반영하나요?"},{"id":"spatial-hash-grid","prompt":"AOI 후보 셀을 빠르게 찾은 뒤 거리·시야·팀 같은 정밀 관계가 셀 이동 없이도 바뀌면 어떤 갱신을 수행하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["AOI","관심 영역","네트워크"]
@@ -41,6 +41,6 @@ AOI는 단순한 네트워크 압축이 아니라 누가 어떤 시점에 어떤
 
 ## 더 파고들 거리
 
-- AOI 관계를 매 틱 재계산하지 않고 증분으로 갱신할 때 경계 누락을 어떻게 검증하나요?
-- 큰 보스·투사체처럼 객체 크기와 공개 반경이 다른 경우 후보 구조를 어떻게 설계하나요?
+- [공간 셀을 넘지 않았는데 거리나 시야 경계가 바뀌었습니다. 증분 AOI 갱신에서 누락을 어떻게 찾나요?](/tech-interview/questions/aoi-incremental-boundary-check/)
+- [큰 보스와 작은 투사체의 공개 반경이 다릅니다. AOI 후보 검색에서 객체 크기와 수신 반경을 어떻게 반영하나요?](/tech-interview/questions/aoi-large-object-candidates/)
 - 밀집 지역에서 중요도별 갱신 예산을 줄여도 전투 판정의 공정성을 유지하려면 무엇을 분리해야 하나요?

@@ -2,7 +2,7 @@
 id: voxel-sparse-storage
 title: "대부분 비어 있는 큰 복셀 월드에서 주변 셀 조회와 지형 수정이 자주 일어납니다. 조밀 배열·해시 청크·옥트리를 메모리와 접근·갱신 비용으로 어떻게 비교하나요?"
 answerMinutes: 5
-followups: [{"id":"voxel-chunk-boundaries","prompt":"희소 청크 해시에서 이웃 청크가 없을 때 부재·미로딩·빈 공간을 충돌과 raycast에 어떻게 다르게 반환하겠습니까?"},{"id":"voxel-occupancy-representation","prompt":"정적 압축 청크와 에이전트별 이동성 데이터를 같은 블록에 넣지 않으려면 조회 계층을 어떻게 구성하겠습니까?"},{"id":"voxel-derived-data-update","prompt":"청크 블록을 원자 교체하는 동안 충돌·경로·시야 파생 데이터가 같은 원본 버전을 보게 하려면 어떤 참조 수명을 두겠습니까?"}]
+followups: [{"id":"voxel-palette-bitmap-update-cost","prompt":"팔레트 압축 청크와 비트맵을 비교합니다. 재질 분포·이웃 조회·단일 셀 변경의 비용은 어떻게 다른가요?"},{"id":"voxel-chunk-boundaries","prompt":"희소 청크 해시에서 이웃 청크가 없을 때 부재·미로딩·빈 공간을 충돌과 raycast에 어떻게 다르게 반환하겠습니까?"},{"id":"voxel-occupancy-representation","prompt":"정적 압축 청크와 에이전트별 이동성 데이터를 같은 블록에 넣지 않으려면 조회 계층을 어떻게 구성하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["복셀","희소 저장","옥트리"]
@@ -39,6 +39,6 @@ related: ["voxel-chunk-boundaries"]
 
 ## 더 파고들 거리
 
-- 팔레트 압축 청크와 비트맵 표현을 주변 조회·재인코딩 패턴별로 어떻게 비교하나요?
+- [팔레트 압축 청크와 비트맵을 비교합니다. 재질 분포·이웃 조회·단일 셀 변경의 비용은 어떻게 다른가요?](/tech-interview/questions/voxel-palette-bitmap-update-cost/)
 - 옥트리 노드를 배열로 평탄화할 때 캐시 지역성과 부분 갱신 비용은 어떻게 달라지나요?
 - 저장 포맷 버전을 바꾸면서 스트리밍 중인 이전 청크를 안전하게 읽으려면 어떤 호환 계층이 필요한가요?

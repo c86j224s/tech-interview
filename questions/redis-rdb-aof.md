@@ -2,7 +2,7 @@
 id: redis-rdb-aof
 title: "Redis 재시작 때 최근 쓰기가 일부 사라져 지속성 설정을 바꾸려 합니다. RDB와 AOF는 유실 범위·복구 시간·디스크 비용을 어떻게 바꾸나요?"
 answerMinutes: 5
-followups: [{"id":"db-wal-durability","prompt":"RDB·AOF와 관계형 DB WAL은 로그 내구성·페이지 복구·fsync 계약에서 어떻게 다르나요?"},{"id":"redis-wait-durability","prompt":"WAIT가 replica 복제를 확인해도 RDB·AOF와 장애 승격에서 보존을 단정할 수 없는 이유는 무엇인가요?"},{"id":"backup-restore-rpo-rto","prompt":"Redis 지속성 파일과 독립 백업을 이용해 RPO·RTO를 어떤 복구 시험으로 확인하나요?"}]
+followups: [{"id":"redis-fork-rewrite-memory-peak","prompt":"Redis AOF rewrite 중 쓰기가 많습니다. copy-on-write·버퍼·디스크의 최대 비용을 어떤 부하로 재현하나요?"},{"id":"db-wal-durability","prompt":"RDB·AOF와 관계형 DB WAL은 로그 내구성·페이지 복구·fsync 계약에서 어떻게 다르나요?"},{"id":"redis-wait-durability","prompt":"WAIT가 replica 복제를 확인해도 RDB·AOF와 장애 승격에서 보존을 단정할 수 없는 이유는 무엇인가요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Redis","RDB","AOF","지속성"]
@@ -43,6 +43,6 @@ RDB와 AOF를 함께 켜는 경우 실제 재시작 시 어떤 파일·형식이
 
 ## 더 파고들 거리
 
-- rewrite 중 쓰기 버퍼와 메모리 피크를 재현해 보세요.
+- [Redis AOF rewrite 중 쓰기가 많습니다. copy-on-write·버퍼·디스크의 최대 비용을 어떤 부하로 재현하나요?](/tech-interview/questions/redis-fork-rewrite-memory-peak/)
 - RDB+AOF 재시작 파일 선택을 검증해 보세요.
 - AOF 끝부분 손상에서 허용 복구 범위를 정해 보세요.

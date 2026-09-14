@@ -2,7 +2,7 @@
 id: redis-cluster-hash-tags
 title: "Redis Cluster에서 hash tag로 관련 키를 같은 슬롯에 배치할 때 원자성·분산·재시도에 어떤 제약이 생기나요?"
 answerMinutes: 5
-followups: [{"id":"redis-pipeline-transaction-lua","prompt":"같은 슬롯의 잔액·원장 키를 파이프라인·MULTI/EXEC·Lua 중 어떤 방식으로 원자적으로 바꾸나요?"},{"id":"redis-sentinel-cluster","prompt":"Sentinel과 Cluster의 장애 전환·샤딩 차이를 클라이언트 라우팅 관점에서 어떻게 설명하나요?"},{"id":"request-timeout-idempotency","prompt":"슬롯 이동 중 타임아웃된 갱신의 실행 여부가 불명확할 때 중복 효과를 어떻게 막나요?"}]
+followups: [{"id":"redis-cross-account-transfer-slot","prompt":"서로 다른 계정 키가 다른 Redis 슬롯에 있습니다. 이체를 단일 슬롯으로 묶을지 별도 조정할지 어떻게 비교하나요?"},{"id":"redis-pipeline-transaction-lua","prompt":"같은 슬롯의 잔액·원장 키를 파이프라인·MULTI/EXEC·Lua 중 어떤 방식으로 원자적으로 바꾸나요?"},{"id":"redis-sentinel-cluster","prompt":"Sentinel과 Cluster의 장애 전환·샤딩 차이를 클라이언트 라우팅 관점에서 어떻게 설명하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["Redis","Cluster","hash tag"]
@@ -43,6 +43,6 @@ Sentinel은 primary 장애 전환을 돕지만 키 공간 샤딩을 하지 않�
 
 ## 더 파고들 거리
 
-- 서로 다른 계정 이체를 단일 슬롯 모델로 바꿀지 비교해 보세요.
+- [서로 다른 계정 키가 다른 Redis 슬롯에 있습니다. 이체를 단일 슬롯으로 묶을지 별도 조정할지 어떻게 비교하나요?](/tech-interview/questions/redis-cross-account-transfer-slot/)
 - MOVED와 ASK의 라우팅 처리 차이를 확인해 보세요.
 - 핫 슬롯 탐지와 태그 재설계 기준을 정해 보세요.

@@ -2,7 +2,7 @@
 id: distributed-lock-fencing
 title: "분산 락을 얻은 워커가 오래 멈췄다가 락 만료 후 다시 실행됐습니다. 새 소유자와 동시에 쓰는 일을 어떻게 막나요?"
 answerMinutes: 5
-followups: [{"id": "retry-safe-state-machine", "prompt": "새 소유권을 받은 워커가 이전 작업을 이어갈 때 상태 버전과 멱등 작업 ID는 어떤 역할을 나눌까요?"}, {"id": "request-timeout-idempotency", "prompt": "외부 결제 API가 펜싱 토큰을 검사하지 않는다면, 오래된 워커의 재호출은 어떻게 통제할까요?"}, {"id": "consensus-quorum-failure", "prompt": "토큰을 발급하는 저장소가 과반을 잃었을 때도 계속 새 소유권을 부여하면 무엇이 위험할까요?"}]
+followups: [{"id":"fencing-token-persistent-monotonicity","prompt":"펜싱 번호 발급기가 재시작해 번호가 작아졌습니다. 오래된 writer를 막으려면 어떤 내구·세대 조건이 필요한가요?"},{"id":"multi-store-fencing-scope","prompt":"한 작업자가 DB와 객체 저장소에 씁니다. 한곳의 펜싱 검사만으로 전체 작업을 보호할 수 있나요?"},{"id":"retry-safe-state-machine","prompt":"새 소유권을 받은 워커가 이전 작업을 이어갈 때 상태 버전과 멱등 작업 ID는 어떤 역할을 나눌까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -56,6 +56,6 @@ related: ["hash-sharding-and-resharding"]
 
 ## 더 파고들 거리
 
-- 펜싱 토큰이 재시작 후에도 단조 증가해야 하는 이유는 무엇인가요?
-- 여러 저장소에 쓰는 작업에서 토큰 검증 범위는 어떻게 정할까요?
+- [펜싱 번호 발급기가 재시작해 번호가 작아졌습니다. 오래된 writer를 막으려면 어떤 내구·세대 조건이 필요한가요?](/tech-interview/questions/fencing-token-persistent-monotonicity/)
+- [한 작업자가 DB와 객체 저장소에 씁니다. 한곳의 펜싱 검사만으로 전체 작업을 보호할 수 있나요?](/tech-interview/questions/multi-store-fencing-scope/)
 - 락 해제 시 다른 워커의 락을 지우지 않으려면 무엇을 비교해야 할까요?

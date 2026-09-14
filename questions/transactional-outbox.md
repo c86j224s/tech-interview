@@ -2,7 +2,7 @@
 id: transactional-outbox
 title: "주문 완료 상태는 DB에 저장됐는데 직후 서버가 꺼져 완료 메시지는 발행되지 않았습니다. transactional outbox로 유실을 어떻게 막고 재발행 중복은 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id": "message-consumer-idempotency", "prompt": "유실을 막으려고 재발행하니 같은 메시지가 두 번 도착합니다. 받는 쪽의 포인트 지급은 어떻게 보호할까요?"}, {"id": "message-ordering-scope", "prompt": "전달자를 여러 개로 늘리면 같은 주문의 완료와 취소 이벤트 순서는 그대로 유지될까요?"}, {"id": "bounded-queue-backpressure", "prompt": "브로커가 오래 멈춰 outbox 행이 쌓입니다. 주문 수락을 계속할지와 DB 용량 한도를 어떻게 정할까요?"}]
+followups: [{"id":"message-consumer-idempotency","prompt":"유실을 막으려고 재발행하니 같은 메시지가 두 번 도착합니다. 받는 쪽의 포인트 지급은 어떻게 보호할까요?"},{"id":"outbox-claim-lease-recovery","prompt":"여러 outbox 발행자가 claim합니다. lease 만료와 늦은 완료·재발행은 어떤 owner·버전으로 처리하나요?"},{"id":"message-ordering-scope","prompt":"전달자를 여러 개로 늘리면 같은 주문의 완료와 취소 이벤트 순서는 그대로 유지될까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -70,5 +70,5 @@ DB와 브로커를 각각 호출하는 구조는 한 논리 작업이 서로 다
 ## 더 파고들 거리
 
 - polling과 CDC 전달의 지연·부하·운영 비용은 어떻게 다른가요?
-- 여러 전달자의 claim과 lease 만료를 어떻게 안전하게 설계하나요?
+- [여러 outbox 발행자가 claim합니다. lease 만료와 늦은 완료·재발행은 어떤 owner·버전으로 처리하나요?](/tech-interview/questions/outbox-claim-lease-recovery/)
 - 보관 기간을 넘긴 이벤트의 재처리 요구를 어떻게 확인하나요?

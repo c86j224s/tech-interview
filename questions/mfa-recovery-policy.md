@@ -2,7 +2,7 @@
 id: mfa-recovery-policy
 title: "강한 MFA를 사용해도 이메일·지원센터 같은 계정 복구 경로가 약하면 어떤 공격 경로와 정책 문제가 생기나요?"
 answerMinutes: 5
-followups: [{"id":"account-linking-proof","prompt":"복구된 사용자가 새 소셜 로그인 수단을 추가하려 할 때 복구 성공만으로 연결을 허용해도 되는지 어떻게 판단하나요?"},{"id":"password-storage","prompt":"MFA를 잃은 사용자의 비밀번호 재설정을 복구 수단으로 허용한다면 비밀번호 검증과 재설정 토큰의 보장 범위를 어떻게 나누나요?"},{"id":"authentication-vs-authorization","prompt":"복구 직후 로그인은 허용하되 결제·권한 변경은 제한하려면 인증 결과와 작업별 인가를 어떻게 분리하나요?"}]
+followups: [{"id":"phishing-resistant-mfa-recovery","prompt":"패스키와 OTP의 복구 경로를 설계합니다. 피싱 저항 수준이 복구·새 자격 등록에서 낮아지지 않게 어떻게 하나요?"},{"id":"account-recovery-cooling-period","prompt":"계정 복구 직후 민감한 변경에 대기 시간을 둡니다. 허용 기능·알림·긴급 해제 정책을 어떻게 나누나요?"},{"id":"account-linking-proof","prompt":"복구된 사용자가 새 소셜 로그인 수단을 추가하려 할 때 복구 성공만으로 연결을 허용해도 되는지 어떻게 판단하나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -52,6 +52,6 @@ MFA를 통과하는 정상 로그인만 강하게 만들어도 이메일 링크,
 
 ## 더 파고들 거리
 
-- 피싱 저항 MFA와 OTP의 복구 정책을 같은 신뢰 등급으로 볼 수 있을까요?
+- [패스키와 OTP의 복구 경로를 설계합니다. 피싱 저항 수준이 복구·새 자격 등록에서 낮아지지 않게 어떻게 하나요?](/tech-interview/questions/phishing-resistant-mfa-recovery/)
 - 전체 세션 회수와 기기별 회수의 위협·사용성 차이를 어떤 지표로 비교할까요?
-- 복구 직후 지연을 두는 동안 어떤 기능을 허용하고 어떤 기능을 막을까요?
+- [계정 복구 직후 민감한 변경에 대기 시간을 둡니다. 허용 기능·알림·긴급 해제 정책을 어떻게 나누나요?](/tech-interview/questions/account-recovery-cooling-period/)

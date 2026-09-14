@@ -2,7 +2,7 @@
 id: python-shallow-deep-copy
 title: "Python에서 중첩 리스트를 가진 딕셔너리를 복사한 뒤 리스트를 바꿨더니 원본도 바뀝니다. 얕은 복사와 깊은 복사는 무엇을 공유하며 파일 같은 외부 자원에도 적용할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"js-object-copy","prompt":"structuredClone과 deepcopy가 함수·순환·클래스 인스턴스를 다루는 차이는 무엇인가요?"},{"id":"python-refcount-cycles","prompt":"깊은 복사로 만든 그래프가 순환을 포함할 때 memo와 cyclic GC의 관계는 무엇인가요?"},{"id":"immutable-data-sharing","prompt":"복사 대신 불변 자료구조를 공유할 수 있는 도메인 조건은 무엇인가요?"}]
+followups: [{"id":"python-deepcopy-memo-aliasing","prompt":"deepcopy는 순환과 같은 객체를 가리키는 여러 참조를 어떻게 처리하나요? memo가 없다면 어떤 문제가 생기나요?"},{"id":"js-object-copy","prompt":"structuredClone과 deepcopy가 함수·순환·클래스 인스턴스를 다루는 차이는 무엇인가요?"},{"id":"python-refcount-cycles","prompt":"깊은 복사로 만든 그래프가 순환을 포함할 때 memo와 cyclic GC의 관계는 무엇인가요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Python","copy","deepcopy","얕은 복사","깊은 복사"]
@@ -56,6 +56,6 @@ deepcopy의 memo는 같은 원본 객체를 두 번 만났을 때 같은 복사 
 
 ## 더 파고들 거리
 
-- deepcopy memo가 순환과 별칭 보존에 어떻게 기여하나요?
+- [deepcopy는 순환과 같은 객체를 가리키는 여러 참조를 어떻게 처리하나요? memo가 없다면 어떤 문제가 생기나요?](/tech-interview/questions/python-deepcopy-memo-aliasing/)
 - 사용자 정의 `__deepcopy__`에서 공유할 객체를 어떻게 명시할까요?
 - 데이터 클래스·불변 객체·직렬화 복사의 비용과 의미를 비교해 보세요.

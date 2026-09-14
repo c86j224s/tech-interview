@@ -2,7 +2,7 @@
 id: java-overload-override
 title: "선언 타입은 A지만 실제 객체는 B일 때, 오버로딩과 오버라이딩은 메서드를 각각 언제 결정하나요?"
 answerMinutes: 5
-followups: [{"id":"java-generics-erasure","prompt":"제네릭 상속으로 소거 시그니처가 달라질 때 bridge method가 동적 디스패치에 어떤 역할을 할까요?"},{"id":"java-annotation-retention","prompt":"@Override가 컴파일러에 제공하는 검사는 런타임 reflection 어노테이션과 어떤 층이 다른가요?"},{"id":"java-boxing-null","prompt":"null 리터럴과 래퍼 overload가 섞이면 가장 구체적인 메서드 선택이 왜 모호해질까요?"}]
+followups: [{"id":"java-null-overload-ambiguity","prompt":"서로 관련 없는 두 참조 타입의 overload에 null을 넘깁니다. 가장 구체적인 메서드가 없으면 어떻게 되나요?"},{"id":"java-field-hiding-dispatch","prompt":"선언 타입은 부모이고 실제 객체는 자식입니다. 같은 이름의 필드와 override 메서드는 왜 다르게 선택되나요?"},{"id":"java-generics-erasure","prompt":"제네릭 상속으로 소거 시그니처가 달라질 때 bridge method가 동적 디스패치에 어떤 역할을 할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Java","오버로딩","오버라이딩","컴파일 타임","동적 디스패치"]
@@ -61,6 +61,6 @@ a.f("hello");       // B.f(Object)
 
 ## 더 파고들 거리
 
-- null 리터럴에서 가장 구체적인 overload가 하나가 아닐 때 컴파일러는 어떻게 거절하나요?
-- 필드 접근과 인스턴스 메서드 호출의 바인딩이 다른 이유는 무엇인가요?
+- [서로 관련 없는 두 참조 타입의 overload에 null을 넘깁니다. 가장 구체적인 메서드가 없으면 어떻게 되나요?](/tech-interview/questions/java-null-overload-ambiguity/)
+- [선언 타입은 부모이고 실제 객체는 자식입니다. 같은 이름의 필드와 override 메서드는 왜 다르게 선택되나요?](/tech-interview/questions/java-field-hiding-dispatch/)
 - 제네릭 override에 bridge method가 생기는 조건은 무엇인가요?

@@ -2,7 +2,7 @@
 id: astar-open-closed
 title: "A* 탐색에서 같은 셀에 더 저렴하게 도착하는 경로를 뒤늦게 찾았습니다. 후보 큐와 경로 복원 정보를 어떻게 바꿔야 하나요?"
 answerMinutes: 5
-followups: [{"id":"astar-heuristic","prompt":"휴리스틱의 일관성을 보장할 수 없다면 재오픈과 최단 경로 검증을 어떤 방식으로 설계하겠습니까?"},{"id":"dynamic-path-revalidation","prompt":"탐색 중 맵 버전이 바뀌었다면 큐의 비용과 부모 정보를 어느 범위까지 폐기하겠습니까?"},{"id":"jps-plus-preprocessing","prompt":"전처리된 점프 정보가 현재 버전과 다를 때 오래된 후보를 재사용하지 않도록 어떤 검사를 두겠습니까?"}]
+followups: [{"id":"astar-stale-heap-rebuild","prompt":"A*의 지연 삭제로 오래된 힙 항목이 쌓입니다. 재구성 시점과 메모리 상한을 어떻게 정하나요?"},{"id":"grid-path-parent-direction","prompt":"격자 경로 복원에서 부모 포인터 대신 방향만 저장하려 합니다. 가능한 이동 모델과 복원·메모리 비용은 무엇인가요?"},{"id":"astar-heuristic","prompt":"휴리스틱의 일관성을 보장할 수 없다면 재오픈과 최단 경로 검증을 어떤 방식으로 설계하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["A*","open set","경로 탐색"]
@@ -41,6 +41,6 @@ A*에서 open set은 발견했지만 아직 확장하지 않은 후보이고, cl
 
 ## 더 파고들 거리
 
-- 지연 삭제로 힙이 커질 때 메모리 상한과 재구성 시점을 어떻게 정하나요?
-- 부모 포인터 대신 방향만 저장할 때 경로 복원과 메모리는 어떻게 달라지나요?
+- [A*의 지연 삭제로 오래된 힙 항목이 쌓입니다. 재구성 시점과 메모리 상한을 어떻게 정하나요?](/tech-interview/questions/astar-stale-heap-rebuild/)
+- [격자 경로 복원에서 부모 포인터 대신 방향만 저장하려 합니다. 가능한 이동 모델과 복원·메모리 비용은 무엇인가요?](/tech-interview/questions/grid-path-parent-direction/)
 - 동적 장애물 변경이 일부 셀에만 영향을 줄 때 어떤 비용 상태를 재사용할 수 있나요?

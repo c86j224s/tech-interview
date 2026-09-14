@@ -2,7 +2,7 @@
 id: bloom-filter-tradeoff
 title: "없는 키 조회가 DB에 많이 들어옵니다. 블룸 필터로 존재 여부를 먼저 검사해 어떤 조회를 생략할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"cache-aside-consistency","prompt":"DB에 새 키를 저장하고 캐시를 삭제하는 사이 조회가 끼어든다면, 필터·캐시·원본의 갱신 순서를 어떻게 맞추겠습니까?"},{"id":"redis-expiry-eviction","prompt":"필터가 존재한다고 알려도 원본 캐시 항목이 TTL이나 eviction으로 사라질 수 있다면, 어느 저장소를 최종 판단으로 삼겠습니까?"},{"id":"cache-stampede-singleflight","prompt":"필터 양성인 인기 키가 캐시 만료 직후 몰려온다면, 원본 조회를 여러 번 하지 않게 어떤 동시성 제어를 추가하겠습니까?"}]
+followups: [{"id":"bloom-rebuild-concurrent-inserts","prompt":"블룸 필터를 새로 만드는 동안 신규 키가 삽입됩니다. 스냅샷·증분·세대 전환을 어떻게 연결하나요?"},{"id":"bloom-capacity-hash-count","prompt":"예상 원소 수와 거짓 양성률 목표가 있습니다. 블룸 필터의 비트 수와 해시 수를 어떻게 계산하고 검증하나요?"},{"id":"cache-aside-consistency","prompt":"DB에 새 키를 저장하고 캐시를 삭제하는 사이 조회가 끼어든다면, 필터·캐시·원본의 갱신 순서를 어떻게 맞추겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags:
@@ -48,6 +48,6 @@ related: ["cache-aside-consistency"]
 
 ## 더 파고들 거리
 
-- 재구축 중 발생한 삽입을 놓치지 않도록 이중 읽기·세대 교체를 어떻게 설계할지 설명해 보세요.
-- 예상 원소 수와 허용 오탐률로 비트 수와 해시 수를 정하는 관계를 말해 보세요.
+- [블룸 필터를 새로 만드는 동안 신규 키가 삽입됩니다. 스냅샷·증분·세대 전환을 어떻게 연결하나요?](/tech-interview/questions/bloom-rebuild-concurrent-inserts/)
+- [예상 원소 수와 거짓 양성률 목표가 있습니다. 블룸 필터의 비트 수와 해시 수를 어떻게 계산하고 검증하나요?](/tech-interview/questions/bloom-capacity-hash-count/)
 - 삭제와 높은 업데이트율이 있을 때 counting Bloom filter와 Cuckoo filter를 비교해 보세요.

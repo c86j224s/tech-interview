@@ -2,7 +2,7 @@
 id: dp-greedy-divide-conquer
 title: "목표 금액을 가장 적은 수의 동전으로 만들려 합니다. 큰 동전부터 고르는 방법이 항상 맞는지 어떻게 판단하며, 동적 계획법과 분할 정복은 어떤 점이 다른가요?"
 answerMinutes: 5
-followups: [{"id":"minimum-spanning-tree","prompt":"간선을 하나씩 골라 전체 연결 비용을 줄이는 문제에서 탐욕 선택이 왜 다른 최적화 목표와 충돌할 수 있는지 비교해 보세요."},{"id":"sieve-prime-numbers","prompt":"같은 작은 계산을 여러 질의에서 재사용하는 범위 소수 문제라면, 전처리와 개별 판정의 상태를 어떻게 나누겠습니까?"},{"id":"astar-heuristic","prompt":"경로 비용 문제에서 휴리스틱으로 탐색을 줄이려면, 탐욕적인 ‘현재 가까운 곳’ 선택과 최적성 보장을 어떻게 구분하겠습니까?"}]
+followups: [{"id":"fractional-zero-one-knapsack","prompt":"물건을 나눌 수 있는 배낭과 나눌 수 없는 배낭에서 가치 비율 탐욕법의 정당성은 왜 달라지나요?"},{"id":"dynamic-programming-state-sufficiency","prompt":"DP 상태에서 정보를 하나 줄이려 합니다. 같은 상태로 합친 두 과거가 미래 전이를 다르게 만드는지 어떻게 확인하나요?"},{"id":"minimum-spanning-tree","prompt":"간선을 하나씩 골라 전체 연결 비용을 줄이는 문제에서 탐욕 선택이 왜 다른 최적화 목표와 충돌할 수 있는지 비교해 보세요."}]
 difficulty: 하
 category: 알고리즘
 tags: ["동적 계획법","탐욕법","분할 정복"]
@@ -49,6 +49,6 @@ DP는 메모이제이션을 붙인 재귀일 수도 있고, 작은 상태부터 
 
 ## 더 파고들 거리
 
-- 분할 가능한 배낭과 분할할 수 없는 배낭에서 탐욕법과 DP가 달라지는 이유를 설명해 보세요.
-- DP 상태에서 하나의 정보를 제거했을 때 미래 전이를 구분할 수 없게 되는 반례를 만들어 보세요.
+- [물건을 나눌 수 있는 배낭과 나눌 수 없는 배낭에서 가치 비율 탐욕법의 정당성은 왜 달라지나요?](/tech-interview/questions/fractional-zero-one-knapsack/)
+- [DP 상태에서 정보를 하나 줄이려 합니다. 같은 상태로 합친 두 과거가 미래 전이를 다르게 만드는지 어떻게 확인하나요?](/tech-interview/questions/dynamic-programming-state-sufficiency/)
 - top-down과 bottom-up의 계산 범위·스택·메모리 지역성을 비교해 보세요.

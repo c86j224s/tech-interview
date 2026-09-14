@@ -2,7 +2,7 @@
 id: argocd-prune-rollback
 title: "Git에서 리소스 정의를 삭제한 뒤 Argo CD로 동기화하려 합니다. 클러스터에서 무엇이 삭제될 수 있고, 문제가 생겨 Git을 되돌리면 어디까지 복구되나요?"
 answerMinutes: 5
-followups: [{"id":"argocd-gitops-reconcile","prompt":"긴급 변경을 클러스터에 직접 적용한 뒤 자동 self-heal이 되돌리려 한다면, 예외 변경의 기록과 동기화 재개를 어떻게 관리하겠습니까?"},{"id":"db-online-schema-migration","prompt":"앱 버전을 Git에서 되돌려야 하지만 DB 스키마 변경은 이미 진행됐다면 구버전이 읽고 쓸 수 있는 전환 순서를 어떻게 세우겠습니까?"},{"id":"secret-key-rotation","prompt":"prune 대상 Secret이 이미 폐기된 키를 담고 있었다면 선언 복구와 키 유출 대응을 어떤 기준으로 나누겠습니까?"}]
+followups: [{"id":"gitops-pvc-prune-preflight","prompt":"Git에서 PVC를 제거하기 전에 reclaimPolicy·백업·스냅샷·실제 참조를 어떤 순서로 확인해야 하나요?"},{"id":"argocd-application-cascade-delete","prompt":"Argo CD Application 삭제와 개별 리소스 prune은 삭제 대상과 finalizer에서 어떻게 다른가요?"},{"id":"argocd-gitops-reconcile","prompt":"긴급 변경을 클러스터에 직접 적용한 뒤 자동 self-heal이 되돌리려 한다면, 예외 변경의 기록과 동기화 재개를 어떻게 관리하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Argo CD","prune","롤백"]
@@ -43,6 +43,6 @@ Git을 이전 커밋으로 되돌리면 Argo CD는 예전 Deployment, Service, C
 
 ## 더 파고들 거리
 
-- PVC prune 전에 reclaimPolicy와 스토리지 스냅샷을 어떤 순서로 확인해야 할까요.
-- Application 삭제와 개별 리소스 prune에서 cascade가 만드는 영향 범위를 어떻게 검증할까요.
+- [Git에서 PVC를 제거하기 전에 reclaimPolicy·백업·스냅샷·실제 참조를 어떤 순서로 확인해야 하나요?](/tech-interview/questions/gitops-pvc-prune-preflight/)
+- [Argo CD Application 삭제와 개별 리소스 prune은 삭제 대상과 finalizer에서 어떻게 다른가요?](/tech-interview/questions/argocd-application-cascade-delete/)
 - 긴급 롤백 중 최신 revision의 자동 재적용을 막고 복구 완료를 어떤 상태로 선언할까요.

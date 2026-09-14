@@ -2,7 +2,7 @@
 id: continuous-collision
 title: "게임 서버가 매 틱 위치로 충돌을 검사하는데 빠른 투사체가 얇은 벽을 통과합니다. 왜 생기며 어떻게 막나요?"
 answerMinutes: 5
-followups: [{"id":"collision-broad-narrow-phase","prompt":"swept-shape 후보가 너무 많아질 때 broad phase의 경계를 어떤 보수성으로 정하겠습니까?"},{"id":"voxel-raycast-dda","prompt":"투사체가 복셀의 면과 모서리를 동시에 통과할 때 DDA의 셀 포함 규칙을 충돌 판정과 어떻게 맞추겠습니까?"},{"id":"fixed-timestep-catchup","prompt":"서버가 밀린 틱을 따라잡을 때 연속 충돌 계산을 생략하거나 단순화해도 되는 작업과 안 되는 작업을 어떻게 나누겠습니까?"}]
+followups: [{"id":"collision-toi-numerical-margin","prompt":"계산한 최초 충돌 시점이 수치 오차로 벽 안에 놓입니다. 정지 위치와 접촉 여유를 어떻게 정하나요?"},{"id":"piercing-projectile-contact-order","prompt":"관통 투사체가 한 틱에 여러 대상을 만납니다. 충돌 순서·반복 상한·이벤트 ID를 어떻게 정하나요?"},{"id":"collision-broad-narrow-phase","prompt":"swept-shape 후보가 너무 많아질 때 broad phase의 경계를 어떤 보수성으로 정하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["연속 충돌","투사체","틱"]
@@ -41,6 +41,6 @@ related: ["game-server-tick-budget","collision-broad-narrow-phase"]
 
 ## 더 파고들 거리
 
-- time of impact가 수치 오차로 표면 안쪽에 놓일 때 어떤 보수적 정지 규칙을 쓰나요?
-- 관통 가능한 투사체가 여러 장애물을 만날 때 충돌 순서와 최대 횟수를 어떻게 정하나요?
+- [계산한 최초 충돌 시점이 수치 오차로 벽 안에 놓입니다. 정지 위치와 접촉 여유를 어떻게 정하나요?](/tech-interview/questions/collision-toi-numerical-margin/)
+- [관통 투사체가 한 틱에 여러 대상을 만납니다. 충돌 순서·반복 상한·이벤트 ID를 어떻게 정하나요?](/tech-interview/questions/piercing-projectile-contact-order/)
 - 클라이언트 예측 효과와 서버 충돌 위치가 다를 때 시각 보정과 판정 설명을 어떻게 분리하나요?

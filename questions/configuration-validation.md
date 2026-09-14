@@ -2,7 +2,7 @@
 id: configuration-validation
 title: "DB 연결 풀을 인스턴스마다 20개에서 100개로 늘리려 합니다. 값 자체는 유효한데 어떤 장애가 생길 수 있고 어떻게 안전하게 적용하나요?"
 answerMinutes: 5
-followups: [{"id": "feature-flag-rollout", "prompt": "풀 크기와 관련 설정을 플래그로 점진 적용할 때 혼합 인스턴스와 원복 범위를 어떻게 검증할까요?"}, {"id": "db-pool-long-transactions", "prompt": "풀을 키우기 전에 연결을 오래 잡는 트랜잭션과 대기 경로를 어떤 지표로 찾을까요?"}, {"id": "http-connection-pool", "prompt": "DB뿐 아니라 외부 HTTP 연결 풀도 키우려 할 때 하위 서비스 한도와 재시도까지 어떻게 계산할까요?"}]
+followups: [{"id":"configuration-atomic-bundle","prompt":"연관된 설정을 한 번에 바꿀 수 없습니다. 구·신 값이 섞인 중간 조합을 어떻게 안전하게 제한하나요?"},{"id":"configuration-restart-required","prompt":"실행 중 바꿀 수 없는 연결·메모리 설정을 수정했습니다. 재시작과 진행 요청 정리는 어떻게 연결하나요?"},{"id":"feature-flag-rollout","prompt":"풀 크기와 관련 설정을 플래그로 점진 적용할 때 혼합 인스턴스와 원복 범위를 어떻게 검증할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["feature-flag-rollout"]
 
 ## 더 파고들 거리
 
-- 여러 설정을 원자적으로 바꾸지 못할 때 중간 상태를 어떻게 제한할까요?
-- 동적으로 바꿀 수 없는 자원 설정을 재시작에 어떻게 반영할까요?
+- [연관된 설정을 한 번에 바꿀 수 없습니다. 구·신 값이 섞인 중간 조합을 어떻게 안전하게 제한하나요?](/tech-interview/questions/configuration-atomic-bundle/)
+- [실행 중 바꿀 수 없는 연결·메모리 설정을 수정했습니다. 재시작과 진행 요청 정리는 어떻게 연결하나요?](/tech-interview/questions/configuration-restart-required/)
 - 설정 변경과 오류율을 어떤 변경 버전으로 연결할까요?

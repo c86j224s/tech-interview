@@ -2,7 +2,7 @@
 id: js-equality-coercion
 title: "폼에서 받은 문자열 금액을 숫자와 비교했더니 빈 문자열도 0과 같다고 나옵니다. ==와 ===는 어떻게 다르며 입력을 어떤 순서로 검증하나요?"
 answerMinutes: 5
-followups: [{"id":"js-object-copy","prompt":"입력 객체의 값과 원본 객체를 비교할 때 ===가 내용 비교가 되지 않는 이유는 무엇인가요?"},{"id":"java-boxing-null","prompt":"Java의 boxing 비교와 JavaScript의 coercion 비교에서 암묵 변환을 줄이는 경계는 어떻게 다를까요?"},{"id":"prepared-statement-injection","prompt":"문자열 입력을 명시적 타입으로 검증하는 것과 SQL 파라미터 바인딩은 각각 무엇을 보호하나요?"}]
+followups: [{"id":"js-toprimitive-side-effects","prompt":"객체를 숫자나 문자열과 연산할 때 valueOf·toString·Symbol.toPrimitive는 어떤 순서와 부수 효과를 만들 수 있나요?"},{"id":"js-objectis-samevaluezero","prompt":"NaN과 -0을 Object.is·===·Set에서 비교합니다. 각 동일성 규칙은 어떤 차이가 있나요?"},{"id":"js-object-copy","prompt":"입력 객체의 값과 원본 객체를 비교할 때 ===가 내용 비교가 되지 않는 이유는 무엇인가요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","동등 비교","타입 변환","===","=="]
@@ -53,6 +53,6 @@ Object.is는 NaN을 자기 자신과 같게 보지만 +0과 -0을 다르게 봅�
 
 ## 더 파고들 거리
 
-- 객체의 ToPrimitive 변환에서 `valueOf`와 `toString`은 언제 관여하나요?
-- Object.is와 SameValueZero는 NaN·-0을 어떤 컬렉션 의미로 다루나요?
+- [객체를 숫자나 문자열과 연산할 때 valueOf·toString·Symbol.toPrimitive는 어떤 순서와 부수 효과를 만들 수 있나요?](/tech-interview/questions/js-toprimitive-side-effects/)
+- [NaN과 -0을 Object.is·===·Set에서 비교합니다. 각 동일성 규칙은 어떤 차이가 있나요?](/tech-interview/questions/js-objectis-samevaluezero/)
 - 큰 정수 금액을 Number 대신 표현할 때 파싱·직렬화 계약은 무엇인가요?

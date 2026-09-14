@@ -2,7 +2,7 @@
 id: redis-wait-durability
 title: "Redis WAIT가 복제 확인을 반환한 뒤에도 장애 전환에서 쓰기 보존을 단정할 수 없는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"redis-sentinel-cluster","prompt":"Sentinel·Cluster의 승격 선택과 WAIT가 확인한 replica 집합이 어떻게 어긋날 수 있나요?"},{"id":"redis-rdb-aof","prompt":"WAIT의 복제 ACK와 RDB·AOF·WAITAOF의 디스크 내구 지점을 어떤 장애로 비교하나요?"},{"id":"request-timeout-idempotency","prompt":"WAIT timeout 뒤 primary에 이미 적용됐을 수 있는 쓰기를 어떻게 조회하고 안전하게 재시도하나요?"}]
+followups: [{"id":"redis-waitaof-wait-boundary","prompt":"Redis WAIT와 WAITAOF는 어떤 복제·디스크 확인을 각각 제공하며 승격·외부 효과에는 어떤 한계가 남나요?"},{"id":"redis-sentinel-cluster","prompt":"Sentinel·Cluster의 승격 선택과 WAIT가 확인한 replica 집합이 어떻게 어긋날 수 있나요?"},{"id":"redis-rdb-aof","prompt":"WAIT의 복제 ACK와 RDB·AOF·WAITAOF의 디스크 내구 지점을 어떤 장애로 비교하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["Redis","WAIT","복제","내구성"]
@@ -43,6 +43,6 @@ primary가 쓰기를 적용하고 replica A·B가 ACK를 보냈더라도 A·B가
 
 ## 더 파고들 거리
 
-- WAITAOF와 WAIT가 확인하는 내구 지점을 비교해 보세요.
+- [Redis WAIT와 WAITAOF는 어떤 복제·디스크 확인을 각각 제공하며 승격·외부 효과에는 어떤 한계가 남나요?](/tech-interview/questions/redis-waitaof-wait-boundary/)
 - 복제 지연·확인 replica 수·장애 도메인의 교환을 정해 보세요.
 - 승격 뒤 오래된 커넥션과 결과 조회 경로를 검증해 보세요.

@@ -2,7 +2,7 @@
 id: python-refcount-cycles
 title: "CPython 객체를 사용하던 외부 참조를 지웠는데 객체끼리 서로를 참조하고 있습니다. 메모리는 언제 회수되며 파일 닫기도 그 시점에 맡겨도 되나요?"
 answerMinutes: 5
-followups: [{"id":"java-gc-reachability","prompt":"Java tracing GC와 CPython 순환 GC가 서로 참조하는 객체를 회수하는 기준은 어떻게 다른가요?"},{"id":"python-shallow-deep-copy","prompt":"deepcopy의 memo와 cyclic GC가 모두 순환을 다루지만 각각 어떤 책임을 맡나요?"},{"id":"memory-rss-vs-heap","prompt":"순환 객체를 수집한 뒤 RSS가 남는 상황에서 할당자 재사용과 실제 보유를 어떻게 구분할까요?"}]
+followups: [{"id":"python-weakref-ownership","prompt":"Python observer와 cache의 참조를 weakref로 바꾸려 합니다. 실제 소유 관계와 수명 보장을 어떻게 구분하나요?"},{"id":"java-gc-reachability","prompt":"Java tracing GC와 CPython 순환 GC가 서로 참조하는 객체를 회수하는 기준은 어떻게 다른가요?"},{"id":"python-shallow-deep-copy","prompt":"deepcopy의 memo와 cyclic GC가 모두 순환을 다루지만 각각 어떤 책임을 맡나요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","CPython","참조 카운트","순환 GC","with"]
@@ -53,6 +53,6 @@ __del__에 복잡한 외부 정리를 몰아넣으면 예외 처리·실행 시�
 
 ## 더 파고들 거리
 
-- weakref가 소유 순환을 끊는 데 적합한 관계는 무엇인가요?
+- [Python observer와 cache의 참조를 weakref로 바꾸려 합니다. 실제 소유 관계와 수명 보장을 어떻게 구분하나요?](/tech-interview/questions/python-weakref-ownership/)
 - gc 통계·힙 스냅샷·RSS로 순환과 캐시 성장을 어떻게 분리할까요?
 - 소멸자와 예외가 순환 수집 및 외부 자원 정리에 주는 제약은 무엇인가요?

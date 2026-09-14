@@ -2,7 +2,7 @@
 id: iocp-gqcs-error-contract
 title: "GetQueuedCompletionStatus가 FALSE를 반환했습니다. 실패한 I/O 완료를 받은 것인지, 타임아웃으로 아무 패킷도 못 받은 것인지 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-completion-key-overlapped","prompt":"실패 완료에서 OVERLAPPED 컨텍스트를 찾은 뒤 연결이 이미 닫혔다면, 오류 처리와 수명 해제를 어떤 순서로 하겠습니까?"},{"id":"iocp-worker-shutdown","prompt":"GQCS timeout과 null 종료 패킷이 섞인 워커 루프에서 실제 종료 조건을 어떤 작업 카운터와 연결하겠습니까?"},{"id":"iocp-cancel-drain","prompt":"CancelIoEx 뒤 FALSE 오류 완료가 도착할 때, 그 완료를 버퍼 반환의 어느 단계로 처리하겠습니까?"}]
+followups: [{"id":"gqcs-ex-per-entry-error","prompt":"GetQueuedCompletionStatusEx가 여러 항목을 반환했습니다. 함수의 오류와 항목별 I/O 상태는 어떻게 나누어 해석하나요?"},{"id":"iocp-stop-packets-after-drain","prompt":"IOCP worker마다 종료 패킷을 보내려 합니다. 미완료 I/O와 종료 패킷 소비 순서를 어떻게 맞추나요?"},{"id":"iocp-completion-key-overlapped","prompt":"실패 완료에서 OVERLAPPED 컨텍스트를 찾은 뒤 연결이 이미 닫혔다면, 오류 처리와 수명 해제를 어떤 순서로 하겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","오류 처리","GQCS"]
@@ -53,6 +53,6 @@ GQCS 문서의 FALSE·non-null 경로는 이미 큐에서 소비한 실패 작�
 
 ## 더 파고들 거리
 
-- GetQueuedCompletionStatusEx에서 항목별 오류와 마지막 오류 코드를 어떻게 분리할까요?
-- 종료 패킷 수와 워커 수를 미완료 I/O drain 조건과 어떻게 맞출까요?
+- [GetQueuedCompletionStatusEx가 여러 항목을 반환했습니다. 함수의 오류와 항목별 I/O 상태는 어떻게 나누어 해석하나요?](/tech-interview/questions/gqcs-ex-per-entry-error/)
+- [IOCP worker마다 종료 패킷을 보내려 합니다. 미완료 I/O와 종료 패킷 소비 순서를 어떻게 맞추나요?](/tech-interview/questions/iocp-stop-packets-after-drain/)
 - 실패한 송신의 부분 바이트와 재전송 가능성을 Winsock API별로 어떻게 확인할까요?

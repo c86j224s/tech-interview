@@ -2,7 +2,7 @@
 id: dns-cache-failover
 title: "DNS를 새 서버 주소로 바꿨는데 일부 클라이언트는 계속 이전 서버에 접속합니다. 왜 그렇고 언제 이전 서버를 내려도 되나요?"
 answerMinutes: 5
-followups: [{"id":"http-connection-pool","prompt":"DNS가 새 주소를 반환하는데도 HTTP 연결 풀이 이전 서버를 계속 사용한다면, 연결 수명과 실패 시 재조회 정책을 어떻게 조정하겠습니까?"},{"id":"load-balancer-health-draining","prompt":"새 서버가 헬스 체크에는 성공하지만 이전 서버에 이미 열린 연결이 남아 있다면, 드레이닝 완료를 어떤 관찰값으로 판단하겠습니까?"},{"id":"websocket-heartbeat-reconnect","prompt":"장시간 유지되는 WebSocket 연결을 DNS 전환으로 옮겨야 한다면, 연결 종료 통지와 재연결 백오프를 어떻게 설계하겠습니까?"}]
+followups: [{"id":"dns-cache-layer-expiry-test","prompt":"DNS TTL을 줄였는데 일부 앱의 주소가 바뀌지 않습니다. resolver·OS·런타임 캐시를 어떻게 나눠 시험하나요?"},{"id":"connection-lifetime-dns-refresh","prompt":"DNS 전환을 따라가도록 연결 최대 수명과 유휴 수명을 설정합니다. 재연결 폭주 없이 어떻게 분산하나요?"},{"id":"http-connection-pool","prompt":"DNS가 새 주소를 반환하는데도 HTTP 연결 풀이 이전 서버를 계속 사용한다면, 연결 수명과 실패 시 재조회 정책을 어떻게 조정하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -51,6 +51,6 @@ TTL을 낮추는 시점도 중요합니다. 기존 TTL이 한 시간이었는데
 
 ## 더 파고들 거리
 
-- 리졸버·운영체제·런타임의 DNS 캐시 만료를 실제 클라이언트에서 어떻게 검증할까요?
-- 연결 풀이 주소 전환을 따라가도록 최대 수명과 유휴 수명을 어떤 분포로 정할까요?
+- [DNS TTL을 줄였는데 일부 앱의 주소가 바뀌지 않습니다. resolver·OS·런타임 캐시를 어떻게 나눠 시험하나요?](/tech-interview/questions/dns-cache-layer-expiry-test/)
+- [DNS 전환을 따라가도록 연결 최대 수명과 유휴 수명을 설정합니다. 재연결 폭주 없이 어떻게 분산하나요?](/tech-interview/questions/connection-lifetime-dns-refresh/)
 - 가중 DNS와 HTTP keep-alive가 요청 분배 비율을 왜 다르게 보이게 할까요?

@@ -2,7 +2,7 @@
 id: ml-gradient-learning-rate
 title: "경사하강법으로 학습할 때 손실이 튀거나 거의 줄지 않습니다. 기울기와 학습률을 어떻게 해석하고 조정하나요?"
 answerMinutes: 5
-followups: [{"id":"ml-loss-objective","prompt":"학습률을 안정화해 손실은 내려갔지만 운영 지표가 그대로라면 최적화 문제와 손실·평가 목적의 불일치를 어떻게 나누겠습니까?"},{"id":"ml-overfitting-generalization","prompt":"학습률 후보 중 훈련 손실이 가장 낮은 설정이 검증 성능은 나쁘다면 과적합과 정규화 강도를 어떻게 판단하겠습니까?"},{"id":"ml-classification-metrics","prompt":"불균형 분류에서 학습률 조정으로 log loss가 좋아졌지만 재현율이 나빠졌다면 임계값과 학습 목적을 어떻게 다시 맞추겠습니까?"}]
+followups: [{"id":"batch-size-learning-rate-noise","prompt":"배치 크기와 학습률을 함께 바꿉니다. 업데이트 횟수·gradient noise·처리 샘플 기준을 어떻게 맞춰 비교하나요?"},{"id":"learning-rate-warmup-decay-eval","prompt":"warmup과 decay를 적용한 학습이 좋아 보입니다. 검증 성능·동일 계산 예산·수렴 시점을 어떻게 비교하나요?"},{"id":"ml-loss-objective","prompt":"학습률을 안정화해 손실은 내려갔지만 운영 지표가 그대로라면 최적화 문제와 손실·평가 목적의 불일치를 어떻게 나누겠습니까?"}]
 difficulty: 중하
 category: 머신러닝
 tags: ["머신러닝","경사하강법","기울기","학습률","특징 스케일"]
@@ -43,6 +43,6 @@ gradient norm이 특정 배치에서 폭발하면 gradient clipping이 한시적
 
 ## 더 파고들 거리
 
-- 배치 크기와 학습률을 함께 바꾸면서 sample당 업데이트량과 gradient noise를 비교해 보세요.
-- warmup·decay를 적용한 곡선에서 검증 성능과 계산 비용의 개선 시점을 확인해 보세요.
+- [배치 크기와 학습률을 함께 바꿉니다. 업데이트 횟수·gradient noise·처리 샘플 기준을 어떻게 맞춰 비교하나요?](/tech-interview/questions/batch-size-learning-rate-noise/)
+- [warmup과 decay를 적용한 학습이 좋아 보입니다. 검증 성능·동일 계산 예산·수렴 시점을 어떻게 비교하나요?](/tech-interview/questions/learning-rate-warmup-decay-eval/)
 - 층별 gradient norm과 파라미터 norm을 기록해 exploding과 vanishing을 구분해 보세요.

@@ -2,7 +2,7 @@
 id: ssr-csr-hydration
 title: "서버가 보낸 HTML은 바로 보이는데 버튼은 잠시 반응하지 않고 hydration 경고도 납니다. SSR·CSR·hydration은 각각 언제 실행되며 무엇을 확인해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"browser-rendering-layout","prompt":"hydration 중 서버 DOM과 클라이언트 DOM이 달라 layout이 반복될 때 네트워크·script·layout 비용을 어떻게 분리하나요?"},{"id":"browser-url-navigation","prompt":"SSR HTML은 빨리 도착했지만 번들과 서브리소스가 늦다면 탐색 waterfall에서 표시와 상호작용 시점을 어떻게 나누나요?"},{"id":"api-backward-compatibility","prompt":"오래 캐시된 웹 번들이 새 서버의 데이터 필드·상태 값을 받을 때, hydration과 API 계약의 호환성을 어떤 조합으로 검증하나요?"}]
+followups: [{"id":"streaming-ssr-partial-hydration","prompt":"스트리밍 SSR과 부분 hydration을 적용합니다. 콘텐츠 표시·상호작용·중간 오류의 경계는 어떻게 달라지나요?"},{"id":"browser-rendering-layout","prompt":"hydration 중 서버 DOM과 클라이언트 DOM이 달라 layout이 반복될 때 네트워크·script·layout 비용을 어떻게 분리하나요?"},{"id":"browser-url-navigation","prompt":"SSR HTML은 빨리 도착했지만 번들과 서브리소스가 늦다면 탐색 waterfall에서 표시와 상호작용 시점을 어떻게 나누나요?"}]
 difficulty: 중하
 category: 웹
 tags: ["SSR","CSR","hydration","React","렌더링"]
@@ -47,6 +47,6 @@ SSR HTML을 CDN이나 공유 캐시에 넣는다면 개인화된 사용자 정�
 
 ## 더 파고들 거리
 
-- 스트리밍 SSR·부분 hydration이 상호작용 경계와 오류 처리를 어떻게 바꿀까요?
+- [스트리밍 SSR과 부분 hydration을 적용합니다. 콘텐츠 표시·상호작용·중간 오류의 경계는 어떻게 달라지나요?](/tech-interview/questions/streaming-ssr-partial-hydration/)
 - 서버·클라이언트 데이터 버전을 같은 초기 snapshot으로 맞추는 방법은 무엇일까요?
 - 개인화된 SSR 응답에서 CDN 캐시와 브라우저 캐시의 키를 어떻게 설계할까요?

@@ -2,7 +2,7 @@
 id: functional-dependency-keys
 title: "현재 회원 데이터에서는 이메일이 모두 달라 이메일을 키로 쓰자는 제안이 나왔습니다. 후보키를 정할 때 관찰한 데이터와 반드시 지켜야 할 제약을 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"normal-forms-partial-transitive","prompt":"복합 후보키와 함수 종속을 기준으로 부분 종속·이행 종속을 어떻게 찾아 분해하나요?"},{"id":"bcnf-lossless-decomposition","prompt":"후보키를 다시 계산한 뒤 BCNF 위반과 무손실·종속성 보존을 어떻게 판정하나요?"},{"id":"db-unique-constraint-race","prompt":"후보키로 정한 이메일을 동시에 삽입할 때 애플리케이션 사전 조회와 DB 제약의 역할은 무엇인가요?"}]
+followups: [{"id":"temporal-email-history-keys","prompt":"이메일 변경 이력을 저장합니다. 현재 계정의 유일성과 기간별 기록의 후보키는 어떻게 달라지나요?"},{"id":"unique-null-collation-cross-engine","prompt":"같은 이메일 제약을 다른 DB로 옮깁니다. collation·NULL·부분 인덱스의 차이를 어떤 데이터로 검증하나요?"},{"id":"normal-forms-partial-transitive","prompt":"복합 후보키와 함수 종속을 기준으로 부분 종속·이행 종속을 어떻게 찾아 분해하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["함수 종속","후보키","슈퍼키","업무 제약"]
@@ -44,5 +44,5 @@ PostgreSQL·SQL Server·MySQL은 NULL, collation, filtered/partial index, genera
 ## 더 파고들 거리
 
 - 속성 폐포로 후보키를 찾는 절차를 계산해 보세요.
-- 기간별 이메일 이력의 키와 함수 종속을 설계해 보세요.
-- collation·NULL·부분 인덱스의 엔진별 유일성 동작을 검증해 보세요.
+- [이메일 변경 이력을 저장합니다. 현재 계정의 유일성과 기간별 기록의 후보키는 어떻게 달라지나요?](/tech-interview/questions/temporal-email-history-keys/)
+- [같은 이메일 제약을 다른 DB로 옮깁니다. collation·NULL·부분 인덱스의 차이를 어떤 데이터로 검증하나요?](/tech-interview/questions/unique-null-collation-cross-engine/)

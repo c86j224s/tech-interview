@@ -2,7 +2,7 @@
 id: java-annotation-retention
 title: "어노테이션을 붙였는데 런타임 reflection에서 보이지 않습니다. SOURCE·CLASS·RUNTIME 보존과 실제 처리자의 차이는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"java-generics-erasure","prompt":"필드 선언의 generic signature를 reflection으로 읽는 것과 List 객체의 원소 타입을 검사하는 것은 왜 다른가요?"},{"id":"java-overload-override","prompt":"annotation processor가 생성한 메서드의 overload와 런타임 override를 검증할 때 어느 단계의 타입을 보나요?"},{"id":"jvm-bytecode-jit","prompt":"reflection 기반 어노테이션 스캔과 생성 코드 방식의 시작 비용을 JVM 예열과 함께 어떻게 측정할까요?"}]
+followups: [{"id":"java-repeatable-annotation-retention","prompt":"Repeatable 어노테이션을 reflection으로 읽습니다. 반복 요소와 컨테이너의 retention·조회 API는 어떻게 맞추나요?"},{"id":"annotation-processor-incremental-inputs","prompt":"annotation processor 산출물이 증분 빌드에서 낡았습니다. 어떤 입력·삭제·의존 관계를 추적해야 하나요?"},{"id":"java-generics-erasure","prompt":"필드 선언의 generic signature를 reflection으로 읽는 것과 List 객체의 원소 타입을 검사하는 것은 왜 다른가요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Java","어노테이션","Retention","reflection","annotation processor"]
@@ -62,6 +62,6 @@ Repeatable 어노테이션은 반복 사용을 컨테이너로 표현할 수 있
 
 ## 더 파고들 거리
 
-- Repeatable 어노테이션에서 컨테이너와 반복 요소의 Retention 조건은 무엇인가요?
-- annotation processor의 증분 빌드 산출물이 stale해지지 않게 무엇을 추적할까요?
+- [Repeatable 어노테이션을 reflection으로 읽습니다. 반복 요소와 컨테이너의 retention·조회 API는 어떻게 맞추나요?](/tech-interview/questions/java-repeatable-annotation-retention/)
+- [annotation processor 산출물이 증분 빌드에서 낡았습니다. 어떤 입력·삭제·의존 관계를 추적해야 하나요?](/tech-interview/questions/annotation-processor-incremental-inputs/)
 - 모듈 경계에서 reflection 접근이 막힐 때 보존과 접근 권한을 어떻게 나눌까요?

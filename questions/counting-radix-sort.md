@@ -2,7 +2,7 @@
 id: counting-radix-sort
 title: "대량의 정수 키를 정렬하려는데 값의 범위와 자릿수를 알고 있습니다. 계수 정렬이나 기수 정렬이 비교 정렬보다 유리한지 무엇을 기준으로 판단하나요?"
 answerMinutes: 5
-followups: [{"id":"sorting-stability","prompt":"기수 정렬의 각 단계에서 동점 레코드 순서를 유지해야 한다면, 안정성은 최종 결과에 어떤 역할을 합니까?"},{"id":"quicksort-worst-case","prompt":"키 범위가 너무 넓어 비교 정렬을 써야 한다면, 정렬 입력에서 퀵 정렬의 최악 비용을 어떤 피벗 정책으로 줄이겠습니까?"},{"id":"python-timsort-stability","prompt":"입력이 이미 정렬된 구간을 많이 포함하고 안정성도 필요하다면, 기수 정렬 대신 적응형 비교 정렬을 선택할 조건은 무엇입니까?"}]
+followups: [{"id":"radix-msd-lsd-variable-strings","prompt":"가변 길이 문자열을 기수 정렬합니다. MSD와 LSD는 종료 문자·길이·안정성에서 무엇이 다른가요?"},{"id":"signed-integer-radix-transform","prompt":"음수 정수를 바이트 기반 기수 정렬에 넣습니다. 숫자 순서를 보존하는 unsigned 키는 어떻게 만드나요?"},{"id":"sorting-stability","prompt":"기수 정렬의 각 단계에서 동점 레코드 순서를 유지해야 한다면, 안정성은 최종 결과에 어떤 역할을 합니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["계수 정렬","기수 정렬","정렬"]
@@ -47,6 +47,6 @@ LSD 정렬의 예로 21과 12를 일의 자리로 정렬하면 21,12가 되고, 
 
 ## 더 파고들 거리
 
-- MSD와 LSD 기수 정렬이 가변 길이 문자열을 나누고 종료하는 차이를 설명해 보세요.
-- 음수 정수를 정렬 순서가 맞는 unsigned 바이트 키로 변환하는 원리를 말해 보세요.
+- [가변 길이 문자열을 기수 정렬합니다. MSD와 LSD는 종료 문자·길이·안정성에서 무엇이 다른가요?](/tech-interview/questions/radix-msd-lsd-variable-strings/)
+- [음수 정수를 바이트 기반 기수 정렬에 넣습니다. 숫자 순서를 보존하는 unsigned 키는 어떻게 만드나요?](/tech-interview/questions/signed-integer-radix-transform/)
 - 버킷 수가 CPU 캐시보다 커질 때 카운터·분배 단계에서 생기는 비용을 설명해 보세요.

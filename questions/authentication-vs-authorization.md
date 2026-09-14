@@ -2,7 +2,7 @@
 id: authentication-vs-authorization
 title: "로그인한 사용자가 URL의 주문 ID를 바꿔 다른 사람의 주문을 요청합니다. 로그인 확인만으로 충분하며, 인증과 인가를 어디에서 구분해 검사해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"transaction-and-lost-update","prompt":"권한 검사 뒤 주문 상태가 바뀌거나 두 수정 요청이 겹치면 검사 결과와 실제 변경 사이의 틈을 어떻게 닫을까요?"},{"id":"jwt-vs-server-session","prompt":"토큰에 역할을 넣었는데 권한 회수를 즉시 반영해야 한다면 검증 저장소 의존성을 어떻게 선택하나요?"},{"id":"account-merge-invariants","prompt":"계정 병합으로 소유자 ID가 바뀌는 동안 기존 주문 URL과 권한 검사를 어떤 일관성 규칙으로 보호할까요?"}]
+followups: [{"id":"authorization-write-toctou","prompt":"권한을 확인한 직후 소유권이 바뀝니다. 인가와 실제 변경을 한 저장 경계에 묶지 못하면 어떻게 보호하나요?"},{"id":"authorization-pdp-pep-cache","prompt":"정책 결정 서비스와 집행 서비스를 나눴습니다. 캐시·장애·정책 배포에서 어느 쪽이 무엇을 책임지나요?"},{"id":"transaction-and-lost-update","prompt":"권한 검사 뒤 주문 상태가 바뀌거나 두 수정 요청이 겹치면 검사 결과와 실제 변경 사이의 틈을 어떻게 닫을까요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -55,6 +55,6 @@ API 계층마다 검사 책임도 구분하겠습니다. 게이트웨이는 토�
 
 ## 더 파고들 거리
 
-- 권한 검사와 변경을 원자적으로 묶지 못할 때 TOCTOU를 어떻게 줄일까요?
-- 정책 결정과 집행을 분리할 때 캐시·장애·정책 배포의 책임은 어디에 둘까요?
+- [권한을 확인한 직후 소유권이 바뀝니다. 인가와 실제 변경을 한 저장 경계에 묶지 못하면 어떻게 보호하나요?](/tech-interview/questions/authorization-write-toctou/)
+- [정책 결정 서비스와 집행 서비스를 나눴습니다. 캐시·장애·정책 배포에서 어느 쪽이 무엇을 책임지나요?](/tech-interview/questions/authorization-pdp-pep-cache/)
 - 서비스가 사용자를 대신 호출할 때 위임 범위를 토큰에 어떻게 표현할까요?

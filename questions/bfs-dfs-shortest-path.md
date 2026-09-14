@@ -2,7 +2,7 @@
 id: bfs-dfs-shortest-path
 title: "모든 이동 비용이 같은 그래프에서 가장 적은 이동 횟수를 찾으려 합니다. BFS와 DFS 중 무엇이 맞나요?"
 answerMinutes: 5
-followups: [{"id":"graph-representation","prompt":"희소 그래프의 이웃을 BFS로 반복 순회해야 한다면, 인접 행렬과 리스트가 메모리·간선 검사량을 어떻게 바꾸겠습니까?"},{"id":"astar-heuristic","prompt":"간선 비용이 같고 목표 방향으로 탐색량을 더 줄이려면, A* 휴리스틱이 어떤 조건에서 BFS의 최단 보장을 유지합니까?"},{"id":"cooperative-pathfinding","prompt":"한 캐릭터의 최단 경로가 아니라 여러 캐릭터가 동시에 도착해야 한다면, BFS 상태에 시간과 점유 정보를 어떻게 넣겠습니까?"}]
+followups: [{"id":"multi-source-bfs-initialization","prompt":"여러 시작점 중 가장 가까운 곳까지의 거리를 구합니다. BFS 큐와 거리·부모를 어떻게 초기화하나요?"},{"id":"zero-one-bfs-deque-rule","prompt":"간선 비용이 0 또는 1인 그래프에서 최단 거리를 구합니다. 0-1 BFS는 deque의 앞과 뒤를 어떻게 쓰나요?"},{"id":"graph-representation","prompt":"희소 그래프의 이웃을 BFS로 반복 순회해야 한다면, 인접 행렬과 리스트가 메모리·간선 검사량을 어떻게 바꾸겠습니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["BFS","DFS","최단 경로"]
@@ -47,6 +47,6 @@ BFS는 거리 0인 층을 모두 처리한 뒤 거리 1, 2 층으로 넘어가�
 
 ## 더 파고들 거리
 
-- 여러 시작점에서 가장 가까운 정점을 구할 때 큐를 어떻게 초기화할지 설명해 보세요.
-- 0·1 가중치에서 deque를 사용하는 0-1 BFS의 앞·뒤 삽입 규칙을 말해 보세요.
+- [여러 시작점 중 가장 가까운 곳까지의 거리를 구합니다. BFS 큐와 거리·부모를 어떻게 초기화하나요?](/tech-interview/questions/multi-source-bfs-initialization/)
+- [간선 비용이 0 또는 1인 그래프에서 최단 거리를 구합니다. 0-1 BFS는 deque의 앞과 뒤를 어떻게 쓰나요?](/tech-interview/questions/zero-one-bfs-deque-rule/)
 - 양방향 BFS에서 방향 그래프의 역간선 탐색과 양쪽 층의 종료 하한을 어떻게 정의할지 설명해 보세요.

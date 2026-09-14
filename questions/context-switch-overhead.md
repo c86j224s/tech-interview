@@ -2,7 +2,7 @@
 id: context-switch-overhead
 title: "서버의 컨텍스트 스위치 횟수가 늘었습니다. 정상적인 I/O 대기인지 과도한 스레드 경쟁인지 구분하려면 어떤 지표를 함께 봐야 하나요?"
 answerMinutes: 5
-followups: [{"id":"process-vs-thread","prompt":"프로세스 간 격리를 위해 작업자를 분리했는데 IPC 대기가 늘었다면, 공유 효율과 장애 격리를 어떤 측정값으로 다시 비교할까요?"},{"id":"cpu-scheduling-policies","prompt":"짧은 요청의 p99가 악화된 상황에서 스케줄링 정책과 실행기 작업자 수를 어떤 순서로 조정하겠습니까?"},{"id":"profiling-cpu-offcpu","prompt":"CPU 사용률이 낮은데 전환이 많은 요청을 계산 구간과 대기 구간으로 어떻게 분해하겠습니까?"}]
+followups: [{"id":"batch-execution-fairness-budget","prompt":"짧은 작업을 배치로 묶어 전환 비용을 줄입니다. 긴 배치가 다른 요청을 굶기지 않게 어떤 시간 예산을 두나요?"},{"id":"context-switch-cache-counter","prompt":"context switch와 cache miss가 함께 증가합니다. 두 지표 사이 인과를 어떤 대조 실험으로 확인하나요?"},{"id":"process-vs-thread","prompt":"프로세스 간 격리를 위해 작업자를 분리했는데 IPC 대기가 늘었다면, 공유 효율과 장애 격리를 어떤 측정값으로 다시 비교할까요?"}]
 difficulty: 하
 category: 운영체제
 tags:
@@ -46,6 +46,6 @@ related: ["process-vs-thread","throughput-vs-latency"]
 
 ## 더 파고들 거리
 
-- 짧은 작업을 묶을 때 공정성을 잃지 않는 실행 예산은 어떻게 정할까요?
-- 컨텍스트 스위치와 캐시 미스를 하드웨어 성능 카운터로 어떻게 연결할까요?
+- [짧은 작업을 배치로 묶어 전환 비용을 줄입니다. 긴 배치가 다른 요청을 굶기지 않게 어떤 시간 예산을 두나요?](/tech-interview/questions/batch-execution-fairness-budget/)
+- [context switch와 cache miss가 함께 증가합니다. 두 지표 사이 인과를 어떤 대조 실험으로 확인하나요?](/tech-interview/questions/context-switch-cache-counter/)
 - 코루틴 전환과 커널 스레드 전환을 같은 지표로 비교할 때 어떤 한계가 있을까요?

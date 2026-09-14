@@ -2,7 +2,7 @@
 id: functional-purity
 title: "같은 인자를 넘겼는데 함수 결과가 호출 시각과 전역 설정에 따라 달라집니다. 순수 함수로 만들려면 무엇을 바꿔야 하나요?"
 answerMinutes: 5
-followups: [{"id": "immutable-data-sharing", "prompt": "순수 계산에 전달하는 설정 트리가 중첩된 가변 객체라면 입력을 안전하게 보호하기 위해 어디까지 복사할까요?"}, {"id": "dependency-injection-boundaries", "prompt": "시계·난수·저장소를 주입하면서도 순수 계산 계층의 계약을 좁게 유지하려면 어떻게 조립할까요?"}, {"id": "transaction-and-lost-update", "prompt": "순수 함수가 읽은 버전으로 변경 값을 계산한 뒤 다른 요청이 먼저 저장했다면, 실제 저장 시 어떤 조건을 검사해야 하나요?"}]
+followups: [{"id":"memoization-mutable-input-key","prompt":"순수 계산 결과를 캐시하려는데 입력 객체가 가변입니다. 값 동일성·해시·캐시 무효화를 어떻게 정하나요?"},{"id":"pure-random-state-threading","prompt":"난수를 쓰는 계산을 재현 가능한 함수로 만듭니다. seed와 다음 난수 상태를 어떻게 입출력으로 전달하나요?"},{"id":"immutable-data-sharing","prompt":"순수 계산에 전달하는 설정 트리가 중첩된 가변 객체라면 입력을 안전하게 보호하기 위해 어디까지 복사할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["함수형 프로그래밍","순수 함수","부수효과","참조 투명성"]
@@ -47,6 +47,6 @@ DB 저장·로그·네트워크 호출은 제거할 대상이 아니라 계산 �
 
 ## 더 파고들 거리
 
-- 순수 함수의 결과를 메모이제이션할 때 입력 객체의 동일성과 해시 기준을 어떻게 정할까요?
-- 난수 생성기를 순수 계산과 결합해야 할 때 seed와 상태를 어떤 값으로 전달할까요?
+- [순수 계산 결과를 캐시하려는데 입력 객체가 가변입니다. 값 동일성·해시·캐시 무효화를 어떻게 정하나요?](/tech-interview/questions/memoization-mutable-input-key/)
+- [난수를 쓰는 계산을 재현 가능한 함수로 만듭니다. seed와 다음 난수 상태를 어떻게 입출력으로 전달하나요?](/tech-interview/questions/pure-random-state-threading/)
 - 부수효과가 여러 개일 때 실패 중간 상태와 재시도 중복을 어떤 테스트로 검증할까요?

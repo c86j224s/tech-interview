@@ -2,7 +2,7 @@
 id: jwt-vs-server-session
 title: "여러 서비스에서 로그인 상태를 확인하고 강제 로그아웃도 지원하려 합니다. JWT와 서버 세션은 어떤 기준으로 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"refresh-token-rotation","prompt":"짧은 access token과 긴 refresh token을 함께 쓰기로 했다면 정상 재시도와 탈취 재사용을 어떤 상태로 구분할까요?"},{"id":"secret-key-rotation","prompt":"여러 서비스가 새 JWT 공개키를 서로 다른 시점에 받는 동안 발급·검증을 어떤 순서로 전환하나요?"},{"id":"authentication-vs-authorization","prompt":"JWT에 역할이 들어 있어도 객체별 권한과 즉시 회수를 보장해야 한다면 서비스에서 어떤 검사를 추가하나요?"}]
+followups: [{"id":"session-revocation-cache-lag","prompt":"세션을 회수했지만 검증 캐시에 남아 접근이 됩니다. 허용 회수 지연과 캐시·실행 경계는 어떻게 정하나요?"},{"id":"device-session-account-revocation","prompt":"기기 하나의 로그아웃과 계정 전체 회수를 지원합니다. 세션 계열·버전·검증 상태를 어떻게 나누나요?"},{"id":"refresh-token-rotation","prompt":"짧은 access token과 긴 refresh token을 함께 쓰기로 했다면 정상 재시도와 탈취 재사용을 어떤 상태로 구분할까요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -50,6 +50,6 @@ JWT와 서버 세션의 선택은 ‘무상태인가’보다 권한 회수 속�
 
 ## 더 파고들 거리
 
-- 세션 상태 캐시가 권한 회수 지연을 만드는 조건을 어떻게 측정할까요?
+- [세션을 회수했지만 검증 캐시에 남아 접근이 됩니다. 허용 회수 지연과 캐시·실행 경계는 어떻게 정하나요?](/tech-interview/questions/session-revocation-cache-lag/)
 - JWT key rotation 중 알 수 없는 kid에 대한 재조회와 재시도를 어떻게 제한할까요?
-- 여러 기기의 로그아웃과 전체 계정 회수를 어떤 상태 모델로 표현할까요?
+- [기기 하나의 로그아웃과 계정 전체 회수를 지원합니다. 세션 계열·버전·검증 상태를 어떻게 나누나요?](/tech-interview/questions/device-session-account-revocation/)

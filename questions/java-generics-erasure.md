@@ -2,7 +2,7 @@
 id: java-generics-erasure
 title: "List<String>의 원소 타입을 실행 중에도 검사할 수 있나요? Java 제네릭의 컴파일 검사와 타입 소거가 만드는 한계를 설명해 보세요."
 answerMinutes: 5
-followups: [{"id":"java-annotation-retention","prompt":"reflection으로 필드의 generic signature를 읽는 것과 List 객체의 원소 타입을 검사하는 것은 왜 다른가요?"},{"id":"java-boxing-null","prompt":"raw List에서 꺼낸 null을 기본형으로 대입할 때 소거와 unboxing이 어떤 순서로 문제를 만들까요?"},{"id":"python-duck-typing","prompt":"Java의 컴파일 제네릭 계약과 Python Protocol의 구조적 계약은 외부 입력에서 어떻게 보완해야 할까요?"}]
+followups: [{"id":"java-generic-array-reifiability","prompt":"Java에서 List<String>[] 생성은 안 되는데 일부 wildcard 배열은 가능합니다. 런타임 타입 검사와 어떤 관계가 있나요?"},{"id":"java-bridge-method-erasure","prompt":"제네릭 메서드를 override했더니 bridge method가 생깁니다. 타입 소거 뒤 dispatch를 어떻게 연결하나요?"},{"id":"java-annotation-retention","prompt":"reflection으로 필드의 generic signature를 읽는 것과 List 객체의 원소 타입을 검사하는 것은 왜 다른가요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Java","제네릭","타입 소거","reifiable type","ClassCastException"]
@@ -58,6 +58,6 @@ Class<String>은 단일 런타임 클래스를 표현할 수 있지만 Class<Lis
 
 ## 더 파고들 거리
 
-- 제네릭 배열 생성이 금지되고 `List<?>[]` 일부가 허용되는 이유는 무엇인가요?
-- 브리지 메서드는 소거된 시그니처와 override를 어떻게 연결하나요?
+- [Java에서 List<String>[] 생성은 안 되는데 일부 wildcard 배열은 가능합니다. 런타임 타입 검사와 어떤 관계가 있나요?](/tech-interview/questions/java-generic-array-reifiability/)
+- [제네릭 메서드를 override했더니 bridge method가 생깁니다. 타입 소거 뒤 dispatch를 어떻게 연결하나요?](/tech-interview/questions/java-bridge-method-erasure/)
 - 외부 직렬화 경계에서 타입 토큰과 원소 검증을 어떻게 조합할까요?

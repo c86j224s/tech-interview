@@ -2,7 +2,7 @@
 id: goroutine-lifecycle-and-leaks
 title: "외부 API가 느려지자 Go 서버의 고루틴 수가 계속 늘어납니다. 정상적인 대기 증가인지 누수인지 어떻게 구분하고 제한하나요?"
 answerMinutes: 5
-followups: [{"id": "bounded-queue-backpressure", "prompt": "동시에 실행할 고루틴은 제한했는데 허가를 기다리는 고루틴이 늘어납니다. 생성 전에는 무엇을 제한해야 할까요?"}, {"id": "structured-concurrency-fanout", "prompt": "요청마다 여러 자식 고루틴을 만들었다면, 부모 취소 후 자식이 모두 끝났는지 어떻게 확인할까요?"}, {"id": "go-channel-close-ownership", "prompt": "받는 쪽이 먼저 종료했을 때 보내는 고루틴과 채널 close 책임은 어떻게 나눌까요?"}]
+followups: [{"id":"go-gmp-gomaxprocs-scope","prompt":"Go의 G·M·P와 GOMAXPROCS는 무엇을 제한하며 OS 스레드 수의 상한과 왜 다른가요?"},{"id":"go-goroutine-block-mutex-profiles","prompt":"goroutine·block·mutex profile은 현재 상태와 누적 대기를 어떻게 다르게 보여 주나요?"},{"id":"bounded-queue-backpressure","prompt":"동시에 실행할 고루틴은 제한했는데 허가를 기다리는 고루틴이 늘어납니다. 생성 전에는 무엇을 제한해야 할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -68,7 +68,7 @@ select에서 결과 송신과 취소가 모두 준비됐다면 결과 송신이 
 
 ## 더 파고들 거리
 
-- G·M·P와 GOMAXPROCS는 각각 무엇이며, OS 스레드 수의 상한과 왜 다른가요?
-- goroutine·block·mutex 프로파일은 현재 대기와 누적 대기를 관찰하는 데 어떤 차이가 있나요?
+- [Go의 G·M·P와 GOMAXPROCS는 무엇을 제한하며 OS 스레드 수의 상한과 왜 다른가요?](/tech-interview/questions/go-gmp-gomaxprocs-scope/)
+- [goroutine·block·mutex profile은 현재 상태와 누적 대기를 어떻게 다르게 보여 주나요?](/tech-interview/questions/go-goroutine-block-mutex-profiles/)
 - 서버 종료 시 새 요청 차단, 취소 전파, 자식 작업 대기와 강제 종료 기한을 어떻게 정할까요?
 - 요청이 끝나도 반드시 완료해야 하는 작업은 요청 고루틴과 어떻게 분리해 관리해야 할까요?

@@ -2,7 +2,7 @@
 id: kafka-partition-expansion
 title: "Kafka topic의 파티션 수를 늘린 뒤 같은 키의 이전 이벤트와 새 이벤트 순서가 깨질 수 있는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"message-ordering-scope","prompt":"한 partition의 전달 순서를 여러 워커의 적용 순서로 유지하려면 어떻게 하나요?"},{"id":"kafka-partition-offset","prompt":"partition 변경 뒤 offset이 논리 버전이 될 수 없는 이유는 무엇인가요?"},{"id":"kafka-consumer-group","prompt":"특정 핫키가 한 partition에 몰릴 때 consumer 확장이 왜 충분하지 않나요?"}]
+followups: [{"id":"kafka-cross-language-partitioner","prompt":"여러 언어의 producer가 같은 키를 보냅니다. 직렬화·해시·partition 선택을 어떻게 같은 계약으로 맞추나요?"},{"id":"kafka-new-topic-cutover","prompt":"새 Kafka topic으로 이전합니다. 옛·새 로그의 시작 위치·키 순서·중복 발행을 어떻게 전환하나요?"},{"id":"message-ordering-scope","prompt":"한 partition의 전달 순서를 여러 워커의 적용 순서로 유지하려면 어떻게 하나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","파티션 확장","키 순서"]
@@ -49,5 +49,5 @@ related: ["message-ordering-scope","kafka-partition-offset"]
 ## 더 파고들 거리
 
 - 무중단 완료 증명
-- 다국어 파티셔너
-- 새 topic cutover
+- [여러 언어의 producer가 같은 키를 보냅니다. 직렬화·해시·partition 선택을 어떻게 같은 계약으로 맞추나요?](/tech-interview/questions/kafka-cross-language-partitioner/)
+- [새 Kafka topic으로 이전합니다. 옛·새 로그의 시작 위치·키 순서·중복 발행을 어떻게 전환하나요?](/tech-interview/questions/kafka-new-topic-cutover/)

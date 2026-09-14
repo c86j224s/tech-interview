@@ -2,7 +2,7 @@
 id: solid-dependency-inversion
 title: "결제 규칙을 테스트할 때마다 실제 DB가 필요하고 DB 교체도 정책 코드 수정으로 이어집니다. DIP를 적용해 어떤 인터페이스와 의존 방향을 바꾸나요?"
 answerMinutes: 5
-followups: [{"id": "dependency-injection-boundaries", "prompt": "결제 게이트웨이와 저장소의 실패·시간·멱등성을 주입으로 통제하면서 실제 계약은 어떤 통합 시험으로 보완할까요?"}, {"id": "solid-liskov", "prompt": "저장소 구현이 추상 계약보다 더 강한 사전조건을 요구하면 DIP와 치환 가능성이 함께 깨지는 이유는 무엇일까요?"}, {"id": "service-boundary-design", "prompt": "결제 서비스가 소유해야 할 데이터와 외부 게이트웨이 포트를 서비스 경계로 어떻게 나눌까요?"}]
+followups: [{"id":"policy-owned-interface-boundary","prompt":"인터페이스는 있지만 DB 패키지가 소유합니다. 추상화의 소유와 고수준 정책의 의존 방향은 어떻게 판단하나요?"},{"id":"dependency-injection-boundaries","prompt":"결제 게이트웨이와 저장소의 실패·시간·멱등성을 주입으로 통제하면서 실제 계약은 어떤 통합 시험으로 보완할까요?"},{"id":"solid-liskov","prompt":"저장소 구현이 추상 계약보다 더 강한 사전조건을 요구하면 DIP와 치환 가능성이 함께 깨지는 이유는 무엇일까요?"}]
 difficulty: 중하
 category: 설계
 tags: ["SOLID","의존성 역전","추상화","정책"]
@@ -47,6 +47,6 @@ DIP를 적용한다고 모든 함수와 외부 라이브러리를 인터페이�
 
 ## 더 파고들 거리
 
-- 추상화가 고수준 모듈의 소유인지 저수준 모듈의 소유인지 판단하는 기준은 무엇인가요?
+- [인터페이스는 있지만 DB 패키지가 소유합니다. 추상화의 소유와 고수준 정책의 의존 방향은 어떻게 판단하나요?](/tech-interview/questions/policy-owned-interface-boundary/)
 - 외부 결제사의 오류·재시도·멱등성 계약을 추상화에 어떻게 표현할까요?
 - DI 컨테이너 없이도 컴포지션 루트에서 의존성 방향을 유지하는 방법은 무엇인가요?

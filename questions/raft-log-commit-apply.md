@@ -2,7 +2,7 @@
 id: raft-log-commit-apply
 title: "Raft 리더가 명령을 로그에 넣고 팔로워에 보냈습니다. 복제·커밋·상태 머신 적용은 어떻게 다르며 클라이언트에 성공을 언제 응답하나요?"
 answerMinutes: 5
-followups: [{"id":"raft-linearizable-read","prompt":"commit 후 apply 전 선형화 읽기는 어느 index까지 기다리나요?"},{"id":"raft-term-election","prompt":"새 leader가 이전 term 로그를 보존하고 current term으로 commit하는 흐름은 무엇인가요?"},{"id":"transactional-outbox","prompt":"상태 확정 뒤 완료 이벤트 유실을 막기 위해 outbox를 어디에 두나요?"}]
+followups: [{"id":"raft-client-request-result-dedup","prompt":"Raft 명령은 커밋됐지만 응답을 잃었습니다. 요청 ID별 결과를 상태 머신과 snapshot에 어떻게 보관하나요?"},{"id":"raft-linearizable-read","prompt":"commit 후 apply 전 선형화 읽기는 어느 index까지 기다리나요?"},{"id":"raft-term-election","prompt":"새 leader가 이전 term 로그를 보존하고 current term으로 commit하는 흐름은 무엇인가요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Raft","커밋","상태 머신"]
@@ -50,6 +50,6 @@ commit과 apply 사이에 리더가 죽어도 새 리더는 확정 접두부를 
 
 ## 더 파고들 거리
 
-- 요청 ID 결과 조회
+- [Raft 명령은 커밋됐지만 응답을 잃었습니다. 요청 ID별 결과를 상태 머신과 snapshot에 어떻게 보관하나요?](/tech-interview/questions/raft-client-request-result-dedup/)
 - 결정적 상태 머신
 - 느린 follower 읽기

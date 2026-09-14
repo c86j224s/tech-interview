@@ -2,7 +2,7 @@
 id: cpp-coroutine-frame-lifetime
 title: "C++ 코루틴이 비동기 I/O를 기다리는 동안 호출자가 종료됩니다. 나중에 코루틴이 재개될 때 참조하던 객체와 버퍼가 유효하도록 수명을 어떻게 관리하나요?"
 answerMinutes: 5
-followups: [{"id":"cpp-shared-pointer-lifetime","prompt":"프레임이 shared_ptr로 객체를 살려도 두 콜백이 같은 필드를 수정한다면 어떤 동기화 경계를 추가할까요?"},{"id":"deadline-cancellation-propagation","prompt":"취소 요청 뒤 운영체제 I/O 완료가 늦게 도착한다면 응답 기한과 버퍼 해제를 어떻게 분리할까요?"},{"id":"io-readiness-vs-completion","prompt":"준비 통지 방식으로 바꾸면 읽기 버퍼를 재사용해도 되는 시점을 어떤 상태로 확인할까요?"}]
+followups: [{"id":"cpp-final-suspend-destroy-owner","prompt":"C++ 코루틴이 final_suspend에 도달했습니다. 핸들과 프레임을 누가 언제 destroy해야 하나요?"},{"id":"cpp-coroutine-destruction-executor","prompt":"C++ 코루틴 프레임을 다른 스레드에서 파괴할 수 있습니다. 스레드에 종속된 자원의 소멸 위치는 어떻게 보장하나요?"},{"id":"cpp-shared-pointer-lifetime","prompt":"프레임이 shared_ptr로 객체를 살려도 두 콜백이 같은 필드를 수정한다면 어떤 동기화 경계를 추가할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -50,6 +50,6 @@ await_suspend에서 작업을 등록하자마자 다른 스레드가 완료를 �
 
 ## 더 파고들 거리
 
-- `final_suspend` 이후 핸들의 파괴 책임을 반환 타입에 어떻게 표현할까요?
+- [C++ 코루틴이 final_suspend에 도달했습니다. 핸들과 프레임을 누가 언제 destroy해야 하나요?](/tech-interview/questions/cpp-final-suspend-destroy-owner/)
 - 완료 통지와 취소 통지가 같은 틱에 오면 어느 상태 전이를 승자로 기록할까요?
-- 코루틴 프레임을 다른 executor에서 파괴할 때 소멸자 실행 위치를 어떻게 제한할까요?
+- [C++ 코루틴 프레임을 다른 스레드에서 파괴할 수 있습니다. 스레드에 종속된 자원의 소멸 위치는 어떻게 보장하나요?](/tech-interview/questions/cpp-coroutine-destruction-executor/)

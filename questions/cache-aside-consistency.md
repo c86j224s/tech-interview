@@ -2,7 +2,7 @@
 id: cache-aside-consistency
 title: "데이터베이스를 수정한 뒤 캐시를 삭제하면 오래된 값이 다시 캐시에 들어갈 가능성은 없나요?"
 answerMinutes: 5
-followups: [{"id":"cache-stampede-singleflight","prompt":"버전 검사로 stale refill은 막았는데 같은 키가 동시에 만료되면 원본 조회 폭주를 어떻게 줄일까요?"},{"id":"db-read-replica-consistency","prompt":"DB 갱신 직후 사용자가 새 값을 읽어야 한다면 캐시와 읽기 복제본의 경로를 어떻게 바꾸겠습니까?"},{"id":"transaction-and-lost-update","prompt":"캐시를 거치지 않고 조건부 갱신을 사용해도 두 변경이 충돌하는 경우를 어떻게 검증하겠습니까?"}]
+followups: [{"id":"cache-cdc-refill-ordering","prompt":"CDC로 캐시 무효화를 전달해도 늦은 옛 조회가 캐시를 채울 수 있나요? 두 경로의 버전을 어떻게 맞추나요?"},{"id":"cache-version-barrier-eviction","prompt":"캐시의 최신 버전 표식이 eviction됐습니다. 아직 진행 중인 옛 조회가 값을 다시 넣지 못하게 어떻게 보호하나요?"},{"id":"cache-stampede-singleflight","prompt":"버전 검사로 stale refill은 막았는데 같은 키가 동시에 만료되면 원본 조회 폭주를 어떻게 줄일까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -57,6 +57,6 @@ related:
 
 ## 더 파고들 거리
 
-- outbox·CDC와 stale refill의 관계
-- eviction 뒤 세대 번호 보존
+- [CDC로 캐시 무효화를 전달해도 늦은 옛 조회가 캐시를 채울 수 있나요? 두 경로의 버전을 어떻게 맞추나요?](/tech-interview/questions/cache-cdc-refill-ordering/)
+- [캐시의 최신 버전 표식이 eviction됐습니다. 아직 진행 중인 옛 조회가 값을 다시 넣지 못하게 어떻게 보호하나요?](/tech-interview/questions/cache-version-barrier-eviction/)
 - read-your-writes 라우팅

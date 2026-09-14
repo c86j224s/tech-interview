@@ -2,7 +2,7 @@
 id: tcp-three-way-handshake
 title: "TCP 연결에서 클라이언트가 SYN+ACK을 받은 뒤 마지막 ACK을 보냅니다. 양쪽은 이 과정으로 무엇을 확인하며 마지막 ACK이 유실되면 어떻게 되나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-time-wait","prompt":"정상 종료 뒤 한쪽에 TIME_WAIT가 남는 이유를 handshake의 순서 번호 재사용 방지와 어떻게 연결하겠습니까?"},{"id":"tcp-flow-vs-congestion-control","prompt":"handshake는 성공했지만 첫 데이터가 늦다면, 연결 수립 확인과 혼잡·수신 윈도우 문제를 어떤 지표로 나누겠습니까?"},{"id":"tcp-stream-message-framing","prompt":"마지막 ACK 뒤 애플리케이션 데이터를 바로 보낼 때, TCP handshake 완료와 메시지 경계 보장을 왜 별도로 설계해야 합니까?"}]
+followups: [{"id":"tcp-simultaneous-open-state","prompt":"양쪽 TCP endpoint가 동시에 SYN을 보냅니다. 일반 연결 시작과 상태 전이는 어떻게 다른가요?"},{"id":"tcp-time-wait","prompt":"정상 종료 뒤 한쪽에 TIME_WAIT가 남는 이유를 handshake의 순서 번호 재사용 방지와 어떻게 연결하겠습니까?"},{"id":"tcp-flow-vs-congestion-control","prompt":"handshake는 성공했지만 첫 데이터가 늦다면, 연결 수립 확인과 혼잡·수신 윈도우 문제를 어떤 지표로 나누겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["TCP","핸드셰이크","sequence","ACK"]
@@ -46,6 +46,6 @@ handshake 패킷의 재전송은 상위 메시지 재시도와 다른 수준의 
 
 ## 더 파고들 거리
 
-- 동시 오픈과 SYN 재전송에서 TCP 상태 전이를 어떻게 그릴까요?
+- [양쪽 TCP endpoint가 동시에 SYN을 보냅니다. 일반 연결 시작과 상태 전이는 어떻게 다른가요?](/tech-interview/questions/tcp-simultaneous-open-state/)
 - 마지막 ACK가 계속 유실될 때 서버의 재전송·정리 조건은 무엇일까요?
 - SYN flood 방어가 반쯤 열린 연결 상태와 자원 사용을 어떻게 바꿀까요?

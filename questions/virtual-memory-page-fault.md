@@ -2,7 +2,7 @@
 id: virtual-memory-page-fault
 title: "호스트에 여유 메모리가 있는데도 프로세스의 페이지 폴트가 늘고 지연이 생깁니다. 어떤 종류의 폴트인지와 실제 디스크 접근이 있는지를 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"tlb-page-table","prompt":"TLB miss와 page fault가 한 요청의 지연에 각각 얼마나 기여하는지 어떤 하드웨어·OS 지표로 나눌까요?"},{"id":"page-replacement-thrashing","prompt":"major fault와 작업 집합 부족으로 인한 스래싱을 어떤 회복 실험으로 구분할까요?"},{"id":"memory-rss-vs-heap","prompt":"객체 해제 뒤 RSS가 유지되는 상황에서 페이지가 재사용 중인지 누수인지 어떻게 추적할까요?"}]
+followups: [{"id":"huge-page-fault-tlb-tradeoff","prompt":"대형 페이지를 적용합니다. TLB miss 절감과 첫 fault·메모리 낭비·할당 비용은 어떻게 비교하나요?"},{"id":"tlb-page-table","prompt":"TLB miss와 page fault가 한 요청의 지연에 각각 얼마나 기여하는지 어떤 하드웨어·OS 지표로 나눌까요?"},{"id":"page-replacement-thrashing","prompt":"major fault와 작업 집합 부족으로 인한 스래싱을 어떤 회복 실험으로 구분할까요?"}]
 difficulty: 하
 category: 운영체제
 tags:
@@ -48,4 +48,4 @@ minor fault는 디스크 읽기 없이 페이지 테이블 갱신, 공유 zero p
 
 - memory-mapped 파일의 첫 접근과 일반 read의 fault·복사 비용은 어떻게 다른가요?
 - copy-on-write가 page fault와 RSS 증가를 어떤 순서로 만들까요?
-- 대형 페이지를 적용할 때 fault 단위와 TLB 비용을 어떻게 비교할까요?
+- [대형 페이지를 적용합니다. TLB miss 절감과 첫 fault·메모리 낭비·할당 비용은 어떻게 비교하나요?](/tech-interview/questions/huge-page-fault-tlb-tradeoff/)

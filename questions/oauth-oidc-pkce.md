@@ -2,7 +2,7 @@
 id: oauth-oidc-pkce
 title: "OAuth/OIDC 로그인에서 PKCE와 state는 콜백 흐름의 어떤 공격·혼동을 각각 줄이며, 둘만으로 검증이 끝나지 않는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"device-code-login","prompt":"redirect를 받을 브라우저가 없는 콘솔에서 로그인하려면, authorization code 흐름 대신 기기 코드와 별도 승인 화면을 어떻게 사용할까요?"},{"id":"account-linking-proof","prompt":"OIDC ID token의 이메일이 기존 계정과 같을 때 자동 연결하지 않으려면 공급자 subject와 사용자 의도를 어떻게 확인하나요?"},{"id":"csrf-vs-xss","prompt":"로그인 callback에 교차 사이트 이동이 필요하고 브라우저 쿠키로 세션을 만들 때 CSRF와 XSS 방어를 어떻게 분리하나요?"}]
+followups: [{"id":"oidc-nonce-state-binding","prompt":"OIDC의 nonce와 OAuth state는 각각 어떤 응답·세션에 묶이며 서로를 대체할 수 있나요?"},{"id":"device-code-login","prompt":"redirect를 받을 브라우저가 없는 콘솔에서 로그인하려면, authorization code 흐름 대신 기기 코드와 별도 승인 화면을 어떻게 사용할까요?"},{"id":"account-linking-proof","prompt":"OIDC ID token의 이메일이 기존 계정과 같을 때 자동 연결하지 않으려면 공급자 subject와 사용자 의도를 어떻게 확인하나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -51,6 +51,6 @@ PKCE 검증은 authorization 요청 때 만든 verifier를 클라이언트의 �
 
 ## 더 파고들 거리
 
-- nonce와 state가 각각 어느 세션·자격에 묶여야 하는지 비교해 보세요.
+- [OIDC의 nonce와 OAuth state는 각각 어떤 응답·세션에 묶이며 서로를 대체할 수 있나요?](/tech-interview/questions/oidc-nonce-state-binding/)
 - 여러 IdP의 동일 이메일과 서로 다른 issuer를 계정 모델에서 어떻게 처리할까요?
 - callback 응답 유실과 code 재시도를 안전하게 처리하는 상태는 무엇일까요?

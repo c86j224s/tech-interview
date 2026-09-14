@@ -2,7 +2,7 @@
 id: redis-bigkey-scan
 title: "운영 Redis에서 큰 키를 찾고 삭제하려는데 다른 요청이 멈출까 걱정됩니다. KEYS와 큰 키 삭제는 왜 지연을 만들며 어떻게 나눠 조사하고 정리하나요?"
 answerMinutes: 5
-followups: [{"id":"redis-thread-model","prompt":"큰 키 명령이 Redis 주 실행 경로를 막을 때 네트워크 I/O와 백그라운드 rewrite를 어떻게 분리해 보나요?"},{"id":"redis-expiry-eviction","prompt":"큰 키가 TTL 만료인지 maxmemory eviction인지 구분한 뒤 삭제 정책을 어떻게 정할까요?"},{"id":"redis-data-types-encoding","prompt":"큰 hash를 여러 키로 쪼갤 때 자료형 연산·원자성·TTL 비용을 어떤 기준으로 비교할까요?"}]
+followups: [{"id":"redis-scan-cleanup-idempotency","prompt":"SCAN으로 같은 키를 여러 번 만날 수 있습니다. 값이 바뀌는 중 삭제 작업을 어떤 버전 조건으로 안전하게 만드나요?"},{"id":"redis-thread-model","prompt":"큰 키 명령이 Redis 주 실행 경로를 막을 때 네트워크 I/O와 백그라운드 rewrite를 어떻게 분리해 보나요?"},{"id":"redis-expiry-eviction","prompt":"큰 키가 TTL 만료인지 maxmemory eviction인지 구분한 뒤 삭제 정책을 어떻게 정할까요?"}]
 difficulty: 중하
 category: 성능
 tags: ["Redis","big key","SCAN"]
@@ -43,6 +43,6 @@ slowlog·latency monitor·명령별 호출·실행 시간·응답 bytes·pending
 
 ## 더 파고들 거리
 
-- 중복 키를 만나는 정리 작업을 어떤 조건부 연산으로 멱등화할까요?
+- [SCAN으로 같은 키를 여러 번 만날 수 있습니다. 값이 바뀌는 중 삭제 작업을 어떤 버전 조건으로 안전하게 만드나요?](/tech-interview/questions/redis-scan-cleanup-idempotency/)
 - 큰 hash를 나눌 때 multi-key 원자 갱신을 어떻게 대체할까요?
 - 출력 버퍼 압박과 명령 실행 지연을 어떤 지표로 구분할까요?

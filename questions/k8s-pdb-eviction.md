@@ -2,7 +2,7 @@
 id: k8s-pdb-eviction
 title: "Kubernetes PDB를 설정했는데 노드 장애로 여러 Pod가 중단됐습니다. PDB가 막는 중단과 막지 못하는 중단은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"graceful-shutdown","prompt":"PDB가 eviction을 허용했지만 기존 요청과 메시지 처리가 남아 있다면 새 유입·작업 종료·DB 풀 정리 순서를 어떻게 잡겠습니까?"},{"id":"k8s-rolling-update-capacity","prompt":"Deployment의 rollout 자체는 PDB가 막지 않지만 동시에 노드 drain도 시작되면, 가용 Pod 감소와 eviction 예산은 어떻게 영향을 주고받을까요?"},{"id":"karpenter-consolidation","prompt":"노드 consolidation이 비용을 줄이려 할 때 장기 세션 Pod의 eviction을 허용할 조건과 관측할 사용자 영향을 무엇으로 정하겠습니까?"}]
+followups: [{"id":"pdb-selector-target-verification","prompt":"PDB가 의도한 Pod를 보호하지 않습니다. selector·namespace·disruptionsAllowed를 어떤 상태와 대조하나요?"},{"id":"pdb-budget-readiness-recovery","prompt":"새 Pod가 준비되지 않아 PDB 예산이 회복되지 않습니다. 배치 실패와 readiness 실패를 어떻게 나누나요?"},{"id":"graceful-shutdown","prompt":"PDB가 eviction을 허용했지만 기존 요청과 메시지 처리가 남아 있다면 새 유입·작업 종료·DB 풀 정리 순서를 어떻게 잡겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Kubernetes","PDB","eviction"]
@@ -43,6 +43,6 @@ Deployment 롤링 업데이트의 `maxUnavailable`과 PDB도 같은 설정이 �
 
 ## 더 파고들 거리
 
-- PDB의 selector가 잘못돼 보호 대상이 달라지는 경우를 어떤 명령과 상태로 확인할까요.
-- 새 Pod가 준비되지 않아 disruptionsAllowed가 회복되지 않을 때 스케줄링과 readiness를 어떻게 분리 진단할까요.
+- [PDB가 의도한 Pod를 보호하지 않습니다. selector·namespace·disruptionsAllowed를 어떤 상태와 대조하나요?](/tech-interview/questions/pdb-selector-target-verification/)
+- [새 Pod가 준비되지 않아 PDB 예산이 회복되지 않습니다. 배치 실패와 readiness 실패를 어떻게 나누나요?](/tech-interview/questions/pdb-budget-readiness-recovery/)
 - 강제 eviction이 필요한 유지보수에서 사용자 영향과 데이터 처리 유실을 어떤 승인 기준으로 판단할까요.

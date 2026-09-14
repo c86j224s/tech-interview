@@ -2,7 +2,7 @@
 id: go-interface-typed-nil
 title: "Go에서 nil인 포인터를 error 변수에 넣었는데, 왜 err == nil은 false가 되나요?"
 answerMinutes: 5
-followups: [{"id":"go-slice-backing-array","prompt":"any에 nil 슬라이스를 넣은 뒤 비교하거나 range할 때 typed nil의 의미는 어떻게 달라질까요?"},{"id":"python-duck-typing","prompt":"Go 인터페이스와 Python Protocol은 구조적 계약을 각각 어느 시점에 검사하나요?"},{"id":"go-channel-close-ownership","prompt":"채널로 error 인터페이스를 전달할 때 typed nil을 정상 결과로 오인하지 않게 생산자와 소비자의 계약을 어떻게 정할까요?"}]
+followups: [{"id":"go-nil-receiver-error-method","prompt":"nil 포인터가 error interface에 들어 있습니다. Error 메서드가 nil 수신자를 허용하는지 어떻게 확인하나요?"},{"id":"go-type-assertion-typed-nil","prompt":"Go 타입 assertion은 성공했는데 결과 포인터가 nil입니다. 타입 일치와 값의 존재를 어떻게 구분하나요?"},{"id":"go-slice-backing-array","prompt":"any에 nil 슬라이스를 넣은 뒤 비교하거나 range할 때 typed nil의 의미는 어떻게 달라질까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -99,6 +99,6 @@ func run() error {
 
 ## 더 파고들 거리
 
-- nil 수신자를 허용하는 `Error` 메서드와 허용하지 않는 메서드를 어떻게 테스트할까요?
+- [nil 포인터가 error interface에 들어 있습니다. Error 메서드가 nil 수신자를 허용하는지 어떻게 확인하나요?](/tech-interview/questions/go-nil-receiver-error-method/)
 - 인터페이스에 담긴 map·func·slice를 비교할 때 어떤 비교가 패닉을 만들까요?
-- 타입 assertion 실패와 typed nil 성공을 호출자 API에서 어떻게 구분할까요?
+- [Go 타입 assertion은 성공했는데 결과 포인터가 nil입니다. 타입 일치와 값의 존재를 어떻게 구분하나요?](/tech-interview/questions/go-type-assertion-typed-nil/)

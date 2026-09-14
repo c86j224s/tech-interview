@@ -2,7 +2,7 @@
 id: db-mvcc-snapshot
 title: "긴 조회와 갱신이 동시에 실행되는 DB에서 MVCC를 사용합니다. 읽는 데이터의 시점은 어떻게 정해지며, 읽기와 쓰기의 대기나 유지 비용이 모두 사라지나요?"
 answerMinutes: 5
-followups: [{"id":"sqlserver-rcsi-snapshot","prompt":"SQL Server에서 RCSI와 SNAPSHOT을 선택할 때 문장 시점·트랜잭션 시점과 쓰기 충돌을 어떻게 구분하나요?"},{"id":"transaction-and-lost-update","prompt":"스냅샷 격리에서 같은 재고를 읽은 두 쓰기가 유실되지 않게 어떤 조건부 갱신을 추가하나요?"},{"id":"db-lock-escalation","prompt":"MVCC를 켠 뒤에도 스키마 변경이나 쓰기 블로킹이 남는지 어떤 잠금 정보를 확인하나요?"}]
+followups: [{"id":"isolation-two-read-experiment","prompt":"같은 transaction에서 두 번 읽는 사이 다른 세션이 커밋합니다. 격리 수준별 가시성을 어떻게 재현하나요?"},{"id":"old-transaction-version-retention","prompt":"가장 오래된 transaction 하나가 버전 저장소를 키웁니다. 읽기 수명과 정리 지연을 어떤 지표로 연결하나요?"},{"id":"sqlserver-rcsi-snapshot","prompt":"SQL Server에서 RCSI와 SNAPSHOT을 선택할 때 문장 시점·트랜잭션 시점과 쓰기 충돌을 어떻게 구분하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ MVCC는 한 행의 현재 값만 덮어쓰는 대신 여러 버전과 각 버전
 
 ## 더 파고들 거리
 
-- 두 번 읽기 실험으로 격리 수준의 가시성을 비교해 보세요.
-- 버전 저장소와 가장 오래된 트랜잭션 지표를 연결해 보세요.
+- [같은 transaction에서 두 번 읽는 사이 다른 세션이 커밋합니다. 격리 수준별 가시성을 어떻게 재현하나요?](/tech-interview/questions/isolation-two-read-experiment/)
+- [가장 오래된 transaction 하나가 버전 저장소를 키웁니다. 읽기 수명과 정리 지연을 어떤 지표로 연결하나요?](/tech-interview/questions/old-transaction-version-retention/)
 - write skew를 조건부 갱신·직렬화로 막는 방법을 검토해 보세요.

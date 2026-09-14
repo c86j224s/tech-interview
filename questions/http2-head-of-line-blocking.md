@@ -2,7 +2,7 @@
 id: http2-head-of-line-blocking
 title: "HTTP/2로 여러 요청을 한 TCP 연결에서 동시에 보냅니다. 패킷 하나가 유실됐을 때 왜 다른 요청까지 지연될 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-flow-vs-congestion-control","prompt":"HTTP/2 스트림들이 함께 느려질 때 수신 윈도우 축소와 네트워크 혼잡을 어떤 관찰값으로 구분하겠습니까?"},{"id":"http-connection-pool","prompt":"한 HTTP/2 연결의 손실 영향을 줄이기 위해 연결 수를 늘리려 한다면, 스트림·연결·하위 서버 자원 한도를 어떻게 비교하겠습니까?"},{"id":"load-test-realism","prompt":"HTTP/2와 HTTP/3의 선두 지연 차이를 부하 테스트로 비교할 때 손실·응답 크기·연결 재사용을 어떻게 맞추겠습니까?"}]
+followups: [{"id":"http2-stream-connection-flow-windows","prompt":"HTTP/2의 스트림 창은 남았는데 전송이 멈춥니다. 스트림별·연결별 흐름 제어 창은 어떻게 함께 적용되나요?"},{"id":"http2-download-rpc-fairness","prompt":"큰 다운로드와 짧은 RPC가 한 HTTP/2 연결을 공유합니다. 우선순위·대역폭·버퍼의 공정성을 어떻게 측정하나요?"},{"id":"tcp-flow-vs-congestion-control","prompt":"HTTP/2 스트림들이 함께 느려질 때 수신 윈도우 축소와 네트워크 혼잡을 어떤 관찰값으로 구분하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -49,6 +49,6 @@ HTTP/3의 QUIC은 스트림별 전달 상태를 분리해 한 스트림의 손�
 
 ## 더 파고들 거리
 
-- HTTP/2의 스트림별 흐름 제어와 연결별 흐름 제어가 함께 막히는 순서를 설명해 보세요.
-- 큰 다운로드와 짧은 RPC를 같은 연결에 둘 때 공정성을 어떤 분포로 측정할까요?
+- [HTTP/2의 스트림 창은 남았는데 전송이 멈춥니다. 스트림별·연결별 흐름 제어 창은 어떻게 함께 적용되나요?](/tech-interview/questions/http2-stream-connection-flow-windows/)
+- [큰 다운로드와 짧은 RPC가 한 HTTP/2 연결을 공유합니다. 우선순위·대역폭·버퍼의 공정성을 어떻게 측정하나요?](/tech-interview/questions/http2-download-rpc-fairness/)
 - 연결을 여러 개로 나누는 방법과 HTTP/3 전환의 자원 비용을 어떻게 비교할까요?

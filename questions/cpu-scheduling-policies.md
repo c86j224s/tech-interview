@@ -2,7 +2,7 @@
 id: cpu-scheduling-policies
 title: "긴 계산 작업과 짧은 대화형 요청이 CPU를 함께 씁니다. FCFS, SJF, Round Robin은 대기 시간을 어떻게 바꾸나요?"
 answerMinutes: 5
-followups: [{"id":"context-switch-overhead","prompt":"정책을 바꾼 뒤 평균 대기는 좋아졌지만 전환 비용이 늘었다면 어떤 지표로 실제 이득을 판정할까요?"},{"id":"round-robin-time-quantum","prompt":"I/O가 잦은 작업과 CPU 작업이 섞일 때 quantum을 하나로 두지 않아도 되는 이유는 무엇인가요?"},{"id":"priority-queue-starvation","prompt":"SJF나 우선순위 큐에서 긴 작업의 기아를 막으면서 짧은 요청의 반응성도 유지하려면 어떻게 하겠습니까?"}]
+followups: [{"id":"scheduler-service-time-estimation","prompt":"작업 실행 시간 예측이 자주 틀립니다. 스케줄러의 예상 비용과 실제 사용량을 어떻게 보정하나요?"},{"id":"aging-progress-guarantee-limits","prompt":"대기 시간이 길면 우선순위를 올립니다. aging만으로 모든 작업의 최대 대기를 보장할 수 있나요?"},{"id":"multicore-task-migration-cost","prompt":"여유 코어로 작업을 옮기면 항상 빨라지나요? 부하 균형과 캐시·NUMA 이동 비용을 어떻게 비교하나요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["CPU 스케줄링","FCFS","SJF","Round Robin"]
@@ -43,6 +43,6 @@ SJF의 선택 시점과 선점 여부를 분리해야 합니다. A가 10ms이고
 
 ## 더 파고들 거리
 
-- 실행 시간 예측이 틀릴 때 스케줄러가 보정할 수 있는 방법은 무엇일까요?
-- 우선순위 큐의 aging이 모든 기아를 없앤다고 말할 수 없는 경우는 언제인가요?
-- 멀티코어에서 작업을 다른 코어로 옮기는 비용까지 포함하면 비교가 어떻게 달라질까요?
+- [작업 실행 시간 예측이 자주 틀립니다. 스케줄러의 예상 비용과 실제 사용량을 어떻게 보정하나요?](/tech-interview/questions/scheduler-service-time-estimation/)
+- [대기 시간이 길면 우선순위를 올립니다. aging만으로 모든 작업의 최대 대기를 보장할 수 있나요?](/tech-interview/questions/aging-progress-guarantee-limits/)
+- [여유 코어로 작업을 옮기면 항상 빨라지나요? 부하 균형과 캐시·NUMA 이동 비용을 어떻게 비교하나요?](/tech-interview/questions/multicore-task-migration-cost/)

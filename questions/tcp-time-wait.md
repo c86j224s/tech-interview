@@ -2,7 +2,7 @@
 id: tcp-time-wait
 title: "TCP TIME_WAIT가 정상 종료 상태인 경우와 실제 연결·포트 고갈 문제를 어떻게 구분하고 개선하나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-three-way-handshake","prompt":"TIME_WAIT가 지연된 세그먼트와 새 연결을 구분해야 한다면, handshake 순서 번호와 어떤 관계가 있습니까?"},{"id":"http-connection-pool","prompt":"단기 HTTP 연결이 TIME_WAIT를 급증시킨다면, 풀 크기·유휴 수명·HTTP/2 스트림 한도를 어떻게 함께 조정하겠습니까?"},{"id":"dns-cache-failover","prompt":"DNS 전환 뒤 기존 풀의 활성 연결과 이미 종료된 TIME_WAIT 항목을 구분해, 이전 서버의 요청 처리가 끝났는지 어떻게 관찰하겠습니까?"}]
+followups: [{"id":"close-wait-application-close-leak","prompt":"CLOSE_WAIT가 계속 늘어납니다. 상대 FIN 수신 뒤 앱의 close 누락과 정상 짧은 대기를 어떻게 구분하나요?"},{"id":"tcp-three-way-handshake","prompt":"TIME_WAIT가 지연된 세그먼트와 새 연결을 구분해야 한다면, handshake 순서 번호와 어떤 관계가 있습니까?"},{"id":"http-connection-pool","prompt":"단기 HTTP 연결이 TIME_WAIT를 급증시킨다면, 풀 크기·유휴 수명·HTTP/2 스트림 한도를 어떻게 함께 조정하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -51,6 +51,6 @@ TCP 연결은 로컬 주소·포트와 원격 주소·포트의 조합으로 구
 
 ## 더 파고들 거리
 
-- CLOSE_WAIT 증가가 TIME_WAIT 증가와 다른 애플리케이션 경로를 어떻게 보여 줄까요?
+- [CLOSE_WAIT가 계속 늘어납니다. 상대 FIN 수신 뒤 앱의 close 누락과 정상 짧은 대기를 어떻게 구분하나요?](/tech-interview/questions/close-wait-application-close-leak/)
 - 동일 목적지 임시 포트 고갈이 어떤 연결 오류와 관찰 패턴으로 나타날까요?
 - 유휴 연결 재사용 실패 때 멱등 요청만 안전하게 재시도할 조건은 무엇일까요?

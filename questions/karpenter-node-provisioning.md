@@ -2,7 +2,7 @@
 id: karpenter-node-provisioning
 title: "HPA가 Pod 수를 늘렸지만 배치할 노드 자원이 없어 Pending으로 남았습니다. Karpenter는 무엇을 보고 노드를 만들며 Pod 확장과는 어떻게 연결되나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-hpa-scaling","prompt":"desired replica는 늘었지만 Node Ready가 늦어지는 동안 응답 지연을 보호하려면 HPA와 요청 대기열에 어떤 상한을 두겠습니까?"},{"id":"k8s-requests-limits","prompt":"실제 사용량보다 낮은 requests로 노드를 고른 뒤 실행 중 압박이 생겼다면 배치 효율과 OOM을 함께 줄이도록 값을 어떻게 재측정하겠습니까?"},{"id":"keda-scale-zero","prompt":"consumer가 0 replica에서 깨어날 때 Pod뿐 아니라 노드도 새로 필요하다면 첫 메시지 지연을 어떤 구간으로 나눠 측정하겠습니까?"}]
+followups: [{"id":"daemonset-node-capacity-overhead","prompt":"새 노드에 DaemonSet도 실행됩니다. requests와 시스템 여유를 인스턴스 선택에 어떻게 반영하나요?"},{"id":"pvc-nodepool-zone-conflict","prompt":"PVC 영역과 NodePool 조건이 맞지 않아 Pod가 Pending입니다. scheduler와 NodeClaim의 어느 상태를 확인하나요?"},{"id":"cloud-capacity-instance-diversity","prompt":"클라우드 용량 부족으로 인스턴스 유형을 넓힙니다. 비용·아키텍처·성능·보안 조건을 어떻게 보존하나요?"}]
 difficulty: 하
 category: 인프라
 tags: ["Karpenter","노드","스케줄링"]
@@ -45,6 +45,6 @@ Pod의 affinity·topology spread·taint·toleration이 지나치게 좁으면 �
 
 ## 더 파고들 거리
 
-- DaemonSet requests가 노드의 실제 가용 용량과 인스턴스 선택에 어떻게 반영되는지 설명해 보세요.
-- PVC의 영역 제약과 NodePool 조건이 충돌할 때 scheduler 이벤트와 NodeClaim 상태를 어떻게 읽을까요.
-- 클라우드 용량 부족에 인스턴스 유형을 넓힐 때 비용·보안·예측 가능성을 어떻게 관리할까요.
+- [새 노드에 DaemonSet도 실행됩니다. requests와 시스템 여유를 인스턴스 선택에 어떻게 반영하나요?](/tech-interview/questions/daemonset-node-capacity-overhead/)
+- [PVC 영역과 NodePool 조건이 맞지 않아 Pod가 Pending입니다. scheduler와 NodeClaim의 어느 상태를 확인하나요?](/tech-interview/questions/pvc-nodepool-zone-conflict/)
+- [클라우드 용량 부족으로 인스턴스 유형을 넓힙니다. 비용·아키텍처·성능·보안 조건을 어떻게 보존하나요?](/tech-interview/questions/cloud-capacity-instance-diversity/)

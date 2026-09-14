@@ -2,7 +2,7 @@
 id: circuit-breaker
 title: "외부 API 장애가 길어져 재시도 요청까지 쌓이고 있습니다. 서킷 브레이커를 추가하면 무엇을 중단하고, 언제 다시 요청을 보내야 하나요?"
 answerMinutes: 5
-followups: [{"id":"request-timeout-idempotency","prompt":"서킷이 열린 동안 timeout 주문을 다시 허용한다면 이미 실행된 요청과 중복 주문을 어떻게 구분하겠습니까?"},{"id":"bulkhead-isolation","prompt":"브레이커가 열리기 전 느린 외부 호출이 연결 풀을 점유하면 자원을 어떻게 나누겠습니까?"},{"id":"cache-stampede-singleflight","prompt":"대체 캐시도 만료된 상태에서 브레이커가 열리면 원본 재시도를 어떻게 제한하겠습니까?"}]
+followups: [{"id":"shared-breaker-store-failure","prompt":"여러 인스턴스가 공유하는 서킷 상태 저장소가 실패했습니다. 로컬 상태와 호출 허용은 어떻게 결정하나요?"},{"id":"half-open-probe-representativeness","prompt":"서킷의 half-open 시험 호출은 성공하지만 실제 트래픽은 실패합니다. 시험 표본과 복귀 기준을 어떻게 바꾸나요?"},{"id":"request-timeout-idempotency","prompt":"서킷이 열린 동안 timeout 주문을 다시 허용한다면 이미 실행된 요청과 중복 주문을 어떻게 구분하겠습니까?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -53,6 +53,6 @@ related: ["request-timeout-idempotency"]
 
 ## 더 파고들 거리
 
-- 공유 브레이커 상태 저장소 장애
-- half-open 표본 대표성
+- [여러 인스턴스가 공유하는 서킷 상태 저장소가 실패했습니다. 로컬 상태와 호출 허용은 어떻게 결정하나요?](/tech-interview/questions/shared-breaker-store-failure/)
+- [서킷의 half-open 시험 호출은 성공하지만 실제 트래픽은 실패합니다. 시험 표본과 복귀 기준을 어떻게 바꾸나요?](/tech-interview/questions/half-open-probe-representativeness/)
 - 재시도 예산과 백오프

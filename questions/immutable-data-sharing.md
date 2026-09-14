@@ -2,7 +2,7 @@
 id: immutable-data-sharing
 title: "여러 스레드가 같은 설정 데이터를 읽고 한 항목만 바꿔 공유하려 합니다. 불변 데이터가 안전성과 비용에 미치는 영향은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id": "functional-purity", "prompt": "불변 설정 스냅샷을 순수 계산에 넘길 때 현재 시각과 외부 캐시를 어떤 입력·효과로 나눌까요?"}, {"id": "singleton-global-state", "prompt": "하나의 불변 설정을 여러 스레드에 공유할 때 싱글턴 전역 접근의 문제는 무엇이 남을까요?"}, {"id": "java-final-immutability", "prompt": "final 참조와 내부 List 변경을 구분해 깊은 불변 객체의 생성 경계를 어떻게 만들까요?"}]
+followups: [{"id":"persistent-tree-path-copy","prompt":"불변 트리의 리프 하나를 수정합니다. 어느 경로만 복사하고 어떤 하위 노드를 공유할 수 있나요?"},{"id":"immutable-snapshot-reader-retention","prompt":"새 불변 snapshot을 게시한 뒤 옛 snapshot을 독자가 읽고 있습니다. 메모리 회수와 독자 수명은 어떻게 제한하나요?"},{"id":"functional-purity","prompt":"불변 설정 스냅샷을 순수 계산에 넘길 때 현재 시각과 외부 캐시를 어떤 입력·효과로 나눌까요?"}]
 difficulty: 중하
 category: 설계
 tags: ["불변 데이터","공유 상태","구조적 공유","깊은 불변"]
@@ -47,6 +47,6 @@ related: ["functional-purity"]
 
 ## 더 파고들 거리
 
-- 구조적 공유 자료구조에서 한 하위 노드를 바꿀 때 복사해야 하는 경로의 범위는 어떻게 정할까요?
-- 불변 스냅샷을 읽는 동안 메모리 회수와 객체 수명을 어떤 방식으로 보장할까요?
+- [불변 트리의 리프 하나를 수정합니다. 어느 경로만 복사하고 어떤 하위 노드를 공유할 수 있나요?](/tech-interview/questions/persistent-tree-path-copy/)
+- [새 불변 snapshot을 게시한 뒤 옛 snapshot을 독자가 읽고 있습니다. 메모리 회수와 독자 수명은 어떻게 제한하나요?](/tech-interview/questions/immutable-snapshot-reader-retention/)
 - 가변 캐시를 불변 스냅샷으로 바꿀 때 갱신 빈도와 읽기 지연을 어떻게 측정할까요?

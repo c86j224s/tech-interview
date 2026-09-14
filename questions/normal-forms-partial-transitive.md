@@ -2,7 +2,7 @@
 id: normal-forms-partial-transitive
 title: "주문 상세에 상품명·수량·고객번호·고객명을 함께 저장해 값이 반복됩니다. 어떤 함수 종속을 확인하고 1NF·2NF·3NF에 맞춰 테이블을 어떻게 나누나요?"
 answerMinutes: 5
-followups: [{"id":"functional-dependency-keys","prompt":"후보키가 샘플이 아니라 업무 규칙에 의해 정해진다는 점을 이 주문 스키마에 어떻게 적용하나요?"},{"id":"normalization-anomalies","prompt":"상품명·고객명이 반복될 때 수정·삽입·삭제 이상을 각각 어떤 작업으로 재현하나요?"},{"id":"denormalization-maintenance","prompt":"정규화된 주문 조회가 병목이면 상품명·합계를 어떤 의미와 갱신 책임으로 복사하나요?"}]
+followups: [{"id":"normal-form-all-candidate-keys","prompt":"후보키가 여러 개인 테이블의 2NF·3NF를 검사합니다. 기본키 하나만 보면 어떤 종속을 놓치나요?"},{"id":"functional-dependency-keys","prompt":"후보키가 샘플이 아니라 업무 규칙에 의해 정해진다는 점을 이 주문 스키마에 어떻게 적용하나요?"},{"id":"normalization-anomalies","prompt":"상품명·고객명이 반복될 때 수정·삽입·삭제 이상을 각각 어떤 작업으로 재현하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["1NF","2NF","3NF","부분 함수 종속","이행 함수 종속"]
@@ -45,6 +45,6 @@ related: ["functional-dependency-keys","normalization-anomalies"]
 
 ## 더 파고들 거리
 
-- 여러 후보키에서 2NF·3NF를 검사해 보세요.
+- [후보키가 여러 개인 테이블의 2NF·3NF를 검사합니다. 기본키 하나만 보면 어떤 종속을 놓치나요?](/tech-interview/questions/normal-form-all-candidate-keys/)
 - 현재 가격과 주문 당시 가격의 사실 소유자를 구분해 보세요.
 - 정규화 후 JOIN 계획과 읽기 모델 도입 기준을 측정해 보세요.

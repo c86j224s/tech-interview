@@ -2,7 +2,7 @@
 id: message-ordering-scope
 title: "같은 Kafka partition의 메시지를 순서대로 받았지만 여러 워커가 처리하자 최종 상태가 뒤바뀝니다. 전달 순서와 처리 완료 순서를 어떻게 구분하고 필요한 순서를 보장하나요?"
 answerMinutes: 5
-followups: [{"id": "message-consumer-idempotency", "prompt": "순서를 기다리며 재전달을 허용하면 같은 이벤트가 반복됩니다. 순서 검사와 중복 판별을 어떻게 함께 저장할까요?"}, {"id": "kafka-rebalance-processing", "prompt": "키별 처리 중 파티션 소유권이 다른 소비자로 넘어가면 이전 워커의 쓰기는 어떻게 정리할까요?"}, {"id": "kafka-partition-expansion", "prompt": "파티션 수가 늘어 같은 키의 새 이벤트가 다른 파티션으로 간다면 기존 순서를 어떻게 이어갈까요?"}]
+followups: [{"id":"out-of-order-buffer-bounds","prompt":"역순 이벤트를 기다리는 버퍼가 계속 커집니다. 메모리·대기 상한과 snapshot 재동기화는 어떻게 정하나요?"},{"id":"message-consumer-idempotency","prompt":"순서를 기다리며 재전달을 허용하면 같은 이벤트가 반복됩니다. 순서 검사와 중복 판별을 어떻게 함께 저장할까요?"},{"id":"kafka-rebalance-processing","prompt":"키별 처리 중 파티션 소유권이 다른 소비자로 넘어가면 이전 워커의 쓰기는 어떻게 정리할까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -54,6 +54,6 @@ Kafka partition의 offset은 그 로그 안의 위치를 나타냅니다. 한 pa
 
 ## 더 파고들 거리
 
-- 순서가 깨진 이벤트를 보류할 때 메모리·시간 상한과 재동기화는 어떻게 정할까요?
+- [역순 이벤트를 기다리는 버퍼가 계속 커집니다. 메모리·대기 상한과 snapshot 재동기화는 어떻게 정하나요?](/tech-interview/questions/out-of-order-buffer-bounds/)
 - 파티션 수 변경 중 키별 순서를 이어 가는 전환 절차는 무엇인가요?
 - 외부 쓰기 완료와 broker offset 커밋을 어떤 원자성·멱등성으로 조정할까요?

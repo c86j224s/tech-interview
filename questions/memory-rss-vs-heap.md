@@ -2,7 +2,7 @@
 id: memory-rss-vs-heap
 title: "객체를 해제해 힙 사용량은 줄었는데 프로세스의 RSS는 그대로입니다. 누수인지 재사용 공간인지 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"memory-fragmentation","prompt":"큰 객체를 해제했는데 작은 객체가 같은 페이지에 남는 경우를 어떤 할당 패턴으로 재현할까요?"},{"id":"virtual-memory-page-fault","prompt":"trim 이후 늘어난 page fault가 저장 장치 접근인지 페이지 재매핑인지 어떻게 구분하나요?"},{"id":"go-gc-latency-tradeoff","prompt":"GC가 자주 실행되는 Go 서버에서 heap·RSS·GOMEMLIMIT를 어떤 시간축으로 함께 해석할까요?"}]
+followups: [{"id":"rss-pss-shared-memory-accounting","prompt":"여러 프로세스가 페이지를 공유합니다. RSS 합과 PSS는 어떤 메모리 용량 판단에 각각 맞나요?"},{"id":"cgroup-file-anon-memory-pressure","prompt":"컨테이너 OOM 직전 파일 cache와 anonymous memory가 늘었습니다. 어떤 메모리가 회수 가능한지 어떻게 확인하나요?"},{"id":"memory-fragmentation","prompt":"큰 객체를 해제했는데 작은 객체가 같은 페이지에 남는 경우를 어떤 할당 패턴으로 재현할까요?"}]
 difficulty: 하
 category: 운영체제
 tags:
@@ -46,6 +46,6 @@ trim을 강제로 실행하면 RSS는 내려가도 다음 요청에서 매핑과
 
 ## 더 파고들 거리
 
-- 공유 페이지가 많은 프로세스에서 RSS와 PSS를 어떤 의사결정에 사용하나요?
+- [여러 프로세스가 페이지를 공유합니다. RSS 합과 PSS는 어떤 메모리 용량 판단에 각각 맞나요?](/tech-interview/questions/rss-pss-shared-memory-accounting/)
 - allocator fragmentation과 객체 그래프 누수를 heap profile에서 어떻게 나누나요?
-- 컨테이너 OOM 직전에 파일 캐시와 anonymous memory를 어떻게 식별할까요?
+- [컨테이너 OOM 직전 파일 cache와 anonymous memory가 늘었습니다. 어떤 메모리가 회수 가능한지 어떻게 확인하나요?](/tech-interview/questions/cgroup-file-anon-memory-pressure/)

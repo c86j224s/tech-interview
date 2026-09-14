@@ -2,7 +2,7 @@
 id: dbms-vs-files
 title: "여러 프로세스가 같은 파일에 주문을 저장할 때 생기는 문제를 DBMS는 어떤 책임으로 해결하나요?"
 answerMinutes: 5
-followups: [{"id":"normalization-anomalies","prompt":"파일이나 단일 테이블에 여러 사실을 섞을 때 수정·삽입·삭제 이상을 어떤 예로 확인하나요?"},{"id":"db-wal-durability","prompt":"DBMS가 파일 기반 저장 위에 WAL과 장애 복구를 추가하는 이유를 커밋 시점으로 설명해 보세요."},{"id":"db-online-schema-migration","prompt":"파일 저장소를 DBMS로 옮길 때 구·신 시스템의 중복 쓰기와 검증을 어떻게 운영하나요?"}]
+followups: [{"id":"file-lock-crash-recovery-contract","prompt":"파일 잠금으로 여러 writer를 직렬화했습니다. 부분 쓰기와 프로세스 중단 복구에는 어떤 기록이 더 필요한가요?"},{"id":"file-database-dual-write-cutover","prompt":"파일 저장을 DB로 옮기는 동안 양쪽 기록을 유지합니다. 기준 snapshot과 변경 추적·권위 전환을 어떻게 검증하나요?"},{"id":"normalization-anomalies","prompt":"파일이나 단일 테이블에 여러 사실을 섞을 때 수정·삽입·삭제 이상을 어떤 예로 확인하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["DBMS","파일 시스템","트랜잭션","무결성 제약"]
@@ -43,6 +43,6 @@ DBMS를 선택해도 파일 시스템의 fsync·디스크 오류·백업 보관�
 
 ## 더 파고들 거리
 
-- 파일 잠금·로그·복구를 DBMS 트랜잭션과 비교해 보세요.
+- [파일 잠금으로 여러 writer를 직렬화했습니다. 부분 쓰기와 프로세스 중단 복구에는 어떤 기록이 더 필요한가요?](/tech-interview/questions/file-lock-crash-recovery-contract/)
 - 격리 수준별 동시 읽기·쓰기 관찰 결과를 실험해 보세요.
-- 파일에서 DBMS로 중단 없이 이전하는 이중 기록·대조 절차를 만들어 보세요.
+- [파일 저장을 DB로 옮기는 동안 양쪽 기록을 유지합니다. 기준 snapshot과 변경 추적·권위 전환을 어떻게 검증하나요?](/tech-interview/questions/file-database-dual-write-cutover/)

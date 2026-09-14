@@ -2,7 +2,7 @@
 id: kafka-partition-offset
 title: "Kafka 메시지의 offset을 처리 완료 번호처럼 저장하려 합니다. topic·partition·offset은 무엇을 식별하며, 메시지 위치와 실제 처리 완료는 왜 구분해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-rebalance-processing","prompt":"partition 반납 때 마지막으로 읽은 위치가 아니라 어느 offset까지만 commit하나요?"},{"id":"kafka-partition-expansion","prompt":"partition 수 변경 뒤 같은 키의 offset과 논리 순서는 어떻게 달라지나요?"},{"id":"message-ordering-scope","prompt":"partition 내 전달 순서를 최종 적용 순서로 이어가려면 어떤 자료구조가 필요할까요?"}]
+followups: [{"id":"kafka-offset-gaps-compaction","prompt":"Kafka offset 사이에 번호가 빠져 있습니다. compaction·제어 레코드와 실제 미처리 누락은 어떻게 구분하나요?"},{"id":"kafka-null-key-partitioning","prompt":"Kafka 레코드에 key가 없습니다. 분배·순서·compaction 요구에 어떤 제한이 생기나요?"},{"id":"kafka-rebalance-processing","prompt":"partition 반납 때 마지막으로 읽은 위치가 아니라 어느 offset까지만 commit하나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["Kafka","partition","offset"]
@@ -50,6 +50,6 @@ DB 처리와 offset 저장을 원자적으로 묶을 수 없다면 DB 변경·�
 
 ## 더 파고들 거리
 
-- offset 빈 구간
-- 키 없는 레코드
+- [Kafka offset 사이에 번호가 빠져 있습니다. compaction·제어 레코드와 실제 미처리 누락은 어떻게 구분하나요?](/tech-interview/questions/kafka-offset-gaps-compaction/)
+- [Kafka 레코드에 key가 없습니다. 분배·순서·compaction 요구에 어떤 제한이 생기나요?](/tech-interview/questions/kafka-null-key-partitioning/)
 - 재처리 순서 테스트

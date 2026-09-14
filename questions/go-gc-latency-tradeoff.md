@@ -2,7 +2,7 @@
 id: go-gc-latency-tradeoff
 title: "Go 서버의 지연이 튀는 시점에 GC도 자주 실행됩니다. GC가 원인인지 확인하고 메모리와 지연을 어떻게 조정하나요?"
 answerMinutes: 5
-followups: [{"id":"memory-rss-vs-heap","prompt":"힙 프로파일은 줄었는데 RSS가 그대로라면 GC 문제와 할당자 재사용을 어떤 증거로 나눌까요?"},{"id":"throughput-vs-latency","prompt":"GOGC를 바꾼 뒤 처리량은 늘고 p99가 악화되면 어느 지표를 기준으로 되돌릴까요?"},{"id":"go-slice-backing-array","prompt":"버퍼 풀과 슬라이스가 큰 backing array를 오래 살린다면 inuse 힙을 어떻게 줄일까요?"}]
+followups: [{"id":"go-alloc-inuse-profile","prompt":"Go heap profile의 alloc_space는 큰데 inuse_space는 작습니다. 임시 할당 비용과 생존 객체 보유를 어떻게 구분하나요?"},{"id":"go-pointer-density-gc-scan","prompt":"같은 바이트 크기라도 포인터가 많은 객체와 바이트 배열의 GC 스캔 비용은 왜 다른가요?"},{"id":"memory-rss-vs-heap","prompt":"힙 프로파일은 줄었는데 RSS가 그대로라면 GC 문제와 할당자 재사용을 어떤 증거로 나눌까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -51,6 +51,6 @@ GOGC는 생존 힙을 기준으로 다음 수집 목표를 조절하고, GOMEMLI
 
 ## 더 파고들 거리
 
-- `alloc_space`와 `inuse_space`가 각각 임시 할당과 생존 보유를 어떻게 드러낼까요?
-- 포인터가 많은 객체와 바이트 배열의 GC 스캔 비용을 어떻게 비교할까요?
+- [Go heap profile의 alloc_space는 큰데 inuse_space는 작습니다. 임시 할당 비용과 생존 객체 보유를 어떻게 구분하나요?](/tech-interview/questions/go-alloc-inuse-profile/)
+- [같은 바이트 크기라도 포인터가 많은 객체와 바이트 배열의 GC 스캔 비용은 왜 다른가요?](/tech-interview/questions/go-pointer-density-gc-scan/)
 - 메모리 한도에 가까울 때 GOGC 조정과 캐시 축소 중 무엇을 먼저 할까요?

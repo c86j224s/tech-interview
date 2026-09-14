@@ -2,7 +2,7 @@
 id: consistency-linearizability
 title: "좋아요 수는 잠깐 늦게 보여도 되지만 마지막 좌석을 두 사람에게 판매해서는 안 됩니다. 두 기능에 필요한 일관성을 어떤 기준으로 나누겠습니까?"
 answerMinutes: 5
-followups: [{"id":"cap-partition-tradeoff","prompt":"좌석 확정 중 지역 분할이 생기면 C와 A 중 무엇을 포기하고 어떻게 알리겠습니까?"},{"id":"db-read-replica-consistency","prompt":"프로필 갱신 직후 read-your-writes를 보장하려면 세션 버전과 라우팅을 어떻게 쓰겠습니까?"},{"id":"raft-linearizable-read","prompt":"Raft 리더의 로컬 읽기에서 term·쿼럼·apply index를 왜 확인해야 하나요?"}]
+followups: [{"id":"reservation-hold-confirm-race","prompt":"좌석을 보류한 뒤 결제를 확정합니다. 보류 만료와 늦은 결제 성공이 겹칠 때 어떤 전이를 허용하나요?"},{"id":"linearizability-operation-history","prompt":"동시 자료구조의 호출·응답 이력에서 선형화 가능한지 검사하려면 무엇을 기록하고 불확정 연산은 어떻게 다루나요?"},{"id":"cap-partition-tradeoff","prompt":"좌석 확정 중 지역 분할이 생기면 C와 A 중 무엇을 포기하고 어떻게 알리겠습니까?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -54,5 +54,5 @@ x가 0인 상태에서 쓰기 x=1이 성공 응답을 반환한 뒤 시작한 �
 ## 더 파고들 거리
 
 - read-your-writes
-- 예약 보류와 확정
-- 이력 기반 선형화 검사
+- [좌석을 보류한 뒤 결제를 확정합니다. 보류 만료와 늦은 결제 성공이 겹칠 때 어떤 전이를 허용하나요?](/tech-interview/questions/reservation-hold-confirm-race/)
+- [동시 자료구조의 호출·응답 이력에서 선형화 가능한지 검사하려면 무엇을 기록하고 불확정 연산은 어떻게 다루나요?](/tech-interview/questions/linearizability-operation-history/)

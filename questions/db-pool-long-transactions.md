@@ -2,7 +2,7 @@
 id: db-pool-long-transactions
 title: "DB 연결 풀 대기는 늘고 쿼리는 짧을 때, 풀을 키우기 전에 어떤 연결 보유 경로와 트랜잭션을 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"bounded-queue-backpressure","prompt":"DB 연결을 기다리는 요청을 무한히 쌓지 않으려면 실행 수와 대기 큐를 어떻게 제한하나요?"},{"id":"db-lock-escalation","prompt":"외부 호출을 트랜잭션 밖으로 옮긴 뒤에도 잠금 보유가 길다면 어떤 실행 경로를 확인하나요?"},{"id":"deadline-cancellation-propagation","prompt":"연결 획득 timeout과 이미 실행 중인 DB 쿼리 취소를 어떤 계약으로 구분하나요?"}]
+followups: [{"id":"database-streaming-client-backpressure","prompt":"큰 DB 결과를 느린 클라이언트에 스트리밍합니다. 연결 보유와 버퍼·취소를 어떻게 제한하나요?"},{"id":"idle-transaction-pool-starvation","prompt":"쿼리를 하지 않는 transaction이 연결과 잠금을 잡고 있습니다. idle 상태와 idle in transaction을 어떻게 구분하나요?"},{"id":"bounded-queue-backpressure","prompt":"DB 연결을 기다리는 요청을 무한히 쌓지 않으려면 실행 수와 대기 큐를 어떻게 제한하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ related: ["bounded-queue-backpressure"]
 
 ## 더 파고들 거리
 
-- 스트리밍 결과가 연결을 장시간 점유하는 경로를 측정해 보세요.
+- [큰 DB 결과를 느린 클라이언트에 스트리밍합니다. 연결 보유와 버퍼·취소를 어떻게 제한하나요?](/tech-interview/questions/database-streaming-client-backpressure/)
 - 취소된 쿼리와 연결을 재사용할 안전 시점을 확인해 보세요.
-- 유휴 트랜잭션 제한과 풀 고갈을 같은 장애 흐름으로 재현해 보세요.
+- [쿼리를 하지 않는 transaction이 연결과 잠금을 잡고 있습니다. idle 상태와 idle in transaction을 어떻게 구분하나요?](/tech-interview/questions/idle-transaction-pool-starvation/)

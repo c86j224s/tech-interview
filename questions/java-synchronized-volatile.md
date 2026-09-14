@@ -2,7 +2,7 @@
 id: java-synchronized-volatile
 title: "공유 카운터에 volatile을 붙였는데도 최종 값이 작습니다. synchronized와 volatile은 가시성과 복합 연산을 어떻게 다르게 보장하나요?"
 answerMinutes: 5
-followups: [{"id":"java-threadlocal-pool","prompt":"ThreadLocal로 상태를 분리해도 같은 요청의 여러 스레드가 공유하면 어떤 동기화가 남나요?"},{"id":"atomics-memory-order","prompt":"volatile 준비 플래그와 C++ release/acquire 공개 패턴은 복합 상태에서 어떤 공통 한계를 가지나요?"},{"id":"immutable-data-sharing","prompt":"쓰기 대신 불변 스냅샷을 교체해 락을 줄일 때 새 참조 공개는 어떻게 안전하게 할까요?"}]
+followups: [{"id":"atomic-integer-multi-field-invariant","prompt":"각 카운터를 AtomicInteger로 바꿨습니다. 두 카운터 합계 같은 복합 불변식에는 왜 별도 원자 경계가 필요한가요?"},{"id":"java-volatile-happens-before","prompt":"일반 필드를 쓴 뒤 volatile 준비 플래그를 켭니다. 소비자가 어떤 쓰기를 읽을 때 데이터 가시성이 연결되나요?"},{"id":"java-threadlocal-pool","prompt":"ThreadLocal로 상태를 분리해도 같은 요청의 여러 스레드가 공유하면 어떤 동기화가 남나요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Java","synchronized","volatile","가시성","원자성"]
@@ -62,6 +62,6 @@ synchronized 인스턴스 메서드는 해당 객체를, static synchronized 메
 
 ## 더 파고들 거리
 
-- AtomicInteger와 synchronized는 복합 불변식에서 어떤 표현력 차이가 있나요?
-- volatile 게시에서 일반 필드가 보이는 happens-before 경로를 어떻게 증명할까요?
+- [각 카운터를 AtomicInteger로 바꿨습니다. 두 카운터 합계 같은 복합 불변식에는 왜 별도 원자 경계가 필요한가요?](/tech-interview/questions/atomic-integer-multi-field-invariant/)
+- [일반 필드를 쓴 뒤 volatile 준비 플래그를 켭니다. 소비자가 어떤 쓰기를 읽을 때 데이터 가시성이 연결되나요?](/tech-interview/questions/java-volatile-happens-before/)
 - 락을 줄이고 일관된 읽기를 유지할 때 어떤 불변 자료구조를 검토할까요?

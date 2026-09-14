@@ -2,7 +2,7 @@
 id: db-n-plus-one
 title: "주문 목록을 한 번 조회한 뒤 각 주문의 고객 정보를 따로 읽어 쿼리 수가 늘어납니다. N+1 조회를 어떻게 줄이고, JOIN으로 바꿀 때는 어떤 비용을 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"composite-index-column-order","prompt":"JOIN과 배치 조회의 외래키 조건을 적은 읽기로 만들려면 어떤 인덱스와 컬럼 순서를 선택하나요?"},{"id":"denormalization-maintenance","prompt":"JOIN 병목 때문에 주문 요약을 복사할 때 현재 상태와 역사적 스냅샷을 어떻게 구분하나요?"},{"id":"db-keyset-pagination","prompt":"부모 주문 페이지를 키셋으로 확정한 뒤 자식 데이터를 가져올 때 페이지 일관성을 어떻게 유지하나요?"}]
+followups: [{"id":"request-scoped-loader-cache","prompt":"같은 요청에서 고객을 여러 번 읽습니다. 요청별 loader cache와 전역 cache를 어떻게 구분하고 측정하나요?"},{"id":"one-to-many-limit-parent-page","prompt":"주문·상품을 JOIN한 결과에 LIMIT을 걸었더니 주문 개수가 부족합니다. 부모 페이지를 어떻게 먼저 확정하나요?"},{"id":"composite-index-column-order","prompt":"JOIN과 배치 조회의 외래키 조건을 적은 읽기로 만들려면 어떤 인덱스와 컬럼 순서를 선택하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ JOIN으로 바꿀 때는 중복 제거를 애플리케이션에서 수행해야 
 
 ## 더 파고들 거리
 
-- 콜드·웜 캐시에서 요청별 캐시의 효과를 분리해 보세요.
-- 일대다 JOIN에서 LIMIT이 부모 페이지를 깨뜨리는 과정을 재현해 보세요.
+- [같은 요청에서 고객을 여러 번 읽습니다. 요청별 loader cache와 전역 cache를 어떻게 구분하고 측정하나요?](/tech-interview/questions/request-scoped-loader-cache/)
+- [주문·상품을 JOIN한 결과에 LIMIT을 걸었더니 주문 개수가 부족합니다. 부모 페이지를 어떻게 먼저 확정하나요?](/tech-interview/questions/one-to-many-limit-parent-page/)
 - 배치 크기와 실제 읽기·응답 크기의 최적점을 찾아 보세요.

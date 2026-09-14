@@ -2,7 +2,7 @@
 id: singleton-global-state
 title: "싱글턴으로 만든 설정 객체가 테스트와 여러 스레드에서 문제를 일으킵니다. 유일한 인스턴스와 전역 상태는 왜 다른 문제인가요?"
 answerMinutes: 5
-followups: [{"id": "configuration-validation", "prompt": "싱글턴 설정을 동적으로 교체할 때 마지막 정상값과 잘못된 조합을 어떻게 검증할까요?"}, {"id": "immutable-data-sharing", "prompt": "싱글턴 대신 불변 스냅샷을 주입하면 참조 교체와 독자의 수명을 어떻게 관리할까요?"}, {"id": "solid-dependency-inversion", "prompt": "전역 설정 접근을 없애고 고수준 정책에 필요한 설정 포트를 어떤 방향으로 소유할까요?"}]
+followups: [{"id":"lazy-initialization-publication-failure","prompt":"공유 객체를 지연 초기화합니다. 생성자 예외·불완전 공개·동시 첫 접근은 어떻게 처리하나요?"},{"id":"configuration-validation","prompt":"싱글턴 설정을 동적으로 교체할 때 마지막 정상값과 잘못된 조합을 어떻게 검증할까요?"},{"id":"immutable-data-sharing","prompt":"싱글턴 대신 불변 스냅샷을 주입하면 참조 교체와 독자의 수명을 어떻게 관리할까요?"}]
 difficulty: 중하
 category: 설계
 tags: ["Singleton","전역 상태","초기화","스레드 안전성"]
@@ -47,6 +47,6 @@ related: ["configuration-validation"]
 
 ## 더 파고들 거리
 
-- 지연 초기화에서 메모리 가시성과 생성자 예외를 안전하게 처리하는 방법은 무엇인가요?
+- [공유 객체를 지연 초기화합니다. 생성자 예외·불완전 공개·동시 첫 접근은 어떻게 처리하나요?](/tech-interview/questions/lazy-initialization-publication-failure/)
 - 싱글턴 전역 캐시를 테스트마다 초기화하는 것과 새 인스턴스를 주입하는 것의 비용은 무엇인가요?
 - 여러 프로세스가 같은 자원을 하나만 사용해야 할 때 싱글턴 대신 어떤 조정 장치가 필요한가요?

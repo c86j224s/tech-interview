@@ -2,7 +2,7 @@
 id: btree-hash-index
 title: "같은 값 찾기와 기간 조회가 모두 필요한 컬럼에 B+tree와 해시 인덱스 중 무엇을 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"composite-index-column-order","prompt":"동등 조건과 범위 조건이 함께 있는 복합 인덱스에서 B+tree의 선행 컬럼은 어떻게 정하나요?"},{"id":"db-keyset-pagination","prompt":"정렬된 B+tree를 이용해 뒤 페이지의 OFFSET 비용을 줄이려면 커서를 어떻게 구성하나요?"},{"id":"clustered-secondary-index","prompt":"보조 인덱스가 찾은 키로 클러스터드 행을 다시 읽는 비용은 엔진별로 어떻게 달라지나요?"}]
+followups: [{"id":"database-hash-bucket-skew","prompt":"DB 해시 인덱스에서 특정 값 집단만 느립니다. 버킷 충돌·편중·재구성 비용을 어떻게 확인하나요?"},{"id":"composite-index-column-order","prompt":"동등 조건과 범위 조건이 함께 있는 복합 인덱스에서 B+tree의 선행 컬럼은 어떻게 정하나요?"},{"id":"db-keyset-pagination","prompt":"정렬된 B+tree를 이용해 뒤 페이지의 OFFSET 비용을 줄이려면 커서를 어떻게 구성하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["B+tree","해시 인덱스","동등 검색","범위 검색"]
@@ -44,5 +44,5 @@ B+tree라는 이름은 많은 관계형 DBMS에서 일반적인 기본 인덱스
 ## 더 파고들 거리
 
 - 범위 조건과 ORDER BY가 같은 인덱스 리프를 어떻게 스캔하는지 그려 보세요.
-- 해시 충돌 및 버킷 재구성 비용을 데이터 분포별로 측정해 보세요.
+- [DB 해시 인덱스에서 특정 값 집단만 느립니다. 버킷 충돌·편중·재구성 비용을 어떻게 확인하나요?](/tech-interview/questions/database-hash-bucket-skew/)
 - 사용 중인 DBMS가 해시 인덱스를 어디까지 지원하는지 확인해 보세요.

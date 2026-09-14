@@ -2,7 +2,7 @@
 id: deadlock-prevention
 title: "두 스레드가 락 A와 B를 반대 순서로 잡다가 서로 멈췄습니다. 왜 스스로 풀리지 않으며 어떻게 예방하나요?"
 answerMinutes: 5
-followups: [{"id": "mutex-vs-serial-execution", "prompt": "락을 없애려고 계정별 큐로 바꿨는데 두 큐가 서로의 완료를 기다리면 교착이 사라질까요?"}, {"id": "transaction-and-lost-update", "prompt": "교착을 피하려고 외부 호출 전에 락을 풀었다면, 돌아온 뒤 이전 데이터가 여전히 유효한지 어떻게 확인할까요?"}, {"id": "async-api-and-blocking", "prompt": "명시적인 락 없이도 같은 스레드 풀의 하위 작업을 기다리다 교착될 수 있는 이유는 무엇일까요?"}]
+followups: [{"id":"try-lock-livelock-fairness","prompt":"두 작업이 try-lock 실패 때 서로 양보하며 계속 재시도합니다. deadlock 없이도 진행하지 못하는 이유와 대책은 무엇인가요?"},{"id":"cross-service-executor-deadlock","prompt":"RPC 응답을 기다리는 worker가 상대의 callback 실행에 필요합니다. 여러 서비스·실행기에 걸친 순환 대기는 어떻게 찾나요?"},{"id":"mutex-vs-serial-execution","prompt":"락을 없애려고 계정별 큐로 바꿨는데 두 큐가 서로의 완료를 기다리면 교착이 사라질까요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -66,7 +66,7 @@ DB의 교착 탐지는 한 트랜잭션을 희생자로 중단해 다른 쪽을 
 
 ## 더 파고들 거리
 
-- try-lock과 재시도를 반복하는 구조에서 라이브락과 기아를 줄이려면 어떤 공정성 규칙이 필요할까요?
+- [두 작업이 try-lock 실패 때 서로 양보하며 계속 재시도합니다. deadlock 없이도 진행하지 못하는 이유와 대책은 무엇인가요?](/tech-interview/questions/try-lock-livelock-fairness/)
 - DB가 희생 트랜잭션을 중단했을 때 애플리케이션은 어느 범위부터 다시 실행해야 할까요?
-- RPC와 실행기까지 걸친 순환 대기를 로컬 덤프와 분산 추적으로 어떻게 연결할까요?
+- [RPC 응답을 기다리는 worker가 상대의 callback 실행에 필요합니다. 여러 서비스·실행기에 걸친 순환 대기는 어떻게 찾나요?](/tech-interview/questions/cross-service-executor-deadlock/)
 - 자원이 여러 인스턴스를 가지는 경우 대기 그래프의 사이클만으로 교착을 확정할 수 있을까요?

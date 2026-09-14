@@ -2,7 +2,7 @@
 id: structured-concurrency-fanout
 title: "요청 하나에서 여러 하위 API를 호출하는데 하나가 실패하거나 사용자가 연결을 끊었습니다. 꼭 필요한 결과와 선택 결과를 나누고 남은 작업의 수명을 어떻게 관리하나요?"
 answerMinutes: 5
-followups: [{"id": "deadline-cancellation-propagation", "prompt": "부모가 취소를 알렸지만 하위 라이브러리가 반응하지 않는다면, 응답 기한과 실제 종료를 어떻게 구분할까요?"}, {"id": "bulkhead-isolation", "prompt": "요청 하나의 하위 호출 수는 제한했지만 많은 요청이 동시에 들어오면, 전체 서비스의 자원은 어떻게 보호할까요?"}, {"id": "request-timeout-idempotency", "prompt": "취소된 하위 호출이 외부 결제를 이미 반영했을 수도 있다면, 다시 실행하기 전에 무엇을 확인할까요?"}]
+followups: [{"id":"fanout-multiple-error-report","prompt":"하위 호출 여러 개가 동시에 실패합니다. 대표 오류·부분 결과·나머지 진단을 어떻게 구성하나요?"},{"id":"deadline-cancellation-propagation","prompt":"부모가 취소를 알렸지만 하위 라이브러리가 반응하지 않는다면, 응답 기한과 실제 종료를 어떻게 구분할까요?"},{"id":"bulkhead-isolation","prompt":"요청 하나의 하위 호출 수는 제한했지만 많은 요청이 동시에 들어오면, 전체 서비스의 자원은 어떻게 보호할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -56,6 +56,6 @@ related: ["deadline-cancellation-propagation","go-channel-close-ownership"]
 
 ## 더 파고들 거리
 
-- 여러 오류 중 대표 오류와 나머지 진단을 어떻게 구성하나요?
+- [하위 호출 여러 개가 동시에 실패합니다. 대표 오류·부분 결과·나머지 진단을 어떻게 구성하나요?](/tech-interview/questions/fanout-multiple-error-report/)
 - 취소 불가능한 작업의 완료 추적 책임은 어디에 두나요?
 - 팬아웃 제한을 부모별·서비스 전체 중 어떻게 조합하나요?

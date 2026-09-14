@@ -2,7 +2,7 @@
 id: k8s-pod-deployment-statefulset
 title: "Kubernetes에서 API 서버와 고정 식별자·디스크가 필요한 저장 서버를 배포합니다. Pod, Deployment, StatefulSet은 어떤 역할이 다른가요?"
 answerMinutes: 5
-followups: [{"id":"k8s-stateful-storage","prompt":"StatefulSet의 `db-0`이 같은 PVC를 다시 붙였지만 이전 노드가 살아 있다면 데이터 손상을 막기 위해 어떤 fencing과 attach 상태를 확인하겠습니까?"},{"id":"k8s-service-network","prompt":"StatefulSet Pod마다 DNS 이름을 제공해야 하고 기존 HTTP/2 연결도 드레이닝해야 한다면 Headless Service와 일반 Service를 어떻게 조합하겠습니까?"},{"id":"k8s-reconciliation","prompt":"StatefulSet의 desired replica 변경 요청이 성공했지만 순서대로 Pod가 준비되지 않는다면 어떤 controller 상태와 이벤트를 추적하겠습니까?"}]
+followups: [{"id":"statefulset-headless-member-discovery","prompt":"StatefulSet의 ordinal DNS로 멤버를 찾습니다. 안정적인 이름과 현재 접속·합의 멤버십은 어떻게 구분하나요?"},{"id":"statefulset-startup-quorum-order","prompt":"상태 저장 클러스터의 Pod를 순차 또는 병렬 시작합니다. readiness가 quorum을 기다리면 어떤 교착이 생길 수 있나요?"},{"id":"k8s-stateful-storage","prompt":"StatefulSet의 `db-0`이 같은 PVC를 다시 붙였지만 이전 노드가 살아 있다면 데이터 손상을 막기 위해 어떤 fencing과 attach 상태를 확인하겠습니까?"}]
 difficulty: 하
 category: 인프라
 tags: ["Kubernetes","Pod","Deployment","StatefulSet"]
@@ -43,6 +43,6 @@ StatefulSet은 Pod 이름과 순서, PVC 연결을 안정적으로 유지하는 
 
 ## 더 파고들 거리
 
-- Headless Service와 StatefulSet ordinal DNS가 클러스터 멤버 발견에 어떻게 쓰이는지 설명해 보세요.
+- [StatefulSet의 ordinal DNS로 멤버를 찾습니다. 안정적인 이름과 현재 접속·합의 멤버십은 어떻게 구분하나요?](/tech-interview/questions/statefulset-headless-member-discovery/)
 - PVC 보관과 Pod 삭제를 분리할 때 reclaim 정책과 복구 책임을 어떻게 정할까요.
-- 순차 시작과 병렬 시작이 데이터 서비스의 quorum·복구 시간에 미치는 영향을 비교해 보세요.
+- [상태 저장 클러스터의 Pod를 순차 또는 병렬 시작합니다. readiness가 quorum을 기다리면 어떤 교착이 생길 수 있나요?](/tech-interview/questions/statefulset-startup-quorum-order/)

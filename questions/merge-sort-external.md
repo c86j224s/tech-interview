@@ -2,7 +2,7 @@
 id: merge-sort-external
 title: "메모리에 다 들어가지 않는 큰 파일을 정렬하려 합니다. 병합 정렬은 어떻게 활용할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"counting-radix-sort","prompt":"레코드의 정렬 키가 작은 정수 범위라면, 외부 병합 전에 비교 정렬 대신 계수·기수 정렬을 사용할 조건은 무엇입니까?"},{"id":"sorting-stability","prompt":"동일 키 레코드의 입력 순서를 최종 파일에서도 보존해야 한다면, run 생성과 k-way 병합에서 어떤 보조 순서를 기록하겠습니까?"},{"id":"db-query-plan-regression","prompt":"파일 정렬이 아니라 DB가 대량 정렬을 수행할 때 임시 공간과 실행 계획을 어떤 지표로 확인해 같은 I/O 문제를 찾겠습니까?"}]
+followups: [{"id":"external-merge-fanin-buffer-budget","prompt":"외부 정렬의 fan-in을 늘립니다. 병합 단계 감소와 파일별 버퍼·FD·임시 공간은 어떻게 계산하나요?"},{"id":"external-sort-natural-runs","prompt":"입력에 이미 정렬된 구간이 많습니다. natural run 탐지로 디스크 쓰기를 줄일 때 어떤 안정성·최악 비용이 남나요?"},{"id":"external-sort-key-offset-indirection","prompt":"큰 레코드 대신 키와 파일 offset만 정렬합니다. 이동량 절감과 최종 랜덤 읽기의 손익은 어떻게 비교하나요?"}]
 difficulty: 중하
 category: 알고리즘
 tags: ["병합 정렬","외부 정렬","I/O"]
@@ -47,6 +47,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 다중 병합 fan-in을 늘릴 때 단계 수와 파일별 버퍼 크기가 어떻게 맞바뀌는지 설명해 보세요.
-- 이미 정렬된 구간을 활용해 run 수와 디스크 쓰기를 줄이는 방법을 말해 보세요.
-- 정렬 키와 원본 레코드를 분리 저장할 때 I/O와 재구성 비용이 어떻게 달라지는지 비교해 보세요.
+- [외부 정렬의 fan-in을 늘립니다. 병합 단계 감소와 파일별 버퍼·FD·임시 공간은 어떻게 계산하나요?](/tech-interview/questions/external-merge-fanin-buffer-budget/)
+- [입력에 이미 정렬된 구간이 많습니다. natural run 탐지로 디스크 쓰기를 줄일 때 어떤 안정성·최악 비용이 남나요?](/tech-interview/questions/external-sort-natural-runs/)
+- [큰 레코드 대신 키와 파일 offset만 정렬합니다. 이동량 절감과 최종 랜덤 읽기의 손익은 어떻게 비교하나요?](/tech-interview/questions/external-sort-key-offset-indirection/)

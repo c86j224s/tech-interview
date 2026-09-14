@@ -2,7 +2,7 @@
 id: jetstream-stream-replication
 title: "JetStream stream의 replicas를 1에서 3으로 늘리려 합니다. 저장 확인, 장애 대응, 자원 비용에서 무엇이 달라지나요?"
 answerMinutes: 5
-followups: [{"id":"consensus-quorum-failure","prompt":"replica가 3개여도 quorum을 잃으면 왜 쓰기를 확정하지 않아야 하나요?"},{"id":"jetstream-ack-redelivery","prompt":"stream 저장은 성공했지만 consumer ACK가 유실되면 DB 중복을 어떻게 막나요?"},{"id":"kafka-acks-isr","prompt":"JetStream 생산 확인과 Kafka acks·ISR의 공통 보장 경계를 어떻게 설명하나요?"}]
+followups: [{"id":"jetstream-slow-replica-quorum","prompt":"JetStream 복제본 하나가 느립니다. 생산 지연과 장애 여유를 어떤 쿼럼·lag 지표로 구분하나요?"},{"id":"jetstream-leader-transition-timeout","prompt":"JetStream 리더 전환 중 생산 요청이 timeout됐습니다. 저장 여부와 중복 발행을 어떻게 확인하나요?"},{"id":"consensus-quorum-failure","prompt":"replica가 3개여도 quorum을 잃으면 왜 쓰기를 확정하지 않아야 하나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["NATS","JetStream","복제"]
@@ -52,6 +52,6 @@ replicas=3인 stream의 복제 그룹은 정상 프로토콜에서 과반을 이
 
 ## 더 파고들 거리
 
-- 느린 replica
-- leader 전환 timeout
+- [JetStream 복제본 하나가 느립니다. 생산 지연과 장애 여유를 어떤 쿼럼·lag 지표로 구분하나요?](/tech-interview/questions/jetstream-slow-replica-quorum/)
+- [JetStream 리더 전환 중 생산 요청이 timeout됐습니다. 저장 여부와 중복 발행을 어떻게 확인하나요?](/tech-interview/questions/jetstream-leader-transition-timeout/)
 - stream과 consumer 복구

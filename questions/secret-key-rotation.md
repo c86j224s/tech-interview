@@ -2,7 +2,7 @@
 id: secret-key-rotation
 title: "서비스를 중단하지 않고 JWT 서명키나 API 비밀키를 교체할 때 배포 순서와 유출 대응을 어떻게 나누나요?"
 answerMinutes: 5
-followups: [{"id":"jwt-vs-server-session","prompt":"새 JWT 키를 배포하는 동안 권한 회수까지 즉시 반영해야 한다면 키 검증과 세션 상태 검사를 어떻게 조합하나요?"},{"id":"gitops-secrets-delivery","prompt":"키 버전을 GitOps로 선언하되 원문은 저장하지 않으려면 공개키·참조·복호화 권한을 어떻게 나누나요?"},{"id":"tls-certificate-validation","prompt":"서명키 교체와 TLS 인증서 교체가 같은 시기에 일어날 때 기존 연결·세션 재개를 어느 별도 수명으로 검증하나요?"}]
+followups: [{"id":"jwks-unknown-kid-fetch-storm","prompt":"새 kid를 모르는 서비스가 JWKS를 반복 조회합니다. 캐시·singleflight·실패 backoff를 어떻게 조합하나요?"},{"id":"jwt-vs-server-session","prompt":"새 JWT 키를 배포하는 동안 권한 회수까지 즉시 반영해야 한다면 키 검증과 세션 상태 검사를 어떻게 조합하나요?"},{"id":"gitops-secrets-delivery","prompt":"키 버전을 GitOps로 선언하되 원문은 저장하지 않으려면 공개키·참조·복호화 권한을 어떻게 나누나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -52,6 +52,6 @@ API 비밀키처럼 상대 서버가 두 값을 동시에 인정할 수 있다�
 
 ## 더 파고들 거리
 
-- 공개키 캐시가 새 kid를 모를 때 재조회 폭주를 어떻게 제한할까요?
+- [새 kid를 모르는 서비스가 JWKS를 반복 조회합니다. 캐시·singleflight·실패 backoff를 어떻게 조합하나요?](/tech-interview/questions/jwks-unknown-kid-fetch-storm/)
 - 짧은 토큰 수명과 오래 실행되는 작업의 인증 갱신을 어떻게 연결할까요?
 - 비밀 저장소 장애 중 기존 키를 허용할 최대 기간을 어떤 위협으로 정할까요?

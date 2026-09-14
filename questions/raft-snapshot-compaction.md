@@ -2,7 +2,7 @@
 id: raft-snapshot-compaction
 title: "Raft 로그가 커져 스냅샷을 만든 뒤 오래된 로그를 지우려 합니다. 중간에 서버가 꺼져도 복구할 수 있도록 어떤 기준과 저장 순서를 지켜야 하나요?"
 answerMinutes: 5
-followups: [{"id":"raft-log-commit-apply","prompt":"snapshot의 applied index와 commit index가 다르면 어느 위치까지 포함하나요?"},{"id":"raft-term-election","prompt":"lastIncludedTerm이 늦은 AppendEntries 처리에 왜 필요한가요?"},{"id":"raft-linearizable-read","prompt":"snapshot 설치 중 follower read를 허용할 조건은 무엇인가요?"}]
+followups: [{"id":"raft-snapshot-applied-log-boundary","prompt":"Raft commit은 120, apply는 115까지 진행됐습니다. snapshot과 남길 로그의 경계는 무엇이어야 하나요?"},{"id":"raft-log-commit-apply","prompt":"snapshot의 applied index와 commit index가 다르면 어느 위치까지 포함하나요?"},{"id":"raft-term-election","prompt":"lastIncludedTerm이 늦은 AppendEntries 처리에 왜 필요한가요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Raft","스냅샷","로그 압축"]
@@ -50,6 +50,6 @@ commit index가 120이고 applied index가 115라면 현재 상태 덤프는 115
 
 ## 더 파고들 거리
 
-- 생성 중 로그 경계
+- [Raft commit은 120, apply는 115까지 진행됐습니다. snapshot과 남길 로그의 경계는 무엇이어야 하나요?](/tech-interview/questions/raft-snapshot-applied-log-boundary/)
 - snapshot 전송 예산
 - 복구 결과 보존

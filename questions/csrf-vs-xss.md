@@ -2,7 +2,7 @@
 id: csrf-vs-xss
 title: "쿠키로 로그인 상태를 유지하는 웹 앱에서 요청 위조와 악성 스크립트 실행을 막으려 합니다. CSRF와 XSS의 공격 경로는 어떻게 다르며 쿠키 옵션만으로 충분한가요?"
 answerMinutes: 5
-followups: [{"id":"cors-preflight","prompt":"교차 출처 요청의 응답 읽기는 막혔지만 preflight 없이 상태 변경 요청이 도착할 수 있다면 서버에는 어떤 검증이 남아야 하나요?"},{"id":"oauth-oidc-pkce","prompt":"외부 로그인 callback에 교차 사이트 이동이 필요할 때 state·nonce·SameSite 설정을 어떤 순서로 함께 검증할까요?"},{"id":"jwt-vs-server-session","prompt":"쿠키 세션 대신 브라우저가 bearer token을 보내도록 바꾸면 CSRF와 XSS의 위험과 회수 정책은 어떻게 이동하나요?"}]
+followups: [{"id":"html-sanitization-url-schemes","prompt":"일부 HTML 입력을 허용합니다. 태그만 제한하지 않고 URL scheme과 링크 속성도 검사해야 하는 이유는 무엇인가요?"},{"id":"cors-preflight","prompt":"교차 출처 요청의 응답 읽기는 막혔지만 preflight 없이 상태 변경 요청이 도착할 수 있다면 서버에는 어떤 검증이 남아야 하나요?"},{"id":"oauth-oidc-pkce","prompt":"외부 로그인 callback에 교차 사이트 이동이 필요할 때 state·nonce·SameSite 설정을 어떤 순서로 함께 검증할까요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -50,6 +50,6 @@ HttpOnly는 자바스크립트가 쿠키 값을 직접 읽지 못하게 하는 �
 
 ## 더 파고들 거리
 
-- 허용 HTML에서 URL scheme과 링크 속성을 제한해야 하는 이유는 무엇일까요?
+- [일부 HTML 입력을 허용합니다. 태그만 제한하지 않고 URL scheme과 링크 속성도 검사해야 하는 이유는 무엇인가요?](/tech-interview/questions/html-sanitization-url-schemes/)
 - 쿠키 기반 외부 로그인 callback의 SameSite 예외를 어떻게 좁게 운영할까요?
 - XSS가 있어도 영향 범위를 줄이는 CSP와 토큰 수명 정책을 어떻게 검증할까요?

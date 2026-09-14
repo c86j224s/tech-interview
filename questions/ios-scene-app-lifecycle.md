@@ -2,7 +2,7 @@
 id: ios-scene-app-lifecycle
 title: "iOS 멀티 씬 앱에서 화면이 백그라운드로 갈 때 무엇을 저장해야 하나요? 앱 종료 알림만 기다려도 될까요?"
 answerMinutes: 5
-followups: [{"id":"ios-view-lifecycle","prompt":"백그라운드 뒤 다시 나타난 씬이 저장된 최신 상태를 화면에 반영하려면 초기 구성과 재등장 갱신을 어느 콜백에 배치하겠습니까?"},{"id":"graceful-shutdown","prompt":"앱이 아니라 서버 종료 신호가 왔을 때도 진행 중인 저장·요청을 보존하려면 유입 차단과 작업 정리 순서를 어떻게 정하겠습니까?"},{"id":"on-demand-data-migration","prompt":"백그라운드 저장 형식을 새 버전으로 옮기는 중 프로세스가 죽는다면 마이그레이션 단계와 원자적 복구를 어떻게 설계하겠습니까?"}]
+followups: [{"id":"ios-scene-save-version-dedup","prompt":"SceneDelegate와 scenePhase가 동시에 저장을 요청합니다. 같은 버전의 중복 저장과 역순 완료를 어떻게 막나요?"},{"id":"ios-multiscene-document-conflict","prompt":"두 iOS 씬이 같은 문서를 수정합니다. 버전 비교와 충돌 표시·병합은 어떤 단위로 관리하나요?"},{"id":"ios-view-lifecycle","prompt":"백그라운드 뒤 다시 나타난 씬이 저장된 최신 상태를 화면에 반영하려면 초기 구성과 재등장 갱신을 어느 콜백에 배치하겠습니까?"}]
 difficulty: 중하
 category: 모바일
 tags: ["iOS","멀티 씬","앱 생명주기","백그라운드"]
@@ -43,6 +43,6 @@ iOS 13 이후 UIKit 앱에서는 하나의 프로세스 안에 여러 UI 윈도�
 
 ## 더 파고들 거리
 
-- SceneDelegate와 scenePhase가 동시에 저장을 요청해도 한 버전만 커밋하도록 만들어 보세요.
-- 같은 문서를 두 씬이 수정할 때 버전 비교와 충돌 표시·병합 정책을 정해 보세요.
+- [SceneDelegate와 scenePhase가 동시에 저장을 요청합니다. 같은 버전의 중복 저장과 역순 완료를 어떻게 막나요?](/tech-interview/questions/ios-scene-save-version-dedup/)
+- [두 iOS 씬이 같은 문서를 수정합니다. 버전 비교와 충돌 표시·병합은 어떤 단위로 관리하나요?](/tech-interview/questions/ios-multiscene-document-conflict/)
 - 원자적 파일 교체 중 강제 종료를 주입해 기존 스냅샷과 임시 파일 복구를 검증해 보세요.

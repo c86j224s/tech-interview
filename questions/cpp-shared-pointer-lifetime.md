@@ -2,7 +2,7 @@
 id: cpp-shared-pointer-lifetime
 title: "C++ 비동기 콜백에 shared_ptr를 복사해 넘겼습니다. 객체 수명과 여러 스레드의 필드 수정이 모두 안전해지나요?"
 answerMinutes: 5
-followups: [{"id":"cpp-coroutine-frame-lifetime","prompt":"콜백이 객체 수명을 공유하지만 코루틴 프레임이 먼저 파괴될 수 있다면 어느 소유자가 핸들을 보관해야 할까요?"},{"id":"atomics-memory-order","prompt":"shared_ptr로 객체를 살린 상태에서 atomic 플래그로 필드 공개를 알릴 때 어떤 메모리 순서가 필요할까요?"},{"id":"immutable-data-sharing","prompt":"필드를 잠그는 대신 불변 스냅샷을 교체하면 복사와 읽기 일관성 비용이 어떻게 달라질까요?"}]
+followups: [{"id":"weak-lock-logical-generation","prompt":"weak_ptr::lock은 성공했지만 작업은 이미 취소됐습니다. 객체 생존과 현재 행동의 유효성을 어떻게 구분하나요?"},{"id":"atomic-shared-pointer-snapshot","prompt":"atomic shared_ptr로 루트를 교체합니다. 독자가 일관된 여러 필드를 읽으려면 객체 내부에 어떤 조건이 필요한가요?"},{"id":"cpp-coroutine-frame-lifetime","prompt":"콜백이 객체 수명을 공유하지만 코루틴 프레임이 먼저 파괴될 수 있다면 어느 소유자가 핸들을 보관해야 할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -50,6 +50,6 @@ make_shared는 객체와 제어 블록을 함께 할당할 수 있어 할당 횟
 
 ## 더 파고들 거리
 
-- `weak_ptr::lock()` 뒤 객체가 취소된 세대인지 어떤 상태를 확인할까요?
-- 원자적 `shared_ptr` 교체와 객체 내부 필드의 원자성은 왜 별개인가요?
+- [weak_ptr::lock은 성공했지만 작업은 이미 취소됐습니다. 객체 생존과 현재 행동의 유효성을 어떻게 구분하나요?](/tech-interview/questions/weak-lock-logical-generation/)
+- [atomic shared_ptr로 루트를 교체합니다. 독자가 일관된 여러 필드를 읽으려면 객체 내부에 어떤 조건이 필요한가요?](/tech-interview/questions/atomic-shared-pointer-snapshot/)
 - 마지막 참조의 소멸을 특정 executor로 보내려면 소유권을 어떻게 배치할까요?

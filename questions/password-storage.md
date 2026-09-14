@@ -2,7 +2,7 @@
 id: password-storage
 title: "사용자 비밀번호를 저장하고 로그인 때 검증하려 합니다. 복호화 가능한 암호화나 일반 해시 대신 비밀번호 전용 해시를 쓰는 이유와 설정 기준은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"mfa-recovery-policy","prompt":"비밀번호가 맞아도 MFA를 잃은 사용자가 복구를 요청한다면 비밀번호 검증을 어느 수준의 증명으로 인정할까요?"},{"id":"authentication-vs-authorization","prompt":"비밀번호 인증은 성공했지만 계정이 정지된 상태라면 인증 결과와 주문 작업의 인가를 어디서 분리하나요?"},{"id":"gitops-secrets-delivery","prompt":"해시 정책과 pepper를 배포 설정으로 전달해야 한다면 Git에 무엇을 남기고 비밀 저장소에는 무엇을 둘까요?"}]
+followups: [{"id":"password-hash-policy-migration","prompt":"비밀번호 해시 정책을 강화했습니다. 로그인하지 않는 오래된 계정은 어떤 재설정·만료 절차로 전환하나요?"},{"id":"mfa-recovery-policy","prompt":"비밀번호가 맞아도 MFA를 잃은 사용자가 복구를 요청한다면 비밀번호 검증을 어느 수준의 증명으로 인정할까요?"},{"id":"authentication-vs-authorization","prompt":"비밀번호 인증은 성공했지만 계정이 정지된 상태라면 인증 결과와 주문 작업의 인가를 어디서 분리하나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -64,6 +64,6 @@ PBKDF2-HMAC-SHA-256은 SHA-256을 내부 구성 요소로 사용하면서 반복
 
 ## 더 파고들 거리
 
-- 정책을 올린 뒤 장기 미접속 계정을 전환하는 만료·재설정 기준은 무엇일까요?
+- [비밀번호 해시 정책을 강화했습니다. 로그인하지 않는 오래된 계정은 어떤 재설정·만료 절차로 전환하나요?](/tech-interview/questions/password-hash-policy-migration/)
 - pepper 키 교체·분실·복구를 salt 교체와 다르게 운영해야 하는 이유는 무엇일까요?
 - 계정 존재 노출을 줄이면서 해시 비용과 rate limit을 어떻게 조정할까요?

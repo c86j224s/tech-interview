@@ -2,7 +2,7 @@
 id: jvm-bytecode-jit
 title: "Java 서버가 시작 직후에는 느리다가 같은 요청을 반복하면 빨라집니다. 인터프리터와 JIT가 어떤 역할을 하며 성능 측정에서 예열을 왜 구분해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"python-pypy-jit","prompt":"JVM JIT와 PyPy trace JIT가 예열 이후 최적화하는 관찰 정보는 각각 어떻게 다를까요?"},{"id":"profiling-cpu-offcpu","prompt":"요청이 느린 원인이 JIT 컴파일 CPU인지 애플리케이션 대기인지 어떤 프로파일로 분리할까요?"},{"id":"load-test-realism","prompt":"예열된 JVM의 부하 테스트 결과를 운영의 콜드 재시작·오토스케일 상황에 어떻게 보정할까요?"}]
+followups: [{"id":"jvm-tiered-compilation-observation","prompt":"JVM의 계층형 컴파일이 예열 중 일어납니다. 컴파일 스레드·코드 전환과 요청 지연을 어떻게 관찰하나요?"},{"id":"jvm-deoptimization-assumptions","prompt":"JIT가 빠르게 만든 메서드가 새 타입 입력 뒤 느려집니다. 인라이닝 가정과 deoptimization은 어떤 관계인가요?"},{"id":"python-pypy-jit","prompt":"JVM JIT와 PyPy trace JIT가 예열 이후 최적화하는 관찰 정보는 각각 어떻게 다를까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["JVM","바이트코드","인터프리터","JIT","예열"]
@@ -45,6 +45,6 @@ HotSpot의 계층형 컴파일은 빠른 초기 실행과 더 비싼 최적화 �
 
 ## 더 파고들 거리
 
-- 계층형 컴파일의 전환과 컴파일 스레드 비용을 어떻게 관찰할까요?
-- 인라이닝 가정이 깨져 deoptimization이 발생하는 사례는 무엇인가요?
+- [JVM의 계층형 컴파일이 예열 중 일어납니다. 컴파일 스레드·코드 전환과 요청 지연을 어떻게 관찰하나요?](/tech-interview/questions/jvm-tiered-compilation-observation/)
+- [JIT가 빠르게 만든 메서드가 새 타입 입력 뒤 느려집니다. 인라이닝 가정과 deoptimization은 어떤 관계인가요?](/tech-interview/questions/jvm-deoptimization-assumptions/)
 - JFR에서 클래스 로딩·컴파일·GC와 요청 지연을 어떻게 연결할까요?

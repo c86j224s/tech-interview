@@ -2,7 +2,7 @@
 id: jps-symmetry-pruning
 title: "균일 비용의 격자에서 A*가 비슷한 경로를 많이 탐색합니다. JPS는 어떤 중간 탐색을 줄이며 어디에서 멈춰야 하나요?"
 answerMinutes: 5
-followups: [{"id":"astar-heuristic","prompt":"JPS를 적용한 격자에서 사용하는 휴리스틱이 대각 비용과 모서리 규칙의 하한인지 어떻게 검증하겠습니까?"},{"id":"grid-diagonal-corner","prompt":"모서리 통과를 금지하거나 허용하는 규칙이 바뀌면 강제 이웃 판정을 어떤 사례로 다시 시험하겠습니까?"},{"id":"jps-plus-preprocessing","prompt":"온라인 점프 스캔이 병목이 되었다면 어떤 방향 정보를 전처리하고 맵 변경 때 어떻게 무효화하겠습니까?"}]
+followups: [{"id":"jps-diagonal-orthogonal-jump","prompt":"JPS의 대각 점프에서 직교 방향의 점프 검사를 생략하면 어떤 선택지를 잃을 수 있나요?"},{"id":"jps-weighted-terrain-fallback","prompt":"균일 격자에 지형별 비용과 선회 비용이 추가됐습니다. 기존 JPS 가지치기를 언제 중단해야 하나요?"},{"id":"astar-heuristic","prompt":"JPS를 적용한 격자에서 사용하는 휴리스틱이 대각 비용과 모서리 규칙의 하한인지 어떻게 검증하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["JPS","A*","경로 탐색"]
@@ -39,6 +39,6 @@ related: ["astar-heuristic","grid-diagonal-corner"]
 
 ## 더 파고들 거리
 
-- 대각 점프에서 직교 방향의 강제 이웃 탐색을 생략하면 어떤 경로를 놓치나요?
-- 동적 가중치가 들어온 격자에서 JPS 대신 어떤 탐색 구조를 선택하겠습니까?
+- [JPS의 대각 점프에서 직교 방향의 점프 검사를 생략하면 어떤 선택지를 잃을 수 있나요?](/tech-interview/questions/jps-diagonal-orthogonal-jump/)
+- [균일 격자에 지형별 비용과 선회 비용이 추가됐습니다. 기존 JPS 가지치기를 언제 중단해야 하나요?](/tech-interview/questions/jps-weighted-terrain-fallback/)
 - 점프 스캔의 캐시·분기 비용을 줄이기 위한 전처리와 온라인 검증을 어떻게 나누나요?

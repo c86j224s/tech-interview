@@ -209,6 +209,54 @@ test('JavaScript 없이도 보강 답변과 꼬리 질문 링크를 읽는다', 
   }
 });
 
+test('꼬리 질문에서 독립 문항으로 이동하고 원문 맥락으로 돌아온다', async ({ page }) => {
+  await page.goto('questions/atomics-memory-order/');
+  await page.locator('summary').click();
+  await page.locator('#answer-3 a[href$="/cpp-release-sequence-visibility/"]').click();
+  await expect(page.locator('.question-meta')).toContainText('꼬리 질문에서 확장 · 핵심 답변');
+  await page.locator('summary').click();
+  await expect(page.locator('.spoken-answer')).toContainText('release sequence');
+  await page.locator('.promotion-origin a').click();
+  await expect(page).toHaveURL(/\/questions\/atomics-memory-order\/$/);
+  await page.goto('library/?tag=' + encodeURIComponent('심화 질문'));
+  await expect(page.locator('[data-question-card]:visible')).toHaveCount(500);
+});
+
+test('질문에서 학습 노트의 원리·슈도코드를 읽고 연습으로 돌아온다', async ({ page }) => {
+  await page.goto('questions/quicksort-worst-case/');
+  await page.getByRole('region', { name: '관련 학습 노트' }).getByRole('link', { name: '퀵소트의 분할과 최악 시간' }).click();
+  await expect(page).toHaveURL(/\/notes\/quicksort\/$/);
+  await expect(page.locator('.note-body pre')).toContainText('partition(a, lo, hi)');
+  await page.getByRole('navigation', { name: '학습 노트 목차' }).getByRole('link', { name: '슈도코드', exact: true }).click();
+  await expect(page).toHaveURL(/#section-3$/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator('#practice-questions a[href$="/quicksort-worst-case/"]').click();
+  await expect(page).toHaveURL(/\/questions\/quicksort-worst-case\/$/);
+  await page.goto('questions/introsort-depth-fallback/');
+  await expect(page.locator('.question-notes')).toContainText('퀵소트의 분할과 최악 시간');
+  await page.getByRole('navigation', { name: '주요 메뉴' }).getByRole('link', { name: '학습 노트' }).click();
+  await expect(page.locator('.note-card')).toHaveCount(12);
+});
+
+test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크를 제공한다', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 375, height: 812 } });
+  try {
+    const page = await context.newPage();
+    await page.goto(`${baseURL}notes/`);
+    const links = await page.locator('.note-card h2 a').evaluateAll((nodes) => nodes.map((node) => (node as HTMLAnchorElement).href));
+    expect(links.length).toBe(12);
+    for (const link of links) {
+      expect((await page.goto(link))?.status()).toBe(200);
+      await expect(page.locator('.note-body')).toBeVisible();
+      await expect(page.locator('#practice-questions a').first()).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await expect(page.locator('.ai-content-notice')).toHaveCount(1);
+    }
+  } finally {
+    await context.close();
+  }
+});
+
 test('AI 생성·학습 금지 안내는 공통 상단에 한 번만 표시된다', async ({ page }) => {
   for (const route of ['./', 'library/', 'practice/', 'questions/agent-workflow-autonomy/']) {
     await page.goto(route);

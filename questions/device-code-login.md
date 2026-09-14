@@ -2,7 +2,7 @@
 id: device-code-login
 title: "콘솔에 표시한 QR이나 짧은 코드를 휴대폰에서 승인해 로그인시키려 합니다. 다른 사람의 기기가 연결되지 않도록 무엇을 확인해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"oauth-oidc-pkce","prompt":"콘솔 대신 redirect를 받을 수 있는 모바일 앱의 브라우저 로그인으로 바꾸면, 기기 승인 흐름과 달리 state·PKCE는 무엇을 보호할까요?"},{"id":"refresh-token-rotation","prompt":"승인 후 콘솔에 장기 갱신 자격을 발급한다면 분실·응답 재시도·탈취 재사용을 어떻게 구분할까요?"},{"id":"account-linking-proof","prompt":"승인한 휴대폰 계정에 기존 서비스 계정을 연결하려면 코드 일치 외에 어떤 소유권 증명이 필요할까요?"}]
+followups: [{"id":"device-flow-token-response-loss","prompt":"기기 로그인 승인 뒤 토큰 교환 응답을 잃었습니다. 승인 상태와 자격 발급·재전달을 어떻게 구분하나요?"},{"id":"device-credential-short-lived-storage","prompt":"콘솔이 자격 증명을 안전하게 저장하기 어렵습니다. 토큰 수명·재인증·연결 세션을 어떻게 제한하나요?"},{"id":"oauth-oidc-pkce","prompt":"콘솔 대신 redirect를 받을 수 있는 모바일 앱의 브라우저 로그인으로 바꾸면, 기기 승인 흐름과 달리 state·PKCE는 무엇을 보호할까요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -48,6 +48,6 @@ QR이나 짧은 user code는 사용자가 어느 요청을 승인할지 찾기 �
 
 ## 더 파고들 거리
 
-- 응답이 유실된 뒤 상태 재조회와 자격 교환을 멱등적으로 만드는 방법은 무엇일까요?
-- 기기 자격을 안전하게 보관할 수 없는 환경에서 수명과 재인증을 어떻게 정할까요?
+- [기기 로그인 승인 뒤 토큰 교환 응답을 잃었습니다. 승인 상태와 자격 발급·재전달을 어떻게 구분하나요?](/tech-interview/questions/device-flow-token-response-loss/)
+- [콘솔이 자격 증명을 안전하게 저장하기 어렵습니다. 토큰 수명·재인증·연결 세션을 어떻게 제한하나요?](/tech-interview/questions/device-credential-short-lived-storage/)
 - 피싱으로 다른 콘솔을 승인하는 실수를 줄이는 사용자 검증 신호는 무엇일까요?

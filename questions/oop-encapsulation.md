@@ -2,7 +2,7 @@
 id: oop-encapsulation
 title: "주문 객체의 필드를 private으로 바꿨지만 setter로 음수 금액이나 잘못된 상태를 넣을 수 있습니다. 캡슐화가 보호해야 할 규칙은 무엇이며 API를 어떻게 바꾸나요?"
 answerMinutes: 5
-followups: [{"id": "solid-liskov", "prompt": "주문 상태 하위 타입이 부모가 허용한 상태 전이를 거부하면 치환 원칙을 어떻게 위반할까요?"}, {"id": "immutable-data-sharing", "prompt": "주문 내부 컬렉션을 외부에 노출하지 않으면서 읽기 성능과 불변성을 어떻게 조정할까요?"}, {"id": "transaction-and-lost-update", "prompt": "객체 내부 불변식이 지켜져도 두 요청의 저장이 충돌할 때 DB 조건부 갱신을 왜 추가해야 할까요?"}]
+followups: [{"id":"aggregate-cross-object-invariant","prompt":"서로 다른 객체 두 개가 함께 지켜야 할 규칙이 있습니다. aggregate·서비스 transaction의 경계를 어떻게 정하나요?"},{"id":"solid-liskov","prompt":"주문 상태 하위 타입이 부모가 허용한 상태 전이를 거부하면 치환 원칙을 어떻게 위반할까요?"},{"id":"immutable-data-sharing","prompt":"주문 내부 컬렉션을 외부에 노출하지 않으면서 읽기 성능과 불변성을 어떻게 조정할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["객체 지향","캡슐화","불변식"]
@@ -48,5 +48,5 @@ related: []
 ## 더 파고들 거리
 
 - 컬렉션을 반환할 때 내부 목록을 직접 노출하지 않으려면 어떤 복사 또는 읽기 전용 뷰가 필요한가요?
-- 서로 연관된 두 객체의 불변식을 한 객체가 함께 보장해야 할 때 경계를 어떻게 정할까요?
+- [서로 다른 객체 두 개가 함께 지켜야 할 규칙이 있습니다. aggregate·서비스 transaction의 경계를 어떻게 정하나요?](/tech-interview/questions/aggregate-cross-object-invariant/)
 - 캡슐화로 내부 표현을 바꿔도 클라이언트가 깨지지 않는지 어떤 테스트로 확인할까요?

@@ -2,7 +2,7 @@
 id: kafka-retention-compaction
 title: "Kafka에 오래된 이벤트를 정리하면서 키별 최신 상태는 남기려 합니다. 시간·크기 기반 retention과 log compaction은 무엇을 각각 보존하나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-partition-offset","prompt":"compaction으로 중간 레코드가 삭제돼도 offset을 처리 완료 번호로 볼 수 없는 이유는 무엇인가요?"},{"id":"jetstream-durable-consumer","prompt":"보관 한도를 넘긴 durable consumer를 snapshot으로 어떻게 복구하나요?"},{"id":"transactional-outbox","prompt":"이력과 최신 상태를 원본 DB와 Kafka topic에 어떻게 나누어 보관하나요?"}]
+followups: [{"id":"kafka-tombstone-offline-consumer","prompt":"오래 중단한 소비자가 tombstone 보관 기간을 넘겼습니다. 옛 삭제 상태를 잘못 유지하지 않으려면 어떻게 복구하나요?"},{"id":"kafka-compact-delete-latest-loss","prompt":"compact와 delete를 함께 설정했습니다. 키의 최신 값도 삭제될 수 있는 조건과 snapshot 복구는 무엇인가요?"},{"id":"kafka-partition-offset","prompt":"compaction으로 중간 레코드가 삭제돼도 offset을 처리 완료 번호로 볼 수 없는 이유는 무엇인가요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["Kafka","retention","compaction"]
@@ -50,6 +50,6 @@ compact와 delete를 함께 사용하면 키별 최신 레코드도 시간·크�
 
 ## 더 파고들 거리
 
-- tombstone 복구
-- compact·delete 시간 한계
+- [오래 중단한 소비자가 tombstone 보관 기간을 넘겼습니다. 옛 삭제 상태를 잘못 유지하지 않으려면 어떻게 복구하나요?](/tech-interview/questions/kafka-tombstone-offline-consumer/)
+- [compact와 delete를 함께 설정했습니다. 키의 최신 값도 삭제될 수 있는 조건과 snapshot 복구는 무엇인가요?](/tech-interview/questions/kafka-compact-delete-latest-loss/)
 - null key 차이

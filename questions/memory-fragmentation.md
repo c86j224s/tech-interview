@@ -2,7 +2,7 @@
 id: memory-fragmentation
 title: "메모리 총 여유는 충분한데 큰 연속 영역 할당이 실패할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"paging-segmentation","prompt":"가변 크기 세그먼트와 고정 크기 페이지의 단편화 비용을 같은 주소 변환 모델에서 어떻게 비교할까요?"},{"id":"memory-rss-vs-heap","prompt":"할당자 내부의 빈 공간이 프로세스 RSS에 남아 있을 때 누수와 재사용 공간을 어떻게 구분할까요?"},{"id":"tlb-page-table","prompt":"큰 페이지가 TLB miss는 줄일 수 있어도 물리 연속성·내부 단편화·할당 실패를 더 엄격하게 만들 수 있는 이유는 무엇인가요?"}]
+followups: [{"id":"huge-page-allocation-fragmentation","prompt":"대형 페이지를 쓰려는데 충분한 총 메모리에도 할당이 어렵습니다. 연속 물리 공간·압축·회수 비용은 무엇인가요?"},{"id":"allocator-size-class-waste","prompt":"할당기가 크기 등급으로 메모리를 관리합니다. 내부 낭비와 자유 공간 재사용은 어떻게 맞바뀌나요?"},{"id":"fragmentation-versus-leak-experiment","prompt":"장시간 할당 뒤 RSS가 높습니다. 살아 있는 객체 누수와 단편화를 어떤 대조 부하로 구분하나요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["단편화","메모리 할당","가상 메모리"]
@@ -43,6 +43,6 @@ related: ["memory-rss-vs-heap"]
 
 ## 더 파고들 거리
 
-- huge page가 일반 페이지보다 할당·회수에서 더 까다로운 이유는 무엇인가요?
-- size class가 내부 단편화를 줄이는 대신 만들 수 있는 낭비는 무엇인가요?
-- 장시간 할당 패턴에서 단편화와 실제 메모리 누수를 어떤 그래프로 분리할까요?
+- [대형 페이지를 쓰려는데 충분한 총 메모리에도 할당이 어렵습니다. 연속 물리 공간·압축·회수 비용은 무엇인가요?](/tech-interview/questions/huge-page-allocation-fragmentation/)
+- [할당기가 크기 등급으로 메모리를 관리합니다. 내부 낭비와 자유 공간 재사용은 어떻게 맞바뀌나요?](/tech-interview/questions/allocator-size-class-waste/)
+- [장시간 할당 뒤 RSS가 높습니다. 살아 있는 객체 누수와 단편화를 어떤 대조 부하로 구분하나요?](/tech-interview/questions/fragmentation-versus-leak-experiment/)

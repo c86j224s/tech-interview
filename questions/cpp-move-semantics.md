@@ -2,7 +2,7 @@
 id: cpp-move-semantics
 title: "C++에서 복사를 줄이려고 std::move를 붙였습니다. 어떤 경우에는 여전히 복사되며, 이동 뒤 원본은 어떻게 다뤄야 하나요?"
 answerMinutes: 5
-followups: [{"id":"cpp-raii-exception-safety","prompt":"이동 생성자가 예외를 던질 수 있는 컨테이너 재할당에서 기존 원소를 보존하려면 어떤 선택을 할까요?"},{"id":"cpp-coroutine-frame-lifetime","prompt":"이동 가능한 버퍼를 비동기 작업에 넘긴 뒤 원본 객체를 계속 참조해야 한다면 소유권 계약을 어떻게 바꿀까요?"},{"id":"java-final-immutability","prompt":"불변 스냅샷을 복사 대신 공유할 때 언어 차이와 수명·변경 비용을 어떻게 비교할까요?"}]
+followups: [{"id":"cpp-forwarding-reference-category","prompt":"함수의 named rvalue reference는 왜 lvalue 표현식이며 perfect forwarding은 어떤 범주를 보존하나요?"},{"id":"cpp-allocator-move-propagation","prompt":"allocator가 다른 C++ 컨테이너끼리 이동합니다. 언제 저장 버퍼를 넘기지 못하고 원소별 이동이 필요한가요?"},{"id":"cpp-raii-exception-safety","prompt":"이동 생성자가 예외를 던질 수 있는 컨테이너 재할당에서 기존 원소를 보존하려면 어떤 선택을 할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -58,5 +58,5 @@ std::move는 const를 제거하지 않습니다. 자원을 빼앗으려면 원�
 ## 더 파고들 거리
 
 - 이동 생성자가 `noexcept`가 아닐 때 `vector`는 왜 복사를 선택할 수 있을까요?
-- perfect forwarding에서 named rvalue reference가 다시 lvalue가 되는 이유는 무엇인가요?
-- allocator가 다른 컨테이너 사이 이동에서 버퍼를 훔칠 수 없는 경우는 언제인가요?
+- [함수의 named rvalue reference는 왜 lvalue 표현식이며 perfect forwarding은 어떤 범주를 보존하나요?](/tech-interview/questions/cpp-forwarding-reference-category/)
+- [allocator가 다른 C++ 컨테이너끼리 이동합니다. 언제 저장 버퍼를 넘기지 못하고 원소별 이동이 필요한가요?](/tech-interview/questions/cpp-allocator-move-propagation/)

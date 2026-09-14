@@ -2,7 +2,7 @@
 id: async-api-and-blocking
 title: "비동기 DB 조회로 future를 받았지만 결과를 기다리는 동안 서버가 멈춥니다. 비동기 API를 써도 스레드가 블로킹될 수 있나요?"
 answerMinutes: 5
-followups: [{"id": "bounded-queue-backpressure", "prompt": "스레드를 막지 않도록 바꿨는데 이번에는 DB 대기 요청이 쌓입니다. 어디에서 얼마나 받아들일지 정해 볼까요?"}, {"id": "deadline-cancellation-propagation", "prompt": "기다리던 사용자가 떠났습니다. 중단된 코루틴과 이미 제출한 DB 작업도 함께 끝날까요?"}, {"id": "mutex-vs-serial-execution", "prompt": "같은 계정의 요청을 순서대로 실행하더라도 비동기 대기 중 다음 요청을 받아도 될까요?"}]
+followups: [{"id":"bounded-queue-backpressure","prompt":"스레드를 막지 않도록 바꿨는데 이번에는 DB 대기 요청이 쌓입니다. 어디에서 얼마나 받아들일지 정해 볼까요?"},{"id":"go-channel-wait-thread-parking","prompt":"Go 채널에서 기다리는 고루틴은 OS 스레드 전체를 붙잡나요? 런타임의 park와 블로킹 호출을 구분해 보세요."},{"id":"queue-budget-from-deadline","prompt":"요청마다 처리 시간이 다릅니다. deadline 안에 끝낼 수 있는 동시 실행 수와 대기열 길이를 어떻게 정하나요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -60,7 +60,7 @@ related:
 
 ## 더 파고들 거리
 
-- Go의 채널 대기와 OS 스레드 블로킹은 어떻게 다르며, 런타임은 기다리는 작업을 어떻게 다룰까요?
-- 동시 실행 수와 대기열 상한을 정할 때 처리 시간 분포와 요청 데드라인을 어떻게 이용할까요?
+- [Go 채널에서 기다리는 고루틴은 OS 스레드 전체를 붙잡나요? 런타임의 park와 블로킹 호출을 구분해 보세요.](/tech-interview/questions/go-channel-wait-thread-parking/)
+- [요청마다 처리 시간이 다릅니다. deadline 안에 끝낼 수 있는 동시 실행 수와 대기열 길이를 어떻게 정하나요?](/tech-interview/questions/queue-budget-from-deadline/)
 - 코루틴이 취소되는 동안 I/O 완료가 도착하면 프레임과 버퍼는 누가 정리해야 할까요?
 - 이벤트 루프 자체가 느린 것과 하위 서비스가 느린 것을 구분하려면 어떤 구간을 추적해야 할까요?

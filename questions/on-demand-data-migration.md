@@ -2,7 +2,7 @@
 id: on-demand-data-migration
 title: "사용자의 첫 접속 때 데이터를 새 저장소로 옮깁니다. 동시에 접속하거나 복사가 중간에 멈춰도 안전하게 이어 가려면 어떻게 하나요?"
 answerMinutes: 5
-followups: [{"id":"hash-sharding-and-resharding","prompt":"샤드 이동에도 snapshot·변경 로그·소유권 전환을 적용할 때 차이는 무엇인가요?"},{"id":"account-merge-invariants","prompt":"이관 중 계정 병합이 들어오면 불변식과 권위를 어떻게 보존하나요?"},{"id":"distributed-lock-fencing","prompt":"lease 만료 뒤 옛 워커 완료를 어떤 generation으로 거절하나요?"}]
+followups: [{"id":"migration-authorization-change","prompt":"사용자 데이터 이전 중 권한이나 대표 계정이 바뀝니다. 복사 완료와 접근 공개는 어떤 현재 상태를 다시 검사하나요?"},{"id":"hash-sharding-and-resharding","prompt":"샤드 이동에도 snapshot·변경 로그·소유권 전환을 적용할 때 차이는 무엇인가요?"},{"id":"account-merge-invariants","prompt":"이관 중 계정 병합이 들어오면 불변식과 권위를 어떻게 보존하나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -54,5 +54,5 @@ lease 만료는 옛 워커가 종료됐다는 증거가 아닙니다. 새 세대
 ## 더 파고들 거리
 
 - 세대 검사
-- 자격 변경 권위
+- [사용자 데이터 이전 중 권한이나 대표 계정이 바뀝니다. 복사 완료와 접근 공개는 어떤 현재 상태를 다시 검사하나요?](/tech-interview/questions/migration-authorization-change/)
 - 대용량 검증

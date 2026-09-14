@@ -2,7 +2,7 @@
 id: refresh-token-rotation
 title: "갱신 토큰을 회전시키는 서버가 정상 동시 갱신과 탈취 재사용을 어떻게 구분하고 차단하나요?"
 answerMinutes: 5
-followups: [{"id":"jwt-vs-server-session","prompt":"access token은 JWT로 검증하고 refresh token 상태는 서버에 둔다면 즉시 회수와 서비스 간 검증의 경계를 어떻게 정하나요?"},{"id":"request-timeout-idempotency","prompt":"갱신 응답이 유실돼 클라이언트가 같은 요청을 재전송한다면 refresh token 회전과 요청 멱등 키를 어떻게 연결할까요?"},{"id":"mfa-recovery-policy","prompt":"refresh token 재사용으로 계열을 회수한 뒤 사용자가 새 기기에서 복구하려 할 때 어떤 재인증과 알림을 요구할까요?"}]
+followups: [{"id":"refresh-token-multitab-serialization","prompt":"브라우저 여러 탭이 같은 refresh token으로 동시에 갱신합니다. client 직렬화와 서버 회전 상태는 어떻게 나누나요?"},{"id":"jwt-vs-server-session","prompt":"access token은 JWT로 검증하고 refresh token 상태는 서버에 둔다면 즉시 회수와 서비스 간 검증의 경계를 어떻게 정하나요?"},{"id":"request-timeout-idempotency","prompt":"갱신 응답이 유실돼 클라이언트가 같은 요청을 재전송한다면 refresh token 회전과 요청 멱등 키를 어떻게 연결할까요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -50,6 +50,6 @@ related: ["jwt-vs-server-session"]
 
 ## 더 파고들 거리
 
-- 멀티 탭·멀티 기기의 갱신 직렬화 책임을 클라이언트와 서버에 어떻게 나눌까요?
+- [브라우저 여러 탭이 같은 refresh token으로 동시에 갱신합니다. client 직렬화와 서버 회전 상태는 어떻게 나누나요?](/tech-interview/questions/refresh-token-multitab-serialization/)
 - 유예 시간과 동일 결과 재전달을 어떤 네트워크·클라이언트 관찰로 정할까요?
 - 저장소 복제 지연이 토큰 계열 회수에 미치는 영향을 어떻게 시험할까요?

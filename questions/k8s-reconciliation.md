@@ -2,7 +2,7 @@
 id: k8s-reconciliation
 title: "Kubernetes에 Deployment 복제본 수를 바꾸는 요청은 성공했는데 Pod가 아직 준비되지 않았습니다. 선언은 어떤 과정을 거쳐 실제 상태가 되나요?"
 answerMinutes: 5
-followups: [{"id":"retry-safe-state-machine","prompt":"외부 클라우드 자원을 만드는 controller가 중간에 재시작됐다면 이미 생성된 결과와 원하는 상태를 어떤 키와 상태 전이로 재조정하겠습니까?"},{"id":"k8s-probe-contract","prompt":"Pod가 Running이지만 readiness가 실패한다면 조정 완료와 Service 유입 가능성을 어떤 상태로 분리하겠습니까?"},{"id":"argocd-gitops-reconcile","prompt":"Argo CD가 같은 Deployment를 다시 적용하는 상황에서 Kubernetes controller와 Git 원하는 상태의 차이를 어떤 관찰 순서로 진단하겠습니까?"}]
+followups: [{"id":"k8s-observed-generation-conditions","prompt":"status가 최신 spec을 관찰했다고 표시하지만 rollout은 끝나지 않았습니다. observedGeneration과 condition은 어떻게 읽나요?"},{"id":"k8s-finalizer-external-cleanup","prompt":"Kubernetes 객체가 Terminating에 남아 있습니다. finalizer의 외부 자원과 정리 실패를 어떻게 조사하나요?"},{"id":"server-side-apply-field-ownership","prompt":"두 controller가 같은 필드를 바꿉니다. server-side apply의 필드 소유권 충돌을 어떻게 해결하나요?"}]
 difficulty: 하
 category: 인프라
 tags: ["Kubernetes","컨트롤러","reconciliation"]
@@ -45,6 +45,6 @@ controller가 같은 이벤트를 두 번 보거나 처리 중 재시작되면 �
 
 ## 더 파고들 거리
 
-- status가 최신 spec을 관찰했어도 rollout이 진행되지 않는 사례를 어떤 condition으로 구분할까요.
-- finalizer가 남은 객체의 소유 외부 자원과 정리 완료를 어떻게 조사할까요.
-- 서로 다른 controller가 같은 필드를 변경할 때 server-side apply와 소유권을 어떻게 정리할까요.
+- [status가 최신 spec을 관찰했다고 표시하지만 rollout은 끝나지 않았습니다. observedGeneration과 condition은 어떻게 읽나요?](/tech-interview/questions/k8s-observed-generation-conditions/)
+- [Kubernetes 객체가 Terminating에 남아 있습니다. finalizer의 외부 자원과 정리 실패를 어떻게 조사하나요?](/tech-interview/questions/k8s-finalizer-external-cleanup/)
+- [두 controller가 같은 필드를 바꿉니다. server-side apply의 필드 소유권 충돌을 어떻게 해결하나요?](/tech-interview/questions/server-side-apply-field-ownership/)

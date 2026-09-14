@@ -2,7 +2,7 @@
 id: voxel-derived-data-update
 title: "복셀 원본이 바뀔 때 충돌·경로·시야 파생 데이터를 서로 다른 버전으로 사용하지 않게 갱신하는 방법은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"voxel-chunk-boundaries","prompt":"변경 청크와 경계 이웃의 파생 버전이 다를 때 충돌·경로·시야 각각 어떤 보수 정책을 적용하겠습니까?"},{"id":"dynamic-path-revalidation","prompt":"오래된 경로 결과가 현재 맵 버전과 다르면 전체 경로를 폐기할지 변경 영역만 재검증할지 어떻게 결정하겠습니까?"},{"id":"voxel-occupancy-representation","prompt":"원본 복셀의 물리 상태와 에이전트별 이동성 파생 결과를 어떤 버전 필드와 재생성 책임으로 분리하겠습니까?"}]
+followups: [{"id":"derived-data-version-lag-slo","prompt":"원본 지형과 충돌·경로 데이터의 버전이 벌어집니다. 허용 조합·임시 정책·지연 SLO를 어떻게 관리하나요?"},{"id":"voxel-chunk-boundaries","prompt":"변경 청크와 경계 이웃의 파생 버전이 다를 때 충돌·경로·시야 각각 어떤 보수 정책을 적용하겠습니까?"},{"id":"dynamic-path-revalidation","prompt":"오래된 경로 결과가 현재 맵 버전과 다르면 전체 경로를 폐기할지 변경 영역만 재검증할지 어떻게 결정하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["복셀","파생 데이터","버전"]
@@ -39,6 +39,6 @@ related: ["dynamic-path-revalidation","voxel-chunk-boundaries"]
 
 ## 더 파고들 거리
 
-- 원본과 파생 버전 차이를 어떤 지표·경보·SLO로 운영하나요?
+- [원본 지형과 충돌·경로 데이터의 버전이 벌어집니다. 허용 조합·임시 정책·지연 SLO를 어떻게 관리하나요?](/tech-interview/questions/derived-data-version-lag-slo/)
 - 계속 변경되는 청크의 재생성 작업을 최신 목표 버전 하나로 병합하려면 어떻게 하나요?
 - 임시 충돌층이 이동을 과도하게 막지 않으면서 새 벽을 놓치지 않게 상한을 어떻게 정하나요?

@@ -2,7 +2,7 @@
 id: k8s-service-network
 title: "Kubernetes Service 뒤에 새 Pod가 생겼는데도 이미 열린 HTTP/2 또는 TCP 연결의 요청이 옮겨가지 않는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"http-connection-pool","prompt":"새 Pod가 추가됐는데 외부 HTTP 클라이언트의 기존 연결 풀만 계속 사용된다면 연결 수·수명·하위 서비스 부하를 어떻게 조정하겠습니까?"},{"id":"load-balancer-health-draining","prompt":"readiness를 실패시킨 뒤 로드밸런서와 EndpointSlice 전파가 늦어지면 기존 연결과 새 요청을 어떤 시간 순서로 드레이닝하겠습니까?"},{"id":"k8s-probe-contract","prompt":"애플리케이션이 포트는 열었지만 gRPC 스트림을 받을 준비가 안 됐다면 readiness probe의 성공 계약을 어떻게 바꾸겠습니까?"}]
+followups: [{"id":"headless-clusterip-selection-boundary","prompt":"Headless Service와 ClusterIP에서 DNS 결과와 backend 선택은 각각 누가 책임지나요?"},{"id":"http-connection-pool","prompt":"새 Pod가 추가됐는데 외부 HTTP 클라이언트의 기존 연결 풀만 계속 사용된다면 연결 수·수명·하위 서비스 부하를 어떻게 조정하겠습니까?"},{"id":"load-balancer-health-draining","prompt":"readiness를 실패시킨 뒤 로드밸런서와 EndpointSlice 전파가 늦어지면 기존 연결과 새 요청을 어떤 시간 순서로 드레이닝하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Kubernetes","Service","연결"]
@@ -43,6 +43,6 @@ Pod를 제거할 때는 readiness를 먼저 실패시켜 새 요청 유입을 �
 
 ## 더 파고들 거리
 
-- Headless Service DNS와 ClusterIP Service의 클라이언트 선택 책임이 어떻게 다른지 설명해 보세요.
+- [Headless Service와 ClusterIP에서 DNS 결과와 backend 선택은 각각 누가 책임지나요?](/tech-interview/questions/headless-clusterip-selection-boundary/)
 - EndpointSlice 전파 지연과 termination grace period를 고려한 안전한 종료 순서를 설계해 보세요.
 - gRPC resolver·client-side balancing과 서버 측 Service를 함께 쓸 때 중복 분산을 어떻게 관찰할까요.

@@ -2,7 +2,7 @@
 id: transaction-and-lost-update
 title: "두 요청이 같은 재고를 읽고 각각 차감한 값을 저장합니다. 각 요청을 트랜잭션으로 묶어도 갱신이 유실될 수 있으며 어떻게 막나요?"
 answerMinutes: 5
-followups: [{"id": "request-timeout-idempotency", "prompt": "재고의 동시 갱신은 안전해졌습니다. 커밋 응답을 잃은 동일 요청이 다시 오면 두 번 차감되지 않을까요?"}, {"id": "transactional-outbox", "prompt": "충돌로 트랜잭션을 다시 실행할 때 알림 발송까지 반복하지 않으려면 어떻게 분리할까요?"}, {"id": "sqlserver-rcsi-snapshot", "prompt": "같은 행을 두 번 읽는 사이 다른 요청이 커밋하면, 선택한 격리 수준에 따라 무엇이 보일까요?"}]
+followups: [{"id":"optimistic-retry-hotkey-abort","prompt":"낙관적 갱신 충돌이 계속 발생합니다. 재시도 중단과 키별 직렬화 전환을 어떤 지표로 판단하나요?"},{"id":"request-timeout-idempotency","prompt":"재고의 동시 갱신은 안전해졌습니다. 커밋 응답을 잃은 동일 요청이 다시 오면 두 번 차감되지 않을까요?"},{"id":"transactional-outbox","prompt":"충돌로 트랜잭션을 다시 실행할 때 알림 발송까지 반복하지 않으려면 어떻게 분리할까요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -63,6 +63,6 @@ related:
 ## 더 파고들 거리
 
 - DB별 READ COMMITTED와 SNAPSHOT은 읽기 시점과 갱신 충돌 처리에서 어떻게 다를까요?
-- 낙관적 동시성 제어의 재시도를 언제 포기할지, 반복되는 충돌을 어떤 지표로 판단할까요?
+- [낙관적 갱신 충돌이 계속 발생합니다. 재시도 중단과 키별 직렬화 전환을 어떤 지표로 판단하나요?](/tech-interview/questions/optimistic-retry-hotkey-abort/)
 - 트랜잭션 재시도 중 이메일이나 외부 API가 중복 실행되지 않도록 하려면 어떻게 분리해야 할까요?
 - 여러 행에 걸친 불변식을 제약조건, 공통 잠금 행, SERIALIZABLE 중 어떤 방식으로 보호할까요?

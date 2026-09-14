@@ -2,7 +2,7 @@
 id: heap-vs-sorted-array
 title: "우선순위가 있는 작업을 계속 추가하면서 가장 작은 값의 작업부터 꺼내려 합니다. 힙과 정렬된 배열의 삽입·조회·삭제 비용을 어떻게 비교하나요?"
 answerMinutes: 5
-followups: [{"id":"priority-queue-starvation","prompt":"최소 힙이 항상 최고 우선순위를 꺼내지만 낮은 우선순위 작업이 굶는다면, 자료구조와 실행 정책을 어떻게 함께 바꾸겠습니까?"},{"id":"timing-wheel-vs-heap","prompt":"우선순위가 값이 아니라 만료 시각이고 타이머가 수십만 개라면, 힙 대신 타이밍 휠을 고를 조건은 무엇입니까?"},{"id":"ranking-top-k","prompt":"전체 최솟값이 아니라 점수 상위 K명만 유지해야 한다면, 크기 K 힙과 전체 정렬의 비용·정확성을 어떻게 비교하겠습니까?"}]
+followups: [{"id":"bottom-up-heapify-linear-cost","prompt":"배열 전체를 힙으로 만들 때 bottom-up heapify는 왜 반복 삽입보다 낮은 전체 비용을 가질 수 있나요?"},{"id":"priority-fifo-sequence-wrap","prompt":"동점 작업에 삽입 순번을 붙입니다. 순번 overflow와 재시작 뒤에도 FIFO를 유지하려면 어떻게 하나요?"},{"id":"priority-queue-indexed-delete","prompt":"우선순위 큐의 중간 작업을 자주 취소합니다. 위치 맵 삭제와 지연 삭제는 어떤 비용이 다른가요?"}]
 difficulty: 하
 category: 자료구조
 tags: ["힙","우선순위 큐","정렬"]
@@ -47,6 +47,6 @@ related: ["ranking-top-k"]
 
 ## 더 파고들 거리
 
-- 정렬된 입력을 한 번에 힙으로 만드는 heapify가 반복 삽입과 다른 비용을 갖는 이유를 설명해 보세요.
-- 동점 작업에 삽입 순서를 보장하는 보조 키를 넣을 때 오버플로와 재시작 정책을 말해 보세요.
-- 위치 맵과 지연 삭제를 이용한 임의 삭제의 메모리·정리 비용을 비교해 보세요.
+- [배열 전체를 힙으로 만들 때 bottom-up heapify는 왜 반복 삽입보다 낮은 전체 비용을 가질 수 있나요?](/tech-interview/questions/bottom-up-heapify-linear-cost/)
+- [동점 작업에 삽입 순번을 붙입니다. 순번 overflow와 재시작 뒤에도 FIFO를 유지하려면 어떻게 하나요?](/tech-interview/questions/priority-fifo-sequence-wrap/)
+- [우선순위 큐의 중간 작업을 자주 취소합니다. 위치 맵 삭제와 지연 삭제는 어떤 비용이 다른가요?](/tech-interview/questions/priority-queue-indexed-delete/)

@@ -2,7 +2,7 @@
 id: tls-certificate-validation
 title: "TLS 핸드셰이크가 성공해도 의도한 서버를 신뢰한다고 말하려면 어떤 인증서 검증과 API 인가가 필요한가요?"
 answerMinutes: 5
-followups: [{"id":"browser-url-navigation","prompt":"브라우저가 DNS와 TCP를 거쳐 TLS를 시작할 때 인증서 검증 실패가 waterfall의 어느 경계에서 드러나는지 어떻게 구분하나요?"},{"id":"secret-key-rotation","prompt":"인증서와 JWT 서명키를 함께 교체할 때 공개 정보의 준비 순서와 기존 자격의 회수 시점을 어떻게 나누나요?"},{"id":"authentication-vs-authorization","prompt":"mTLS로 내부 서비스가 인증된 뒤에도 사용자를 대신한 주문 접근을 제한하려면 어떤 자원별 인가를 추가하나요?"}]
+followups: [{"id":"certificate-pinning-rotation-recovery","prompt":"앱에 인증서 pinning을 넣습니다. 정상 키 교체·긴급 유출·오래된 앱의 복구 경로는 어떻게 준비하나요?"},{"id":"browser-url-navigation","prompt":"브라우저가 DNS와 TCP를 거쳐 TLS를 시작할 때 인증서 검증 실패가 waterfall의 어느 경계에서 드러나는지 어떻게 구분하나요?"},{"id":"secret-key-rotation","prompt":"인증서와 JWT 서명키를 함께 교체할 때 공개 정보의 준비 순서와 기존 자격의 회수 시점을 어떻게 나누나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -52,6 +52,6 @@ TLS 1.3에도 인증서 대신 사전 공유키로 상대를 인증하는 PSK �
 
 ## 더 파고들 거리
 
-- 인증서 pinning이 정상 교체와 긴급 복구에 만드는 운영 비용은 무엇일까요?
+- [앱에 인증서 pinning을 넣습니다. 정상 키 교체·긴급 유출·오래된 앱의 복구 경로는 어떻게 준비하나요?](/tech-interview/questions/certificate-pinning-rotation-recovery/)
 - mTLS 서비스 신원과 사용자 위임 범위를 어떤 토큰·정책으로 연결할까요?
 - TLS session resumption ticket 수명과 인증서 유출 대응을 어떻게 실험할까요?

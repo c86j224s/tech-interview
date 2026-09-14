@@ -2,7 +2,7 @@
 id: iocp-acceptex
 title: "AcceptEx로 연결 수락을 미리 요청했습니다. 클라이언트는 연결됐는데 왜 완료가 늦을 수 있고, 완료 뒤 소켓은 어떻게 초기화하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-completion-key-overlapped","prompt":"AcceptEx 완료 뒤 수락 컨텍스트와 첫 WSARecv의 OVERLAPPED를 같은 연결에서 관리한다면, 각 작업의 수명을 어떻게 구분하겠습니까?"},{"id":"iocp-cancel-drain","prompt":"종료 중 미완료 AcceptEx를 취소했다면 accept 소켓과 주소 버퍼를 언제 재사용할 수 있습니까?"},{"id":"tcp-three-way-handshake","prompt":"TCP handshake가 끝났지만 AcceptEx 완료가 늦은 상황에서 전송 계층 연결과 애플리케이션 수락을 어떻게 구분하겠습니까?"}]
+followups: [{"id":"acceptex-pool-listen-backlog","prompt":"AcceptEx를 미리 제출하는 수와 listen backlog는 어떤 서로 다른 연결 대기를 다루나요?"},{"id":"acceptex-failed-socket-reuse","prompt":"AcceptEx가 실패했습니다. 수락용 소켓을 재사용할지 새로 만들지 어떤 상태와 완료 수명을 확인하나요?"},{"id":"iocp-completion-key-overlapped","prompt":"AcceptEx 완료 뒤 수락 컨텍스트와 첫 WSARecv의 OVERLAPPED를 같은 연결에서 관리한다면, 각 작업의 수명을 어떻게 구분하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags: ["IOCP","AcceptEx","소켓"]
@@ -48,6 +48,6 @@ AcceptEx 완료 뒤에는 `SO_UPDATE_ACCEPT_CONTEXT`를 수락 소켓에 설정�
 
 ## 더 파고들 거리
 
-- AcceptEx 미리 제출 수와 listen backlog가 각각 어떤 단계의 대기를 제한할까요?
-- AcceptEx 실패 뒤 소켓 재사용과 새 생성 중 어떤 조건을 비교해야 할까요?
+- [AcceptEx를 미리 제출하는 수와 listen backlog는 어떤 서로 다른 연결 대기를 다루나요?](/tech-interview/questions/acceptex-pool-listen-backlog/)
+- [AcceptEx가 실패했습니다. 수락용 소켓을 재사용할지 새로 만들지 어떤 상태와 완료 수명을 확인하나요?](/tech-interview/questions/acceptex-failed-socket-reuse/)
 - 초기 데이터 수신을 수락과 분리할 때 연결 폭주·인증 지연을 어떻게 제한할까요?

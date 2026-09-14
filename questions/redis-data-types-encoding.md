@@ -2,7 +2,7 @@
 id: redis-data-types-encoding
 title: "Redis에 사용자별 속성 목록을 저장하려 합니다. 문자열·해시·집합 중 필요한 연산에 맞는 자료형을 고르고 실제 메모리와 갱신 비용은 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"redis-expiry-eviction","prompt":"자료형을 선택한 뒤 TTL 만료와 maxmemory eviction이 원본·캐시 데이터에 어떤 손실 정책을 만드는지 어떻게 정하나요?"},{"id":"redis-sorted-set-ranking","prompt":"sorted set 랭킹에서 동점자·점수 정밀도·중복 갱신을 어떻게 안정적으로 표현하나요?"},{"id":"lru-cache-policy","prompt":"자료구조의 원소 크기와 접근 패턴이 LRU eviction의 실제 효율에 어떤 영향을 주나요?"}]
+followups: [{"id":"redis-hash-field-expiry-layout","prompt":"Redis hash를 여러 키로 나눌지 필드 만료 기능을 쓸지 결정합니다. 버전·원자성·메타데이터 비용은 어떻게 비교하나요?"},{"id":"redis-expiry-eviction","prompt":"자료형을 선택한 뒤 TTL 만료와 maxmemory eviction이 원본·캐시 데이터에 어떤 손실 정책을 만드는지 어떻게 정하나요?"},{"id":"redis-sorted-set-ranking","prompt":"sorted set 랭킹에서 동점자·점수 정밀도·중복 갱신을 어떻게 안정적으로 표현하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Redis","자료형","메모리"]
@@ -43,6 +43,6 @@ DBMS의 JSON 타입과 Redis 자료형을 동일하게 볼 수도 없습니다. 
 
 ## 더 파고들 거리
 
-- 해시를 여러 키로 쪼갤 때 TTL·원자성 비용을 비교해 보세요.
+- [Redis hash를 여러 키로 나눌지 필드 만료 기능을 쓸지 결정합니다. 버전·원자성·메타데이터 비용은 어떻게 비교하나요?](/tech-interview/questions/redis-hash-field-expiry-layout/)
 - 인코딩 전환 직전·직후의 p99를 측정해 보세요.
 - 압축의 네트워크 절감과 Redis·클라이언트 CPU를 교환해 보세요.

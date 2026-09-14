@@ -2,7 +2,7 @@
 id: strangler-migration
 title: "레거시 서비스를 한 번에 끌 수 없어 일부 요청부터 새 서비스로 옮기려 합니다. 요청 라우팅과 데이터 쓰기 책임을 어떻게 나누고 실패하면 어떻게 되돌리나요?"
 answerMinutes: 5
-followups: [{"id": "db-online-schema-migration", "prompt": "구버전 서버가 남은 상태에서 새 서비스가 스키마를 쓰려면 expand·migrate·contract 순서를 어떻게 적용할까요?"}, {"id": "feature-flag-rollout", "prompt": "새 서비스 트래픽을 플래그로 줄였을 때 이미 생성된 데이터와 이벤트를 어떤 보정 경로로 처리할까요?"}, {"id": "transactional-outbox", "prompt": "두 서비스가 이벤트로 병행 동작하는 동안 발행 유실과 이중 소비를 어떻게 추적할까요?"}]
+followups: [{"id":"shadow-write-side-effect-isolation","prompt":"새 시스템에 shadow traffic을 보냅니다. 실제 결제·메일·쓰기 효과를 중복 실행하지 않고 무엇을 비교하나요?"},{"id":"db-online-schema-migration","prompt":"구버전 서버가 남은 상태에서 새 서비스가 스키마를 쓰려면 expand·migrate·contract 순서를 어떻게 적용할까요?"},{"id":"feature-flag-rollout","prompt":"새 서비스 트래픽을 플래그로 줄였을 때 이미 생성된 데이터와 이벤트를 어떤 보정 경로로 처리할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ shadow 비교에서는 양쪽 응답의 현재 시각·정렬되지 않은 목�
 
 ## 더 파고들 거리
 
-- shadow write의 부수 효과를 어떻게 격리하나요?
+- [새 시스템에 shadow traffic을 보냅니다. 실제 결제·메일·쓰기 효과를 중복 실행하지 않고 무엇을 비교하나요?](/tech-interview/questions/shadow-write-side-effect-isolation/)
 - 사용자 단위 전환과 기능 단위 전환의 실패 범위는 어떻게 다른가요?
 - 병행 운영 중 정책 차이를 어떤 비교 지표로 추적하나요?

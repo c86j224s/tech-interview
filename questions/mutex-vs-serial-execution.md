@@ -2,7 +2,7 @@
 id: mutex-vs-serial-execution
 title: "여러 요청이 같은 계정 상태를 바꿉니다. 요청마다 뮤텍스를 잡는 방법과 계정별 큐에서 순차 실행하는 방법은 대기·순서·오류 처리에서 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id": "transaction-and-lost-update", "prompt": "프로세스를 두 개로 늘리면 각자의 뮤텍스나 큐가 같은 DB 행을 동시에 바꿀 수 있습니다. 보호 경계를 어디로 옮길까요?"}, {"id": "bounded-queue-backpressure", "prompt": "계정 순서는 지켰지만 느린 요청 뒤에 큐가 쌓입니다. 대기 상한과 거절 조건은 어떻게 정할까요?"}, {"id": "retry-safe-state-machine", "prompt": "느린 I/O 중에도 다음 요청을 받고 싶다면, 재개된 이전 작업이 어떤 상태와 버전을 확인해야 할까요?"}]
+followups: [{"id":"cross-account-transfer-coordination","prompt":"계정별 직렬 실행기를 사용하는데 두 계정 사이 이체가 필요합니다. 상위 조정·잠금 순서·버전 검사는 어떻게 선택하나요?"},{"id":"transaction-and-lost-update","prompt":"프로세스를 두 개로 늘리면 각자의 뮤텍스나 큐가 같은 DB 행을 동시에 바꿀 수 있습니다. 보호 경계를 어디로 옮길까요?"},{"id":"bounded-queue-backpressure","prompt":"계정 순서는 지켰지만 느린 요청 뒤에 큐가 쌓입니다. 대기 상한과 거절 조건은 어떻게 정할까요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -61,7 +61,7 @@ related:
 
 ## 더 파고들 거리
 
-- 두 계정 사이의 이체를 처리할 때 잠금 순서, 상위 조정자, 버전 검사 중 무엇을 선택할까요?
+- [계정별 직렬 실행기를 사용하는데 두 계정 사이 이체가 필요합니다. 상위 조정·잠금 순서·버전 검사는 어떻게 선택하나요?](/tech-interview/questions/cross-account-transfer-coordination/)
 - 직렬 실행기가 매번 다른 OS 스레드에서 작업을 실행해도 메모리 가시성을 보장하려면 무엇이 필요할까요?
 - 느린 작업을 여러 단계로 나눌 때 재진입과 취소에 안전한 상태 머신은 어떻게 만들까요?
 - FIFO 큐의 등록 순서와 요청 사이에 반드시 지켜야 하는 적용 순서가 다를 때 순서 번호는 어디에서 부여해야 할까요?

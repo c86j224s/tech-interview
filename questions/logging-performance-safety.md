@@ -2,7 +2,7 @@
 id: logging-performance-safety
 title: "장애 재현을 위해 요청 로그를 늘리려는데 처리 지연과 개인정보 노출이 걱정됩니다. 어떤 필드를 남기고, 로그가 밀리면 무엇을 버리거나 보존하나요?"
 answerMinutes: 5
-followups: [{"id": "distributed-tracing-boundaries", "prompt": "로그의 상관 ID만으로 부족할 때 서비스·DB 대기를 추적으로 어떻게 구간화할까요?"}, {"id": "metrics-cardinality", "prompt": "사용자별 분석을 메트릭 라벨 대신 로그·트레이스로 옮길 때 검색 비용과 개인정보를 어떻게 통제할까요?"}, {"id": "slo-error-budget", "prompt": "로그 유실이나 지연이 사용자 SLO 관측을 왜곡하지 않게 어떤 보조 지표를 둘까요?"}]
+followups: [{"id":"error-log-rate-sampling","prompt":"같은 오류 로그가 폭주합니다. 최초 원인과 발생 빈도를 잃지 않으면서 상세 로그를 어떻게 제한하나요?"},{"id":"transactional-audit-record","prompt":"데이터 변경과 보안 감사 기록을 반드시 함께 남겨야 합니다. 일반 비동기 로그와 어떤 내구 경계를 다르게 두나요?"},{"id":"external-correlation-id-validation","prompt":"외부가 보낸 상관 ID를 로그에 씁니다. 길이·문자·개행·출처 검증이 왜 필요한가요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -50,6 +50,6 @@ related: ["distributed-tracing-boundaries"]
 
 ## 더 파고들 거리
 
-- 장애 중 로그 폭주를 제한하면서 최초 원인과 빈도를 어떤 샘플링으로 남길까요?
-- 감사 이벤트와 데이터 변경 트랜잭션을 연결할 때 내구성과 중복을 어떻게 보장할까요?
-- 외부 상관 ID의 길이·문자 제한이 로그 주입과 저장 비용에 왜 필요한가요?
+- [같은 오류 로그가 폭주합니다. 최초 원인과 발생 빈도를 잃지 않으면서 상세 로그를 어떻게 제한하나요?](/tech-interview/questions/error-log-rate-sampling/)
+- [데이터 변경과 보안 감사 기록을 반드시 함께 남겨야 합니다. 일반 비동기 로그와 어떤 내구 경계를 다르게 두나요?](/tech-interview/questions/transactional-audit-record/)
+- [외부가 보낸 상관 ID를 로그에 씁니다. 길이·문자·개행·출처 검증이 왜 필요한가요?](/tech-interview/questions/external-correlation-id-validation/)

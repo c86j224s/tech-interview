@@ -2,7 +2,7 @@
 id: game-server-tick-budget
 title: "대규모 전투 때 게임 서버의 틱이 늦어집니다. 틱 주기를 늘리기 전에 어떤 작업을 측정하고 분산해야 하나요?"
 answerMinutes: 5
-followups: [{"id": "profiling-cpu-offcpu", "prompt": "틱이 늦은 구간에서 CPU 계산과 락·큐·DB 대기를 어떤 프로파일로 분리할까요?"}, {"id": "bounded-queue-backpressure", "prompt": "비틱 작업 큐가 포화될 때 입력 반응을 보호하면서 어떤 작업을 거절하거나 늦출까요?"}, {"id": "fixed-timestep-catchup", "prompt": "틱 지연 뒤 따라잡기 상한을 정할 때 시간 정확성과 시뮬레이션 안정성을 어떻게 비교할까요?"}]
+followups: [{"id":"fixed-variable-step-integration","prompt":"같은 100ms를 한 번의 큰 dt와 여러 고정 dt로 계산합니다. 충돌·수치 적분·타이머 결과가 왜 달라질 수 있나요?"},{"id":"game-timer-phase-staggering","prompt":"많은 NPC 타이머가 같은 틱에 만료됩니다. 허용 지연과 공정성을 유지하면서 만료·실행을 어떻게 분산하나요?"},{"id":"profiling-cpu-offcpu","prompt":"틱이 늦은 구간에서 CPU 계산과 락·큐·DB 대기를 어떤 프로파일로 분리할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["profiling-cpu-offcpu","bounded-queue-backpressure"]
 
 ## 더 파고들 거리
 
-- 고정 시간 간격과 가변 시간 간격 시뮬레이션은 어떤 정확성 차이가 있나요?
-- 타이머가 한 틱에 몰리지 않게 어떻게 배치할까요?
+- [같은 100ms를 한 번의 큰 dt와 여러 고정 dt로 계산합니다. 충돌·수치 적분·타이머 결과가 왜 달라질 수 있나요?](/tech-interview/questions/fixed-variable-step-integration/)
+- [많은 NPC 타이머가 같은 틱에 만료됩니다. 허용 지연과 공정성을 유지하면서 만료·실행을 어떻게 분산하나요?](/tech-interview/questions/game-timer-phase-staggering/)
 - 과부하에서 게임 규칙을 바꾸지 않고 줄일 수 있는 작업은 무엇일까요?

@@ -2,7 +2,7 @@
 id: deterministic-concurrency-testing
 title: "동시에 재고를 차감할 때 가끔 음수가 되지만 반복 테스트에서는 잘 재현되지 않습니다. 두 요청의 실행 순서를 어떻게 통제해 검증하나요?"
 answerMinutes: 5
-followups: [{"id": "transaction-and-lost-update", "prompt": "읽기·쓰기 사이 실행 순서를 통제해도 트랜잭션 격리 수준에 따라 결과가 달라진다면 어떤 이력을 기대해야 할까요?"}, {"id": "atomics-memory-order", "prompt": "공유 카운터를 원자적으로 바꿨는데 업무 상태가 깨질 때 메모리 순서와 원자적 상태 전이를 어떻게 구분할까요?"}, {"id": "condition-variable-predicate", "prompt": "조건 변수로 작업 순서를 제어할 때 깨어난 뒤 상태를 다시 검사해야 하는 이유는 무엇일까요?"}]
+followups: [{"id":"fault-injection-seam-design","prompt":"테스트를 위해 실패 지점을 넣으려 합니다. 운영 코드의 내부 구현을 과하게 노출하지 않고 무엇을 주입하나요?"},{"id":"network-partition-versus-process-pause","prompt":"분산 테스트에서 노드 종료·프로세스 정지·네트워크 분할은 어떤 서로 다른 실패를 재현하나요?"},{"id":"transaction-and-lost-update","prompt":"읽기·쓰기 사이 실행 순서를 통제해도 트랜잭션 격리 수준에 따라 결과가 달라진다면 어떤 이력을 기대해야 할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -53,5 +53,5 @@ sleep은 스케줄러가 바뀌면 순서를 보장하지 않으므로 제어 �
 ## 더 파고들 거리
 
 - 선형화 가능한 자료구조를 이력 기반으로 검증하려면 무엇을 기록할까요?
-- 실패 주입 위치를 너무 많이 노출하지 않고 테스트 가능하게 설계하려면 어떻게 할까요?
-- 분산 테스트에서 네트워크 분할과 노드 정지를 어떻게 구분해 주입할까요?
+- [테스트를 위해 실패 지점을 넣으려 합니다. 운영 코드의 내부 구현을 과하게 노출하지 않고 무엇을 주입하나요?](/tech-interview/questions/fault-injection-seam-design/)
+- [분산 테스트에서 노드 종료·프로세스 정지·네트워크 분할은 어떤 서로 다른 실패를 재현하나요?](/tech-interview/questions/network-partition-versus-process-pause/)

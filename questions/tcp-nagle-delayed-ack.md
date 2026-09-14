@@ -2,7 +2,7 @@
 id: tcp-nagle-delayed-ack
 title: "작은 TCP 메시지 지연이 튈 때 Nagle과 지연 ACK를 의심하되 TCP_NODELAY를 무조건 켜면 안 되는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"tcp-stream-message-framing","prompt":"TCP_NODELAY를 켰는데도 한 프레임이 여러 recv로 나뉜다면, 메시지 경계를 복원하는 수신 상태 머신은 어떻게 동작해야 합니까?"},{"id":"tcp-flow-vs-congestion-control","prompt":"NODELAY 적용 뒤 패킷 수와 재전송이 늘었다면, 지연 감소와 혼잡 비용을 어떤 지표로 다시 판단하겠습니까?"},{"id":"http2-head-of-line-blocking","prompt":"HTTP/2에서는 작은 프레임이 늦을 때 TCP 옵션과 스트림 다중화 중 어느 계층을 먼저 의심하겠습니까?"}]
+followups: [{"id":"tls-record-tcp-packet-buffering","prompt":"작은 메시지가 늦게 나갑니다. 앱 write·TLS record·TCP segment·실제 NIC 전송을 어떻게 나눠 관찰하나요?"},{"id":"tcp-stream-message-framing","prompt":"TCP_NODELAY를 켰는데도 한 프레임이 여러 recv로 나뉜다면, 메시지 경계를 복원하는 수신 상태 머신은 어떻게 동작해야 합니까?"},{"id":"tcp-flow-vs-congestion-control","prompt":"NODELAY 적용 뒤 패킷 수와 재전송이 늘었다면, 지연 감소와 혼잡 비용을 어떤 지표로 다시 판단하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -49,6 +49,6 @@ Nagle과 지연 ACK의 상호작용은 모든 작은 메시지를 일정하게 �
 
 ## 더 파고들 거리
 
-- TLS 레코드 버퍼링과 TCP 세그먼트화를 어떤 관측 시각으로 분리할까요?
+- [작은 메시지가 늦게 나갑니다. 앱 write·TLS record·TCP segment·실제 NIC 전송을 어떻게 나눠 관찰하나요?](/tech-interview/questions/tls-record-tcp-packet-buffering/)
 - 애플리케이션 프레임 배치의 최대 대기 시간을 p99 목표와 어떻게 맞출까요?
 - NIC 오프로딩 때문에 패킷 캡처가 실제 전송 단위와 달라 보이는 이유는 무엇일까요?

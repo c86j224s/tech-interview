@@ -2,7 +2,7 @@
 id: bounded-queue-backpressure
 title: "DB 요청이 몰려 실행 대기 시간이 길어집니다. 동시에 실행할 작업 수와 기다리게 할 요청 수를 어떻게 제한하나요?"
 answerMinutes: 5
-followups: [{"id": "deadline-cancellation-propagation", "prompt": "큐에서 기다리다 데드라인이 끝난 요청은 어떻게 제거하고, 이미 실행된 작업은 어떻게 정리할까요?"}, {"id": "request-timeout-idempotency", "prompt": "거절·타임아웃을 받은 클라이언트가 재시도하면 부하와 중복 반영을 어떻게 함께 통제할까요?"}, {"id": "bulkhead-isolation", "prompt": "긴 보고서 작업이 짧은 로그인 요청의 실행 자원까지 차지한다면, 하나의 공용 큐로 충분할까요?"}]
+followups: [{"id":"deadline-cancellation-propagation","prompt":"큐에서 기다리다 데드라인이 끝난 요청은 어떻게 제거하고, 이미 실행된 작업은 어떻게 정리할까요?"},{"id":"weighted-concurrency-permits","prompt":"작은 조회와 큰 집계가 같은 실행 슬롯을 씁니다. 요청 수 대신 어떤 비용으로 가중 동시성 허가를 배분하나요?"},{"id":"adaptive-concurrency-stability","prompt":"지연에 따라 동시성 한도를 자동 조절합니다. 피드백 지연과 노이즈 때문에 한도가 출렁이지 않게 어떻게 하나요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ DB 요청을 예로 들면 부하를 올리면서 쿼리 시간과 연결 대기
 
 ## 더 파고들 거리
 
-- 작업 비용이 다를 때 어떤 가중치로 제한할까요?
-- 적응형 제어가 출렁이지 않게 어떤 완충을 둘까요?
+- [작은 조회와 큰 집계가 같은 실행 슬롯을 씁니다. 요청 수 대신 어떤 비용으로 가중 동시성 허가를 배분하나요?](/tech-interview/questions/weighted-concurrency-permits/)
+- [지연에 따라 동시성 한도를 자동 조절합니다. 피드백 지연과 노이즈 때문에 한도가 출렁이지 않게 어떻게 하나요?](/tech-interview/questions/adaptive-concurrency-stability/)
 - 우선순위 요청의 기아를 어떻게 막을까요?

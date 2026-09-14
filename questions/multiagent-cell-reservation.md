@@ -2,7 +2,7 @@
 id: multiagent-cell-reservation
 title: "두 캐릭터가 같은 틱에 같은 빈 칸을 예약하려 할 때 서버는 조회와 점유 확정을 어떻게 원자적으로 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"cooperative-pathfinding","prompt":"한 틱이 아니라 여러 틱의 예약을 저장하면 기다림·교환·예약 취소에서 어떤 추가 충돌을 검사해야 하나요?"},{"id":"world-partition-handoff","prompt":"예약된 셀의 소유 서버가 바뀌는 handoff 중 도착한 이동 입력을 어떤 세대와 확정 순서로 처리하겠습니까?"},{"id":"mutex-vs-serial-execution","prompt":"공간 서버의 틱 루프 순차 처리와 셀별 뮤텍스를 선택할 때 대기·재현성·확장성을 어떤 기준으로 비교하겠습니까?"}]
+followups: [{"id":"game-reservation-deterministic-aging","prompt":"NPC 예약의 기아를 줄이려 aging을 적용합니다. 우선순위 변경과 리플레이 결정성을 어떻게 함께 유지하나요?"},{"id":"cooperative-pathfinding","prompt":"한 틱이 아니라 여러 틱의 예약을 저장하면 기다림·교환·예약 취소에서 어떤 추가 충돌을 검사해야 하나요?"},{"id":"world-partition-handoff","prompt":"예약된 셀의 소유 서버가 바뀌는 handoff 중 도착한 이동 입력을 어떤 세대와 확정 순서로 처리하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["위치 점유","예약","동시성"]
@@ -39,6 +39,6 @@ related: ["mutex-vs-serial-execution","grid-diagonal-corner"]
 
 ## 더 파고들 거리
 
-- 고정 우선순위가 만드는 기아를 aging과 라운드 로빈으로 줄일 때 틱 결정성을 어떻게 유지하나요?
+- [NPC 예약의 기아를 줄이려 aging을 적용합니다. 우선순위 변경과 리플레이 결정성을 어떻게 함께 유지하나요?](/tech-interview/questions/game-reservation-deterministic-aging/)
 - 큰 캐릭터의 여러 셀 예약에서 한 셀만 선점된 경우 원자적 롤백을 어떻게 구현하나요?
 - 예약 lease가 만료되는 틱과 새 요청이 들어오는 틱의 경계 규칙을 어떻게 정의하나요?

@@ -2,7 +2,7 @@
 id: feature-flag-rollout
 title: "기능 플래그로 새 코드 일부를 켰다가 오류가 나서 껐습니다. 이미 바뀐 데이터도 원래대로 돌아가며, 안전한 롤백에는 무엇이 필요한가요?"
 answerMinutes: 5
-followups: [{"id": "strangler-migration", "prompt": "새 서비스로 일부 트래픽을 옮긴 뒤 플래그를 끄면 이미 새 형식으로 저장한 데이터는 어떻게 읽고 되돌릴까요?"}, {"id": "api-backward-compatibility", "prompt": "새 상태 값을 점진 배포할 때 구버전 앱이 안전하게 무시하거나 중단하도록 어떤 응답 계약을 둘까요?"}, {"id": "transactional-outbox", "prompt": "플래그가 켜진 경로의 이벤트가 롤백 뒤에도 도착하면 소비자 상태를 어떻게 보정할까요?"}]
+followups: [{"id":"feature-flag-assignment-unit","prompt":"사용자별 또는 조직별로 새 기능을 배정합니다. 공유 데이터와 실험 독립성에 어떤 차이가 생기나요?"},{"id":"feature-rollback-late-event","prompt":"새 기능을 끈 뒤에도 그 기능이 발행한 이벤트가 도착합니다. 소비자의 호환·보정·중복 처리는 어떻게 유지하나요?"},{"id":"strangler-migration","prompt":"새 서비스로 일부 트래픽을 옮긴 뒤 플래그를 끄면 이미 새 형식으로 저장한 데이터는 어떻게 읽고 되돌릴까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["strangler-migration"]
 
 ## 더 파고들 거리
 
-- 사용자별 배정과 조직별 배정은 실험 결과와 정합성에 어떤 영향을 주나요?
-- 새 기능이 이벤트를 발행한 뒤 롤백하면 소비자는 어떻게 처리해야 할까요?
+- [사용자별 또는 조직별로 새 기능을 배정합니다. 공유 데이터와 실험 독립성에 어떤 차이가 생기나요?](/tech-interview/questions/feature-flag-assignment-unit/)
+- [새 기능을 끈 뒤에도 그 기능이 발행한 이벤트가 도착합니다. 소비자의 호환·보정·중복 처리는 어떻게 유지하나요?](/tech-interview/questions/feature-rollback-late-event/)
 - 킬 스위치가 설정 서비스 장애에도 동작하려면 어떤 기본값이 필요할까요?

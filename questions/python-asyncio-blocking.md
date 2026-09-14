@@ -2,7 +2,7 @@
 id: python-asyncio-blocking
 title: "asyncio 요청 처리 중 동기 HTTP 호출이나 긴 계산을 넣었더니 다른 요청까지 멈춥니다. 이벤트 루프에서 무엇이 막히며 어떤 실행 방식으로 분리하나요?"
 answerMinutes: 5
-followups: [{"id":"python-gil-parallelism","prompt":"동기 CPU 함수를 프로세스 풀로 보낼 때 GIL 회피와 직렬화 비용을 어떤 기준으로 비교할까요?"},{"id":"deadline-cancellation-propagation","prompt":"to_thread로 보낸 작업이 취소를 무시하면 요청 데드라인과 실제 스레드 종료를 어떻게 기록할까요?"},{"id":"python-generator-iterator","prompt":"비동기 스트림 소비자가 느릴 때 generator와 이벤트 루프의 backpressure를 어떻게 연결할까요?"}]
+followups: [{"id":"process-pool-large-payload-transfer","prompt":"Python 프로세스 풀에 큰 배열을 넘깁니다. 직렬화·복사·shared memory·작업 크기의 손익은 어떻게 측정하나요?"},{"id":"python-gil-parallelism","prompt":"동기 CPU 함수를 프로세스 풀로 보낼 때 GIL 회피와 직렬화 비용을 어떤 기준으로 비교할까요?"},{"id":"deadline-cancellation-propagation","prompt":"to_thread로 보낸 작업이 취소를 무시하면 요청 데드라인과 실제 스레드 종료를 어떻게 기록할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -64,6 +64,6 @@ asyncio.to_thread는 호출 시 코루틴을 반환하며 실제 제출 시점�
 
 ## 더 파고들 거리
 
-- 프로세스 풀로 큰 인자를 보낼 때 직렬화·복사 비용을 어떻게 줄일까요?
+- [Python 프로세스 풀에 큰 배열을 넘깁니다. 직렬화·복사·shared memory·작업 크기의 손익은 어떻게 측정하나요?](/tech-interview/questions/process-pool-large-payload-transfer/)
 - 취소 불가능한 블로킹 작업 결과를 언제 안전하게 폐기할까요?
 - loop lag와 외부 API 지연을 어떤 계측 구간으로 분리할까요?

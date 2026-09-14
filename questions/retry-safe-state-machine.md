@@ -2,7 +2,7 @@
 id: retry-safe-state-machine
 title: "주문 상태를 enum으로 저장했지만 두 요청이 동시에 변경하거나 외부 결제 결과가 불확실하면 중복 처리가 생깁니다. 상태 전이와 재시도를 어떻게 설계하나요?"
 answerMinutes: 5
-followups: [{"id": "transactional-outbox", "prompt": "상태 변경에 성공한 뒤 그 사실을 알리는 이벤트가 빠질 수 있습니다. 두 기록을 어떻게 함께 확정할까요?"}, {"id": "distributed-lock-fencing", "prompt": "처리 중인 워커의 임대가 끝나 새 워커가 맡았습니다. 이전 워커의 늦은 완료는 어떤 조건으로 거절할까요?"}, {"id": "saga-compensation", "prompt": "이미 결제된 주문을 단순 실패 상태로 바꿀 수 없다면, 보상 과정은 어떤 별도 전이로 표현할까요?"}]
+followups: [{"id":"terminal-state-correction-transition","prompt":"완료·취소 상태를 다시 바꿔야 하는 정정이 있습니다. 종료 상태를 몰래 덮지 않고 어떤 별도 전이를 두나요?"},{"id":"transactional-outbox","prompt":"상태 변경에 성공한 뒤 그 사실을 알리는 이벤트가 빠질 수 있습니다. 두 기록을 어떻게 함께 확정할까요?"},{"id":"distributed-lock-fencing","prompt":"처리 중인 워커의 임대가 끝나 새 워커가 맡았습니다. 이전 워커의 늦은 완료는 어떤 조건으로 거절할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -57,5 +57,5 @@ related: ["saga-compensation"]
 ## 더 파고들 거리
 
 - 상태 전이와 이벤트 발행을 어떤 원자적 경계로 연결하나요?
-- 종료 상태를 다시 열어야 하는 처리 흐름은 어떤 별도 전이를 두나요?
+- [완료·취소 상태를 다시 바꿔야 하는 정정이 있습니다. 종료 상태를 몰래 덮지 않고 어떤 별도 전이를 두나요?](/tech-interview/questions/terminal-state-correction-transition/)
 - 상태 버전과 멱등 작업 ID의 역할은 어떻게 다른가요?

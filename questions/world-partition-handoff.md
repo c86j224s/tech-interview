@@ -2,7 +2,7 @@
 id: world-partition-handoff
 title: "공간 서버 경계를 넘는 캐릭터의 소유권을 중복 처리와 늦은 입력 없이 이전하려면 어떤 전환점을 두어야 하나요?"
 answerMinutes: 5
-followups: [{"id":"multiagent-cell-reservation","prompt":"handoff 중 경계 셀과 주변 셀의 예약을 두 서버가 동시에 보지 않게 점유 권위를 어떤 시점에 넘기겠습니까?"},{"id":"distributed-lock-fencing","prompt":"이전 서버가 전환 후 늦게 깨어나 쓰기를 보내면 owner epoch를 실제 저장 지점에서 어떻게 거절하겠습니까?"},{"id":"lag-compensation-rewind","prompt":"handoff 직전 공격의 과거 위치를 판정할 때 캐릭터 이력과 현재 소유 서버의 epoch를 어떻게 결합하겠습니까?"}]
+followups: [{"id":"cross-boundary-combat-authority","prompt":"서로 다른 공간 서버의 두 캐릭터가 공격합니다. 기준 틱·상태 snapshot·피해 확정 owner를 어떻게 정하나요?"},{"id":"multiagent-cell-reservation","prompt":"handoff 중 경계 셀과 주변 셀의 예약을 두 서버가 동시에 보지 않게 점유 권위를 어떤 시점에 넘기겠습니까?"},{"id":"distributed-lock-fencing","prompt":"이전 서버가 전환 후 늦게 깨어나 쓰기를 보내면 owner epoch를 실제 저장 지점에서 어떻게 거절하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["공간 분할","소유권 이전","펜싱"]
@@ -43,6 +43,6 @@ related: ["multiagent-cell-reservation","distributed-lock-fencing"]
 
 ## 더 파고들 거리
 
-- 경계 양쪽 캐릭터의 공격·충돌 판정을 어느 owner가 맡을지 epoch와 함께 어떻게 정하나요?
+- [서로 다른 공간 서버의 두 캐릭터가 공격합니다. 기준 틱·상태 snapshot·피해 확정 owner를 어떻게 정하나요?](/tech-interview/questions/cross-boundary-combat-authority/)
 - handoff 중 도착한 보상·결제 이벤트를 버퍼링·재라우팅·멱등 처리 중 어떻게 조합하나요?
 - 경계 왕복이 잦을 때 hysteresis 폭을 키우면 이동 지연과 서버 부하가 어떻게 바뀌나요?

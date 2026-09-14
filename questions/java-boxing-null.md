@@ -2,7 +2,7 @@
 id: java-boxing-null
 title: "Integer 비교가 작은 수에서는 맞아 보이는데 null에서는 예외가 납니다. boxing·unboxing과 ==의 비교 대상을 구분해 보세요."
 answerMinutes: 5
-followups: [{"id":"java-equals-hashcode","prompt":"Integer를 HashMap 키로 쓸 때 ==가 아니라 equals·hashCode 계약이 적용되는 이유는 무엇인가요?"},{"id":"java-generics-erasure","prompt":"List<Integer>에서 null 원소를 읽어 unboxing하는 시점에 어떤 예외 경로가 생길까요?"},{"id":"java-final-immutability","prompt":"래퍼 객체와 불변 객체를 공유할 때 final이 값 변경을 막는 범위를 어떻게 설명할까요?"}]
+followups: [{"id":"java-unboxing-promotion-order","prompt":"래퍼 숫자가 섞인 산술식에서 null 예외가 납니다. unboxing과 numeric promotion은 어떤 순서로 적용되나요?"},{"id":"java-absence-optional-default","prompt":"숫자가 없음을 Optional·nullable 래퍼·기본값으로 표현합니다. 0과 부재를 구분하려면 무엇을 선택하나요?"},{"id":"java-equals-hashcode","prompt":"Integer를 HashMap 키로 쓸 때 ==가 아니라 equals·hashCode 계약이 적용되는 이유는 무엇인가요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Java","autoboxing","unboxing","Integer","null"]
@@ -57,6 +57,6 @@ System.out.println(n == 0);        // NullPointerException: n을 int로 unboxing
 
 ## 더 파고들 거리
 
-- 복합 산술식의 binary numeric promotion과 unboxing 순서를 어떻게 추적할까요?
-- Optional·nullable 래퍼·기본값 중 부재 의미를 가장 잘 표현하는 것은 무엇인가요?
+- [래퍼 숫자가 섞인 산술식에서 null 예외가 납니다. unboxing과 numeric promotion은 어떤 순서로 적용되나요?](/tech-interview/questions/java-unboxing-promotion-order/)
+- [숫자가 없음을 Optional·nullable 래퍼·기본값으로 표현합니다. 0과 부재를 구분하려면 무엇을 선택하나요?](/tech-interview/questions/java-absence-optional-default/)
 - 반복 boxing이 할당과 GC에 미치는 비용을 어떤 benchmark로 측정할까요?

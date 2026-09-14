@@ -2,7 +2,7 @@
 id: incident-mitigation-root-cause
 title: "배포 직후 오류율이 올라 사용자가 실패하고 있습니다. 원인 분석과 서비스 복구를 어떤 순서로 진행하나요?"
 answerMinutes: 5
-followups: [{"id": "slo-error-budget", "prompt": "완화 조치의 성공을 오류 예산과 사용자 흐름 SLO로 판단할 때 어떤 정상 거절을 제외할까요?"}, {"id": "feature-flag-rollout", "prompt": "데이터 호환성 때문에 롤백할 수 없는 배포에서 플래그·보정·쓰기 차단을 어떤 순서로 적용할까요?"}, {"id": "circuit-breaker", "prompt": "하위 API 장애 중 재시도 폭주를 줄이면서 원인 분석 증거를 보존하려면 어떤 제어를 둘까요?"}]
+followups: [{"id":"incident-forward-recovery","prompt":"새 스키마 때문에 옛 코드로 rollback할 수 없습니다. 장애 중 쓰기 제한·호환 경로·전진 복구는 어떻게 선택하나요?"},{"id":"incident-action-verification","prompt":"장애 사후 조치가 문서에만 남지 않게 하려 합니다. 담당자·완료 조건·재현 시험을 어떻게 연결하나요?"},{"id":"slo-error-budget","prompt":"완화 조치의 성공을 오류 예산과 사용자 흐름 SLO로 판단할 때 어떤 정상 거절을 제외할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["slo-error-budget","feature-flag-rollout"]
 
 ## 더 파고들 거리
 
-- 롤백이 데이터 때문에 불가능하면 어떤 완화 선택지가 있나요?
+- [새 스키마 때문에 옛 코드로 rollback할 수 없습니다. 장애 중 쓰기 제한·호환 경로·전진 복구는 어떻게 선택하나요?](/tech-interview/questions/incident-forward-recovery/)
 - 재시도 폭주를 장애 중 안전하게 줄이려면 어떤 제어 지점이 필요할까요?
-- 사후 분석의 후속 조치가 실제 완료됐는지 무엇으로 확인할까요?
+- [장애 사후 조치가 문서에만 남지 않게 하려 합니다. 담당자·완료 조건·재현 시험을 어떻게 연결하나요?](/tech-interview/questions/incident-action-verification/)

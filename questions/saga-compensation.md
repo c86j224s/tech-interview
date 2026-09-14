@@ -2,7 +2,7 @@
 id: saga-compensation
 title: "주문 과정에서 결제와 재고 예약은 각각 커밋됐지만 배송 요청이 실패했습니다. saga로 무엇을 보상하고 보상마저 실패한 주문은 어떻게 관리하나요?"
 answerMinutes: 5
-followups: [{"id": "retry-safe-state-machine", "prompt": "보상과 정상 배송 완료가 동시에 도착하면 어떤 상태 전이만 허용해야 할까요?"}, {"id": "transactional-outbox", "prompt": "결제 취소 상태는 저장됐는데 재고 해제 이벤트가 빠진다면, 다음 단계로의 전달은 어떻게 보장할까요?"}, {"id": "message-consumer-idempotency", "prompt": "환불 명령의 응답이 유실돼 다시 실행할 때 같은 금액을 두 번 돌려주지 않으려면 무엇을 기록할까요?"}]
+followups: [{"id":"saga-orchestration-choreography","prompt":"saga를 중앙 조정자나 이벤트 협력으로 만듭니다. 추적성·결합·순환·보상 책임은 어떻게 다른가요?"},{"id":"retry-safe-state-machine","prompt":"보상과 정상 배송 완료가 동시에 도착하면 어떤 상태 전이만 허용해야 할까요?"},{"id":"transactional-outbox","prompt":"결제 취소 상태는 저장됐는데 재고 해제 이벤트가 빠진다면, 다음 단계로의 전달은 어떻게 보장할까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -56,6 +56,6 @@ related: ["transactional-outbox","request-timeout-idempotency"]
 
 ## 더 파고들 거리
 
-- 오케스트레이션과 코레오그래피의 추적성·결합도 차이는 무엇인가요?
+- [saga를 중앙 조정자나 이벤트 협력으로 만듭니다. 추적성·결합·순환·보상 책임은 어떻게 다른가요?](/tech-interview/questions/saga-orchestration-choreography/)
 - 되돌릴 수 없는 단계를 어느 위치에 두고 어떤 확인을 받나요?
 - 보상과 정상 완료가 경합할 때 전이를 어떻게 제한하나요?

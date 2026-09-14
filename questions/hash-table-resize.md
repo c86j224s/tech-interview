@@ -2,7 +2,7 @@
 id: hash-table-resize
 title: "해시 테이블의 원소가 늘면 왜 재해시가 필요하며 요청 지연에 어떤 영향을 주나요?"
 answerMinutes: 5
-followups: [{"id":"hash-collision-resolution","prompt":"재해시 전후로 개방 주소법의 탐사 경로와 삭제 표시가 달라진다면, 어떤 불변식을 유지해야 항목을 잃지 않겠습니까?"},{"id":"dynamic-array-amortized","prompt":"배열 확장과 해시 테이블 확장은 모두 재배치를 일으킵니다. 두 구조의 분할 상환 비용과 개별 지연을 어떻게 비교하겠습니까?"},{"id":"immutable-data-sharing","prompt":"읽기 스레드가 옛 테이블을 계속 볼 수 있게 세대 교체를 한다면, 어느 시점에 옛 배열을 회수할 수 있습니까?"}]
+followups: [{"id":"incremental-rehash-delete-race","prompt":"점진적 재해시 중 같은 키가 갱신되거나 삭제됩니다. 옛·새 테이블의 조회·이동·tombstone은 어떤 순서를 지켜야 하나요?"},{"id":"hash-load-factor-latency-memory","prompt":"해시 테이블의 부하율 상한을 낮춥니다. 충돌 감소와 메모리·재해시 비용은 어떻게 비교하나요?"},{"id":"hash-collision-resolution","prompt":"재해시 전후로 개방 주소법의 탐사 경로와 삭제 표시가 달라진다면, 어떤 불변식을 유지해야 항목을 잃지 않겠습니까?"}]
 difficulty: 중하
 category: 자료구조
 tags: ["해시 테이블","재해시","부하율"]
@@ -49,6 +49,6 @@ related: ["hash-collision-resolution"]
 
 ## 더 파고들 거리
 
-- 점진적 이동 중 같은 키의 갱신·삭제가 어느 세대에 적용되는지 상태 전이를 설계해 보세요.
-- 부하율 상한을 낮추면 충돌과 지연은 줄지만 메모리가 늘어나는 이유를 설명해 보세요.
+- [점진적 재해시 중 같은 키가 갱신되거나 삭제됩니다. 옛·새 테이블의 조회·이동·tombstone은 어떤 순서를 지켜야 하나요?](/tech-interview/questions/incremental-rehash-delete-race/)
+- [해시 테이블의 부하율 상한을 낮춥니다. 충돌 감소와 메모리·재해시 비용은 어떻게 비교하나요?](/tech-interview/questions/hash-load-factor-latency-memory/)
 - 읽기·쓰기 동시 접근에서 전역 락과 세대 교체의 회수 조건을 비교해 보세요.

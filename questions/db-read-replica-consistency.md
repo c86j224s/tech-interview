@@ -2,7 +2,7 @@
 id: db-read-replica-consistency
 title: "프로필 저장은 성공했는데 새로고침하면 옛값이 보입니다. 읽기 복제본의 지연을 어떻게 확인하고 방지하나요?"
 answerMinutes: 5
-followups: [{"id":"db-mvcc-snapshot","prompt":"복제본에서 오래된 버전을 읽는 문제와 한 트랜잭션 안의 MVCC 스냅샷 문제는 어떻게 구분하나요?"},{"id":"elasticsearch-refresh-visibility","prompt":"DB 원본 저장과 검색 인덱스 노출을 함께 제공할 때 복제 지연과 refresh 지연을 어떤 계약으로 나누나요?"},{"id":"cache-aside-consistency","prompt":"원본·복제본·캐시가 함께 있을 때 저장 직후 오래된 값이 다시 캐시되는 경로를 어떻게 막나요?"}]
+followups: [{"id":"replica-long-query-replay-conflict","prompt":"읽기 replica의 긴 조회가 로그 적용과 충돌합니다. 쿼리 취소와 복제 지연·버전 보존을 어떻게 선택하나요?"},{"id":"replica-promotion-uncertain-write","prompt":"원본이 성공한 쓰기를 replica가 적용하기 전에 승격됐습니다. 사용자 재시도와 누락 대사는 어떻게 처리하나요?"},{"id":"db-mvcc-snapshot","prompt":"복제본에서 오래된 버전을 읽는 문제와 한 트랜잭션 안의 MVCC 스냅샷 문제는 어떻게 구분하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -47,5 +47,5 @@ PostgreSQL의 WAL LSN, MySQL의 binlog/GTID, SQL Server의 로그·가용성 그
 ## 더 파고들 거리
 
 - 엔진별 복제 적용 위치와 API 버전 연결을 검증해 보세요.
-- 오래된 읽기가 정리·로그 적용을 막는 상황을 재현해 보세요.
-- 승격 시 미반영 쓰기와 사용자 재시도 계약을 정해 보세요.
+- [읽기 replica의 긴 조회가 로그 적용과 충돌합니다. 쿼리 취소와 복제 지연·버전 보존을 어떻게 선택하나요?](/tech-interview/questions/replica-long-query-replay-conflict/)
+- [원본이 성공한 쓰기를 replica가 적용하기 전에 승격됐습니다. 사용자 재시도와 누락 대사는 어떻게 처리하나요?](/tech-interview/questions/replica-promotion-uncertain-write/)

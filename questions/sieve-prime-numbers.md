@@ -2,7 +2,7 @@
 id: sieve-prime-numbers
 title: "큰 범위의 소수를 여러 번 조회하려 합니다. 매번 나눗셈 검사하는 것과 체를 만드는 것은 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"merge-sort-external","prompt":"범위가 메모리에 들어오지 않는 소수 질의라면, 구간별 전처리와 외부 파일 병합을 어떤 순서로 조합하겠습니까?"},{"id":"counting-radix-sort","prompt":"소수 여부가 아니라 작은 정수 키를 반복 정렬해야 한다면, 범위 기반 전처리와 계수 정렬의 메모리 조건을 어떻게 비교하겠습니까?"},{"id":"binary-search-boundary","prompt":"미리 만든 소수 목록에서 target 이상인 첫 소수를 찾는다면, 배열 정렬과 경계 탐색의 불변식을 어떻게 적용하겠습니까?"}]
+followups: [{"id":"segmented-sieve-first-multiple","prompt":"구간 [L,R]에서 소수를 구합니다. 각 소수 p의 첫 제거 위치에 p²와 ceil(L/p)를 함께 사용하는 이유는 무엇인가요?"},{"id":"merge-sort-external","prompt":"범위가 메모리에 들어오지 않는 소수 질의라면, 구간별 전처리와 외부 파일 병합을 어떤 순서로 조합하겠습니까?"},{"id":"counting-radix-sort","prompt":"소수 여부가 아니라 작은 정수 키를 반복 정렬해야 한다면, 범위 기반 전처리와 계수 정렬의 메모리 조건을 어떻게 비교하겠습니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["소수","에라토스테네스의 체","전처리"]
@@ -47,6 +47,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 구간 체에서 작은 소수 목록을 만들고 각 소수의 첫 표시 위치를 계산하는 방법을 설명해 보세요.
+- [구간 [L,R]에서 소수를 구합니다. 각 소수 p의 첫 제거 위치에 p²와 ceil(L/p)를 함께 사용하는 이유는 무엇인가요?](/tech-interview/questions/segmented-sieve-first-multiple/)
 - 홀수만 저장할 때 배열 인덱스와 실제 수의 변환 규칙을 말해 보세요.
 - 확률적 소수 판정의 오류를 허용할 수 있는 용도와 최종 검증이 필요한 용도를 구분해 보세요.

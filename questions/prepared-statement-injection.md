@@ -2,7 +2,7 @@
 id: prepared-statement-injection
 title: "검색어를 SQL 문자열에 이어 붙인 코드가 위험합니다. 파라미터 바인딩으로 무엇을 막고 동적 식별자는 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"authentication-vs-authorization","prompt":"파라미터화된 주문 조회에서도 로그인 확인만으로 충분하지 않은 이유와 행 소유권 검사를 설명해 보세요."},{"id":"db-unique-constraint-race","prompt":"사용자명 중복을 검사하는 SELECT·INSERT를 안전하게 묶을 때 파라미터화와 고유 제약은 어떤 역할을 하나요?"},{"id":"dbms-vs-files","prompt":"SQL 구조·값 분리와 DBMS의 트랜잭션·제약 책임을 파일 저장과 비교하면 무엇이 달라지나요?"}]
+followups: [{"id":"prepared-server-emulated-contract","prompt":"드라이버의 서버 측 준비와 클라이언트 에뮬레이션은 파라미터 분리·계획 재사용에서 무엇을 확인해야 하나요?"},{"id":"authentication-vs-authorization","prompt":"파라미터화된 주문 조회에서도 로그인 확인만으로 충분하지 않은 이유와 행 소유권 검사를 설명해 보세요."},{"id":"db-unique-constraint-race","prompt":"사용자명 중복을 검사하는 SELECT·INSERT를 안전하게 묶을 때 파라미터화와 고유 제약은 어떤 역할을 하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Prepared Statement","파라미터 바인딩","SQL Injection","동적 SQL"]
@@ -43,6 +43,6 @@ PostgreSQL·SQL Server·MySQL 드라이버는 서버 측 준비, 클라이언트
 
 ## 더 파고들 거리
 
-- 드라이버의 서버·클라이언트 준비 차이를 확인해 보세요.
+- [드라이버의 서버 측 준비와 클라이언트 에뮬레이션은 파라미터 분리·계획 재사용에서 무엇을 확인해야 하나요?](/tech-interview/questions/prepared-server-emulated-contract/)
 - 허용 목록 정렬과 LIKE escape를 구현·테스트해 보세요.
 - 공격 분석에 필요한 로그와 원문 민감정보 비노출을 조정해 보세요.

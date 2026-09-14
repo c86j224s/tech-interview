@@ -2,7 +2,7 @@
 id: ios-arc-weak-cycle
 title: "ARC를 사용하는 Swift 객체가 해제되지 않습니다. 강한 순환 참조와 `weak`, `unowned`의 차이를 어떻게 진단하고 고치나요?"
 answerMinutes: 5
-followups: [{"id":"ios-delegate-closure-notification","prompt":"화면이 사라진 뒤에도 다운로드 결과를 보존해야 한다면 delegate와 완료 클로저의 소유자·취소 계약을 어떻게 다시 나누겠습니까?"},{"id":"cpp-shared-pointer-lifetime","prompt":"참조 카운트로 비동기 객체를 살려 두되 여러 스레드가 필드를 바꾼다면 수명 보장과 데이터 경쟁을 어떻게 분리해 검증하겠습니까?"},{"id":"python-refcount-cycles","prompt":"참조 순환을 약한 참조로 끊기 어려운 런타임이라면 순환 회수와 파일·소켓 정리를 어떤 생명주기 계약으로 분리하겠습니까?"}]
+followups: [{"id":"swift-task-closure-ownership-graph","prompt":"화면·서비스·작업 핸들·클로저가 서로 참조합니다. 취소와 필수 작업 완료를 고려해 어느 참조를 약하게 하나요?"},{"id":"swift-completion-cancel-once","prompt":"Swift 비동기 작업의 취소와 완료가 겹칩니다. callback을 한 번만 전달하고 자원을 안전하게 회수하려면 어떻게 하나요?"},{"id":"ios-delegate-closure-notification","prompt":"화면이 사라진 뒤에도 다운로드 결과를 보존해야 한다면 delegate와 완료 클로저의 소유자·취소 계약을 어떻게 다시 나누겠습니까?"}]
 difficulty: 하
 category: 모바일
 tags: ["Swift","ARC","메모리 관리","weak","unowned"]
@@ -41,6 +41,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 서비스·작업 핸들·클로저·화면 사이의 참조 그래프에서 어느 간선을 약하게 할지 그려 보세요.
-- 취소와 완료가 동시에 도착해도 클로저가 한 번만 실행되도록 상태 전이를 설계해 보세요.
+- [화면·서비스·작업 핸들·클로저가 서로 참조합니다. 취소와 필수 작업 완료를 고려해 어느 참조를 약하게 하나요?](/tech-interview/questions/swift-task-closure-ownership-graph/)
+- [Swift 비동기 작업의 취소와 완료가 겹칩니다. callback을 한 번만 전달하고 자원을 안전하게 회수하려면 어떻게 하나요?](/tech-interview/questions/swift-completion-cancel-once/)
 - 메모리 그래프에서 순환을 제거한 뒤에도 해제되지 않는 객체의 외부 소유자를 추적해 보세요.

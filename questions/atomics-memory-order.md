@@ -2,7 +2,7 @@
 id: atomics-memory-order
 title: "C++에서 결과를 채운 뒤 atomic 준비 플래그를 켭니다. 다른 스레드가 플래그를 보고 결과를 읽으면 항상 안전한가요?"
 answerMinutes: 5
-followups: [{"id":"lock-free-aba-reclamation","prompt":"원자 포인터의 CAS가 성공해도 노드 수명이 안전하지 않은 이유를 메모리 순서와 어떻게 구분할까요?"},{"id":"condition-variable-predicate","prompt":"atomic 플래그 대신 조건 변수를 쓸 때 predicate 재검사가 필요한 이유는 무엇인가요?"},{"id":"mutex-vs-serial-execution","prompt":"복합 상태 불변식을 원자 변수 여러 개로 표현하기보다 뮤텍스나 순차 실행을 선택할 기준은 무엇인가요?"}]
+followups: [{"id":"cpp-release-sequence-visibility","prompt":"C++ release store 뒤 다른 스레드의 atomic RMW가 이어집니다. release sequence는 어떤 조건에서 이전 데이터를 공개하나요?"},{"id":"atomic-refcount-reclamation-order","prompt":"참조 카운트 증감의 메모리 순서와 객체 데이터를 처음 공개하는 메모리 순서는 왜 따로 설계해야 하나요?"},{"id":"lock-free-aba-reclamation","prompt":"원자 포인터의 CAS가 성공해도 노드 수명이 안전하지 않은 이유를 메모리 순서와 어떻게 구분할까요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -58,6 +58,6 @@ sequence counter와 double buffer는 설계 도구일 뿐 일반 비원자 데�
 
 ## 더 파고들 거리
 
-- release sequence가 여러 atomic 연산에 만드는 가시성 관계는 무엇인가요?
-- 참조 카운트 감소와 객체 공개의 메모리 순서는 왜 다른 문제인가요?
+- [C++ release store 뒤 다른 스레드의 atomic RMW가 이어집니다. release sequence는 어떤 조건에서 이전 데이터를 공개하나요?](/tech-interview/questions/cpp-release-sequence-visibility/)
+- [참조 카운트 증감의 메모리 순서와 객체 데이터를 처음 공개하는 메모리 순서는 왜 따로 설계해야 하나요?](/tech-interview/questions/atomic-refcount-reclamation-order/)
 - 여러 atomic 변수로 상태를 표현할 때 소비자가 볼 수 있는 중간 조합은 무엇인가요?

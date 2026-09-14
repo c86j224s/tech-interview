@@ -2,7 +2,7 @@
 id: cap-partition-tradeoff
 title: "네트워크가 두 지역으로 갈라진 동안에도 서비스를 계속 제공하려 합니다. CAP의 C와 A를 어떤 대가로 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"consistency-linearizability","prompt":"좌석 확정은 과반을 요구하지만 조회는 오래된 값을 허용한다면 두 경로를 어떻게 분리하겠습니까?"},{"id":"consensus-quorum-failure","prompt":"분할 중 한 지역이 과반을 잃었는데 로컬 데이터가 최신처럼 보여도 왜 쓰기를 막아야 할까요?"},{"id":"lamport-vector-clock","prompt":"양쪽 지역이 독립적으로 문서를 수정하는 AP 기능에서 동시 변경을 어떻게 감지·병합하겠습니까?"}]
+followups: [{"id":"partition-feature-slo-contract","prompt":"지역 분할 중 좌석 확정과 좋아요 집계를 다르게 제공합니다. 기능별 성공·보류·잠정 결과를 SLO에 어떻게 반영하나요?"},{"id":"partition-conflict-reconciliation","prompt":"분할 중 양쪽 지역에서 받은 변경을 복구 후 합칩니다. 충돌 정정과 이미 외부에 준 성공 응답은 어떻게 다루나요?"},{"id":"consistency-linearizability","prompt":"좌석 확정은 과반을 요구하지만 조회는 오래된 값을 허용한다면 두 경로를 어떻게 분리하겠습니까?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["CAP","네트워크 분할","일관성","가용성"]
@@ -50,6 +50,6 @@ CAP는 네트워크 분할이 실제로 발생한 동안 강한 일관성과 양
 
 ## 더 파고들 거리
 
-- 기능별 CP·AP SLO
-- 복구 후 충돌 정정
+- [지역 분할 중 좌석 확정과 좋아요 집계를 다르게 제공합니다. 기능별 성공·보류·잠정 결과를 SLO에 어떻게 반영하나요?](/tech-interview/questions/partition-feature-slo-contract/)
+- [분할 중 양쪽 지역에서 받은 변경을 복구 후 합칩니다. 충돌 정정과 이미 외부에 준 성공 응답은 어떻게 다루나요?](/tech-interview/questions/partition-conflict-reconciliation/)
 - 최종 일관성 이력 테스트

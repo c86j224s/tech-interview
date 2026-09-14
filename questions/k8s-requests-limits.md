@@ -2,7 +2,7 @@
 id: k8s-requests-limits
 title: "Kubernetes에서 컨테이너에 requests와 limits를 설정합니다. 노드 배치와 CPU·메모리 초과 처리에는 각각 어떻게 쓰이나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-oom-throttling","prompt":"한 컨테이너는 OOMKilled이고 다른 컨테이너는 느려졌다면 메모리 압력과 CPU throttling을 어떤 지표·이벤트로 분리하겠습니까?"},{"id":"k8s-hpa-scaling","prompt":"request를 낮춘 뒤 CPU HPA가 더 자주 확장한다면 실제 처리량과 Pod 경쟁이 좋아졌는지 어떤 기준으로 판정하겠습니까?"},{"id":"bounded-queue-backpressure","prompt":"requests를 높여 Pending Pod가 생기는 대신 실행 대기열을 두려 한다면 노드 비용과 대기 상한을 어떻게 비교하겠습니까?"}]
+followups: [{"id":"hpa-cpu-utilization-request-denominator","prompt":"CPU request가 바뀌자 HPA 판단도 달라졌습니다. utilization의 분모와 실제 사용량을 어떻게 구분하나요?"},{"id":"sidecar-log-resource-interference","prompt":"sidecar 로그가 폭주합니다. Pod의 배치·CPU·메모리와 주 앱 지연에 어떤 간섭이 생기나요?"},{"id":"k8s-oom-throttling","prompt":"한 컨테이너는 OOMKilled이고 다른 컨테이너는 느려졌다면 메모리 압력과 CPU throttling을 어떤 지표·이벤트로 분리하겠습니까?"}]
 difficulty: 하
 category: 인프라
 tags: ["Kubernetes","requests","limits"]
@@ -44,5 +44,5 @@ HPA의 CPU utilization이 request 대비 비율로 계산되면 request 변경�
 ## 더 파고들 거리
 
 - QoS 클래스와 node memory pressure가 eviction 우선순위에 어떤 영향을 주는지 설명해 보세요.
-- CPU request가 없거나 부정확할 때 utilization 기반 HPA의 입력이 어떻게 흔들릴까요.
-- 사이드카의 로그 폭주가 애플리케이션 Pod의 배치와 OOM에 미치는 영향을 어떻게 측정할까요.
+- [CPU request가 바뀌자 HPA 판단도 달라졌습니다. utilization의 분모와 실제 사용량을 어떻게 구분하나요?](/tech-interview/questions/hpa-cpu-utilization-request-denominator/)
+- [sidecar 로그가 폭주합니다. Pod의 배치·CPU·메모리와 주 앱 지연에 어떤 간섭이 생기나요?](/tech-interview/questions/sidecar-log-resource-interference/)

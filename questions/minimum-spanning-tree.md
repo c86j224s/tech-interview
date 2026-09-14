@@ -2,7 +2,7 @@
 id: minimum-spanning-tree
 title: "여러 지점을 최소 비용으로 모두 연결하려 합니다. 최소 신장 트리는 최단 경로와 무엇이 다른가요?"
 answerMinutes: 5
-followups: [{"id":"kruskal-prim-choice","prompt":"MST를 계산할 때 Kruskal과 Prim이 선택하는 후보와 필요한 자료구조가 그래프 밀도에 따라 어떻게 달라집니까?"},{"id":"bfs-dfs-shortest-path","prompt":"모든 간선 비용이 같고 한 출발점에서 최소 이동 횟수가 필요하다면, MST 대신 어떤 탐색과 결과 구조를 사용하겠습니까?"},{"id":"cooperative-pathfinding","prompt":"연결 비용뿐 아니라 여러 에이전트가 충돌 없이 이동해야 한다면, MST의 연결성만으로 부족한 제약은 무엇입니까?"}]
+followups: [{"id":"mst-uniqueness-tie-contract","prompt":"동점 간선이 있으면 항상 MST가 여러 개인가요? 유일성과 올바른 결과 검증은 어떤 조건으로 판단하나요?"},{"id":"mst-redundant-network-design","prompt":"최소 비용으로 연결한 트리에 단일 회선 장애 대응도 필요합니다. MST만으로 부족한 이유와 추가 조건은 무엇인가요?"},{"id":"kruskal-prim-choice","prompt":"MST를 계산할 때 Kruskal과 Prim이 선택하는 후보와 필요한 자료구조가 그래프 밀도에 따라 어떻게 달라집니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["MST","그래프","최단 경로"]
@@ -47,6 +47,6 @@ MST는 장애 시 유일한 경로만 남을 수 있어 네트워크에서 가�
 
 ## 더 파고들 거리
 
-- 동일한 최소 비용을 갖는 여러 MST가 생기는 조건과 결과 검증 기준을 설명해 보세요.
-- 최소 비용 연결에 이중 경로가 필요할 때 MST가 깨지는 이유를 말해 보세요.
+- [동점 간선이 있으면 항상 MST가 여러 개인가요? 유일성과 올바른 결과 검증은 어떤 조건으로 판단하나요?](/tech-interview/questions/mst-uniqueness-tie-contract/)
+- [최소 비용으로 연결한 트리에 단일 회선 장애 대응도 필요합니다. MST만으로 부족한 이유와 추가 조건은 무엇인가요?](/tech-interview/questions/mst-redundant-network-design/)
 - 음수 간선이 있어도 MST 계산은 가능하지만 최단 경로 문제와 다르게 다루는 이유를 설명해 보세요.

@@ -2,7 +2,7 @@
 id: gitops-secrets-delivery
 title: "Kubernetes Secret의 base64 값을 Git에 넣어 배포하려 합니다. 이 값은 비밀로 보호되며 어떻게 안전하게 전달·교체해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"secret-key-rotation","prompt":"새 API 자격을 먼저 전달할 수 있고 일부 인스턴스가 늦게 바뀐다면 무중단 교체와 유출 대응의 순서를 어떻게 나누나요?"},{"id":"argocd-gitops-reconcile","prompt":"운영자가 Secret을 kubectl로 바꿨을 때 Git 선언과 실제 값의 drift를 어떻게 감지하고 되돌릴지 정하나요?"},{"id":"k8s-probe-contract","prompt":"Secret 교체 뒤 앱이 reload됐지만 아직 새 자격으로 외부 연결을 만들지 못한다면 어떤 probe 계약을 둘까요?"}]
+followups: [{"id":"secret-env-file-refresh","prompt":"Secret을 환경 변수와 파일로 각각 전달합니다. 키 회전 시 실행 중 앱이 새 값을 읽는 시점은 어떻게 다른가요?"},{"id":"secret-store-outage-last-known-good","prompt":"외부 비밀 저장소가 장애입니다. 이미 가진 자격을 어느 범위와 기간까지 사용하고 신규 작업은 어떻게 제한하나요?"},{"id":"secret-key-rotation","prompt":"새 API 자격을 먼저 전달할 수 있고 일부 인스턴스가 늦게 바뀐다면 무중단 교체와 유출 대응의 순서를 어떻게 나누나요?"}]
 difficulty: 하
 category: 보안
 tags: ["GitOps","Kubernetes","Secret"]
@@ -47,6 +47,6 @@ Argo CD나 Secret controller가 어느 namespace에 어떤 Secret을 만들 수 
 
 ## 더 파고들 거리
 
-- 환경 변수와 파일 마운트 Secret의 갱신 시점을 어떻게 실험할까요?
-- 외부 비밀 저장소 장애 때 마지막 정상값을 유지할 범위는 무엇일까요?
+- [Secret을 환경 변수와 파일로 각각 전달합니다. 키 회전 시 실행 중 앱이 새 값을 읽는 시점은 어떻게 다른가요?](/tech-interview/questions/secret-env-file-refresh/)
+- [외부 비밀 저장소가 장애입니다. 이미 가진 자격을 어느 범위와 기간까지 사용하고 신규 작업은 어떻게 제한하나요?](/tech-interview/questions/secret-store-outage-last-known-good/)
 - Git 이력과 CI 로그에 남은 비밀을 회수한 뒤 영향 범위를 어떻게 대사할까요?

@@ -2,7 +2,7 @@
 id: distributed-tracing-boundaries
 title: "사용자 요청이 여러 서비스와 DB를 거치며 느려집니다. 분산 추적으로 어느 구간의 실행이나 대기가 원인인지 어떻게 찾나요?"
 answerMinutes: 5
-followups: [{"id":"profiling-cpu-offcpu","prompt":"trace에서 긴 구간을 찾은 뒤 계산 시간과 자원 대기를 어떤 프로파일로 확정할까요?"},{"id":"metrics-cardinality","prompt":"사용자별 원인을 보고 싶을 때 trace·로그를 활용하면서 메트릭 고카디널리티를 어떻게 피할까요?"},{"id":"async-api-and-blocking","prompt":"비동기 작업이 큐를 거칠 때 부모 trace와 소비자 trace를 어떤 문맥으로 연결할까요?"}]
+followups: [{"id":"trace-links-batch-causality","prompt":"여러 요청의 이벤트를 하나의 배치로 처리합니다. trace parent 하나로 표현할 수 없는 인과는 어떻게 연결하나요?"},{"id":"trace-clock-skew-duration","prompt":"서버 시계가 어긋나 자식 span이 부모보다 먼저 시작한 것처럼 보입니다. duration과 인과를 어떻게 해석하나요?"},{"id":"profiling-cpu-offcpu","prompt":"trace에서 긴 구간을 찾은 뒤 계산 시간과 자원 대기를 어떤 프로파일로 확정할까요?"}]
 difficulty: 하
 category: 성능
 tags:
@@ -47,5 +47,5 @@ RED는 요청률, 오류율, 지속 시간으로 서비스의 전체 상태를 �
 ## 더 파고들 거리
 
 - tail sampling으로 느린 요청을 보존할 때 수집 비용은 어떻게 통제할까요?
-- 배치 메시지가 여러 원인 요청에서 왔을 때 trace parent를 어떻게 표현할까요?
-- 서버 시계 오차가 분산 span duration과 인과 해석에 미치는 영향은 무엇인가요?
+- [여러 요청의 이벤트를 하나의 배치로 처리합니다. trace parent 하나로 표현할 수 없는 인과는 어떻게 연결하나요?](/tech-interview/questions/trace-links-batch-causality/)
+- [서버 시계가 어긋나 자식 span이 부모보다 먼저 시작한 것처럼 보입니다. duration과 인과를 어떻게 해석하나요?](/tech-interview/questions/trace-clock-skew-duration/)

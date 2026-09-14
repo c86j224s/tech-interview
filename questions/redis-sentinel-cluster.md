@@ -2,7 +2,7 @@
 id: redis-sentinel-cluster
 title: "Redis 주 노드 장애에 자동 대응하고 데이터가 커지면 여러 노드로 나누려 합니다. Sentinel과 Cluster는 각각 무엇을 해결하며 클라이언트는 무엇을 지원해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"redis-cluster-hash-tags","prompt":"Cluster의 hash tag가 다중 키 원자성과 샤딩에 어떤 제약을 만드는지 설명해 보세요."},{"id":"redis-wait-durability","prompt":"WAIT 성공 뒤에도 승격 replica에 쓰기가 없을 수 있는 장애 순서를 어떻게 재현하나요?"},{"id":"db-read-replica-consistency","prompt":"Redis replica 읽기와 관계형 read replica 읽기의 최신성·라우팅 차이를 어떻게 비교하나요?"}]
+followups: [{"id":"redis-sentinel-quorum-majority","prompt":"Sentinel의 장애 판단 quorum과 failover 승인에 필요한 다수 조건은 어떻게 다른가요?"},{"id":"redis-cluster-hash-tags","prompt":"Cluster의 hash tag가 다중 키 원자성과 샤딩에 어떤 제약을 만드는지 설명해 보세요."},{"id":"redis-wait-durability","prompt":"WAIT 성공 뒤에도 승격 replica에 쓰기가 없을 수 있는 장애 순서를 어떻게 재현하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Redis","Sentinel","Cluster"]
@@ -43,6 +43,6 @@ Sentinel과 Cluster를 선택할 때 클라이언트가 실제로 어떤 장애 
 
 ## 더 파고들 거리
 
-- Sentinel quorum과 승격 조건을 실제 장애로 확인해 보세요.
+- [Sentinel의 장애 판단 quorum과 failover 승인에 필요한 다수 조건은 어떻게 다른가요?](/tech-interview/questions/redis-sentinel-quorum-majority/)
 - 슬롯 이동 중 MOVED·ASK와 커넥션 폐기를 검증해 보세요.
 - 장애 전환 뒤 읽기 최신성과 쓰기 중복을 측정해 보세요.

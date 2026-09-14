@@ -2,7 +2,7 @@
 id: ios-view-lifecycle
 title: "화면으로 돌아올 때 `viewDidLoad`의 갱신 코드가 다시 실행되지 않습니다. `viewDidLoad`, `viewWillAppear`, `viewDidAppear`를 어떻게 나눠야 하나요?"
 answerMinutes: 5
-followups: [{"id":"ios-scene-app-lifecycle","prompt":"씬이 백그라운드에서 다시 활성화될 때 화면 갱신과 저장 복구를 어느 순서로 수행해 오래된 상태를 잠깐이라도 보이지 않게 하겠습니까?"},{"id":"ios-frame-bounds","prompt":"viewWillAppear에서 frame을 읽었지만 Auto Layout이 아직 끝나지 않았다면 어느 레이아웃 시점과 좌표계 값을 기준으로 판단하겠습니까?"},{"id":"dependency-injection-boundaries","prompt":"화면 생명주기 테스트에서 실제 시간을 기다리거나 네트워크를 호출하지 않으려면 저장소와 시계·작업 의존성을 어디에서 주입하겠습니까?"}]
+followups: [{"id":"ios-navigation-view-retention","prompt":"navigation·modal·tab을 오갈 때 viewDidLoad와 appearance callback은 어떤 조건에서 다시 호출되나요?"},{"id":"ios-hidden-screen-work-policy","prompt":"화면이 사라졌습니다. 진행 중 다운로드·검색·캐시 작업 중 무엇을 취소하고 무엇을 유지하나요?"},{"id":"ios-scene-app-lifecycle","prompt":"씬이 백그라운드에서 다시 활성화될 때 화면 갱신과 저장 복구를 어느 순서로 수행해 오래된 상태를 잠깐이라도 보이지 않게 하겠습니까?"}]
 difficulty: 하
 category: 모바일
 tags: ["iOS","UIViewController","뷰 생명주기","화면 전환"]
@@ -43,6 +43,6 @@ related: []
 
 ## 더 파고들 거리
 
-- navigation·modal·tab 전환 로그로 뷰 유지와 재로드 상황의 콜백 차이를 비교해 보세요.
-- 화면이 사라질 때 취소할 작업과 캐시해 둘 작업을 최신성·비용·부수 효과로 나눠 보세요.
+- [navigation·modal·tab을 오갈 때 viewDidLoad와 appearance callback은 어떤 조건에서 다시 호출되나요?](/tech-interview/questions/ios-navigation-view-retention/)
+- [화면이 사라졌습니다. 진행 중 다운로드·검색·캐시 작업 중 무엇을 취소하고 무엇을 유지하나요?](/tech-interview/questions/ios-hidden-screen-work-policy/)
 - 컨테이너가 appearance 전파를 끈 경우 자식 화면의 갱신 책임을 어디에 둘지 정해 보세요.

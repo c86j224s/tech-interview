@@ -2,7 +2,7 @@
 id: python-celery-retries
 title: "Celery 작업이 DB를 변경한 뒤 워커가 종료돼 같은 작업이 다시 실행됩니다. ACK·재시도·처리 완료를 어떻게 구분하고 중복 반영을 막나요?"
 answerMinutes: 5
-followups: [{"id":"message-consumer-idempotency","prompt":"Celery 작업 ID와 도메인 멱등 키가 다를 때 포인트 지급 중복을 어느 저장소에서 막을까요?"},{"id":"transactional-outbox","prompt":"DB 변경과 후속 메시지 발행을 Celery 재시도와 함께 묶을 때 outbox는 어느 실패를 보완할까요?"},{"id":"request-timeout-idempotency","prompt":"작업 호출 응답이 끊긴 뒤 외부 효과 여부를 모를 때 retry 전에 어떤 결과 조회를 할까요?"}]
+followups: [{"id":"celery-visibility-late-ack-interaction","prompt":"Celery의 late ACK와 broker visibility timeout을 함께 씁니다. 긴 작업과 worker 종료의 재전달은 어떻게 검증하나요?"},{"id":"message-consumer-idempotency","prompt":"Celery 작업 ID와 도메인 멱등 키가 다를 때 포인트 지급 중복을 어느 저장소에서 막을까요?"},{"id":"transactional-outbox","prompt":"DB 변경과 후속 메시지 발행을 Celery 재시도와 함께 묶을 때 outbox는 어느 실패를 보완할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","Celery","ACK","재시도","멱등성"]
@@ -45,6 +45,6 @@ acks_late를 켜도 실행 자식 프로세스의 종료나 hard time limit에�
 
 ## 더 파고들 거리
 
-- visibility timeout과 late ACK가 함께 있을 때 재전달 시점을 어떻게 계산할까요?
+- [Celery의 late ACK와 broker visibility timeout을 함께 씁니다. 긴 작업과 worker 종료의 재전달은 어떻게 검증하나요?](/tech-interview/questions/celery-visibility-late-ack-interaction/)
 - 외부 효과 후 worker lost를 재현해 멱등 레코드와 도메인 변경을 어떻게 검증할까요?
 - 재시도 폭주를 backoff·jitter·dead-letter 지표로 어떻게 제한할까요?

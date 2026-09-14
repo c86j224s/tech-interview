@@ -2,7 +2,7 @@
 id: condition-variable-predicate
 title: "여러 스레드가 작업 큐를 공유합니다. 빈 큐에서 조건 변수로 기다리던 스레드가 알림을 받고 깨어났는데, 왜 큐가 다시 비어 있을 수 있고 어떻게 처리해야 하나요?"
 answerMinutes: 5
-followups: [{"id": "deadline-cancellation-propagation", "prompt": "조건이 아직 거짓이라 다시 기다릴 때마다 timeout을 새로 주면 전체 요청 시간은 어떻게 될까요?"}, {"id": "bounded-queue-backpressure", "prompt": "빈 큐의 소비자뿐 아니라 가득 찬 큐의 생산자도 기다려야 한다면, 어떤 조건과 상한을 함께 관리할까요?"}, {"id": "deadlock-prevention", "prompt": "대기 중 큐의 락은 놓지만 다른 락을 계속 보유한다면, 생산자와 순환 대기가 생길 수 있을까요?"}]
+followups: [{"id":"condition-notify-lock-lifetime","prompt":"조건 변수의 notify를 락 밖으로 옮깁니다. 깨움 경합과 조건 변수 객체 수명은 어떻게 보호하나요?"},{"id":"queue-shutdown-drain-discard","prompt":"작업 큐 종료에서 전부 처리하는 정책과 남은 작업을 버리는 정책은 대기 조건과 결과 처리가 어떻게 다른가요?"},{"id":"deadline-cancellation-propagation","prompt":"조건이 아직 거짓이라 다시 기다릴 때마다 timeout을 새로 주면 전체 요청 시간은 어떻게 될까요?"}]
 difficulty: 하
 category: 동시성
 tags:
@@ -99,6 +99,6 @@ notify_one은 보통 하나의 대기자를 깨우고 notify_all은 여러 대�
 
 ## 더 파고들 거리
 
-- 생산자가 `notify_one`을 락 안과 밖에서 호출하면 정확성과 깨운 스레드의 경합은 어떻게 달라질까요? 조건 변수 객체의 수명은 누가 보장해야 할까요?
-- 종료할 때 작업을 모두 처리하는 정책과 즉시 중단하는 정책은 대기 조건과 남은 작업 정리에서 어떻게 달라질까요?
+- [조건 변수의 notify를 락 밖으로 옮깁니다. 깨움 경합과 조건 변수 객체 수명은 어떻게 보호하나요?](/tech-interview/questions/condition-notify-lock-lifetime/)
+- [작업 큐 종료에서 전부 처리하는 정책과 남은 작업을 버리는 정책은 대기 조건과 결과 처리가 어떻게 다른가요?](/tech-interview/questions/queue-shutdown-drain-discard/)
 - 시간 제한 대기에서 반복해서 깨어날 때마다 제한 시간을 다시 시작하지 않으려면 어떤 데드라인을 사용해야 할까요?

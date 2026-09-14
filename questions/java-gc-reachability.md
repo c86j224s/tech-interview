@@ -2,7 +2,7 @@
 id: java-gc-reachability
 title: "서로 참조하는 Java 객체가 있는데도 메모리 회수가 가능한가요? GC와 파일·소켓 같은 자원 반납은 어떻게 구분해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"java-final-immutability","prompt":"final 참조가 남아 있는 객체와 GC root에서 도달 가능한 객체를 어떻게 구분하나요?"},{"id":"python-refcount-cycles","prompt":"Java의 tracing GC와 CPython의 참조 카운트·순환 GC는 외부 자원 정리에서 어떤 공통 결론을 주나요?"},{"id":"memory-rss-vs-heap","prompt":"힙 객체가 수집됐는데 프로세스 메모리가 줄지 않을 때 어떤 런타임 지표를 더 보겠습니까?"}]
+followups: [{"id":"java-gc-root-leak-classification","prompt":"힙 덤프에서 오래 살아 있는 객체를 찾았습니다. thread·static·JNI 등 root 경로를 어떻게 분류해 원인을 찾나요?"},{"id":"java-cleaner-explicit-close","prompt":"Cleaner를 자원 정리의 보조 장치로 사용합니다. 명시적인 close와 실행 시점·실패 책임은 어떻게 나누나요?"},{"id":"java-final-immutability","prompt":"final 참조가 남아 있는 객체와 GC root에서 도달 가능한 객체를 어떻게 구분하나요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Java","GC","도달 가능성","순환 참조","try-with-resources"]
@@ -61,6 +61,6 @@ try-with-resources는 여러 자원을 선언 역순으로 닫습니다. 본문�
 
 ## 더 파고들 거리
 
-- GC root 종류별로 힙 덤프에서 누수 경로를 어떻게 분류할까요?
-- Cleaner를 보조 안전망으로 둘 때 명시적 close와 어떤 책임을 나눌까요?
+- [힙 덤프에서 오래 살아 있는 객체를 찾았습니다. thread·static·JNI 등 root 경로를 어떻게 분류해 원인을 찾나요?](/tech-interview/questions/java-gc-root-leak-classification/)
+- [Cleaner를 자원 정리의 보조 장치로 사용합니다. 명시적인 close와 실행 시점·실패 책임은 어떻게 나누나요?](/tech-interview/questions/java-cleaner-explicit-close/)
 - try-with-resources에서 close 실패와 주 예외의 우선순위를 어떻게 검증할까요?

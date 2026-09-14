@@ -2,7 +2,7 @@
 id: raft-term-election
 title: "Raft 리더가 응답하지 않아 새 선거가 시작됐는데 이전 리더의 메시지가 뒤늦게 도착합니다. term과 투표 기록은 충돌을 어떻게 막으며 어떤 기록을 영속화해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"consensus-vs-replication","prompt":"복제본이 있어도 term·vote·quorum이 없으면 두 leader가 생기는 이유는 무엇인가요?"},{"id":"raft-log-commit-apply","prompt":"새 leader가 이전 term 로그를 보존하고 current term으로 commit하는 방법은 무엇인가요?"},{"id":"raft-linearizable-read","prompt":"term 변경 뒤 옛 leader의 로컬 read가 선형화되지 않는 이유는 무엇인가요?"}]
+followups: [{"id":"raft-log-freshness-term-index","prompt":"Raft 후보의 로그 길이가 더 긴데 투표를 못 받습니다. 마지막 log term과 index의 비교는 왜 그 순서인가요?"},{"id":"consensus-vs-replication","prompt":"복제본이 있어도 term·vote·quorum이 없으면 두 leader가 생기는 이유는 무엇인가요?"},{"id":"raft-log-commit-apply","prompt":"새 leader가 이전 term 로그를 보존하고 current term으로 commit하는 방법은 무엇인가요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["Raft","선거","term"]
@@ -50,6 +50,6 @@ Raft term은 벽시계가 아니라 선거 세대인 단조 논리 값입니다.
 
 ## 더 파고들 거리
 
-- log term/index
+- [Raft 후보의 로그 길이가 더 긴데 투표를 못 받습니다. 마지막 log term과 index의 비교는 왜 그 순서인가요?](/tech-interview/questions/raft-log-freshness-term-index/)
 - 분할 투표
 - pre-vote

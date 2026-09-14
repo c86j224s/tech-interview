@@ -2,7 +2,7 @@
 id: consensus-quorum-failure
 title: "3개 노드의 합의 클러스터에서 2개 노드와 통신할 수 없습니다. 남은 노드가 데이터를 갖고 있어도 왜 쓰기를 계속 확정하면 안 되나요?"
 answerMinutes: 5
-followups: [{"id":"consensus-membership-change","prompt":"이전·새 구성의 과반이 서로 독립적으로 보이는 전환에서 어떤 규칙이 필요할까요?"},{"id":"consensus-vs-replication","prompt":"복제본 하나가 최신인 것과 합의된 결정이 존재하는 것은 왜 다른가요?"},{"id":"raft-term-election","prompt":"고립된 이전 리더가 새 term을 모르고 쓰기를 받으면 어떤 요청을 거부해야 하나요?"}]
+followups: [{"id":"leader-isolation-versus-follower-loss","prompt":"합의 클러스터에서 리더 고립과 follower 하나의 손실은 쓰기·읽기·선거에 어떤 차이를 만드나요?"},{"id":"forced-quorum-recovery-reconciliation","prompt":"과반을 영구적으로 잃어 강제 복구했습니다. 잃었을 수 있는 확정 기록과 옛 클러스터의 재등장을 어떻게 대사·차단하나요?"},{"id":"consensus-membership-change","prompt":"이전·새 구성의 과반이 서로 독립적으로 보이는 전환에서 어떤 규칙이 필요할까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["쿼럼","합의","가용성"]
@@ -50,6 +50,6 @@ A·B·C 중 A만 남으면 A는 최신처럼 보이는 로그를 가질 수 있�
 
 ## 더 파고들 거리
 
-- 리더 고립과 follower 고립
+- [합의 클러스터에서 리더 고립과 follower 하나의 손실은 쓰기·읽기·선거에 어떤 차이를 만드나요?](/tech-interview/questions/leader-isolation-versus-follower-loss/)
 - 구성 변경 중 쿼럼
-- 복구 전후 대사
+- [과반을 영구적으로 잃어 강제 복구했습니다. 잃었을 수 있는 확정 기록과 옛 클러스터의 재등장을 어떻게 대사·차단하나요?](/tech-interview/questions/forced-quorum-recovery-reconciliation/)

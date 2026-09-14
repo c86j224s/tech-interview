@@ -2,7 +2,7 @@
 id: python-gil-parallelism
 title: "GIL이 켜진 CPython에서 파일을 기다리는 작업은 스레드를 늘려 빨라졌지만 순수 Python 계산은 그렇지 않습니다. 이유는 무엇이며 CPU 작업은 어떻게 병렬화하나요?"
 answerMinutes: 5
-followups: [{"id":"python-asyncio-blocking","prompt":"CPU 계산을 asyncio에 넣었을 때 GIL과 이벤트 루프가 각각 어떤 지연을 만드는지 어떻게 측정할까요?"},{"id":"python-pypy-jit","prompt":"PyPy trace JIT의 순수 Python 루프와 CPython GIL 스레드의 병렬성 차이를 어떻게 비교할까요?"},{"id":"process-vs-thread","prompt":"프로세스 격리의 복사 비용과 스레드 공유 메모리의 경합 비용 중 어떤 요청 크기에서 무엇을 택할까요?"}]
+followups: [{"id":"python-c-extension-gil-release","prompt":"C 확장을 호출하면 Python 스레드의 CPU 작업이 병렬화될 수 있나요? GIL 해제 범위와 내부 스레드를 어떻게 확인하나요?"},{"id":"python-asyncio-blocking","prompt":"CPU 계산을 asyncio에 넣었을 때 GIL과 이벤트 루프가 각각 어떤 지연을 만드는지 어떻게 측정할까요?"},{"id":"python-pypy-jit","prompt":"PyPy trace JIT의 순수 Python 루프와 CPython GIL 스레드의 병렬성 차이를 어떻게 비교할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","GIL","CPython","병렬성","I/O"]
@@ -46,5 +46,5 @@ GIL은 인터프리터 내부 접근을 보호하지만 여러 문장으로 구�
 ## 더 파고들 거리
 
 - 작업 크기별 프로세스 풀 직렬화 손익분기점을 어떻게 측정할까요?
-- GIL을 해제하는 C 확장과 순수 Python loop의 프로파일은 어떻게 다를까요?
+- [C 확장을 호출하면 Python 스레드의 CPU 작업이 병렬화될 수 있나요? GIL 해제 범위와 내부 스레드를 어떻게 확인하나요?](/tech-interview/questions/python-c-extension-gil-release/)
 - free-threaded CPython에서 확장 모듈의 스레드 안전성은 무엇을 확인할까요?

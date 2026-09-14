@@ -2,7 +2,7 @@
 id: js-this-binding
 title: "객체 메서드를 변수에 담아 호출했더니 this가 달라집니다. strict 환경에서 왜 실패하며 어떻게 고정하나요?"
 answerMinutes: 5
-followups: [{"id":"js-arrow-this","prompt":"분리한 메서드를 화살표 래퍼로 감쌀 때 this와 인자 전달은 어떤 규칙을 따르나요?"},{"id":"js-closure-loop","prompt":"이벤트 핸들러를 bind로 고정하면서 반복별 ID를 캡처할 때 제거와 메모리 수명은 어떻게 관리할까요?"},{"id":"js-event-loop-microtasks","prompt":"bind한 메서드를 Promise 콜백으로 넘겼을 때 호출 시점의 큐와 this 결정은 서로 영향을 주나요?"}]
+followups: [{"id":"js-callback-bind-arrow-wrapper","prompt":"메서드를 callback으로 넘깁니다. bind·화살표 필드·래퍼 함수는 this·함수 정체성·메모리에서 어떻게 다른가요?"},{"id":"js-bind-partial-arguments","prompt":"bind로 this와 앞 인자를 고정했습니다. callback 호출자가 전달한 인자는 어떤 순서로 함수에 도착하나요?"},{"id":"js-arrow-this","prompt":"분리한 메서드를 화살표 래퍼로 감쌀 때 this와 인자 전달은 어떤 규칙을 따르나요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","this","strict mode","bind"]
@@ -55,6 +55,6 @@ bind한 함수는 일반 호출에서 고정한 this를 쓰지만, 원본이 생
 
 ## 더 파고들 거리
 
-- class 메서드를 콜백으로 넘길 때 bind·화살표·래퍼 중 무엇을 고를까요?
-- bind로 앞쪽 인자를 고정하면 callback API의 나머지 인자는 어떻게 받나요?
+- [메서드를 callback으로 넘깁니다. bind·화살표 필드·래퍼 함수는 this·함수 정체성·메모리에서 어떻게 다른가요?](/tech-interview/questions/js-callback-bind-arrow-wrapper/)
+- [bind로 this와 앞 인자를 고정했습니다. callback 호출자가 전달한 인자는 어떤 순서로 함수에 도착하나요?](/tech-interview/questions/js-bind-partial-arguments/)
 - 이벤트 제거를 위해 bound 함수 참조를 어떤 객체 수명에 보관할까요?

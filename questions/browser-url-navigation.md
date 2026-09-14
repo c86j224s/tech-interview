@@ -2,7 +2,7 @@
 id: browser-url-navigation
 title: "브라우저 주소창에 HTTPS 상품 페이지 주소를 입력했습니다. 이름 조회와 서버 연결부터 화면 표시까지 어떤 과정을 거치며, 캐시가 있으면 무엇이 생략될 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"tls-certificate-validation","prompt":"TCP 연결은 성공했지만 TLS 인증서 hostname이 맞지 않으면 waterfall과 브라우저 오류에서 어느 경계를 확인하나요?"},{"id":"browser-rendering-layout","prompt":"응답 HTML은 빠르게 도착했는데 layout과 paint가 늦다면 네트워크 완료 이후 어떤 비용을 분리해서 보나요?"},{"id":"dns-cache-failover","prompt":"DNS 주소를 바꾼 뒤에도 일부 사용자가 이전 서버에 연결할 때 캐시된 답과 기존 연결을 어떻게 구분하나요?"}]
+followups: [{"id":"browser-waterfall-critical-path","prompt":"페이지 로딩 waterfall에 redirect·304·하위 자료가 섞여 있습니다. 실제 표시를 지연시키는 의존 경로를 어떻게 찾나요?"},{"id":"tls-resumption-versus-keepalive","prompt":"HTTPS 재요청에서 연결 재사용과 TLS session resumption은 어떤 작업을 각각 생략하나요?"},{"id":"tls-certificate-validation","prompt":"TCP 연결은 성공했지만 TLS 인증서 hostname이 맞지 않으면 waterfall과 브라우저 오류에서 어느 경계를 확인하나요?"}]
 difficulty: 중하
 category: 웹
 tags: ["브라우저","URL","DNS","TCP","TLS"]
@@ -49,6 +49,6 @@ HTTPS 상품 페이지 탐색은 URL 파싱, 이름 해석, 전송 연결, TLS �
 
 ## 더 파고들 거리
 
-- redirect·조건부 캐시·서브리소스가 waterfall에 만드는 경계를 분석해 보세요.
-- TCP 연결 재사용과 TLS session resumption의 시간 절약을 어떻게 비교할까요?
+- [페이지 로딩 waterfall에 redirect·304·하위 자료가 섞여 있습니다. 실제 표시를 지연시키는 의존 경로를 어떻게 찾나요?](/tech-interview/questions/browser-waterfall-critical-path/)
+- [HTTPS 재요청에서 연결 재사용과 TLS session resumption은 어떤 작업을 각각 생략하나요?](/tech-interview/questions/tls-resumption-versus-keepalive/)
 - 첫 콘텐츠 표시와 상호작용 가능 시점을 어떤 브라우저 지표로 검증할까요?

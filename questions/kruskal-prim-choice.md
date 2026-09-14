@@ -2,7 +2,7 @@
 id: kruskal-prim-choice
 title: "가중치가 있는 연결 그래프에서 최소 신장 트리를 구하려 합니다. Kruskal과 Prim은 다음 간선을 어떻게 고르며 그래프의 표현과 밀도에 따라 무엇이 유리한가요?"
 answerMinutes: 5
-followups: [{"id":"minimum-spanning-tree","prompt":"최소 신장 트리의 총 설치 비용과 출발점별 최단 경로가 다른 이유를 같은 그래프로 비교해 보세요."},{"id":"union-find-connectivity","prompt":"Kruskal이 간선을 선택할 때 두 끝이 이미 같은 성분인지 빠르게 판단하려면 Union-Find에 어떤 연산과 최적화를 쓰겠습니까?"},{"id":"graph-representation","prompt":"희소 리스트와 조밀 행렬 중 입력 표현이 달라질 때 Kruskal과 Prim의 정렬·경계 후보 비용은 어떻게 변합니까?"}]
+followups: [{"id":"mst-cut-property-exchange","prompt":"MST에서 컷을 가로지르는 최소 간선을 선택해도 되는 이유를 교환 논증으로 설명해 보세요."},{"id":"dense-graph-prim-without-heap","prompt":"정점 수가 작고 그래프가 조밀합니다. O(V²) Prim이 힙 기반 구현보다 유리할 수 있는 이유는 무엇인가요?"},{"id":"mst-edge-update-replacement","prompt":"이미 구한 MST에 간선이 추가되거나 삭제됩니다. 재계산 대신 어떤 cycle·cut의 대체 간선을 찾아야 하나요?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["Kruskal","Prim","MST"]
@@ -49,6 +49,6 @@ Prim에서 우선순위 큐에 같은 정점의 후보가 여러 개 남는 lazy
 
 ## 더 파고들 거리
 
-- cut property가 현재 선택을 안전하다고 말하는 논리를 작은 컷으로 설명해 보세요.
-- 정점 수가 작고 그래프가 조밀할 때 힙 없는 Prim이 유리할 수 있는 이유를 말해 보세요.
-- 간선 추가·삭제가 계속되는 그래프에서 재계산과 동적 MST의 교환을 설명해 보세요.
+- [MST에서 컷을 가로지르는 최소 간선을 선택해도 되는 이유를 교환 논증으로 설명해 보세요.](/tech-interview/questions/mst-cut-property-exchange/)
+- [정점 수가 작고 그래프가 조밀합니다. O(V²) Prim이 힙 기반 구현보다 유리할 수 있는 이유는 무엇인가요?](/tech-interview/questions/dense-graph-prim-without-heap/)
+- [이미 구한 MST에 간선이 추가되거나 삭제됩니다. 재계산 대신 어떤 cycle·cut의 대체 간선을 찾아야 하나요?](/tech-interview/questions/mst-edge-update-replacement/)

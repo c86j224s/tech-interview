@@ -2,7 +2,7 @@
 id: ios-delegate-closure-notification
 title: "iOS 앱에서 다운로드 결과는 요청한 화면에 돌려주고, 로그인 상태 변경은 여러 화면에 알려야 합니다. delegate·완료 클로저·Notification을 어떤 기준으로 나누나요?"
 answerMinutes: 5
-followups: [{"id":"ios-arc-weak-cycle","prompt":"오래 사는 다운로드 서비스가 화면의 완료 클로저를 보관한다면 순환 참조와 화면 해제 뒤 결과 처리를 어떤 소유 구조로 풀겠습니까?"},{"id":"ios-scene-app-lifecycle","prompt":"여러 씬이 로그인 상태 변경을 놓칠 수 있다면 Notification과 영속 상태 조회를 씬 생명주기에 어떻게 결합하겠습니까?"},{"id":"structured-concurrency-fanout","prompt":"한 화면이 여러 비동기 결과를 기다리다가 사라진다면 완료 콜백의 취소·종료 확인을 부모 작업 범위와 어떻게 맞추겠습니까?"}]
+followups: [{"id":"ios-multicast-observer-lifecycle","prompt":"여러 구독자에게 상태 변경을 알립니다. delegate 집합과 Notification의 해제·순서·재진입은 어떻게 다른가요?"},{"id":"ios-state-snapshot-event-subscription","prompt":"화면이 알림 등록 전에 로그인 변경을 놓쳤습니다. 현재 상태 조회와 이벤트 구독 사이의 틈을 어떻게 막나요?"},{"id":"ios-arc-weak-cycle","prompt":"오래 사는 다운로드 서비스가 화면의 완료 클로저를 보관한다면 순환 참조와 화면 해제 뒤 결과 처리를 어떤 소유 구조로 풀겠습니까?"}]
 difficulty: 하
 category: 모바일
 tags: ["iOS","delegate","closure","Notification","이벤트"]
@@ -43,6 +43,6 @@ Notification은 과거 사건을 저장하거나 새 구독자에게 재생하�
 
 ## 더 파고들 거리
 
-- 멀티캐스트 delegate와 Notification에서 구독자 해제·호출 순서·한 수신자의 실패를 비교해 보세요.
-- 알림 등록 전 로그인 변경을 놓친 화면이 저장된 상태와 사건 방송을 함께 사용하도록 설계해 보세요.
+- [여러 구독자에게 상태 변경을 알립니다. delegate 집합과 Notification의 해제·순서·재진입은 어떻게 다른가요?](/tech-interview/questions/ios-multicast-observer-lifecycle/)
+- [화면이 알림 등록 전에 로그인 변경을 놓쳤습니다. 현재 상태 조회와 이벤트 구독 사이의 틈을 어떻게 막나요?](/tech-interview/questions/ios-state-snapshot-event-subscription/)
 - async/await 작업을 화면 수명에 묶을 때 취소와 완료 관찰을 한 번으로 제한해 보세요.

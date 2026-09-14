@@ -2,7 +2,7 @@
 id: nats-subject-isolation
 title: "NATS subject 이름에 tenant와 environment를 넣는 것만으로 메시지가 격리되지 않는 이유와 필요한 인가 설정은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"nats-subject-queue-group","prompt":"같은 subject를 여러 서비스가 받아야 하지만 서비스 내부 인스턴스끼리만 분산해야 한다면 권한과 queue group을 어떻게 조합하나요?"},{"id":"nats-core-jetstream","prompt":"tenant별 subject 권한은 맞지만 소비자가 잠시 내려갔다면 어떤 저장·재전달 정책이 격리와 함께 필요할까요?"},{"id":"authentication-vs-authorization","prompt":"연결 자격은 유효하지만 요청 payload의 tenant가 다를 때 메시지 서비스에서 어떤 주체·자원 검사를 추가하나요?"}]
+followups: [{"id":"nats-account-import-export-trust","prompt":"NATS account 사이 import·export를 구성합니다. 방향·subject·권한을 어떤 최소 범위로 제한하나요?"},{"id":"nats-subject-queue-group","prompt":"같은 subject를 여러 서비스가 받아야 하지만 서비스 내부 인스턴스끼리만 분산해야 한다면 권한과 queue group을 어떻게 조합하나요?"},{"id":"nats-core-jetstream","prompt":"tenant별 subject 권한은 맞지만 소비자가 잠시 내려갔다면 어떤 저장·재전달 정책이 격리와 함께 필요할까요?"}]
 difficulty: 중하
 category: 보안
 tags: ["NATS","subject","권한"]
@@ -47,6 +47,6 @@ subject 권한을 설계할 때 이름의 토큰 구분 자체도 고정하겠�
 
 ## 더 파고들 거리
 
-- account 간 import/export가 만드는 방향성 신뢰를 어떤 최소 subject로 제한할까요?
+- [NATS account 사이 import·export를 구성합니다. 방향·subject·권한을 어떤 최소 범위로 제한하나요?](/tech-interview/questions/nats-account-import-export-trust/)
 - 응답 inbox를 일시 허용할 때 주체·수명·발행 범위를 어떻게 검사할까요?
 - 정책 변경 뒤 이미 연결된 subscriber가 새 권한을 적용받는 시점을 어떻게 측정할까요?

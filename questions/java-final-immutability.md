@@ -2,7 +2,7 @@
 id: java-final-immutability
 title: "final List를 선언했는데도 원소가 바뀝니다. final 변수, 참조 대상 객체의 변경, 진짜 불변 객체를 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"java-equals-hashcode","prompt":"불변 키가 HashSet에서 안정적인 이유를 equals·hashCode 계약과 연결해 설명해 보세요."},{"id":"java-gc-reachability","prompt":"불변 객체 그래프라도 외부 자원을 보유하면 GC와 close 책임을 어떻게 나눌까요?"},{"id":"immutable-data-sharing","prompt":"불변 스냅샷을 여러 스레드에 공개할 때 복사 대신 공유할 수 있는 조건은 무엇인가요?"}]
+followups: [{"id":"java-final-field-safe-publication","prompt":"생성자에서 final 필드를 채운 객체를 공유합니다. final 필드 가시성과 this escape·중첩 가변성은 어떻게 다른가요?"},{"id":"java-list-copyof-element-mutation","prompt":"List.copyOf로 목록을 복사했는데 원소의 필드는 바뀝니다. 컬렉션 불변성과 원소의 깊은 불변은 어떻게 다른가요?"},{"id":"java-equals-hashcode","prompt":"불변 키가 HashSet에서 안정적인 이유를 equals·hashCode 계약과 연결해 설명해 보세요."}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Java","final","참조","불변성","방어적 복사"]
@@ -58,6 +58,6 @@ final 필드의 초기화 안전성에는 생성 중 this가 외부로 새지 �
 
 ## 더 파고들 거리
 
-- final 필드의 생성자 안전 공개와 참조 대상의 가변성은 어떤 메모리 모델 차이가 있나요?
-- List.copyOf의 원소가 가변일 때 어느 깊이까지 복사해야 할까요?
+- [생성자에서 final 필드를 채운 객체를 공유합니다. final 필드 가시성과 this escape·중첩 가변성은 어떻게 다른가요?](/tech-interview/questions/java-final-field-safe-publication/)
+- [List.copyOf로 목록을 복사했는데 원소의 필드는 바뀝니다. 컬렉션 불변성과 원소의 깊은 불변은 어떻게 다른가요?](/tech-interview/questions/java-list-copyof-element-mutation/)
 - 불변 스냅샷 공유와 매번 복사의 메모리 비용을 어떻게 측정할까요?

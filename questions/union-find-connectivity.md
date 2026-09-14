@@ -2,7 +2,7 @@
 id: union-find-connectivity
 title: "간선을 추가하며 두 정점이 이미 연결됐는지 반복 확인합니다. Union-Find는 무엇을 저장하나요?"
 answerMinutes: 5
-followups: [{"id":"kruskal-prim-choice","prompt":"간선을 비용순으로 보며 사이클을 막아야 한다면, Union-Find가 Kruskal의 어느 판단을 빠르게 만들어 주는지 설명해 보세요."},{"id":"bfs-dfs-shortest-path","prompt":"두 정점이 연결됐다는 사실이 아니라 실제 최소 이동 경로가 필요하다면, Union-Find 대신 어떤 탐색 상태를 저장해야 합니까?"},{"id":"multiagent-cell-reservation","prompt":"집합 합치기가 아니라 같은 틱에 한 칸을 한 에이전트만 점유해야 한다면, 대표자 구조 대신 어떤 원자적 확정을 사용하겠습니까?"}]
+followups: [{"id":"rollback-union-find-path-compression","prompt":"Union-Find를 rollback하려 합니다. 경로 압축이 변경 이력과 충돌하는 이유와 대안은 무엇인가요?"},{"id":"kruskal-prim-choice","prompt":"간선을 비용순으로 보며 사이클을 막아야 한다면, Union-Find가 Kruskal의 어느 판단을 빠르게 만들어 주는지 설명해 보세요."},{"id":"bfs-dfs-shortest-path","prompt":"두 정점이 연결됐다는 사실이 아니라 실제 최소 이동 경로가 필요하다면, Union-Find 대신 어떤 탐색 상태를 저장해야 합니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["Union-Find","분리 집합","연결성"]
@@ -47,6 +47,6 @@ Union-Find는 부모 포인터와 대표자만 저장하므로 두 정점이 같
 
 ## 더 파고들 거리
 
-- 롤백 Union-Find에서 경로 압축을 그대로 쓰기 어려운 이유를 변경 이력으로 설명해 보세요.
+- [Union-Find를 rollback하려 합니다. 경로 압축이 변경 이력과 충돌하는 이유와 대안은 무엇인가요?](/tech-interview/questions/rollback-union-find-path-compression/)
 - 집합별 크기·합계·최소 원소를 대표자에 붙이고 대표자 변경 때 갱신하는 방법을 말해 보세요.
 - 방향 그래프의 강한 연결성과 Union-Find의 무방향 연결성을 비교해 보세요.

@@ -2,7 +2,7 @@
 id: behavior-tree-running
 title: "NPC가 Behavior Tree로 이동하다가 도주 행동으로 바뀝니다. Running 상태의 이전 이동 작업과 늦은 완료는 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"dynamic-path-revalidation","prompt":"현재 이동 행동을 유지한 채 문만 닫혔다면 abort 대신 어떤 범위의 경로 재검증과 재탐색을 하겠습니까?"},{"id":"retry-safe-state-machine","prompt":"도주 행동의 완료 콜백이 중복으로 도착할 때 NPC 상태 전이를 한 번만 적용하려면 어떤 조건을 두겠습니까?"},{"id":"multiagent-cell-reservation","prompt":"여러 NPC가 같은 예약 구간을 기다릴 때 행동 세대와 점유 결과를 어떤 순서로 확정하겠습니까?"}]
+followups: [{"id":"npc-path-service-fairness","prompt":"여러 NPC가 하나의 경로 서비스에 요청합니다. 행동별 취소와 전체 공정한 탐색 예산을 어떻게 조합하나요?"},{"id":"behavior-tree-action-oscillation","prompt":"위험 조건이 틱마다 바뀌어 NPC가 추적과 도주를 반복합니다. 반응성을 유지하면서 행동 진동을 어떻게 줄이나요?"},{"id":"dynamic-path-revalidation","prompt":"현재 이동 행동을 유지한 채 문만 닫혔다면 abort 대신 어떤 범위의 경로 재검증과 재탐색을 하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["Behavior Tree","AI","취소"]
@@ -41,6 +41,6 @@ blackboard 변경도 트리 전체를 깨우기보다 해당 키를 읽는 조�
 
 ## 더 파고들 거리
 
-- 여러 NPC가 하나의 경로 서비스에서 결과를 받을 때 행동별 취소와 공정한 예산을 어떻게 조합하나요?
-- reactive 재평가로 행동이 계속 중단되는 진동을 어떤 쿨다운과 우선순위로 줄이나요?
+- [여러 NPC가 하나의 경로 서비스에 요청합니다. 행동별 취소와 전체 공정한 탐색 예산을 어떻게 조합하나요?](/tech-interview/questions/npc-path-service-fairness/)
+- [위험 조건이 틱마다 바뀌어 NPC가 추적과 도주를 반복합니다. 반응성을 유지하면서 행동 진동을 어떻게 줄이나요?](/tech-interview/questions/behavior-tree-action-oscillation/)
 - 취소를 지원하지 않는 외부 이동 작업의 결과와 자원을 누가 회수하나요?

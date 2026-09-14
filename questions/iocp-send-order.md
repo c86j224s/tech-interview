@@ -2,7 +2,7 @@
 id: iocp-send-order
 title: "여러 스레드가 같은 소켓에 메시지를 WSASend로 보냅니다. 제출 순서와 완료 순서가 다를 때 메시지와 버퍼를 어떻게 관리하나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-stream-message-framing","prompt":"송신 큐에서 완성 프레임을 순서대로 보냈는데도 수신 호출이 여러 조각으로 나뉜다면, 수신 파서를 어떻게 설계하겠습니까?"},{"id":"message-ordering-scope","prompt":"한 연결의 제출 순서는 지켰지만 여러 소비 워커의 처리 완료가 뒤바뀐다면, 어떤 순서 범위를 추가로 보장하겠습니까?"},{"id":"request-timeout-idempotency","prompt":"송신 완료 뒤 애플리케이션 ACK가 오지 않아 재접속해야 한다면, 미확인 메시지의 중복 실행을 어떻게 막겠습니까?"}]
+followups: [{"id":"wsabuf-descriptor-payload-lifetime","prompt":"WSASend의 WSABUF 배열과 payload·OVERLAPPED는 같은 수명인가요? 호출 반환 뒤 무엇을 유지해야 하나요?"},{"id":"send-completion-versus-business-ack","prompt":"로컬 송신 완료를 받았습니다. 상대 애플리케이션이 메시지를 처리했음을 확인하려면 어떤 ACK와 상태가 필요한가요?"},{"id":"tcp-stream-message-framing","prompt":"송신 큐에서 완성 프레임을 순서대로 보냈는데도 수신 호출이 여러 조각으로 나뉜다면, 수신 파서를 어떻게 설계하겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","WSASend","순서 보장"]
@@ -48,6 +48,6 @@ WSASend의 중첩 I/O에서는 Winsock provider가 호출이 반환되기 전에
 
 ## 더 파고들 거리
 
-- scatter/gather의 WSABUF 배열과 실제 데이터 각각의 수명을 어떤 객체로 묶을까요?
-- 송신 완료와 상대 애플리케이션 처리 ACK 사이의 상태를 어떻게 모델링할까요?
+- [WSASend의 WSABUF 배열과 payload·OVERLAPPED는 같은 수명인가요? 호출 반환 뒤 무엇을 유지해야 하나요?](/tech-interview/questions/wsabuf-descriptor-payload-lifetime/)
+- [로컬 송신 완료를 받았습니다. 상대 애플리케이션이 메시지를 처리했음을 확인하려면 어떤 ACK와 상태가 필요한가요?](/tech-interview/questions/send-completion-versus-business-ack/)
 - 재접속 시 미확인 프레임을 메시지 ID·버전·멱등 처리와 어떻게 결합할까요?

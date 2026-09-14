@@ -2,7 +2,7 @@
 id: account-linking-proof
 title: "서로 다른 소셜 로그인으로 받은 이메일 주소가 같습니다. 기존 서비스 계정에 새 로그인 수단을 자동으로 연결해도 되나요?"
 answerMinutes: 5
-followups: [{"id":"oauth-oidc-pkce","prompt":"사용자가 연결을 시작한 브라우저와 공급자 callback을 받은 브라우저가 다르면 어떤 값으로 두 흐름을 다시 묶고, 어느 불일치를 거절해야 하나요?"},{"id":"account-merge-invariants","prompt":"두 자격이 이미 서로 다른 서비스 계정에 연결돼 있다면 로그인 수단 추가와 데이터 병합의 경계를 어떻게 정하나요?"},{"id":"mfa-recovery-policy","prompt":"기존 로그인 수단을 잃은 사용자가 새 수단을 연결해 달라고 요청할 때 복구 경로의 증명 수준을 어떻게 정하나요?"}]
+followups: [{"id":"account-link-session-binding","prompt":"로그인한 계정에 다른 소셜 계정을 연결합니다. 연결 callback을 원래 세션과 브라우저 요청에 어떻게 묶나요?"},{"id":"identity-issuer-subject-key","prompt":"여러 소셜 공급자의 subject를 저장할 때 어떤 복합 고유 키가 필요하며 subject 재사용 문제는 어디까지 막을 수 있나요?"},{"id":"account-link-session-reassessment","prompt":"새 로그인 수단을 연결한 직후 기존 세션과 갱신 토큰은 어떤 조건에서 유지하거나 회수해야 하나요?"}]
 difficulty: 하
 category: 보안
 tags:
@@ -48,6 +48,6 @@ related: ["oauth-oidc-pkce"]
 
 ## 더 파고들 거리
 
-- 계정 연결 요청에 세션·브라우저·CSRF 방어를 어떻게 바인딩할까요?
-- 공급자 subject가 재사용되지 않는다는 전제를 어떤 저장 제약으로 보강할까요?
-- 연결 직후 기존 세션과 refresh token의 권한을 어떻게 재평가할까요?
+- [로그인한 계정에 다른 소셜 계정을 연결합니다. 연결 callback을 원래 세션과 브라우저 요청에 어떻게 묶나요?](/tech-interview/questions/account-link-session-binding/)
+- [여러 소셜 공급자의 subject를 저장할 때 어떤 복합 고유 키가 필요하며 subject 재사용 문제는 어디까지 막을 수 있나요?](/tech-interview/questions/identity-issuer-subject-key/)
+- [새 로그인 수단을 연결한 직후 기존 세션과 갱신 토큰은 어떤 조건에서 유지하거나 회수해야 하나요?](/tech-interview/questions/account-link-session-reassessment/)

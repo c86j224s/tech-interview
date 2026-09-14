@@ -2,7 +2,7 @@
 id: ios-frame-bounds
 title: "서브뷰의 `frame`을 바꿨는데 예상 위치가 아니거나 회전 뒤 크기가 이상합니다. `frame`과 `bounds`를 어떤 좌표계에서 사용해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"ios-view-lifecycle","prompt":"Auto Layout 화면이 다시 나타날 때 frame을 읽어 데이터를 갱신하려면 어느 생명주기와 레이아웃 시점을 선택하고 왜 그래야 합니까?"},{"id":"path-smoothing-validation","prompt":"변환된 좌표로 경로 코너를 직선화했을 때 캐릭터 반경과 동적 장애물을 어떤 좌표계에서 다시 검사하겠습니까?"},{"id":"browser-rendering-layout","prompt":"DOM의 위치를 읽고 곧바로 스타일을 바꾸는 패턴이 반복 레이아웃을 만드는 과정은 iOS 레이아웃 측정과 어떻게 비교됩니까?"}]
+followups: [{"id":"rotated-view-axis-aligned-frame","prompt":"뷰가 회전됐습니다. bounds의 모서리를 부모 좌표로 바꾸어 frame의 축 정렬 경계를 어떻게 계산하나요?"},{"id":"nested-scroll-touch-conversion","prompt":"중첩 스크롤 뷰의 터치 좌표를 자식 로컬 좌표로 바꿉니다. content offset·transform을 어떻게 반영하나요?"},{"id":"ios-view-lifecycle","prompt":"Auto Layout 화면이 다시 나타날 때 frame을 읽어 데이터를 갱신하려면 어느 생명주기와 레이아웃 시점을 선택하고 왜 그래야 합니까?"}]
 difficulty: 하
 category: 모바일
 tags: ["iOS","UIView","frame","bounds","좌표계"]
@@ -43,6 +43,6 @@ Auto Layout이 제약을 관리하는 뷰라면 `frame`은 제약을 계산한 �
 
 ## 더 파고들 거리
 
-- 회전된 bounds 네 모서리를 부모 좌표로 변환해 축 정렬 경계 상자를 계산해 보세요.
-- 중첩된 스크롤 뷰에서 터치 점을 로컬 좌표로 바꾸는 convert 호출을 구성해 보세요.
+- [뷰가 회전됐습니다. bounds의 모서리를 부모 좌표로 바꾸어 frame의 축 정렬 경계를 어떻게 계산하나요?](/tech-interview/questions/rotated-view-axis-aligned-frame/)
+- [중첩 스크롤 뷰의 터치 좌표를 자식 로컬 좌표로 바꿉니다. content offset·transform을 어떻게 반영하나요?](/tech-interview/questions/nested-scroll-touch-conversion/)
 - Auto Layout 레이아웃 전후와 애니메이션 중 모델·presentation 값을 각각 측정해 보세요.

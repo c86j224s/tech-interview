@@ -2,7 +2,7 @@
 id: voxel-raycast-dda
 title: "복셀 맵에서 광선이 통과하는 셀을 빠짐없이 검사하려 합니다. 3D DDA는 다음 셀을 어떻게 고르며 광선이 셀의 면·모서리에 걸리면 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"voxel-chunk-boundaries","prompt":"DDA가 미로딩 청크 경계에 도착했을 때 빈 공간 오인과 지연을 어떤 기능별 정책으로 구분하겠습니까?"},{"id":"continuous-collision","prompt":"DDA로 후보 셀을 찾은 뒤 반경 있는 투사체의 최초 충돌 시간을 어떻게 추가로 계산하겠습니까?"},{"id":"collision-broad-narrow-phase","prompt":"DDA 방문 셀을 broad phase 후보로 사용할 때 supercover가 후보 수와 누락 가능성에 미치는 영향을 어떻게 측정하겠습니까?"}]
+followups: [{"id":"dda-supercover-corner-cells","prompt":"광선이 복셀 모서리나 꼭짓점을 정확히 지납니다. DDA와 supercover의 방문 셀 집합은 어떻게 다른가요?"},{"id":"voxel-chunk-boundaries","prompt":"DDA가 미로딩 청크 경계에 도착했을 때 빈 공간 오인과 지연을 어떤 기능별 정책으로 구분하겠습니까?"},{"id":"continuous-collision","prompt":"DDA로 후보 셀을 찾은 뒤 반경 있는 투사체의 최초 충돌 시간을 어떻게 추가로 계산하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["복셀","raycast","DDA"]
@@ -41,6 +41,6 @@ supercover는 얇은 장애물을 놓칠 가능성을 줄이지만 여러 셀 �
 
 ## 더 파고들 거리
 
-- 일반 DDA와 supercover가 모서리에서 방문하는 셀 집합을 어떤 테스트로 비교하나요?
+- [광선이 복셀 모서리나 꼭짓점을 정확히 지납니다. DDA와 supercover의 방문 셀 집합은 어떻게 다른가요?](/tech-interview/questions/dda-supercover-corner-cells/)
 - 매개변수를 실제 거리로 사용하려면 방향 벡터와 셀 크기를 어떻게 정규화하나요?
 - 다수 raycast에서 청크·복셀 접근 캐시를 재사용하면서 버전 일관성을 어떻게 유지하나요?

@@ -1,0 +1,4002 @@
+[
+  {
+    "id": "account-link-session-binding",
+    "parentId": "account-linking-proof",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "계정 연결 요청에 세션·브라우저·CSRF 방어를 어떻게 바인딩할까요?",
+    "question": "로그인한 계정에 다른 소셜 계정을 연결합니다. 연결 callback을 원래 세션과 브라우저 요청에 어떻게 묶나요?"
+  },
+  {
+    "id": "account-merge-late-payment",
+    "parentId": "account-merge-invariants",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "병합 중 원본으로 들어온 결제를 대표 계정에 어떻게 연결할까요?",
+    "question": "계정 병합 중 원본 계정으로 결제 완료가 도착했습니다. 대표 계정에 권리를 빠짐없이 한 번만 반영하려면 어떻게 하나요?"
+  },
+  {
+    "id": "aoi-incremental-boundary-check",
+    "parentId": "aoi-interest-management",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "AOI 관계를 매 틱 재계산하지 않고 증분으로 갱신할 때 경계 누락을 어떻게 검증하나요?",
+    "question": "공간 셀을 넘지 않았는데 거리나 시야 경계가 바뀌었습니다. 증분 AOI 갱신에서 누락을 어떻게 찾나요?"
+  },
+  {
+    "id": "api-null-omission-patch",
+    "parentId": "api-backward-compatibility",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "null과 생략을 다르게 해석하는 API를 어떻게 문서화할까요?",
+    "question": "프로필 수정 API에서 필드 생략과 null을 다르게 쓰려 합니다. 값 유지·삭제·기본값을 어떻게 명시하나요?"
+  },
+  {
+    "id": "argocd-hpa-field-ownership",
+    "parentId": "argocd-gitops-reconcile",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "HPA가 관리하는 replicas를 Argo CD diff에서 제외할 때 누락된 수동 변경을 어떻게 보완할지 설명해 보세요.",
+    "question": "HPA가 바꾸는 replicas를 Argo CD 비교에서 제외합니다. 필요한 소유권 분리와 수동 drift 감지는 어떻게 함께 유지하나요?"
+  },
+  {
+    "id": "gitops-pvc-prune-preflight",
+    "parentId": "argocd-prune-rollback",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "PVC prune 전에 reclaimPolicy와 스토리지 스냅샷을 어떤 순서로 확인해야 할까요.",
+    "question": "Git에서 PVC를 제거하기 전에 reclaimPolicy·백업·스냅샷·실제 참조를 어떤 순서로 확인해야 하나요?"
+  },
+  {
+    "id": "shared-db-migration-owner",
+    "parentId": "argocd-sync-waves-hooks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동일 DB를 여러 앱이 공유할 때 migration 소유권과 배포 순서를 어떻게 정할까요.",
+    "question": "여러 앱이 같은 DB를 사용합니다. 마이그레이션의 실행 소유자와 각 앱의 호환 배포 순서는 어떻게 정하나요?"
+  },
+  {
+    "id": "array-of-pointers-tradeoff",
+    "parentId": "array-linked-list-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "원소 대신 포인터를 배열에 저장할 때 이동 비용과 캐시 비용이 어떻게 맞바뀌는지 설명해 보세요.",
+    "question": "큰 객체 대신 포인터를 배열에 저장하면 삽입 이동량은 줄어듭니다. 추가되는 캐시·소유권 비용은 무엇인가요?"
+  },
+  {
+    "id": "astar-inconsistent-reopen-example",
+    "parentId": "astar-heuristic",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "일관성 없는 휴리스틱에서 재오픈을 하지 않으면 어떤 반례가 생기나요?",
+    "question": "A*의 휴리스틱은 허용적이지만 일관되지 않습니다. 닫힌 노드를 재오픈하지 않으면 어떤 경로를 놓칠 수 있나요?"
+  },
+  {
+    "id": "astar-stale-heap-rebuild",
+    "parentId": "astar-open-closed",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "지연 삭제로 힙이 커질 때 메모리 상한과 재구성 시점을 어떻게 정하나요?",
+    "question": "A*의 지연 삭제로 오래된 힙 항목이 쌓입니다. 재구성 시점과 메모리 상한을 어떻게 정하나요?"
+  },
+  {
+    "id": "go-channel-wait-thread-parking",
+    "parentId": "async-api-and-blocking",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Go의 채널 대기와 OS 스레드 블로킹은 어떻게 다르며, 런타임은 기다리는 작업을 어떻게 다룰까요?",
+    "question": "Go 채널에서 기다리는 고루틴은 OS 스레드 전체를 붙잡나요? 런타임의 park와 블로킹 호출을 구분해 보세요."
+  },
+  {
+    "id": "cpp-release-sequence-visibility",
+    "parentId": "atomics-memory-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "release sequence가 여러 atomic 연산에 만드는 가시성 관계는 무엇인가요?",
+    "question": "C++ release store 뒤 다른 스레드의 atomic RMW가 이어집니다. release sequence는 어떤 조건에서 이전 데이터를 공개하나요?"
+  },
+  {
+    "id": "authorization-write-toctou",
+    "parentId": "authentication-vs-authorization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "권한 검사와 변경을 원자적으로 묶지 못할 때 TOCTOU를 어떻게 줄일까요?",
+    "question": "권한을 확인한 직후 소유권이 바뀝니다. 인가와 실제 변경을 한 저장 경계에 묶지 못하면 어떻게 보호하나요?"
+  },
+  {
+    "id": "game-input-sequence-gap",
+    "parentId": "authoritative-server-input",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "입력 번호가 누락됐을 때 기다림·보간·거절 중 어떤 정책이 공정한가요?",
+    "question": "서버가 받은 게임 입력 번호가 중간에 비었습니다. 기다림·다음 입력 처리·재동기화 중 무엇을 선택하나요?"
+  },
+  {
+    "id": "restore-drill-data-isolation",
+    "parentId": "backup-restore-rpo-rto",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "복구 훈련 데이터의 개인정보 노출을 어떻게 제한할까요?",
+    "question": "실제 백업으로 복구 훈련을 합니다. 개인정보와 옛 outbox의 외부 효과를 어떻게 격리하나요?"
+  },
+  {
+    "id": "fd-closure-lossless-example",
+    "parentId": "bcnf-lossless-decomposition",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "함수 종속 집합의 폐포와 무손실 분해 추적표를 직접 계산해 보세요.",
+    "question": "함수 종속이 주어진 관계를 둘로 나눴습니다. 속성 폐포와 공통 속성으로 무손실 분해를 어떻게 판정하나요?"
+  },
+  {
+    "id": "npc-path-service-fairness",
+    "parentId": "behavior-tree-running",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 NPC가 하나의 경로 서비스에서 결과를 받을 때 행동별 취소와 공정한 예산을 어떻게 조합하나요?",
+    "question": "여러 NPC가 하나의 경로 서비스에 요청합니다. 행동별 취소와 전체 공정한 탐색 예산을 어떻게 조합하나요?"
+  },
+  {
+    "id": "multi-source-bfs-initialization",
+    "parentId": "bfs-dfs-shortest-path",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 시작점에서 가장 가까운 정점을 구할 때 큐를 어떻게 초기화할지 설명해 보세요.",
+    "question": "여러 시작점 중 가장 가까운 곳까지의 거리를 구합니다. BFS 큐와 거리·부모를 어떻게 초기화하나요?"
+  },
+  {
+    "id": "upper-bound-duplicate-range",
+    "parentId": "binary-search-boundary",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "target보다 큰 첫 위치를 찾을 때 비교식과 반환 후 검사를 어떻게 바꿀지 설명해 보세요.",
+    "question": "정렬 배열에서 target과 같은 값이 여러 개입니다. upper_bound로 동등 구간과 부재를 어떻게 구분하나요?"
+  },
+  {
+    "id": "bloom-rebuild-concurrent-inserts",
+    "parentId": "bloom-filter-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "재구축 중 발생한 삽입을 놓치지 않도록 이중 읽기·세대 교체를 어떻게 설계할지 설명해 보세요.",
+    "question": "블룸 필터를 새로 만드는 동안 신규 키가 삽입됩니다. 스냅샷·증분·세대 전환을 어떻게 연결하나요?"
+  },
+  {
+    "id": "weighted-concurrency-permits",
+    "parentId": "bounded-queue-backpressure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "작업 비용이 다를 때 어떤 가중치로 제한할까요?",
+    "question": "작은 조회와 큰 집계가 같은 실행 슬롯을 씁니다. 요청 수 대신 어떤 비용으로 가중 동시성 허가를 배분하나요?"
+  },
+  {
+    "id": "css-containment-content-visibility",
+    "parentId": "browser-rendering-layout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "contain과 content-visibility가 영향 범위와 초기 표시를 어떻게 바꾸는지 비교해 보세요.",
+    "question": "긴 화면에서 화면 밖 영역의 렌더링 비용을 줄이려 합니다. contain과 content-visibility는 레이아웃·접근성에 어떤 영향을 주나요?"
+  },
+  {
+    "id": "browser-waterfall-critical-path",
+    "parentId": "browser-url-navigation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "redirect·조건부 캐시·서브리소스가 waterfall에 만드는 경계를 분석해 보세요.",
+    "question": "페이지 로딩 waterfall에 redirect·304·하위 자료가 섞여 있습니다. 실제 표시를 지연시키는 의존 경로를 어떻게 찾나요?"
+  },
+  {
+    "id": "bst-rotation-inorder-proof",
+    "parentId": "bst-balance",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "회전이 중위 순서를 유지하면서 높이를 바꾸는 과정을 작은 트리로 설명해 보세요.",
+    "question": "검색 트리를 회전해 높이를 바꿉니다. 키의 중위 순서는 왜 유지되며 어떤 포인터를 함께 갱신하나요?"
+  },
+  {
+    "id": "database-hash-bucket-skew",
+    "parentId": "btree-hash-index",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "해시 충돌 및 버킷 재구성 비용을 데이터 분포별로 측정해 보세요.",
+    "question": "DB 해시 인덱스에서 특정 값 집단만 느립니다. 버킷 충돌·편중·재구성 비용을 어떻게 확인하나요?"
+  },
+  {
+    "id": "tenant-resource-bulkheads",
+    "parentId": "bulkhead-isolation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "테넌트별 자원 격리를 어떤 단위로 적용할까요?",
+    "question": "일부 테넌트의 큰 요청이 다른 테넌트까지 지연시킵니다. 워커·연결·큐를 어떤 단위로 격리하나요?"
+  },
+  {
+    "id": "cache-cdc-refill-ordering",
+    "parentId": "cache-aside-consistency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "outbox·CDC와 stale refill의 관계",
+    "question": "CDC로 캐시 무효화를 전달해도 늦은 옛 조회가 캐시를 채울 수 있나요? 두 경로의 버전을 어떻게 맞추나요?"
+  },
+  {
+    "id": "singleflight-waiter-cancellation",
+    "parentId": "cache-stampede-singleflight",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "첫 호출자 취소와 공유 작업 수명",
+    "question": "같은 조회를 합친 singleflight에서 첫 요청자가 취소했습니다. 공유 작업과 나머지 대기자의 수명을 어떻게 분리하나요?"
+  },
+  {
+    "id": "partition-feature-slo-contract",
+    "parentId": "cap-partition-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "기능별 CP·AP SLO",
+    "question": "지역 분할 중 좌석 확정과 좋아요 집계를 다르게 제공합니다. 기능별 성공·보류·잠정 결과를 SLO에 어떻게 반영하나요?"
+  },
+  {
+    "id": "protocol-test-partial-order",
+    "parentId": "ci-dummy-client-integration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "서버 패킷 순서가 비결정적일 때 테스트 기대값은 어떻게 표현할까요?",
+    "question": "서버 이벤트 순서는 일부만 정해져 있습니다. 통합 테스트에서 유효한 비결정적 순서를 어떻게 표현하나요?"
+  },
+  {
+    "id": "shared-breaker-store-failure",
+    "parentId": "circuit-breaker",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공유 브레이커 상태 저장소 장애",
+    "question": "여러 인스턴스가 공유하는 서킷 상태 저장소가 실패했습니다. 로컬 상태와 호출 허용은 어떻게 결정하나요?"
+  },
+  {
+    "id": "heap-clustered-row-lookup",
+    "parentId": "clustered-secondary-index",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "힙과 클러스터드 테이블의 동일 질의 계획을 비교해 보세요.",
+    "question": "같은 보조 인덱스 조회를 힙과 클러스터드 테이블에서 실행합니다. 행 locator와 추가 읽기 비용은 어떻게 다른가요?"
+  },
+  {
+    "id": "collision-grid-aabb-tree-choice",
+    "parentId": "collision-broad-narrow-phase",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "uniform grid와 동적 AABB 트리를 분포·이동률·객체 크기별로 어떤 실험으로 비교하나요?",
+    "question": "객체 크기와 이동률이 다른 월드에서 uniform grid와 동적 AABB 트리를 어떤 부하로 비교하나요?"
+  },
+  {
+    "id": "composite-range-order-plan",
+    "parentId": "composite-index-column-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "복합 키의 범위 조건과 정렬 구간을 실행 계획으로 그려 보세요.",
+    "question": "복합 인덱스에서 앞 컬럼은 범위 조건이고 뒤 컬럼은 정렬입니다. 정렬 생략이 가능한지 어떤 구간을 그려 보나요?"
+  },
+  {
+    "id": "condition-notify-lock-lifetime",
+    "parentId": "condition-variable-predicate",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "생산자가 `notify_one`을 락 안과 밖에서 호출하면 정확성과 깨운 스레드의 경합은 어떻게 달라질까요? 조건 변수 객체의 수명은 누가 보장해야 할까요?",
+    "question": "조건 변수의 notify를 락 밖으로 옮깁니다. 깨움 경합과 조건 변수 객체 수명은 어떻게 보호하나요?"
+  },
+  {
+    "id": "configuration-atomic-bundle",
+    "parentId": "configuration-validation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 설정을 원자적으로 바꾸지 못할 때 중간 상태를 어떻게 제한할까요?",
+    "question": "연관된 설정을 한 번에 바꿀 수 없습니다. 구·신 값이 섞인 중간 조합을 어떻게 안전하게 제한하나요?"
+  },
+  {
+    "id": "removed-consensus-node-rejoin",
+    "parentId": "consensus-membership-change",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "제거된 노드 메시지 처리",
+    "question": "합의 구성에서 제거한 노드가 오래된 로그로 돌아왔습니다. 투표·메시지·재등록을 어떻게 처리해야 하나요?"
+  },
+  {
+    "id": "leader-isolation-versus-follower-loss",
+    "parentId": "consensus-quorum-failure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "리더 고립과 follower 고립",
+    "question": "합의 클러스터에서 리더 고립과 follower 하나의 손실은 쓰기·읽기·선거에 어떤 차이를 만드나요?"
+  },
+  {
+    "id": "replicated-state-machine-outbox",
+    "parentId": "consensus-vs-replication",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "합의 로그와 outbox",
+    "question": "합의 로그를 각 노드가 적용할 때 메일·결제를 직접 호출하면 왜 중복되며 실행 의도는 어디에 저장하나요?"
+  },
+  {
+    "id": "reservation-hold-confirm-race",
+    "parentId": "consistency-linearizability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "예약 보류와 확정",
+    "question": "좌석을 보류한 뒤 결제를 확정합니다. 보류 만료와 늦은 결제 성공이 겹칠 때 어떤 전이를 허용하나요?"
+  },
+  {
+    "id": "batch-execution-fairness-budget",
+    "parentId": "context-switch-overhead",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "짧은 작업을 묶을 때 공정성을 잃지 않는 실행 예산은 어떻게 정할까요?",
+    "question": "짧은 작업을 배치로 묶어 전환 비용을 줄입니다. 긴 배치가 다른 요청을 굶기지 않게 어떤 시간 예산을 두나요?"
+  },
+  {
+    "id": "collision-toi-numerical-margin",
+    "parentId": "continuous-collision",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "time of impact가 수치 오차로 표면 안쪽에 놓일 때 어떤 보수적 정지 규칙을 쓰나요?",
+    "question": "계산한 최초 충돌 시점이 수치 오차로 벽 안에 놓입니다. 정지 위치와 접촉 여유를 어떻게 정하나요?"
+  },
+  {
+    "id": "reservation-horizon-replanning",
+    "parentId": "cooperative-pathfinding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "예약 horizon을 짧게 했을 때 늦게 드러나는 충돌을 어떤 재계획 정책으로 줄이나요?",
+    "question": "이동 예약을 짧은 미래 구간만 잡습니다. 다음 구간에서 나타나는 충돌과 계획 단절을 어떻게 줄이나요?"
+  },
+  {
+    "id": "cors-safelisted-request-boundary",
+    "parentId": "cors-preflight",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "어떤 safelisted 조건을 벗어날 때 preflight가 생기는지 분류해 보세요.",
+    "question": "교차 출처 fetch 중 어떤 요청은 OPTIONS 없이 전송됩니다. safelisted 조건과 본 요청의 인가는 어떻게 다른가요?"
+  },
+  {
+    "id": "radix-msd-lsd-variable-strings",
+    "parentId": "counting-radix-sort",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "MSD와 LSD 기수 정렬이 가변 길이 문자열을 나누고 종료하는 차이를 설명해 보세요.",
+    "question": "가변 길이 문자열을 기수 정렬합니다. MSD와 LSD는 종료 문자·길이·안정성에서 무엇이 다른가요?"
+  },
+  {
+    "id": "cpp-final-suspend-destroy-owner",
+    "parentId": "cpp-coroutine-frame-lifetime",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`final_suspend` 이후 핸들의 파괴 책임을 반환 타입에 어떻게 표현할까요?",
+    "question": "C++ 코루틴이 final_suspend에 도달했습니다. 핸들과 프레임을 누가 언제 destroy해야 하나요?"
+  },
+  {
+    "id": "cpp-forwarding-reference-category",
+    "parentId": "cpp-move-semantics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "perfect forwarding에서 named rvalue reference가 다시 lvalue가 되는 이유는 무엇인가요?",
+    "question": "함수의 named rvalue reference는 왜 lvalue 표현식이며 perfect forwarding은 어떤 범주를 보존하나요?"
+  },
+  {
+    "id": "cpp-transactional-swap-publication",
+    "parentId": "cpp-raii-exception-safety",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 객체의 불변식을 한 번의 `swap`으로 게시하려면 임시 상태를 어떻게 구성할까요?",
+    "question": "여러 필드의 새 상태를 준비한 뒤 swap으로 게시하려 합니다. 강한 예외 보장을 위해 무엇을 임시 상태에 묶나요?"
+  },
+  {
+    "id": "weak-lock-logical-generation",
+    "parentId": "cpp-shared-pointer-lifetime",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`weak_ptr::lock()` 뒤 객체가 취소된 세대인지 어떤 상태를 확인할까요?",
+    "question": "weak_ptr::lock은 성공했지만 작업은 이미 취소됐습니다. 객체 생존과 현재 행동의 유효성을 어떻게 구분하나요?"
+  },
+  {
+    "id": "cache-readonly-sharing-versus-writes",
+    "parentId": "cpu-cache-false-sharing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "읽기 전용 공유 line도 쓰기 무효화와 같은 비용을 만들 수 있나요?",
+    "question": "여러 코어가 같은 cache line을 읽기만 합니다. 쓰기 무효화가 있는 공유와 비용이 어떻게 다른가요?"
+  },
+  {
+    "id": "identity-issuer-subject-key",
+    "parentId": "account-linking-proof",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "공급자 subject가 재사용되지 않는다는 전제를 어떤 저장 제약으로 보강할까요?",
+    "question": "여러 소셜 공급자의 subject를 저장할 때 어떤 복합 고유 키가 필요하며 subject 재사용 문제는 어디까지 막을 수 있나요?"
+  },
+  {
+    "id": "account-merge-cancellation-boundary",
+    "parentId": "account-merge-invariants",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "병합 취소가 가능한 단계와 불가능한 단계를 어떻게 나눌까요?",
+    "question": "계정 병합을 중간에 취소하려 합니다. 단순 예약 해제와 이미 옮긴 권리의 보정을 어떻게 나누나요?"
+  },
+  {
+    "id": "aoi-large-object-candidates",
+    "parentId": "aoi-interest-management",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "큰 보스·투사체처럼 객체 크기와 공개 반경이 다른 경우 후보 구조를 어떻게 설계하나요?",
+    "question": "큰 보스와 작은 투사체의 공개 반경이 다릅니다. AOI 후보 검색에서 객체 크기와 수신 반경을 어떻게 반영하나요?"
+  },
+  {
+    "id": "protobuf-field-number-reservation",
+    "parentId": "api-backward-compatibility",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "프로토콜 버퍼 필드 번호 재사용은 왜 위험할까요?",
+    "question": "protobuf 필드를 삭제한 뒤 같은 번호를 다른 의미로 재사용하면 과거 메시지와 어떤 충돌이 생기나요?"
+  },
+  {
+    "id": "argocd-source-error-vs-health",
+    "parentId": "argocd-gitops-reconcile",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Git 저장소 접근 장애와 잘못된 Git 선언을 Health·Sync·실행 중 Pod 상태로 어떻게 구분할까요.",
+    "question": "Argo CD가 Git을 읽지 못하는 경우와 Git 선언이 잘못된 경우를 Sync·Health·현재 Pod 상태로 어떻게 구분하나요?"
+  },
+  {
+    "id": "argocd-application-cascade-delete",
+    "parentId": "argocd-prune-rollback",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Application 삭제와 개별 리소스 prune에서 cascade가 만드는 영향 범위를 어떻게 검증할까요.",
+    "question": "Argo CD Application 삭제와 개별 리소스 prune은 삭제 대상과 finalizer에서 어떻게 다른가요?"
+  },
+  {
+    "id": "gitops-hook-evidence-retention",
+    "parentId": "argocd-sync-waves-hooks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "hook 로그가 삭제되거나 sync controller가 재시작돼도 실패 근거를 어떻게 보존할까요.",
+    "question": "배포 hook이 실패했는데 Pod와 로그가 삭제됐습니다. 재시작 뒤에도 실패 근거와 실행 결과를 어떻게 보존하나요?"
+  },
+  {
+    "id": "deque-versus-order-tree",
+    "parentId": "array-linked-list-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "양끝 삽입·삭제와 임의 위치 조회가 함께 필요할 때 deque와 균형 트리를 어떻게 구분할지 말해 보세요.",
+    "question": "양끝 삽입·삭제와 임의 위치 조회가 함께 필요합니다. deque와 순서 정보를 가진 균형 트리는 어떻게 비교하나요?"
+  },
+  {
+    "id": "weighted-astar-quality-budget",
+    "parentId": "astar-heuristic",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Weighted A*의 가중치를 키울 때 얻는 속도와 잃는 최적성은 어떻게 측정하나요?",
+    "question": "Weighted A*의 휴리스틱 가중치를 높이려 합니다. 탐색 시간과 경로 비용의 손실을 어떤 전제에서 비교하나요?"
+  },
+  {
+    "id": "grid-path-parent-direction",
+    "parentId": "astar-open-closed",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "부모 포인터 대신 방향만 저장할 때 경로 복원과 메모리는 어떻게 달라지나요?",
+    "question": "격자 경로 복원에서 부모 포인터 대신 방향만 저장하려 합니다. 가능한 이동 모델과 복원·메모리 비용은 무엇인가요?"
+  },
+  {
+    "id": "queue-budget-from-deadline",
+    "parentId": "async-api-and-blocking",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동시 실행 수와 대기열 상한을 정할 때 처리 시간 분포와 요청 데드라인을 어떻게 이용할까요?",
+    "question": "요청마다 처리 시간이 다릅니다. deadline 안에 끝낼 수 있는 동시 실행 수와 대기열 길이를 어떻게 정하나요?"
+  },
+  {
+    "id": "atomic-refcount-reclamation-order",
+    "parentId": "atomics-memory-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "참조 카운트 감소와 객체 공개의 메모리 순서는 왜 다른 문제인가요?",
+    "question": "참조 카운트 증감의 메모리 순서와 객체 데이터를 처음 공개하는 메모리 순서는 왜 따로 설계해야 하나요?"
+  },
+  {
+    "id": "authorization-pdp-pep-cache",
+    "parentId": "authentication-vs-authorization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "정책 결정과 집행을 분리할 때 캐시·장애·정책 배포의 책임은 어디에 둘까요?",
+    "question": "정책 결정 서비스와 집행 서비스를 나눴습니다. 캐시·장애·정책 배포에서 어느 쪽이 무엇을 책임지나요?"
+  },
+  {
+    "id": "client-prediction-input-replay",
+    "parentId": "authoritative-server-input",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "확정 상태 이후 입력을 재적용하는 클라이언트 예측에서 충돌 오차를 어떻게 줄이나요?",
+    "question": "클라이언트가 서버 확정 상태 뒤의 입력을 다시 적용합니다. 충돌·시간 간격·중복 입력의 오차는 어떻게 줄이나요?"
+  },
+  {
+    "id": "cross-service-backup-cut",
+    "parentId": "backup-restore-rpo-rto",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "여러 서비스의 백업 시점이 다르면 주문·결제 같은 관련 데이터의 일관성은 어떻게 복구할까요?",
+    "question": "주문·결제 서비스의 백업 시점이 다릅니다. 공통 복구 기준과 불일치 대사는 어떻게 구성하나요?"
+  },
+  {
+    "id": "bcnf-global-constraint-race",
+    "parentId": "bcnf-lossless-decomposition",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "종속성 보존이 없는 BCNF에서 동시 삽입 검사를 설계해 보세요.",
+    "question": "BCNF 분해 뒤 제약 검사가 두 테이블의 조인을 요구합니다. 동시 삽입에서 그 제약을 어떻게 보호하나요?"
+  },
+  {
+    "id": "behavior-tree-action-oscillation",
+    "parentId": "behavior-tree-running",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "reactive 재평가로 행동이 계속 중단되는 진동을 어떤 쿨다운과 우선순위로 줄이나요?",
+    "question": "위험 조건이 틱마다 바뀌어 NPC가 추적과 도주를 반복합니다. 반응성을 유지하면서 행동 진동을 어떻게 줄이나요?"
+  },
+  {
+    "id": "zero-one-bfs-deque-rule",
+    "parentId": "bfs-dfs-shortest-path",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "0·1 가중치에서 deque를 사용하는 0-1 BFS의 앞·뒤 삽입 규칙을 말해 보세요.",
+    "question": "간선 비용이 0 또는 1인 그래프에서 최단 거리를 구합니다. 0-1 BFS는 deque의 앞과 뒤를 어떻게 쓰나요?"
+  },
+  {
+    "id": "binary-search-midpoint-overflow",
+    "parentId": "binary-search-boundary",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "정수 오버플로가 가능한 언어에서 중간값 계산을 안전하게 하는 이유를 말해 보세요.",
+    "question": "정수 범위 끝에서 이진 탐색 중간값 계산이 넘칠 수 있습니다. 안전한 식도 어떤 구간 전제를 요구하나요?"
+  },
+  {
+    "id": "bloom-capacity-hash-count",
+    "parentId": "bloom-filter-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "예상 원소 수와 허용 오탐률로 비트 수와 해시 수를 정하는 관계를 말해 보세요.",
+    "question": "예상 원소 수와 거짓 양성률 목표가 있습니다. 블룸 필터의 비트 수와 해시 수를 어떻게 계산하고 검증하나요?"
+  },
+  {
+    "id": "adaptive-concurrency-stability",
+    "parentId": "bounded-queue-backpressure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "적응형 제어가 출렁이지 않게 어떤 완충을 둘까요?",
+    "question": "지연에 따라 동시성 한도를 자동 조절합니다. 피드백 지연과 노이즈 때문에 한도가 출렁이지 않게 어떻게 하나요?"
+  },
+  {
+    "id": "web-layout-shift-reserved-space",
+    "parentId": "browser-rendering-layout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "폰트·이미지 로딩과 누적 레이아웃 이동을 어떤 지표로 연결할까요?",
+    "question": "폰트와 이미지가 늦게 로딩되어 화면이 움직입니다. 공간 예약과 CLS 측정으로 무엇을 개선하나요?"
+  },
+  {
+    "id": "tls-resumption-versus-keepalive",
+    "parentId": "browser-url-navigation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "TCP 연결 재사용과 TLS session resumption의 시간 절약을 어떻게 비교할까요?",
+    "question": "HTTPS 재요청에서 연결 재사용과 TLS session resumption은 어떤 작업을 각각 생략하나요?"
+  },
+  {
+    "id": "avl-red-black-update-tradeoff",
+    "parentId": "bst-balance",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "AVL과 Red-Black Tree의 균형 엄격도와 갱신 비용을 비교해 보세요.",
+    "question": "검색과 갱신이 섞인 트리에서 AVL과 Red-Black Tree를 비교합니다. 균형의 엄격함과 회전 비용을 어떻게 측정하나요?"
+  },
+  {
+    "id": "reserved-shared-capacity-borrowing",
+    "parentId": "bulkhead-isolation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "예약 용량과 공용 여유 용량을 장애 때 어떻게 조정할까요?",
+    "question": "기능별 예약 용량과 공용 여유 용량을 함께 둡니다. 장애 때 빌려 쓴 자원을 어떻게 회수하나요?"
+  },
+  {
+    "id": "cache-version-barrier-eviction",
+    "parentId": "cache-aside-consistency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "eviction 뒤 세대 번호 보존",
+    "question": "캐시의 최신 버전 표식이 eviction됐습니다. 아직 진행 중인 옛 조회가 값을 다시 넣지 못하게 어떻게 보호하나요?"
+  },
+  {
+    "id": "cache-outage-origin-admission",
+    "parentId": "cache-stampede-singleflight",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "캐시 전체 장애와 단일 만료 판별",
+    "question": "인기 키 하나의 만료와 캐시 전체 장애는 원본 DB 부하가 어떻게 다르며 우회 요청을 어떻게 제한하나요?"
+  },
+  {
+    "id": "partition-conflict-reconciliation",
+    "parentId": "cap-partition-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "복구 후 충돌 정정",
+    "question": "분할 중 양쪽 지역에서 받은 변경을 복구 후 합칩니다. 충돌 정정과 이미 외부에 준 성공 응답은 어떻게 다루나요?"
+  },
+  {
+    "id": "packet-replay-versus-state-scenario",
+    "parentId": "ci-dummy-client-integration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "과거 패킷 로그 재생과 상태 기반 시나리오는 어떤 차이가 있나요?",
+    "question": "과거 패킷 로그 재생과 상태 기반 더미 클라이언트 테스트는 각각 어떤 오류를 찾고 놓치나요?"
+  },
+  {
+    "id": "half-open-probe-representativeness",
+    "parentId": "circuit-breaker",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "half-open 표본 대표성",
+    "question": "서킷의 half-open 시험 호출은 성공하지만 실제 트래픽은 실패합니다. 시험 표본과 복귀 기준을 어떻게 바꾸나요?"
+  },
+  {
+    "id": "sequential-key-page-contention",
+    "parentId": "clustered-secondary-index",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "순차 키와 임의 키의 페이지 분할·삽입 경합을 측정해 보세요.",
+    "question": "순차 키는 페이지 분할을 줄이는데 삽입이 한곳에 몰립니다. 임의 키와 비교해 어떤 경합·공간 비용을 보나요?"
+  },
+  {
+    "id": "collision-layer-index-update",
+    "parentId": "collision-broad-narrow-phase",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "충돌 레이어를 broad phase에서 제외할 때 동적 레이어 변경을 어떻게 인덱스에 반영하나요?",
+    "question": "충돌 레이어가 실행 중 바뀝니다. broad phase의 필터와 위치 인덱스가 같은 상태를 보게 하려면 어떻게 하나요?"
+  },
+  {
+    "id": "keyset-wide-key-cost",
+    "parentId": "composite-index-column-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "키셋 페이지네이션과 클러스터링 키 폭의 상호 비용을 비교해 보세요.",
+    "question": "페이지 커서의 보조 키를 길게 만들었습니다. 결정적 정렬의 이점과 인덱스·전송 비용을 어떻게 비교하나요?"
+  },
+  {
+    "id": "queue-shutdown-drain-discard",
+    "parentId": "condition-variable-predicate",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "종료할 때 작업을 모두 처리하는 정책과 즉시 중단하는 정책은 대기 조건과 남은 작업 정리에서 어떻게 달라질까요?",
+    "question": "작업 큐 종료에서 전부 처리하는 정책과 남은 작업을 버리는 정책은 대기 조건과 결과 처리가 어떻게 다른가요?"
+  },
+  {
+    "id": "configuration-restart-required",
+    "parentId": "configuration-validation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동적으로 바꿀 수 없는 자원 설정을 재시작에 어떻게 반영할까요?",
+    "question": "실행 중 바꿀 수 없는 연결·메모리 설정을 수정했습니다. 재시작과 진행 요청 정리는 어떻게 연결하나요?"
+  },
+  {
+    "id": "quorum-failure-domain-placement",
+    "parentId": "consensus-membership-change",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "장애 영역 배치",
+    "question": "합의 노드 수는 충분하지만 한 랙 장애로 과반을 잃었습니다. 투표자 배치와 장애 허용 수를 어떻게 계산하나요?"
+  },
+  {
+    "id": "forced-quorum-recovery-reconciliation",
+    "parentId": "consensus-quorum-failure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "복구 전후 대사",
+    "question": "과반을 영구적으로 잃어 강제 복구했습니다. 잃었을 수 있는 확정 기록과 옛 클러스터의 재등장을 어떻게 대사·차단하나요?"
+  },
+  {
+    "id": "consensus-crash-byzantine-model",
+    "parentId": "consensus-vs-replication",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "장애 모델 비교",
+    "question": "중단·복구를 견디는 합의와 거짓 메시지를 보내는 노드까지 견디는 합의는 어떤 장애 가정이 다른가요?"
+  },
+  {
+    "id": "linearizability-operation-history",
+    "parentId": "consistency-linearizability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "이력 기반 선형화 검사",
+    "question": "동시 자료구조의 호출·응답 이력에서 선형화 가능한지 검사하려면 무엇을 기록하고 불확정 연산은 어떻게 다루나요?"
+  },
+  {
+    "id": "context-switch-cache-counter",
+    "parentId": "context-switch-overhead",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "컨텍스트 스위치와 캐시 미스를 하드웨어 성능 카운터로 어떻게 연결할까요?",
+    "question": "context switch와 cache miss가 함께 증가합니다. 두 지표 사이 인과를 어떤 대조 실험으로 확인하나요?"
+  },
+  {
+    "id": "piercing-projectile-contact-order",
+    "parentId": "continuous-collision",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "관통 가능한 투사체가 여러 장애물을 만날 때 충돌 순서와 최대 횟수를 어떻게 정하나요?",
+    "question": "관통 투사체가 한 틱에 여러 대상을 만납니다. 충돌 순서·반복 상한·이벤트 ID를 어떻게 정하나요?"
+  },
+  {
+    "id": "corridor-deadlock-priority-aging",
+    "parentId": "cooperative-pathfinding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "좁은 통로에서 반복 교착이 발생하면 우선순위를 언제 바꾸고 변경 비용을 어떻게 제한하나요?",
+    "question": "좁은 통로의 NPC가 반복 교착합니다. 우선순위 변경·양보 위치·후퇴 가능성을 어떻게 함께 판단하나요?"
+  },
+  {
+    "id": "cors-preflight-cache-policy-change",
+    "parentId": "cors-preflight",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "preflight cache가 정책 변경 뒤 남아 있는 동안 안전하게 전환하는 방법은 무엇일까요?",
+    "question": "CORS 정책을 바꿨지만 브라우저에 이전 preflight 허용이 남아 있습니다. 실제 요청의 안전성을 어떻게 유지하나요?"
+  },
+  {
+    "id": "signed-integer-radix-transform",
+    "parentId": "counting-radix-sort",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "음수 정수를 정렬 순서가 맞는 unsigned 바이트 키로 변환하는 원리를 말해 보세요.",
+    "question": "음수 정수를 바이트 기반 기수 정렬에 넣습니다. 숫자 순서를 보존하는 unsigned 키는 어떻게 만드나요?"
+  },
+  {
+    "id": "cpp-coroutine-destruction-executor",
+    "parentId": "cpp-coroutine-frame-lifetime",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "코루틴 프레임을 다른 executor에서 파괴할 때 소멸자 실행 위치를 어떻게 제한할까요?",
+    "question": "C++ 코루틴 프레임을 다른 스레드에서 파괴할 수 있습니다. 스레드에 종속된 자원의 소멸 위치는 어떻게 보장하나요?"
+  },
+  {
+    "id": "cpp-allocator-move-propagation",
+    "parentId": "cpp-move-semantics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "allocator가 다른 컨테이너 사이 이동에서 버퍼를 훔칠 수 없는 경우는 언제인가요?",
+    "question": "allocator가 다른 C++ 컨테이너끼리 이동합니다. 언제 저장 버퍼를 넘기지 못하고 원소별 이동이 필요한가요?"
+  },
+  {
+    "id": "cpp-explicit-commit-destructor-error",
+    "parentId": "cpp-raii-exception-safety",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "소멸자에서 오류를 반환할 수 없을 때 명시적 `commit`의 실패를 어디에 전달할까요?",
+    "question": "소멸자에서 파일 저장 실패를 호출자에게 전달하기 어렵습니다. 명시적인 commit과 소멸자 정리는 어떻게 나누나요?"
+  },
+  {
+    "id": "atomic-shared-pointer-snapshot",
+    "parentId": "cpp-shared-pointer-lifetime",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "원자적 `shared_ptr` 교체와 객체 내부 필드의 원자성은 왜 별개인가요?",
+    "question": "atomic shared_ptr로 루트를 교체합니다. 독자가 일관된 여러 필드를 읽으려면 객체 내부에 어떤 조건이 필요한가요?"
+  },
+  {
+    "id": "false-sharing-evidence-experiment",
+    "parentId": "cpu-cache-false-sharing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "하드웨어 성능 카운터가 거짓 공유를 직접 증명하지 못하는 이유는 무엇인가요?",
+    "question": "cache miss 지표가 높습니다. 이것만으로 false sharing을 확정할 수 없으며 어떤 배치 비교가 필요한가요?"
+  },
+  {
+    "id": "account-link-session-reassessment",
+    "parentId": "account-linking-proof",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "연결 직후 기존 세션과 refresh token의 권한을 어떻게 재평가할까요?",
+    "question": "새 로그인 수단을 연결한 직후 기존 세션과 갱신 토큰은 어떤 조건에서 유지하거나 회수해야 하나요?"
+  },
+  {
+    "id": "scheduler-service-time-estimation",
+    "parentId": "cpu-scheduling-policies",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "실행 시간 예측이 틀릴 때 스케줄러가 보정할 수 있는 방법은 무엇일까요?",
+    "question": "작업 실행 시간 예측이 자주 틀립니다. 스케줄러의 예상 비용과 실제 사용량을 어떻게 보정하나요?"
+  },
+  {
+    "id": "html-sanitization-url-schemes",
+    "parentId": "csrf-vs-xss",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "허용 HTML에서 URL scheme과 링크 속성을 제한해야 하는 이유는 무엇일까요?",
+    "question": "일부 HTML 입력을 허용합니다. 태그만 제한하지 않고 URL scheme과 링크 속성도 검사해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "css-where-is-specificity",
+    "parentId": "css-cascade-specificity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`:where()`와 `:is()`가 컴포넌트 선택자 설계에 주는 차이는 무엇일까요?",
+    "question": "컴포넌트 스타일을 쉽게 덮어쓸 수 있게 만들려 합니다. :where와 :is의 명시도 차이는 무엇인가요?"
+  },
+  {
+    "id": "form-appearance-accessibility",
+    "parentId": "css-reset-normalize",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "form control의 appearance를 바꿀 때 반드시 보존해야 할 브라우저 기능은 무엇인가요?",
+    "question": "폼 control의 appearance를 없애고 직접 그립니다. 키보드·포커스·disabled·고대비 상태를 어떻게 보존하나요?"
+  },
+  {
+    "id": "keyset-mixed-sort-directions",
+    "parentId": "db-keyset-pagination",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "오름차순·내림차순이 섞인 복합 키 조건을 검증해 보세요.",
+    "question": "시각은 내림차순, ID는 오름차순인 목록을 키셋으로 읽습니다. 다음 페이지의 비교 조건은 어떻게 만드나요?"
+  },
+  {
+    "id": "database-lock-resource-diagnosis",
+    "parentId": "db-lock-escalation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "DBMS별 행·키·페이지·gap 잠금 관찰 방법을 비교해 보세요.",
+    "question": "DB에서 다른 요청을 막는 자원이 row·key·page·gap 중 무엇인지 어떻게 관찰하고 엔진별로 해석하나요?"
+  },
+  {
+    "id": "isolation-two-read-experiment",
+    "parentId": "db-mvcc-snapshot",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "두 번 읽기 실험으로 격리 수준의 가시성을 비교해 보세요.",
+    "question": "같은 transaction에서 두 번 읽는 사이 다른 세션이 커밋합니다. 격리 수준별 가시성을 어떻게 재현하나요?"
+  },
+  {
+    "id": "request-scoped-loader-cache",
+    "parentId": "db-n-plus-one",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "콜드·웜 캐시에서 요청별 캐시의 효과를 분리해 보세요.",
+    "question": "같은 요청에서 고객을 여러 번 읽습니다. 요청별 loader cache와 전역 cache를 어떻게 구분하고 측정하나요?"
+  },
+  {
+    "id": "backfill-checkpoint-concurrent-write",
+    "parentId": "db-online-schema-migration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "백필 진행 위치와 충돌 행을 재시작 가능하게 저장해 보세요.",
+    "question": "백필이 읽은 값을 쓰기 전에 정상 요청이 같은 행을 바꿨습니다. checkpoint와 충돌 행을 어떻게 재개 가능하게 관리하나요?"
+  },
+  {
+    "id": "database-streaming-client-backpressure",
+    "parentId": "db-pool-long-transactions",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "스트리밍 결과가 연결을 장시간 점유하는 경로를 측정해 보세요.",
+    "question": "큰 DB 결과를 느린 클라이언트에 스트리밍합니다. 연결 보유와 버퍼·취소를 어떻게 제한하나요?"
+  },
+  {
+    "id": "query-memory-grant-over-under",
+    "parentId": "db-query-plan-regression",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "메모리 grant 부족과 과다 할당의 증상을 비교해 보세요.",
+    "question": "쿼리 메모리가 부족해 spill이 나거나 과다 예약으로 다른 쿼리가 기다립니다. 두 상태를 어떻게 구분하나요?"
+  },
+  {
+    "id": "replica-long-query-replay-conflict",
+    "parentId": "db-read-replica-consistency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "오래된 읽기가 정리·로그 적용을 막는 상황을 재현해 보세요.",
+    "question": "읽기 replica의 긴 조회가 로그 적용과 충돌합니다. 쿼리 취소와 복제 지연·버전 보존을 어떻게 선택하나요?"
+  },
+  {
+    "id": "soft-delete-name-reuse-conflict",
+    "parentId": "db-unique-constraint-race",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "소프트 삭제와 부분 인덱스의 엔진별 동작을 확인해 보세요.",
+    "question": "탈퇴 계정의 이름을 재사용한 뒤 원래 계정을 복구합니다. 활성 행 고유 제약과 복구 충돌은 어떻게 다루나요?"
+  },
+  {
+    "id": "group-commit-checkpoint-tradeoff",
+    "parentId": "db-wal-durability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "group commit과 체크포인트 빈도의 비용을 비교해 보세요.",
+    "question": "여러 commit을 한 번의 flush로 묶고 checkpoint 주기를 바꿉니다. 대기·로그·복구 시간은 어떻게 달라지나요?"
+  },
+  {
+    "id": "file-lock-crash-recovery-contract",
+    "parentId": "dbms-vs-files",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "파일 잠금·로그·복구를 DBMS 트랜잭션과 비교해 보세요.",
+    "question": "파일 잠금으로 여러 writer를 직렬화했습니다. 부분 쓰기와 프로세스 중단 복구에는 어떤 기록이 더 필요한가요?"
+  },
+  {
+    "id": "request-independent-durable-job",
+    "parentId": "deadline-cancellation-propagation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "부모 요청과 무관하게 완료할 작업에는 어떤 내구성과 소유권이 필요할까요?",
+    "question": "요청 연결이 끝나도 반드시 완료할 작업을 접수합니다. 내구성·소유권·결과 조회를 어떻게 분리하나요?"
+  },
+  {
+    "id": "try-lock-livelock-fairness",
+    "parentId": "deadlock-prevention",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "try-lock과 재시도를 반복하는 구조에서 라이브락과 기아를 줄이려면 어떤 공정성 규칙이 필요할까요?",
+    "question": "두 작업이 try-lock 실패 때 서로 양보하며 계속 재시도합니다. deadlock 없이도 진행하지 못하는 이유와 대책은 무엇인가요?"
+  },
+  {
+    "id": "projection-snapshot-versus-delta-version",
+    "parentId": "denormalization-maintenance",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "순서가 뒤집힌 갱신 이벤트를 버전으로 차단해 보세요.",
+    "question": "읽기 모델의 늦은 이벤트를 버전으로 버립니다. 전체 상태 이벤트와 증분 이벤트는 왜 처리 조건이 다른가요?"
+  },
+  {
+    "id": "virtual-clock-timeout-testing",
+    "parentId": "dependency-injection-boundaries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "시계와 스케줄러를 주입해 타임아웃 경쟁을 어떻게 재현할까요?",
+    "question": "실제 sleep 없이 timeout과 완료 경쟁을 시험합니다. 가상 시계와 스케줄러에 어떤 제어 지점을 두나요?"
+  },
+  {
+    "id": "fault-injection-seam-design",
+    "parentId": "deterministic-concurrency-testing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "실패 주입 위치를 너무 많이 노출하지 않고 테스트 가능하게 설계하려면 어떻게 할까요?",
+    "question": "테스트를 위해 실패 지점을 넣으려 합니다. 운영 코드의 내부 구현을 과하게 노출하지 않고 무엇을 주입하나요?"
+  },
+  {
+    "id": "device-flow-token-response-loss",
+    "parentId": "device-code-login",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "응답이 유실된 뒤 상태 재조회와 자격 교환을 멱등적으로 만드는 방법은 무엇일까요?",
+    "question": "기기 로그인 승인 뒤 토큰 교환 응답을 잃었습니다. 승인 상태와 자격 발급·재전달을 어떻게 구분하나요?"
+  },
+  {
+    "id": "hybrid-logical-clock-boundaries",
+    "parentId": "distributed-clock-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "HLC",
+    "question": "물리 시각에 가까운 값과 논리 증가를 함께 쓰는 HLC는 어떤 순서를 표현하며 동시성·최신성을 어디까지 보장하나요?"
+  },
+  {
+    "id": "fencing-token-persistent-monotonicity",
+    "parentId": "distributed-lock-fencing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "펜싱 토큰이 재시작 후에도 단조 증가해야 하는 이유는 무엇인가요?",
+    "question": "펜싱 번호 발급기가 재시작해 번호가 작아졌습니다. 오래된 writer를 막으려면 어떤 내구·세대 조건이 필요한가요?"
+  },
+  {
+    "id": "trace-links-batch-causality",
+    "parentId": "distributed-tracing-boundaries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "배치 메시지가 여러 원인 요청에서 왔을 때 trace parent를 어떻게 표현할까요?",
+    "question": "여러 요청의 이벤트를 하나의 배치로 처리합니다. trace parent 하나로 표현할 수 없는 인과는 어떻게 연결하나요?"
+  },
+  {
+    "id": "dns-cache-layer-expiry-test",
+    "parentId": "dns-cache-failover",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "리졸버·운영체제·런타임의 DNS 캐시 만료를 실제 클라이언트에서 어떻게 검증할까요?",
+    "question": "DNS TTL을 줄였는데 일부 앱의 주소가 바뀌지 않습니다. resolver·OS·런타임 캐시를 어떻게 나눠 시험하나요?"
+  },
+  {
+    "id": "capture-versus-bubble-delegation",
+    "parentId": "dom-event-delegation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "캡처 위임이 버블 위임보다 필요한 이벤트는 어떤 경우일까요?",
+    "question": "부모에서 이벤트를 위임했지만 일부 이벤트는 받지 못합니다. capture와 bubble 위임을 어떤 조건으로 선택하나요?"
+  },
+  {
+    "id": "fractional-zero-one-knapsack",
+    "parentId": "dp-greedy-divide-conquer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "분할 가능한 배낭과 분할할 수 없는 배낭에서 탐욕법과 DP가 달라지는 이유를 설명해 보세요.",
+    "question": "물건을 나눌 수 있는 배낭과 나눌 수 없는 배낭에서 가치 비율 탐욕법의 정당성은 왜 달라지나요?"
+  },
+  {
+    "id": "dynamic-array-growth-factor",
+    "parentId": "dynamic-array-amortized",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "성장 배율을 작게 또는 크게 잡았을 때 이동량과 여유 메모리의 변화를 설명해 보세요.",
+    "question": "동적 배열 성장률을 2배에서 더 작게 바꿉니다. 전체 복사량과 여유 메모리·할당 피크는 어떻게 달라지나요?"
+  },
+  {
+    "id": "path-dependency-version-granularity",
+    "parentId": "dynamic-path-revalidation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "경로가 참조한 셀·청크 버전을 저장할 때 메모리와 무효화 정확성을 어떻게 절충하나요?",
+    "question": "경로에 참조한 셀이나 청크 버전을 저장합니다. 너무 넓거나 좁은 무효화 단위는 어떤 비용과 누락을 만드나요?"
+  },
+  {
+    "id": "elasticsearch-wait-for-refresh-cost",
+    "parentId": "elasticsearch-refresh-visibility",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`refresh=wait_for`와 즉시 강제 refresh의 비용을 비교해 보세요.",
+    "question": "Elasticsearch 쓰기에 refresh=wait_for와 강제 refresh를 적용하면 대기·세그먼트·병합 비용이 어떻게 다른가요?"
+  },
+  {
+    "id": "elasticsearch-docvalues-inverted-index",
+    "parentId": "elasticsearch-shard-mapping",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "doc values와 역색인의 검색·집계 역할을 비교해 보세요.",
+    "question": "Elasticsearch의 역색인과 doc values는 본문 검색·정렬·집계에서 각각 어떤 접근을 지원하나요?"
+  },
+  {
+    "id": "feature-flag-assignment-unit",
+    "parentId": "feature-flag-rollout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "사용자별 배정과 조직별 배정은 실험 결과와 정합성에 어떤 영향을 주나요?",
+    "question": "사용자별 또는 조직별로 새 기능을 배정합니다. 공유 데이터와 실험 독립성에 어떤 차이가 생기나요?"
+  },
+  {
+    "id": "cross-server-tick-event-order",
+    "parentId": "fixed-timestep-catchup",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "서버 간 틱이 어긋날 때 이벤트를 어느 틱에 귀속해야 결정성이 유지되나요?",
+    "question": "게임 서버끼리 시뮬레이션 틱이 어긋납니다. 교차 이벤트를 어떤 기준 틱과 순번에 귀속하나요?"
+  },
+  {
+    "id": "temporal-email-history-keys",
+    "parentId": "functional-dependency-keys",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "기간별 이메일 이력의 키와 함수 종속을 설계해 보세요.",
+    "question": "이메일 변경 이력을 저장합니다. 현재 계정의 유일성과 기간별 기록의 후보키는 어떻게 달라지나요?"
+  },
+  {
+    "id": "memoization-mutable-input-key",
+    "parentId": "functional-purity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "순수 함수의 결과를 메모이제이션할 때 입력 객체의 동일성과 해시 기준을 어떻게 정할까요?",
+    "question": "순수 계산 결과를 캐시하려는데 입력 객체가 가변입니다. 값 동일성·해시·캐시 무효화를 어떻게 정하나요?"
+  },
+  {
+    "id": "fixed-variable-step-integration",
+    "parentId": "game-server-tick-budget",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "고정 시간 간격과 가변 시간 간격 시뮬레이션은 어떤 정확성 차이가 있나요?",
+    "question": "같은 100ms를 한 번의 큰 dt와 여러 고정 dt로 계산합니다. 충돌·수치 적분·타이머 결과가 왜 달라질 수 있나요?"
+  },
+  {
+    "id": "git-reflog-rebase-recovery",
+    "parentId": "git-merge-rebase",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "rebase로 커밋 ID와 부모가 바뀌는 과정과 reflog를 이용한 복구는 어떻게 연결되나요?",
+    "question": "rebase 뒤 원래 커밋이 안 보입니다. reflog와 백업 참조로 무엇을 복구하고 어떤 검증을 해야 하나요?"
+  },
+  {
+    "id": "secret-env-file-refresh",
+    "parentId": "gitops-secrets-delivery",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "환경 변수와 파일 마운트 Secret의 갱신 시점을 어떻게 실험할까요?",
+    "question": "Secret을 환경 변수와 파일로 각각 전달합니다. 키 회전 시 실행 중 앱이 새 값을 읽는 시점은 어떻게 다른가요?"
+  },
+  {
+    "id": "go-producer-failure-channel-close",
+    "parentId": "go-channel-close-ownership",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "생산자 중 한 명의 오류 뒤 채널을 닫기 전 어떤 취소 순서를 지켜야 할까요?",
+    "question": "여러 생산자 중 하나가 실패했습니다. 취소 전파·남은 송신·채널 close를 어떤 순서로 수행하나요?"
+  },
+  {
+    "id": "go-alloc-inuse-profile",
+    "parentId": "go-gc-latency-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`alloc_space`와 `inuse_space`가 각각 임시 할당과 생존 보유를 어떻게 드러낼까요?",
+    "question": "Go heap profile의 alloc_space는 큰데 inuse_space는 작습니다. 임시 할당 비용과 생존 객체 보유를 어떻게 구분하나요?"
+  },
+  {
+    "id": "go-nil-receiver-error-method",
+    "parentId": "go-interface-typed-nil",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "nil 수신자를 허용하는 `Error` 메서드와 허용하지 않는 메서드를 어떻게 테스트할까요?",
+    "question": "nil 포인터가 error interface에 들어 있습니다. Error 메서드가 nil 수신자를 허용하는지 어떻게 확인하나요?"
+  },
+  {
+    "id": "go-full-slice-capacity-boundary",
+    "parentId": "go-slice-backing-array",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "full slice expression으로 cap을 제한해도 직접 원소 수정이 공유되는 이유는 무엇인가요?",
+    "question": "full slice expression으로 cap을 줄였습니다. append 격리와 기존 원소 수정의 공유는 어떻게 다른가요?"
+  },
+  {
+    "id": "go-gmp-gomaxprocs-scope",
+    "parentId": "goroutine-lifecycle-and-leaks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "G·M·P와 GOMAXPROCS는 각각 무엇이며, OS 스레드 수의 상한과 왜 다른가요?",
+    "question": "Go의 G·M·P와 GOMAXPROCS는 무엇을 제한하며 OS 스레드 수의 상한과 왜 다른가요?"
+  },
+  {
+    "id": "streaming-request-drain-contract",
+    "parentId": "graceful-shutdown",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "스트리밍 요청과 짧은 요청의 종료 기한은 어떻게 다르게 둘까요?",
+    "question": "장기 스트림과 짧은 요청을 같은 서버에서 처리합니다. 종료 기한과 재개 위치를 어떻게 다르게 정하나요?"
+  },
+  {
+    "id": "csr-graph-update-cost",
+    "parentId": "graph-representation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "CSR이 정적 희소 그래프의 순회에 유리하지만 갱신에 불리한 이유를 설명해 보세요.",
+    "question": "희소 그래프를 CSR로 저장합니다. 연속 순회의 이점과 간선 삽입·삭제의 재구성 비용은 무엇인가요?"
+  },
+  {
+    "id": "obstacle-inflation-profile-storage",
+    "parentId": "grid-diagonal-corner",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "장애물 팽창으로 한 칸 통로가 사라질 때 에이전트별 경로 데이터의 저장 비용을 어떻게 관리하나요?",
+    "question": "장애물을 캐릭터 반경만큼 팽창시키면 좁은 통로가 사라집니다. 여러 크기의 경로 데이터를 어떻게 저장하나요?"
+  },
+  {
+    "id": "grpc-stream-application-backpressure",
+    "parentId": "grpc-rest-contracts",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "클라이언트 스트리밍에서 백프레셔는 작업 큐까지 어떻게 이어져야 할까요?",
+    "question": "gRPC 스트림의 흐름 제어가 있어도 앱 작업 큐가 늘어납니다. 수신·큐·실행의 예산을 어떻게 연결하나요?"
+  },
+  {
+    "id": "linear-probing-primary-clustering",
+    "parentId": "hash-collision-resolution",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "선형 탐사에서 1차 클러스터링이 생기고 탐사 길이가 늘어나는 과정을 설명해 보세요.",
+    "question": "선형 탐사 해시 테이블에 충돌 키가 쌓입니다. 1차 클러스터링은 탐사 길이를 어떻게 늘리나요?"
+  },
+  {
+    "id": "shard-snapshot-log-handoff-point",
+    "parentId": "hash-sharding-and-resharding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "snapshot과 로그 시작 위치",
+    "question": "샤드 snapshot을 복사하면서 변경 로그를 따라갑니다. 복사본과 로그 시작 위치를 어떻게 같은 기준에 묶나요?"
+  },
+  {
+    "id": "incremental-rehash-delete-race",
+    "parentId": "hash-table-resize",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "점진적 이동 중 같은 키의 갱신·삭제가 어느 세대에 적용되는지 상태 전이를 설계해 보세요.",
+    "question": "점진적 재해시 중 같은 키가 갱신되거나 삭제됩니다. 옛·새 테이블의 조회·이동·tombstone은 어떤 순서를 지켜야 하나요?"
+  },
+  {
+    "id": "aging-progress-guarantee-limits",
+    "parentId": "cpu-scheduling-policies",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "우선순위 큐의 aging이 모든 기아를 없앤다고 말할 수 없는 경우는 언제인가요?",
+    "question": "대기 시간이 길면 우선순위를 올립니다. aging만으로 모든 작업의 최대 대기를 보장할 수 있나요?"
+  },
+  {
+    "id": "css-cascade-layer-priority",
+    "parentId": "css-cascade-specificity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "cascade layer 도입으로 기존 스타일의 승자와 유지보수 책임이 어떻게 바뀔까요?",
+    "question": "기존 CSS에 cascade layer를 도입합니다. 일반 선언·important·레이어 밖 스타일의 우선순위는 어떻게 바뀌나요?"
+  },
+  {
+    "id": "scoped-reset-typography-layers",
+    "parentId": "css-reset-normalize",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "컴포넌트 범위 reset과 전역 typography가 충돌하면 layer·상속을 어떻게 정할까요?",
+    "question": "컴포넌트 reset이 전역 글꼴과 링크 스타일을 덮습니다. 범위·상속·layer의 책임을 어떻게 정하나요?"
+  },
+  {
+    "id": "pagination-signed-cursor-scope",
+    "parentId": "db-keyset-pagination",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "서명된 커서에 필터·정렬·테넌트 범위를 포함할지 결정해 보세요.",
+    "question": "페이지 커서에 필터·정렬·테넌트 정보를 넣습니다. 서명·만료·인가 검사는 어떤 역할이 다른가요?"
+  },
+  {
+    "id": "database-log-lock-pressure-priority",
+    "parentId": "db-lock-escalation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "로그 압력과 잠금 압력이 동시에 커질 때 우선순위를 정해 보세요.",
+    "question": "대량 갱신에서 로그 압력과 잠금 대기가 함께 늘어납니다. 어느 병목을 먼저 줄였는지 어떻게 검증하나요?"
+  },
+  {
+    "id": "old-transaction-version-retention",
+    "parentId": "db-mvcc-snapshot",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "버전 저장소와 가장 오래된 트랜잭션 지표를 연결해 보세요.",
+    "question": "가장 오래된 transaction 하나가 버전 저장소를 키웁니다. 읽기 수명과 정리 지연을 어떤 지표로 연결하나요?"
+  },
+  {
+    "id": "one-to-many-limit-parent-page",
+    "parentId": "db-n-plus-one",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "일대다 JOIN에서 LIMIT이 부모 페이지를 깨뜨리는 과정을 재현해 보세요.",
+    "question": "주문·상품을 JOIN한 결과에 LIMIT을 걸었더니 주문 개수가 부족합니다. 부모 페이지를 어떻게 먼저 확정하나요?"
+  },
+  {
+    "id": "dual-column-source-of-truth",
+    "parentId": "db-online-schema-migration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "두 표현 불일치의 원본·버전 기준과 복구 절차를 만들어 보세요.",
+    "question": "이전·새 컬럼을 함께 쓰는데 값이 다릅니다. 어느 표현이 원본인지와 보정 기준을 어떻게 정하나요?"
+  },
+  {
+    "id": "idle-transaction-pool-starvation",
+    "parentId": "db-pool-long-transactions",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "유휴 트랜잭션 제한과 풀 고갈을 같은 장애 흐름으로 재현해 보세요.",
+    "question": "쿼리를 하지 않는 transaction이 연결과 잠금을 잡고 있습니다. idle 상태와 idle in transaction을 어떻게 구분하나요?"
+  },
+  {
+    "id": "query-plan-history-sampling",
+    "parentId": "db-query-plan-regression",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "계획 이력 수집의 범위·샘플링·보존 기간을 정해 보세요.",
+    "question": "실행 계획 이력을 남기려 합니다. 파라미터·지연·보존·샘플링을 어떤 범위로 수집하나요?"
+  },
+  {
+    "id": "replica-promotion-uncertain-write",
+    "parentId": "db-read-replica-consistency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "승격 시 미반영 쓰기와 사용자 재시도 계약을 정해 보세요.",
+    "question": "원본이 성공한 쓰기를 replica가 적용하기 전에 승격됐습니다. 사용자 재시도와 누락 대사는 어떻게 처리하나요?"
+  },
+  {
+    "id": "multi-region-name-reservation",
+    "parentId": "db-unique-constraint-race",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "다중 지역 전역 유일성의 권위 위치를 설계해 보세요.",
+    "question": "여러 지역에서 같은 사용자명을 동시에 등록합니다. 지역별 UNIQUE 밖의 전역 예약 권위는 어디에 두나요?"
+  },
+  {
+    "id": "file-database-dual-write-cutover",
+    "parentId": "dbms-vs-files",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "파일에서 DBMS로 중단 없이 이전하는 이중 기록·대조 절차를 만들어 보세요.",
+    "question": "파일 저장을 DB로 옮기는 동안 양쪽 기록을 유지합니다. 기준 snapshot과 변경 추적·권위 전환을 어떻게 검증하나요?"
+  },
+  {
+    "id": "cancellation-completion-single-result",
+    "parentId": "deadline-cancellation-propagation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "취소와 정상 완료가 경합할 때 결과를 한 번만 전달하려면 어떻게 할까요?",
+    "question": "취소와 정상 완료가 동시에 도착합니다. 사용자에게 결과를 한 번만 전달하면서 실제 늦은 효과는 어떻게 기록하나요?"
+  },
+  {
+    "id": "cross-service-executor-deadlock",
+    "parentId": "deadlock-prevention",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "RPC와 실행기까지 걸친 순환 대기를 로컬 덤프와 분산 추적으로 어떻게 연결할까요?",
+    "question": "RPC 응답을 기다리는 worker가 상대의 callback 실행에 필요합니다. 여러 서비스·실행기에 걸친 순환 대기는 어떻게 찾나요?"
+  },
+  {
+    "id": "projection-selective-rebuild",
+    "parentId": "denormalization-maintenance",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "원본·요약 대조 쿼리와 선택적 재생성 절차를 만들어 보세요.",
+    "question": "원본과 일부 요약 행이 다릅니다. 전체 삭제 없이 대조·선택 재생성·실시간 이벤트 적용을 어떻게 조합하나요?"
+  },
+  {
+    "id": "fake-real-repository-contract-tests",
+    "parentId": "dependency-injection-boundaries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "가짜 DB와 실제 DB의 계약 테스트를 어떻게 공유할까요?",
+    "question": "가짜 DB는 테스트를 통과하지만 실제 DB는 경쟁에서 실패합니다. 두 구현에 공유할 계약 테스트는 무엇인가요?"
+  },
+  {
+    "id": "network-partition-versus-process-pause",
+    "parentId": "deterministic-concurrency-testing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "분산 테스트에서 네트워크 분할과 노드 정지를 어떻게 구분해 주입할까요?",
+    "question": "분산 테스트에서 노드 종료·프로세스 정지·네트워크 분할은 어떤 서로 다른 실패를 재현하나요?"
+  },
+  {
+    "id": "device-credential-short-lived-storage",
+    "parentId": "device-code-login",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "기기 자격을 안전하게 보관할 수 없는 환경에서 수명과 재인증을 어떻게 정할까요?",
+    "question": "콘솔이 자격 증명을 안전하게 저장하기 어렵습니다. 토큰 수명·재인증·연결 세션을 어떻게 제한하나요?"
+  },
+  {
+    "id": "lease-audit-clock-jump",
+    "parentId": "distributed-clock-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "lease·감사 로그의 시계 점프",
+    "question": "서버 시계가 갑자기 움직였습니다. lease 경과 계산과 감사 로그 시각을 어떻게 따로 처리하나요?"
+  },
+  {
+    "id": "multi-store-fencing-scope",
+    "parentId": "distributed-lock-fencing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "여러 저장소에 쓰는 작업에서 토큰 검증 범위는 어떻게 정할까요?",
+    "question": "한 작업자가 DB와 객체 저장소에 씁니다. 한곳의 펜싱 검사만으로 전체 작업을 보호할 수 있나요?"
+  },
+  {
+    "id": "trace-clock-skew-duration",
+    "parentId": "distributed-tracing-boundaries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "서버 시계 오차가 분산 span duration과 인과 해석에 미치는 영향은 무엇인가요?",
+    "question": "서버 시계가 어긋나 자식 span이 부모보다 먼저 시작한 것처럼 보입니다. duration과 인과를 어떻게 해석하나요?"
+  },
+  {
+    "id": "connection-lifetime-dns-refresh",
+    "parentId": "dns-cache-failover",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "연결 풀이 주소 전환을 따라가도록 최대 수명과 유휴 수명을 어떤 분포로 정할까요?",
+    "question": "DNS 전환을 따라가도록 연결 최대 수명과 유휴 수명을 설정합니다. 재연결 폭주 없이 어떻게 분산하나요?"
+  },
+  {
+    "id": "shadow-dom-composed-path",
+    "parentId": "dom-event-delegation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Shadow DOM 경계에서 target 재지정과 composedPath를 어떻게 확인할까요?",
+    "question": "Shadow DOM 안에서 발생한 클릭의 target이 바뀌어 보입니다. retargeting과 composedPath로 어떤 경계를 확인하나요?"
+  },
+  {
+    "id": "dynamic-programming-state-sufficiency",
+    "parentId": "dp-greedy-divide-conquer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "DP 상태에서 하나의 정보를 제거했을 때 미래 전이를 구분할 수 없게 되는 반례를 만들어 보세요.",
+    "question": "DP 상태에서 정보를 하나 줄이려 합니다. 같은 상태로 합친 두 과거가 미래 전이를 다르게 만드는지 어떻게 확인하나요?"
+  },
+  {
+    "id": "dynamic-array-shrink-hysteresis",
+    "parentId": "dynamic-array-amortized",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "축소 임계값이 너무 가까울 때 확장·축소가 반복되는 이유와 완화 방법을 말해 보세요.",
+    "question": "배열 사용량이 경계 근처에서 오르내려 확장·축소가 반복됩니다. 서로 다른 임계값은 왜 필요한가요?"
+  },
+  {
+    "id": "moving-target-replan-cadence",
+    "parentId": "dynamic-path-revalidation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "목표가 계속 움직이는 추적 대상일 때 재탐색 주기와 경로 추종 오차를 어떻게 정하나요?",
+    "question": "추적 대상이 계속 움직입니다. 매 틱 재탐색하지 않으면서 경로 오차와 안전성을 어떻게 관리하나요?"
+  },
+  {
+    "id": "elasticsearch-get-search-readback",
+    "parentId": "elasticsearch-refresh-visibility",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "ID 기반 GET과 검색의 가시성 계약을 테스트해 보세요.",
+    "question": "저장한 문서를 ID GET으로는 보는데 검색에는 없습니다. read-after-write 화면을 어떤 경로로 구성하나요?"
+  },
+  {
+    "id": "elasticsearch-alias-reindex-cutover",
+    "parentId": "elasticsearch-shard-mapping",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "mapping 변경과 alias 전환의 무중단 절차를 검증해 보세요.",
+    "question": "mapping 변경을 위해 새 인덱스로 재색인합니다. 동시 쓰기·삭제를 놓치지 않고 alias를 언제 전환하나요?"
+  },
+  {
+    "id": "feature-rollback-late-event",
+    "parentId": "feature-flag-rollout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "새 기능이 이벤트를 발행한 뒤 롤백하면 소비자는 어떻게 처리해야 할까요?",
+    "question": "새 기능을 끈 뒤에도 그 기능이 발행한 이벤트가 도착합니다. 소비자의 호환·보정·중복 처리는 어떻게 유지하나요?"
+  },
+  {
+    "id": "ai-update-frequency-combat-fairness",
+    "parentId": "fixed-timestep-catchup",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "과부하에서 AI 갱신 빈도를 낮춰도 공격·회피 반응의 공정성을 유지하려면 어떤 규칙을 고정하나요?",
+    "question": "과부하에서 NPC AI 평가 주기를 낮춥니다. 공격·회피의 공정성을 바꾸지 않으려면 어떤 규칙을 분리하나요?"
+  },
+  {
+    "id": "unique-null-collation-cross-engine",
+    "parentId": "functional-dependency-keys",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "collation·NULL·부분 인덱스의 엔진별 유일성 동작을 검증해 보세요.",
+    "question": "같은 이메일 제약을 다른 DB로 옮깁니다. collation·NULL·부분 인덱스의 차이를 어떤 데이터로 검증하나요?"
+  },
+  {
+    "id": "pure-random-state-threading",
+    "parentId": "functional-purity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "난수 생성기를 순수 계산과 결합해야 할 때 seed와 상태를 어떤 값으로 전달할까요?",
+    "question": "난수를 쓰는 계산을 재현 가능한 함수로 만듭니다. seed와 다음 난수 상태를 어떻게 입출력으로 전달하나요?"
+  },
+  {
+    "id": "game-timer-phase-staggering",
+    "parentId": "game-server-tick-budget",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "타이머가 한 틱에 몰리지 않게 어떻게 배치할까요?",
+    "question": "많은 NPC 타이머가 같은 틱에 만료됩니다. 허용 지연과 공정성을 유지하면서 만료·실행을 어떻게 분산하나요?"
+  },
+  {
+    "id": "git-conflict-resolution-verification",
+    "parentId": "git-merge-rebase",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "merge conflict를 해결한 뒤 원래 변경과 상대 변경이 모두 보존됐는지 어떤 diff로 검증할까요?",
+    "question": "merge 충돌을 해결했습니다. 원래 양쪽 변경의 의도가 모두 남았는지 어떤 diff와 테스트로 확인하나요?"
+  },
+  {
+    "id": "secret-store-outage-last-known-good",
+    "parentId": "gitops-secrets-delivery",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "외부 비밀 저장소 장애 때 마지막 정상값을 유지할 범위는 무엇일까요?",
+    "question": "외부 비밀 저장소가 장애입니다. 이미 가진 자격을 어느 범위와 기간까지 사용하고 신규 작업은 어떻게 제한하나요?"
+  },
+  {
+    "id": "go-directional-channel-api",
+    "parentId": "go-channel-close-ownership",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "송신 전용 `chan<- T`와 수신 전용 `<-chan T`를 함수 경계에 어떻게 배치할까요?",
+    "question": "Go 함수에 송신 전용·수신 전용 채널을 전달합니다. 타입이 제한하는 동작과 close 소유권은 어떻게 다른가요?"
+  },
+  {
+    "id": "go-pointer-density-gc-scan",
+    "parentId": "go-gc-latency-tradeoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "포인터가 많은 객체와 바이트 배열의 GC 스캔 비용을 어떻게 비교할까요?",
+    "question": "같은 바이트 크기라도 포인터가 많은 객체와 바이트 배열의 GC 스캔 비용은 왜 다른가요?"
+  },
+  {
+    "id": "go-type-assertion-typed-nil",
+    "parentId": "go-interface-typed-nil",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "타입 assertion 실패와 typed nil 성공을 호출자 API에서 어떻게 구분할까요?",
+    "question": "Go 타입 assertion은 성공했는데 결과 포인터가 nil입니다. 타입 일치와 값의 존재를 어떻게 구분하나요?"
+  },
+  {
+    "id": "go-small-slice-large-array-retention",
+    "parentId": "go-slice-backing-array",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "작은 슬라이스가 큰 배열을 붙잡는 보유 경로를 heap profile에서 어떻게 찾을까요?",
+    "question": "큰 배열의 일부만 슬라이스로 보관합니다. 작은 길이가 큰 backing array를 붙잡는 문제를 어떻게 찾고 줄이나요?"
+  },
+  {
+    "id": "go-goroutine-block-mutex-profiles",
+    "parentId": "goroutine-lifecycle-and-leaks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "goroutine·block·mutex 프로파일은 현재 대기와 누적 대기를 관찰하는 데 어떤 차이가 있나요?",
+    "question": "goroutine·block·mutex profile은 현재 상태와 누적 대기를 어떻게 다르게 보여 주나요?"
+  },
+  {
+    "id": "shutdown-child-admission-race",
+    "parentId": "graceful-shutdown",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "종료 중 새 자식 작업이 생성되지 않게 어떤 소유권 규칙이 필요할까요?",
+    "question": "종료가 시작된 뒤 진행 중 요청이 새 자식 작업을 만듭니다. 작업 카운터와 신규 수락 차단을 어떻게 동기화하나요?"
+  },
+  {
+    "id": "reverse-adjacency-index",
+    "parentId": "graph-representation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "역방향 간선을 함께 저장할 때 메모리 비용과 탐색 이득을 비교해 보세요.",
+    "question": "방향 그래프의 역간선을 별도로 저장합니다. 역탐색 이점과 동시 갱신·메모리 비용은 어떻게 맞추나요?"
+  },
+  {
+    "id": "shared-clearance-map-query",
+    "parentId": "grid-diagonal-corner",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "서로 다른 반경의 에이전트가 clearance 맵을 공유할 수 있는 조건은 무엇인가요?",
+    "question": "서로 다른 반경의 캐릭터가 같은 clearance map을 사용합니다. 어떤 기하·해상도 조건을 확인해야 하나요?"
+  },
+  {
+    "id": "grpc-domain-error-retry-semantics",
+    "parentId": "grpc-rest-contracts",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "잔액 부족 같은 규칙상 거절을 전송 오류로 표현하면 어떤 재시도 문제가 생길까요?",
+    "question": "잔액 부족을 gRPC 전송 장애처럼 반환했습니다. 상태 코드와 업무 거절을 어떻게 나눠 잘못된 재시도를 막나요?"
+  },
+  {
+    "id": "hash-flooding-random-seed-boundary",
+    "parentId": "hash-collision-resolution",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "공개 입력을 받는 서버에서 충돌 공격과 해시 시드가 어떤 방어를 제공하는지 말해 보세요.",
+    "question": "외부 키를 받는 해시 테이블에서 충돌 공격을 줄이려 합니다. 해시 시드와 입력 제한이 각각 무엇을 보호하나요?"
+  },
+  {
+    "id": "hot-key-semantic-sharding",
+    "parentId": "hash-sharding-and-resharding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "핫키 하위 분할",
+    "question": "단일 계정 키가 쓰기 병목입니다. 하위 키로 분할해도 되는 누적 통계와 분할하기 어려운 잔액은 무엇이 다른가요?"
+  },
+  {
+    "id": "hash-load-factor-latency-memory",
+    "parentId": "hash-table-resize",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "부하율 상한을 낮추면 충돌과 지연은 줄지만 메모리가 늘어나는 이유를 설명해 보세요.",
+    "question": "해시 테이블의 부하율 상한을 낮춥니다. 충돌 감소와 메모리·재해시 비용은 어떻게 비교하나요?"
+  },
+  {
+    "id": "multicore-task-migration-cost",
+    "parentId": "cpu-scheduling-policies",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "멀티코어에서 작업을 다른 코어로 옮기는 비용까지 포함하면 비교가 어떻게 달라질까요?",
+    "question": "여유 코어로 작업을 옮기면 항상 빨라지나요? 부하 균형과 캐시·NUMA 이동 비용을 어떻게 비교하나요?"
+  },
+  {
+    "id": "css-unset-inherit-initial",
+    "parentId": "css-cascade-specificity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "상속되지 않는 속성에서 `unset`과 `inherit`가 실제로 만드는 값을 비교해 보세요.",
+    "question": "상속되지 않는 CSS 속성에 unset과 inherit를 적용하면 어떤 값이 되며 initial과는 어떻게 다른가요?"
+  },
+  {
+    "id": "bottom-up-heapify-linear-cost",
+    "parentId": "heap-vs-sorted-array",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "정렬된 입력을 한 번에 힙으로 만드는 heapify가 반복 삽입과 다른 비용을 갖는 이유를 설명해 보세요.",
+    "question": "배열 전체를 힙으로 만들 때 bottom-up heapify는 왜 반복 삽입보다 낮은 전체 비용을 가질 수 있나요?"
+  },
+  {
+    "id": "http-strong-weak-etag",
+    "parentId": "http-cache-validation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "강한 ETag와 약한 ETag를 표현 동일성·의미 동일성 요구에 어떻게 매핑할까요?",
+    "question": "HTTP 응답의 바이트는 바뀌었지만 의미는 같습니다. strong·weak ETag를 재검증·범위 전송에 어떻게 구분하나요?"
+  },
+  {
+    "id": "http-pool-acquire-deadline",
+    "parentId": "http-connection-pool",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "연결 획득 timeout을 전체 요청 deadline과 어떤 우선순위로 결합할까요?",
+    "question": "HTTP 연결을 기다리다가 사용자 deadline을 넘깁니다. 풀 획득·연결·응답 기한을 어떻게 합치나요?"
+  },
+  {
+    "id": "idempotency-record-expiry-contract",
+    "parentId": "http-get-post-semantics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "idempotency key가 만료된 뒤 늦은 재시도가 도착하는 경우를 어떻게 처리할까요?",
+    "question": "멱등 기록을 삭제한 뒤 오래된 재시도가 왔습니다. 새로운 요청으로 실행할지 거절할지 어떤 유효기간 계약을 두나요?"
+  },
+  {
+    "id": "http2-stream-connection-flow-windows",
+    "parentId": "http2-head-of-line-blocking",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "HTTP/2의 스트림별 흐름 제어와 연결별 흐름 제어가 함께 막히는 순서를 설명해 보세요.",
+    "question": "HTTP/2의 스트림 창은 남았는데 전송이 멈춥니다. 스트림별·연결별 흐름 제어 창은 어떻게 함께 적용되나요?"
+  },
+  {
+    "id": "persistent-tree-path-copy",
+    "parentId": "immutable-data-sharing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "구조적 공유 자료구조에서 한 하위 노드를 바꿀 때 복사해야 하는 경로의 범위는 어떻게 정할까요?",
+    "question": "불변 트리의 리프 하나를 수정합니다. 어느 경로만 복사하고 어떤 하위 노드를 공유할 수 있나요?"
+  },
+  {
+    "id": "incident-forward-recovery",
+    "parentId": "incident-mitigation-root-cause",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "롤백이 데이터 때문에 불가능하면 어떤 완화 선택지가 있나요?",
+    "question": "새 스키마 때문에 옛 코드로 rollback할 수 없습니다. 장애 중 쓰기 제한·호환 경로·전진 복구는 어떻게 선택하나요?"
+  },
+  {
+    "id": "constructor-virtual-dispatch-hazard",
+    "parentId": "inheritance-composition",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "상속 계층이 깊어질 때 생성자 호출과 메서드 재정의 순서가 어떤 위험을 만들까요?",
+    "question": "부모 생성자에서 재정의 가능한 메서드를 호출합니다. 자식 초기화 순서와 언어별 dispatch 때문에 어떤 문제가 생기나요?"
+  },
+  {
+    "id": "epoll-oneshot-rearm-owner",
+    "parentId": "io-readiness-vs-completion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "EPOLLONESHOT으로 연결 소유권을 넘길 때 언제 재무장해야 이벤트를 놓치지 않을까요?",
+    "question": "EPOLLONESHOT으로 연결을 한 worker에게 맡깁니다. 처리·소유권 반환·재무장 순서에서 무엇을 지켜야 하나요?"
+  },
+  {
+    "id": "acceptex-pool-listen-backlog",
+    "parentId": "iocp-acceptex",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "AcceptEx 미리 제출 수와 listen backlog가 각각 어떤 단계의 대기를 제한할까요?",
+    "question": "AcceptEx를 미리 제출하는 수와 listen backlog는 어떤 서로 다른 연결 대기를 다루나요?"
+  },
+  {
+    "id": "iocp-offload-connection-order",
+    "parentId": "iocp-batch-fairness",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "무거운 완료를 다른 실행기로 옮길 때 연결별 순서는 어떻게 보장할까요?",
+    "question": "무거운 IOCP 완료 처리를 다른 풀로 옮깁니다. 연결별 적용 순서와 버퍼 수명을 어떻게 보존하나요?"
+  },
+  {
+    "id": "iocp-operation-counter-invariants",
+    "parentId": "iocp-cancel-drain",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "작업별·연결별 참조 카운터와 종료 상태 전이를 어떤 원자적 순서로 갱신할까요?",
+    "question": "I/O 제출과 취소·완료가 겹칩니다. 작업별·연결별 참조 카운터를 어떤 순서로 증감해야 하나요?"
+  },
+  {
+    "id": "iocp-user-packet-tagging",
+    "parentId": "iocp-completion-key-overlapped",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "사용자 정의 패킷에서 OVERLAPPED null 규약과 커널 완료를 어떤 타입 정보로 분리할까요?",
+    "question": "IOCP에 사용자 패킷을 직접 게시합니다. 커널 I/O 완료와 종료·제어 패킷을 어떤 타입 규약으로 구분하나요?"
+  },
+  {
+    "id": "iocp-worker-wakeup-locality",
+    "parentId": "iocp-concurrency-workers",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "IOCP의 대기 워커 깨움 방식이 캐시 지역성과 처리 공정성에 어떤 영향을 줄까요?",
+    "question": "IOCP의 대기 worker 깨움 방식은 cache locality와 공정성에 어떤 영향을 주며 어떤 수치를 관찰하나요?"
+  },
+  {
+    "id": "gqcs-ex-per-entry-error",
+    "parentId": "iocp-gqcs-error-contract",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "GetQueuedCompletionStatusEx에서 항목별 오류와 마지막 오류 코드를 어떻게 분리할까요?",
+    "question": "GetQueuedCompletionStatusEx가 여러 항목을 반환했습니다. 함수의 오류와 항목별 I/O 상태는 어떻게 나누어 해석하나요?"
+  },
+  {
+    "id": "windows-skip-success-completion",
+    "parentId": "iocp-immediate-completion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "FILE_SKIP_COMPLETION_PORT_ON_SUCCESS를 적용할 수 있는 핸들·작업 조건은 무엇일까요?",
+    "question": "FILE_SKIP_COMPLETION_PORT_ON_SUCCESS를 적용합니다. 즉시 성공과 pending 완료의 정리 경로는 어떻게 달라지나요?"
+  },
+  {
+    "id": "wsabuf-descriptor-payload-lifetime",
+    "parentId": "iocp-send-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "scatter/gather의 WSABUF 배열과 실제 데이터 각각의 수명을 어떤 객체로 묶을까요?",
+    "question": "WSASend의 WSABUF 배열과 payload·OVERLAPPED는 같은 수명인가요? 호출 반환 뒤 무엇을 유지해야 하나요?"
+  },
+  {
+    "id": "shutdown-independent-audit-sink",
+    "parentId": "iocp-worker-shutdown",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "종료 로그가 닫히는 DB·워커에 의존하지 않도록 어떤 관측 경로를 둘까요?",
+    "question": "종료 로그가 이미 닫힌 DB나 worker에 의존합니다. 마지막 정리 결과를 어떤 별도 관측 경로로 남기나요?"
+  },
+  {
+    "id": "swift-task-closure-ownership-graph",
+    "parentId": "ios-arc-weak-cycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "서비스·작업 핸들·클로저·화면 사이의 참조 그래프에서 어느 간선을 약하게 할지 그려 보세요.",
+    "question": "화면·서비스·작업 핸들·클로저가 서로 참조합니다. 취소와 필수 작업 완료를 고려해 어느 참조를 약하게 하나요?"
+  },
+  {
+    "id": "ios-multicast-observer-lifecycle",
+    "parentId": "ios-delegate-closure-notification",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "멀티캐스트 delegate와 Notification에서 구독자 해제·호출 순서·한 수신자의 실패를 비교해 보세요.",
+    "question": "여러 구독자에게 상태 변경을 알립니다. delegate 집합과 Notification의 해제·순서·재진입은 어떻게 다른가요?"
+  },
+  {
+    "id": "rotated-view-axis-aligned-frame",
+    "parentId": "ios-frame-bounds",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "회전된 bounds 네 모서리를 부모 좌표로 변환해 축 정렬 경계 상자를 계산해 보세요.",
+    "question": "뷰가 회전됐습니다. bounds의 모서리를 부모 좌표로 바꾸어 frame의 축 정렬 경계를 어떻게 계산하나요?"
+  },
+  {
+    "id": "ios-scene-save-version-dedup",
+    "parentId": "ios-scene-app-lifecycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "SceneDelegate와 scenePhase가 동시에 저장을 요청해도 한 버전만 커밋하도록 만들어 보세요.",
+    "question": "SceneDelegate와 scenePhase가 동시에 저장을 요청합니다. 같은 버전의 중복 저장과 역순 완료를 어떻게 막나요?"
+  },
+  {
+    "id": "ios-navigation-view-retention",
+    "parentId": "ios-view-lifecycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "navigation·modal·tab 전환 로그로 뷰 유지와 재로드 상황의 콜백 차이를 비교해 보세요.",
+    "question": "navigation·modal·tab을 오갈 때 viewDidLoad와 appearance callback은 어떤 조건에서 다시 호출되나요?"
+  },
+  {
+    "id": "java-repeatable-annotation-retention",
+    "parentId": "java-annotation-retention",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Repeatable 어노테이션에서 컨테이너와 반복 요소의 Retention 조건은 무엇인가요?",
+    "question": "Repeatable 어노테이션을 reflection으로 읽습니다. 반복 요소와 컨테이너의 retention·조회 API는 어떻게 맞추나요?"
+  },
+  {
+    "id": "java-unboxing-promotion-order",
+    "parentId": "java-boxing-null",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "복합 산술식의 binary numeric promotion과 unboxing 순서를 어떻게 추적할까요?",
+    "question": "래퍼 숫자가 섞인 산술식에서 null 예외가 납니다. unboxing과 numeric promotion은 어떤 순서로 적용되나요?"
+  },
+  {
+    "id": "java-equals-inheritance-symmetry",
+    "parentId": "java-equals-hashcode",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "상속 기반 equals에서 대칭성과 추이성이 깨지는 예를 어떻게 피할까요?",
+    "question": "상속한 값 객체에 필드를 추가하자 equals의 대칭성·추이성이 깨집니다. 어떤 동등성 경계를 선택하나요?"
+  },
+  {
+    "id": "java-final-field-safe-publication",
+    "parentId": "java-final-immutability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "final 필드의 생성자 안전 공개와 참조 대상의 가변성은 어떤 메모리 모델 차이가 있나요?",
+    "question": "생성자에서 final 필드를 채운 객체를 공유합니다. final 필드 가시성과 this escape·중첩 가변성은 어떻게 다른가요?"
+  },
+  {
+    "id": "java-gc-root-leak-classification",
+    "parentId": "java-gc-reachability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "GC root 종류별로 힙 덤프에서 누수 경로를 어떻게 분류할까요?",
+    "question": "힙 덤프에서 오래 살아 있는 객체를 찾았습니다. thread·static·JNI 등 root 경로를 어떻게 분류해 원인을 찾나요?"
+  },
+  {
+    "id": "java-generic-array-reifiability",
+    "parentId": "java-generics-erasure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "제네릭 배열 생성이 금지되고 `List<?>[]` 일부가 허용되는 이유는 무엇인가요?",
+    "question": "Java에서 List<String>[] 생성은 안 되는데 일부 wildcard 배열은 가능합니다. 런타임 타입 검사와 어떤 관계가 있나요?"
+  },
+  {
+    "id": "java-null-overload-ambiguity",
+    "parentId": "java-overload-override",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "null 리터럴에서 가장 구체적인 overload가 하나가 아닐 때 컴파일러는 어떻게 거절하나요?",
+    "question": "서로 관련 없는 두 참조 타입의 overload에 null을 넘깁니다. 가장 구체적인 메서드가 없으면 어떻게 되나요?"
+  },
+  {
+    "id": "atomic-integer-multi-field-invariant",
+    "parentId": "java-synchronized-volatile",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "AtomicInteger와 synchronized는 복합 불변식에서 어떤 표현력 차이가 있나요?",
+    "question": "각 카운터를 AtomicInteger로 바꿨습니다. 두 카운터 합계 같은 복합 불변식에는 왜 별도 원자 경계가 필요한가요?"
+  },
+  {
+    "id": "threadlocal-weak-key-value-retention",
+    "parentId": "java-threadlocal-pool",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "ThreadLocalMap의 약한 키와 남은 값이 장수 워커에 미치는 영향은 무엇인가요?",
+    "question": "ThreadLocal 키는 약한 참조인데 장수 worker에서 값이 남습니다. 키 회수와 value 정리의 차이는 무엇인가요?"
+  },
+  {
+    "id": "jetstream-backoff-nak-policy",
+    "parentId": "jetstream-ack-redelivery",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "BackOff와 AckWait",
+    "question": "JetStream에서 BackOff·AckWait·NAK 지연을 설정합니다. timeout 재전달과 명시적 실패 신호는 어떻게 다른가요?"
+  },
+  {
+    "id": "jetstream-pull-push-demand",
+    "parentId": "jetstream-durable-consumer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "pull·push 흐름 제어",
+    "question": "JetStream의 pull과 push 소비를 비교합니다. 수신량·미확인 메시지·앱 worker 예산을 어떻게 연결하나요?"
+  },
+  {
+    "id": "jetstream-slow-replica-quorum",
+    "parentId": "jetstream-stream-replication",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "느린 replica",
+    "question": "JetStream 복제본 하나가 느립니다. 생산 지연과 장애 여유를 어떤 쿼럼·lag 지표로 구분하나요?"
+  },
+  {
+    "id": "jps-plus-update-dependency-index",
+    "parentId": "jps-plus-preprocessing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "셀 하나의 변경으로 영향을 받는 방향별 점프 정보를 안전하게 계산하려면 어떤 인덱스가 필요한가요?",
+    "question": "격자 셀 하나를 바꿨습니다. 그 셀을 통과하는 방향별 점프 전처리의 영향 범위를 어떻게 추적하나요?"
+  },
+  {
+    "id": "jps-diagonal-orthogonal-jump",
+    "parentId": "jps-symmetry-pruning",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "대각 점프에서 직교 방향의 강제 이웃 탐색을 생략하면 어떤 경로를 놓치나요?",
+    "question": "JPS의 대각 점프에서 직교 방향의 점프 검사를 생략하면 어떤 선택지를 잃을 수 있나요?"
+  },
+  {
+    "id": "js-arrow-field-prototype-memory",
+    "parentId": "js-arrow-this",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "클래스 인스턴스의 화살표 필드와 prototype 메서드는 메모리·this에서 어떻게 다를까요?",
+    "question": "클래스의 화살표 함수 필드와 prototype 메서드는 함수 공유·this·메모리에서 어떻게 다른가요?"
+  },
+  {
+    "id": "promise-combinator-success-contract",
+    "parentId": "js-async-await-parallel",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`all`, `allSettled`, `any`, `race`의 성공 조건을 한 작업 표로 비교해 보세요.",
+    "question": "Promise.all·allSettled·any·race는 어떤 시점에 성공·실패하며 남은 작업을 취소하나요?"
+  },
+  {
+    "id": "foreach-parameter-loop-binding",
+    "parentId": "js-closure-loop",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "forEach 콜백 매개변수와 for-loop의 let 바인딩은 어떤 점에서 같은 효과를 내나요?",
+    "question": "forEach 매개변수와 for 문의 let은 callback마다 어떻게 다른 바인딩을 만들며 객체 공유는 어디에 남나요?"
+  },
+  {
+    "id": "js-toprimitive-side-effects",
+    "parentId": "js-equality-coercion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "객체의 ToPrimitive 변환에서 `valueOf`와 `toString`은 언제 관여하나요?",
+    "question": "객체를 숫자나 문자열과 연산할 때 valueOf·toString·Symbol.toPrimitive는 어떤 순서와 부수 효과를 만들 수 있나요?"
+  },
+  {
+    "id": "node-nexttick-microtask-context",
+    "parentId": "js-event-loop-microtasks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Node의 `process.nextTick`과 Promise microtask의 우선순위를 어떤 버전에서 재현할까요?",
+    "question": "Node에서 nextTick과 Promise callback의 순서를 확인합니다. 실행 문맥·모듈 종류·버전을 왜 함께 고정해야 하나요?"
+  },
+  {
+    "id": "js-function-declaration-expression-init",
+    "parentId": "js-hoisting-tdz",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "함수 선언문과 함수 표현식의 호출 가능 시점을 어떻게 비교할까요?",
+    "question": "선언 전 함수를 호출합니다. 함수 선언문과 var·let에 넣은 함수 표현식은 언제 호출 가능해지나요?"
+  },
+  {
+    "id": "js-spread-getter-descriptor",
+    "parentId": "js-object-copy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "getter 프로퍼티를 spread할 때 값 평가와 descriptor가 어떻게 달라지나요?",
+    "question": "getter가 있는 객체를 spread로 복사합니다. getter 실행 시점과 새 프로퍼티 descriptor는 어떻게 달라지나요?"
+  },
+  {
+    "id": "promise-executor-then-throw",
+    "parentId": "js-promise-error-chain",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Promise 생성자 실행부의 동기 throw와 then 내부 throw는 관찰 시점이 어떻게 다른가요?",
+    "question": "Promise executor와 then callback에서 각각 throw했습니다. 실행 시점과 rejection 관찰은 어떻게 다른가요?"
+  },
+  {
+    "id": "js-property-existence-undefined",
+    "parentId": "js-prototype-lookup",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Object.hasOwn·in·undefined 비교가 존재성에서 어떻게 다른가요?",
+    "question": "Object.hasOwn·in·undefined 비교는 속성의 존재와 상속·값 부재를 어떻게 다르게 판단하나요?"
+  },
+  {
+    "id": "js-callback-bind-arrow-wrapper",
+    "parentId": "js-this-binding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "class 메서드를 콜백으로 넘길 때 bind·화살표·래퍼 중 무엇을 고를까요?",
+    "question": "메서드를 callback으로 넘깁니다. bind·화살표 필드·래퍼 함수는 this·함수 정체성·메모리에서 어떻게 다른가요?"
+  },
+  {
+    "id": "jvm-tiered-compilation-observation",
+    "parentId": "jvm-bytecode-jit",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "계층형 컴파일의 전환과 컴파일 스레드 비용을 어떻게 관찰할까요?",
+    "question": "JVM의 계층형 컴파일이 예열 중 일어납니다. 컴파일 스레드·코드 전환과 요청 지연을 어떻게 관찰하나요?"
+  },
+  {
+    "id": "session-revocation-cache-lag",
+    "parentId": "jwt-vs-server-session",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "세션 상태 캐시가 권한 회수 지연을 만드는 조건을 어떻게 측정할까요?",
+    "question": "세션을 회수했지만 검증 캐시에 남아 접근이 됩니다. 허용 회수 지연과 캐시·실행 경계는 어떻게 정하나요?"
+  },
+  {
+    "id": "hpa-external-metric-failure",
+    "parentId": "k8s-hpa-scaling",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "외부 메트릭 수집이 끊겼을 때 HPA의 실제 replica 변화와 안전한 fallback을 어떻게 확인할까요.",
+    "question": "HPA의 외부 지표 수집이 끊겼습니다. 실제 replica 동작과 유지·확장·축소 fallback을 어떻게 검증하나요?"
+  },
+  {
+    "id": "priority-fifo-sequence-wrap",
+    "parentId": "heap-vs-sorted-array",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동점 작업에 삽입 순서를 보장하는 보조 키를 넣을 때 오버플로와 재시작 정책을 말해 보세요.",
+    "question": "동점 작업에 삽입 순번을 붙입니다. 순번 overflow와 재시작 뒤에도 FIFO를 유지하려면 어떻게 하나요?"
+  },
+  {
+    "id": "http2-stream-pool-budget",
+    "parentId": "http-connection-pool",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "HTTP/2 최대 스트림과 연결 풀 상한을 하위 서비스의 CPU·메모리와 어떻게 맞출까요?",
+    "question": "HTTP/2 연결 수는 적지만 스트림이 많습니다. 연결 풀과 스트림 동시성을 하위 용량에 어떻게 맞추나요?"
+  },
+  {
+    "id": "safe-http-observational-effects",
+    "parentId": "http-get-post-semantics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "안전한 메서드의 로그·카운터 효과와 캐시 부작용의 허용 범위를 어떻게 정할까요?",
+    "question": "GET 처리도 로그와 통계 카운터를 바꿉니다. 안전한 메서드의 허용된 관찰 효과와 업무 변경을 어떻게 구분하나요?"
+  },
+  {
+    "id": "http2-download-rpc-fairness",
+    "parentId": "http2-head-of-line-blocking",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "큰 다운로드와 짧은 RPC를 같은 연결에 둘 때 공정성을 어떤 분포로 측정할까요?",
+    "question": "큰 다운로드와 짧은 RPC가 한 HTTP/2 연결을 공유합니다. 우선순위·대역폭·버퍼의 공정성을 어떻게 측정하나요?"
+  },
+  {
+    "id": "immutable-snapshot-reader-retention",
+    "parentId": "immutable-data-sharing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "불변 스냅샷을 읽는 동안 메모리 회수와 객체 수명을 어떤 방식으로 보장할까요?",
+    "question": "새 불변 snapshot을 게시한 뒤 옛 snapshot을 독자가 읽고 있습니다. 메모리 회수와 독자 수명은 어떻게 제한하나요?"
+  },
+  {
+    "id": "incident-action-verification",
+    "parentId": "incident-mitigation-root-cause",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "사후 분석의 후속 조치가 실제 완료됐는지 무엇으로 확인할까요?",
+    "question": "장애 사후 조치가 문서에만 남지 않게 하려 합니다. 담당자·완료 조건·재현 시험을 어떻게 연결하나요?"
+  },
+  {
+    "id": "composition-root-resource-lifetime",
+    "parentId": "inheritance-composition",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "조합된 객체의 생성과 생명주기를 관리하는 방법이 많아질 때 어디에 조립 책임을 둘까요?",
+    "question": "협력 객체가 많아져 생성·종료 순서가 복잡합니다. composition root는 어떤 의존성과 수명을 소유하나요?"
+  },
+  {
+    "id": "io-uring-buffer-backpressure",
+    "parentId": "io-readiness-vs-completion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 4,
+    "sourcePrompt": "io_uring에서도 남는 버퍼 수명과 백프레셔 문제는 무엇일까요?",
+    "question": "io_uring으로 완료 기반 I/O를 쓰면 버퍼 수명과 제출 큐·완료 큐의 backpressure는 어떻게 관리하나요?"
+  },
+  {
+    "id": "acceptex-failed-socket-reuse",
+    "parentId": "iocp-acceptex",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "AcceptEx 실패 뒤 소켓 재사용과 새 생성 중 어떤 조건을 비교해야 할까요?",
+    "question": "AcceptEx가 실패했습니다. 수락용 소켓을 재사용할지 새로 만들지 어떤 상태와 완료 수명을 확인하나요?"
+  },
+  {
+    "id": "iocp-short-long-connection-fairness",
+    "parentId": "iocp-batch-fairness",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "짧은 연결과 긴 연결의 공정성을 어떤 지표로 비교할까요?",
+    "question": "긴 연결의 완료가 계속 들어옵니다. 짧은 연결의 응답과 연결별 실행 예산을 어떻게 보장하나요?"
+  },
+  {
+    "id": "iocp-generation-not-memory-safety",
+    "parentId": "iocp-cancel-drain",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "세대 번호나 작업 ID가 컨텍스트 주소 재사용을 어떻게 방지할까요?",
+    "question": "OVERLAPPED 주소를 풀에서 재사용합니다. 세대 번호가 막는 논리 오류와 막지 못하는 해제 후 접근은 무엇인가요?"
+  },
+  {
+    "id": "iocp-blocking-offload-queue",
+    "parentId": "iocp-concurrency-workers",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "블로킹 완료 처리를 별도 풀로 보낼 때 그 풀의 대기열 상한은 어떻게 정할까요?",
+    "question": "블로킹 callback을 별도 풀로 보냈더니 그 큐가 늘어납니다. 완료 수집과 실행 풀의 상한을 어떻게 연결하나요?"
+  },
+  {
+    "id": "iocp-stop-packets-after-drain",
+    "parentId": "iocp-gqcs-error-contract",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "종료 패킷 수와 워커 수를 미완료 I/O drain 조건과 어떻게 맞출까요?",
+    "question": "IOCP worker마다 종료 패킷을 보내려 합니다. 미완료 I/O와 종료 패킷 소비 순서를 어떻게 맞추나요?"
+  },
+  {
+    "id": "iocp-completion-before-submit-return",
+    "parentId": "iocp-immediate-completion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "완료 워커가 제출 함수 반환 전에 실행될 때 참조 획득 순서를 어떻게 증명할까요?",
+    "question": "완료 worker가 WSARecv 호출 반환보다 먼저 실행됩니다. 작업 참조 획득과 제출 실패 rollback은 어떤 순서를 지켜야 하나요?"
+  },
+  {
+    "id": "send-completion-versus-business-ack",
+    "parentId": "iocp-send-order",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "송신 완료와 상대 애플리케이션 처리 ACK 사이의 상태를 어떻게 모델링할까요?",
+    "question": "로컬 송신 완료를 받았습니다. 상대 애플리케이션이 메시지를 처리했음을 확인하려면 어떤 ACK와 상태가 필요한가요?"
+  },
+  {
+    "id": "iocp-timeout-loop-versus-stop-packet",
+    "parentId": "iocp-worker-shutdown",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "GQCS timeout 제어 루프와 명시적 종료 패킷 방식을 어떤 조건에서 선택할까요?",
+    "question": "GQCS timeout으로 종료를 확인하는 방식과 명시적인 제어 패킷 방식은 응답성·CPU·정리에서 어떻게 다른가요?"
+  },
+  {
+    "id": "swift-completion-cancel-once",
+    "parentId": "ios-arc-weak-cycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "취소와 완료가 동시에 도착해도 클로저가 한 번만 실행되도록 상태 전이를 설계해 보세요.",
+    "question": "Swift 비동기 작업의 취소와 완료가 겹칩니다. callback을 한 번만 전달하고 자원을 안전하게 회수하려면 어떻게 하나요?"
+  },
+  {
+    "id": "ios-state-snapshot-event-subscription",
+    "parentId": "ios-delegate-closure-notification",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "알림 등록 전 로그인 변경을 놓친 화면이 저장된 상태와 사건 방송을 함께 사용하도록 설계해 보세요.",
+    "question": "화면이 알림 등록 전에 로그인 변경을 놓쳤습니다. 현재 상태 조회와 이벤트 구독 사이의 틈을 어떻게 막나요?"
+  },
+  {
+    "id": "nested-scroll-touch-conversion",
+    "parentId": "ios-frame-bounds",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "중첩된 스크롤 뷰에서 터치 점을 로컬 좌표로 바꾸는 convert 호출을 구성해 보세요.",
+    "question": "중첩 스크롤 뷰의 터치 좌표를 자식 로컬 좌표로 바꿉니다. content offset·transform을 어떻게 반영하나요?"
+  },
+  {
+    "id": "ios-multiscene-document-conflict",
+    "parentId": "ios-scene-app-lifecycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "같은 문서를 두 씬이 수정할 때 버전 비교와 충돌 표시·병합 정책을 정해 보세요.",
+    "question": "두 iOS 씬이 같은 문서를 수정합니다. 버전 비교와 충돌 표시·병합은 어떤 단위로 관리하나요?"
+  },
+  {
+    "id": "ios-hidden-screen-work-policy",
+    "parentId": "ios-view-lifecycle",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "화면이 사라질 때 취소할 작업과 캐시해 둘 작업을 최신성·비용·부수 효과로 나눠 보세요.",
+    "question": "화면이 사라졌습니다. 진행 중 다운로드·검색·캐시 작업 중 무엇을 취소하고 무엇을 유지하나요?"
+  },
+  {
+    "id": "annotation-processor-incremental-inputs",
+    "parentId": "java-annotation-retention",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "annotation processor의 증분 빌드 산출물이 stale해지지 않게 무엇을 추적할까요?",
+    "question": "annotation processor 산출물이 증분 빌드에서 낡았습니다. 어떤 입력·삭제·의존 관계를 추적해야 하나요?"
+  },
+  {
+    "id": "java-absence-optional-default",
+    "parentId": "java-boxing-null",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Optional·nullable 래퍼·기본값 중 부재 의미를 가장 잘 표현하는 것은 무엇인가요?",
+    "question": "숫자가 없음을 Optional·nullable 래퍼·기본값으로 표현합니다. 0과 부재를 구분하려면 무엇을 선택하나요?"
+  },
+  {
+    "id": "hashmap-key-value-mutation",
+    "parentId": "java-equals-hashcode",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "HashMap에서 값 변경과 키 변경의 조회 결과는 왜 다를까요?",
+    "question": "HashMap에서 value 필드 변경과 key의 비교 필드 변경은 조회에 왜 다른 영향을 주나요?"
+  },
+  {
+    "id": "java-list-copyof-element-mutation",
+    "parentId": "java-final-immutability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "List.copyOf의 원소가 가변일 때 어느 깊이까지 복사해야 할까요?",
+    "question": "List.copyOf로 목록을 복사했는데 원소의 필드는 바뀝니다. 컬렉션 불변성과 원소의 깊은 불변은 어떻게 다른가요?"
+  },
+  {
+    "id": "java-cleaner-explicit-close",
+    "parentId": "java-gc-reachability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Cleaner를 보조 안전망으로 둘 때 명시적 close와 어떤 책임을 나눌까요?",
+    "question": "Cleaner를 자원 정리의 보조 장치로 사용합니다. 명시적인 close와 실행 시점·실패 책임은 어떻게 나누나요?"
+  },
+  {
+    "id": "java-bridge-method-erasure",
+    "parentId": "java-generics-erasure",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "브리지 메서드는 소거된 시그니처와 override를 어떻게 연결하나요?",
+    "question": "제네릭 메서드를 override했더니 bridge method가 생깁니다. 타입 소거 뒤 dispatch를 어떻게 연결하나요?"
+  },
+  {
+    "id": "java-field-hiding-dispatch",
+    "parentId": "java-overload-override",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "필드 접근과 인스턴스 메서드 호출의 바인딩이 다른 이유는 무엇인가요?",
+    "question": "선언 타입은 부모이고 실제 객체는 자식입니다. 같은 이름의 필드와 override 메서드는 왜 다르게 선택되나요?"
+  },
+  {
+    "id": "java-volatile-happens-before",
+    "parentId": "java-synchronized-volatile",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "volatile 게시에서 일반 필드가 보이는 happens-before 경로를 어떻게 증명할까요?",
+    "question": "일반 필드를 쓴 뒤 volatile 준비 플래그를 켭니다. 소비자가 어떤 쓰기를 읽을 때 데이터 가시성이 연결되나요?"
+  },
+  {
+    "id": "threadlocal-versus-explicit-context",
+    "parentId": "java-threadlocal-pool",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "메서드 인자 전달과 ThreadLocal의 테스트 격리성을 어떻게 비교할까요?",
+    "question": "요청 문맥을 ThreadLocal에 넣는 것과 인자로 전달하는 것을 테스트 격리·비동기 전파로 어떻게 비교하나요?"
+  },
+  {
+    "id": "jetstream-event-id-retention",
+    "parentId": "jetstream-ack-redelivery",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "이벤트 ID 보존",
+    "question": "JetStream 메시지를 오래 뒤 재생합니다. 처리 ID 보존 기간이 짧으면 어떤 중복 효과가 다시 생기나요?"
+  },
+  {
+    "id": "jetstream-retention-fanout-contract",
+    "parentId": "jetstream-durable-consumer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "retention별 삭제",
+    "question": "분석과 알림이 같은 stream을 독립 소비합니다. Limits·Interest·WorkQueue 보관 정책은 어떤 삭제 조건이 다른가요?"
+  },
+  {
+    "id": "jetstream-leader-transition-timeout",
+    "parentId": "jetstream-stream-replication",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "leader 전환 timeout",
+    "question": "JetStream 리더 전환 중 생산 요청이 timeout됐습니다. 저장 여부와 중복 발행을 어떻게 확인하나요?"
+  },
+  {
+    "id": "jps-plus-table-compression",
+    "parentId": "jps-plus-preprocessing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "점프 정보를 압축할 때 조회 분기와 저장량을 어떤 맵 분포에서 비교하나요?",
+    "question": "JPS+ 점프 표를 압축하려 합니다. 도달 불가·미계산 상태와 조회 분기 비용을 어떻게 보존하나요?"
+  },
+  {
+    "id": "jps-weighted-terrain-fallback",
+    "parentId": "jps-symmetry-pruning",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동적 가중치가 들어온 격자에서 JPS 대신 어떤 탐색 구조를 선택하겠습니까?",
+    "question": "균일 격자에 지형별 비용과 선회 비용이 추가됐습니다. 기존 JPS 가지치기를 언제 중단해야 하나요?"
+  },
+  {
+    "id": "js-arrow-arguments-rest",
+    "parentId": "js-arrow-this",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "화살표의 `arguments`가 필요할 때 rest parameter가 어떤 대안이 되나요?",
+    "question": "화살표 함수에서 arguments를 읽었더니 바깥 함수 인자가 나옵니다. rest parameter는 어떤 대안인가요?"
+  },
+  {
+    "id": "shared-abortsignal-completed-results",
+    "parentId": "js-async-await-parallel",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "여러 fetch에 하나의 AbortSignal을 공유할 때 이미 완료된 응답은 어떻게 처리할까요?",
+    "question": "여러 fetch가 AbortSignal을 공유합니다. 일부 완료 뒤 abort하면 결과와 아직 진행 중인 작업은 어떻게 나누나요?"
+  },
+  {
+    "id": "closure-private-class-field-testing",
+    "parentId": "js-closure-loop",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "클로저 private 상태와 class private field의 테스트 경계를 어떻게 비교할까요?",
+    "question": "클로저의 private 상태와 class private field를 테스트합니다. 내부 표현을 고정하지 않고 어떤 외부 계약을 검증하나요?"
+  },
+  {
+    "id": "js-objectis-samevaluezero",
+    "parentId": "js-equality-coercion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Object.is와 SameValueZero는 NaN·-0을 어떤 컬렉션 의미로 다루나요?",
+    "question": "NaN과 -0을 Object.is·===·Set에서 비교합니다. 각 동일성 규칙은 어떤 차이가 있나요?"
+  },
+  {
+    "id": "browser-microtask-starvation",
+    "parentId": "js-event-loop-microtasks",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "브라우저 microtask 폭주가 렌더링·입력 지연으로 이어지는 경로는 무엇인가요?",
+    "question": "microtask가 계속 다음 microtask를 만듭니다. 렌더링과 입력이 굶지 않도록 언제 실행권을 넘기나요?"
+  },
+  {
+    "id": "js-block-shadowing-tdz",
+    "parentId": "js-hoisting-tdz",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "중첩 블록의 shadowing이 바깥 변수를 언제 가리는지 어떤 예로 보일까요?",
+    "question": "블록 밖 변수가 있는데 블록 안 let 선언 전에 읽으면 오류가 납니다. shadowing과 TDZ는 어떻게 적용되나요?"
+  },
+  {
+    "id": "immutable-proxy-update-cost",
+    "parentId": "js-object-copy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "불변 업데이트와 Immer의 프록시 비용을 어떤 변경 패턴에서 비교할까요?",
+    "question": "불변 업데이트에서 직접 경로 복사와 proxy 기반 라이브러리를 비교합니다. 변경률·읽기·할당 비용은 어떻게 측정하나요?"
+  },
+  {
+    "id": "promise-rejection-nearest-handler",
+    "parentId": "js-promise-error-chain",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "여러 catch에서 가장 가까운 rejection 경계는 어떻게 선택되나요?",
+    "question": "여러 then·catch가 연결돼 있습니다. throw·반환값·다시 던짐에 따라 어느 handler가 오류를 받나요?"
+  },
+  {
+    "id": "prototype-chain-performance",
+    "parentId": "js-prototype-lookup",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "prototype chain이 길어질 때 lookup 비용과 디버깅 복잡도를 어떻게 측정할까요?",
+    "question": "prototype chain을 여러 단계로 늘렸습니다. lookup·최적화·디버깅 비용을 어떤 실제 접근 패턴으로 비교하나요?"
+  },
+  {
+    "id": "js-bind-partial-arguments",
+    "parentId": "js-this-binding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "bind로 앞쪽 인자를 고정하면 callback API의 나머지 인자는 어떻게 받나요?",
+    "question": "bind로 this와 앞 인자를 고정했습니다. callback 호출자가 전달한 인자는 어떤 순서로 함수에 도착하나요?"
+  },
+  {
+    "id": "jvm-deoptimization-assumptions",
+    "parentId": "jvm-bytecode-jit",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "인라이닝 가정이 깨져 deoptimization이 발생하는 사례는 무엇인가요?",
+    "question": "JIT가 빠르게 만든 메서드가 새 타입 입력 뒤 느려집니다. 인라이닝 가정과 deoptimization은 어떤 관계인가요?"
+  },
+  {
+    "id": "device-session-account-revocation",
+    "parentId": "jwt-vs-server-session",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "여러 기기의 로그아웃과 전체 계정 회수를 어떤 상태 모델로 표현할까요?",
+    "question": "기기 하나의 로그아웃과 계정 전체 회수를 지원합니다. 세션 계열·버전·검증 상태를 어떻게 나누나요?"
+  },
+  {
+    "id": "hpa-startup-cpu-window",
+    "parentId": "k8s-hpa-scaling",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "예열 중 Pod의 CPU가 높아 목표 계산을 흔들 때 initialization과 측정 창을 어떻게 분리할까요.",
+    "question": "새 Pod 예열 CPU가 높아 HPA를 흔듭니다. 준비·초기화·측정 창을 어떻게 분리하나요?"
+  },
+  {
+    "id": "priority-queue-indexed-delete",
+    "parentId": "heap-vs-sorted-array",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "위치 맵과 지연 삭제를 이용한 임의 삭제의 메모리·정리 비용을 비교해 보세요.",
+    "question": "우선순위 큐의 중간 작업을 자주 취소합니다. 위치 맵 삭제와 지연 삭제는 어떤 비용이 다른가요?"
+  },
+  {
+    "id": "stale-keepalive-write-retry",
+    "parentId": "http-connection-pool",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "유휴 연결이 중간 장치에서 끊긴 뒤 멱등하지 않은 요청을 어떻게 보호할까요?",
+    "question": "중간 장치가 닫은 유휴 연결을 재사용하다 변경 요청이 실패했습니다. 재시도 전에 무엇을 확인하나요?"
+  },
+  {
+    "id": "gomemlimit-container-headroom",
+    "parentId": "k8s-oom-throttling",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "GOMEMLIMIT와 컨테이너 limit 사이의 여유를 어떤 부하로 정할까요?",
+    "question": "Go 컨테이너에서 GOMEMLIMIT를 limit과 같게 설정했습니다. 런타임 밖 메모리와 피크 여유는 어떻게 계산하나요?"
+  },
+  {
+    "id": "pdb-selector-target-verification",
+    "parentId": "k8s-pdb-eviction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "PDB의 selector가 잘못돼 보호 대상이 달라지는 경우를 어떤 명령과 상태로 확인할까요.",
+    "question": "PDB가 의도한 Pod를 보호하지 않습니다. selector·namespace·disruptionsAllowed를 어떤 상태와 대조하나요?"
+  },
+  {
+    "id": "statefulset-headless-member-discovery",
+    "parentId": "k8s-pod-deployment-statefulset",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Headless Service와 StatefulSet ordinal DNS가 클러스터 멤버 발견에 어떻게 쓰이는지 설명해 보세요.",
+    "question": "StatefulSet의 ordinal DNS로 멤버를 찾습니다. 안정적인 이름과 현재 접속·합의 멤버십은 어떻게 구분하나요?"
+  },
+  {
+    "id": "probe-dependency-load-amplification",
+    "parentId": "k8s-probe-contract",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "비싼 DB 쿼리를 probe에 넣었을 때 발생할 연쇄 부하와 대체 상태 신호를 설명해 보세요.",
+    "question": "모든 Pod의 health probe가 DB 쿼리를 실행합니다. 장애 중 연쇄 부하를 어떻게 줄이고 대체 신호를 고르나요?"
+  },
+  {
+    "id": "k8s-observed-generation-conditions",
+    "parentId": "k8s-reconciliation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "status가 최신 spec을 관찰했어도 rollout이 진행되지 않는 사례를 어떤 condition으로 구분할까요.",
+    "question": "status가 최신 spec을 관찰했다고 표시하지만 rollout은 끝나지 않았습니다. observedGeneration과 condition은 어떻게 읽나요?"
+  },
+  {
+    "id": "hpa-cpu-utilization-request-denominator",
+    "parentId": "k8s-requests-limits",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "CPU request가 없거나 부정확할 때 utilization 기반 HPA의 입력이 어떻게 흔들릴까요.",
+    "question": "CPU request가 바뀌자 HPA 판단도 달라졌습니다. utilization의 분모와 실제 사용량을 어떻게 구분하나요?"
+  },
+  {
+    "id": "deployment-surge-unavailable-rounding",
+    "parentId": "k8s-rolling-update-capacity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "작은 replica에서 maxSurge와 maxUnavailable 백분율의 올림·내림이 어떤 차이를 만드는지 계산해 보세요.",
+    "question": "replica가 적을 때 maxSurge·maxUnavailable의 백분율은 어떻게 올림·내림되어 실제 용량을 바꾸나요?"
+  },
+  {
+    "id": "headless-clusterip-selection-boundary",
+    "parentId": "k8s-service-network",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Headless Service DNS와 ClusterIP Service의 클라이언트 선택 책임이 어떻게 다른지 설명해 보세요.",
+    "question": "Headless Service와 ClusterIP에서 DNS 결과와 backend 선택은 각각 누가 책임지나요?"
+  },
+  {
+    "id": "wait-for-first-consumer-topology",
+    "parentId": "k8s-stateful-storage",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "WaitForFirstConsumer가 PV 바인딩과 Pod 영역 선택에 미치는 영향을 데이터 복제와 구분해 설명해 보세요.",
+    "question": "WaitForFirstConsumer가 PVC와 Pod의 영역 선택을 늦춥니다. 배치 이점과 데이터 복제는 어떻게 다른가요?"
+  },
+  {
+    "id": "kafka-unclean-election-policy",
+    "parentId": "kafka-acks-isr",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "unclean 허용 분류",
+    "question": "Kafka에서 unclean leader election을 허용합니다. 쓰기 재개와 성공 레코드 손실의 대가를 어떻게 정하나요?"
+  },
+  {
+    "id": "kafka-parallel-completion-watermark",
+    "parentId": "kafka-consumer-group",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "완료 watermark",
+    "question": "Kafka 레코드 10·11·12를 병렬 처리해 11·12만 끝났습니다. 커밋할 다음 위치를 어떤 자료구조로 관리하나요?"
+  },
+  {
+    "id": "kafka-transactional-id-fencing",
+    "parentId": "kafka-idempotent-producer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "transactional.id fencing",
+    "question": "같은 transactional.id로 두 producer가 실행됩니다. 새 epoch와 fenced 오류는 어떤 소유권을 뜻하나요?"
+  },
+  {
+    "id": "kraft-combined-resource-contention",
+    "parentId": "kafka-kraft-role",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "combined 자원 경합",
+    "question": "Kafka controller와 broker를 같은 프로세스에 둡니다. 데이터 I/O가 metadata 합의에 주는 간섭은 어떻게 측정하나요?"
+  },
+  {
+    "id": "kafka-commit-lag-versus-effect-lag",
+    "parentId": "kafka-lag-interpretation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "긴 DB 트랜잭션이 커밋 lag와 실제 처리 지연을 어떻게 어긋나게 하나요?",
+    "question": "Kafka offset은 자주 커밋되지만 DB 처리는 늦거나 그 반대입니다. 로그 lag와 실제 작업 나이를 어떻게 구분하나요?"
+  },
+  {
+    "id": "kafka-cross-language-partitioner",
+    "parentId": "kafka-partition-expansion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "다국어 파티셔너",
+    "question": "여러 언어의 producer가 같은 키를 보냅니다. 직렬화·해시·partition 선택을 어떻게 같은 계약으로 맞추나요?"
+  },
+  {
+    "id": "kafka-offset-gaps-compaction",
+    "parentId": "kafka-partition-offset",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "offset 빈 구간",
+    "question": "Kafka offset 사이에 번호가 빠져 있습니다. compaction·제어 레코드와 실제 미처리 누락은 어떻게 구분하나요?"
+  },
+  {
+    "id": "kafka-cooperative-rebalance-scope",
+    "parentId": "kafka-rebalance-processing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "cooperative 범위",
+    "question": "cooperative rebalance를 켰습니다. 반납 범위가 줄어도 실행 중 외부 작업의 안전성은 왜 따로 필요한가요?"
+  },
+  {
+    "id": "kafka-tombstone-offline-consumer",
+    "parentId": "kafka-retention-compaction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "tombstone 복구",
+    "question": "오래 중단한 소비자가 tombstone 보관 기간을 넘겼습니다. 옛 삭제 상태를 잘못 유지하지 않으려면 어떻게 복구하나요?"
+  },
+  {
+    "id": "kafka-open-transaction-lso-delay",
+    "parentId": "kafka-transactions-external-db",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "오래 열린 transaction",
+    "question": "Kafka transaction이 오래 열려 read_committed 소비가 멈춘 것처럼 보입니다. LSO와 처리 지연은 어떻게 연결되나요?"
+  },
+  {
+    "id": "karpenter-session-disruption-policy",
+    "parentId": "karpenter-consolidation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "장기 세션 Pod를 자발적 disruption에서 보호하면서 강제 장애와 구분하는 정책을 설계해 보세요.",
+    "question": "장기 게임 세션 Pod의 자발적 재배치를 줄이려 합니다. disruption 보호와 강제 장애 복구를 어떻게 나누나요?"
+  },
+  {
+    "id": "daemonset-node-capacity-overhead",
+    "parentId": "karpenter-node-provisioning",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "DaemonSet requests가 노드의 실제 가용 용량과 인스턴스 선택에 어떻게 반영되는지 설명해 보세요.",
+    "question": "새 노드에 DaemonSet도 실행됩니다. requests와 시스템 여유를 인스턴스 선택에 어떻게 반영하나요?"
+  },
+  {
+    "id": "spot-notification-loss-recovery",
+    "parentId": "karpenter-spot-interruption",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "중단 이벤트 전달 경로 자체가 실패했을 때 heartbeat·노드 상태·재전달로 어떻게 보완할까요.",
+    "question": "Spot 중단 알림 전달 경로가 실패했습니다. 알림 없이도 worker와 사용자 세션을 어떻게 복구하나요?"
+  },
+  {
+    "id": "keda-scaledjob-scaledobject-lifetime",
+    "parentId": "keda-hpa-role",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "ScaledObject와 ScaledJob을 장수 consumer와 단위 작업의 수명·재처리 기준으로 비교해 보세요.",
+    "question": "KEDA ScaledJob과 ScaledObject를 선택합니다. 단위 작업과 장수 consumer의 수명·재시도 차이는 무엇인가요?"
+  },
+  {
+    "id": "keda-idle-consumer-capacity",
+    "parentId": "keda-kafka-partitions",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "allowIdleConsumers가 주는 재할당 선점 효과와 유휴 비용을 어떤 운영 조건에서 허용할까요.",
+    "question": "Kafka partition보다 많은 유휴 consumer를 허용합니다. 재할당 준비 이점과 유휴·리밸런싱 비용은 어떻게 평가하나요?"
+  },
+  {
+    "id": "queue-visible-inflight-scale-down",
+    "parentId": "keda-scale-zero",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "대기 메시지와 처리 중 메시지를 분리한 지표가 scale-down과 종료 유예를 어떻게 바꾸는지 설명해 보세요.",
+    "question": "대기 메시지는 없지만 worker가 아직 처리 중입니다. visible·in-flight 지표를 scale-down과 종료에 어떻게 사용하나요?"
+  },
+  {
+    "id": "mst-cut-property-exchange",
+    "parentId": "kruskal-prim-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "cut property가 현재 선택을 안전하다고 말하는 논리를 작은 컷으로 설명해 보세요.",
+    "question": "MST에서 컷을 가로지르는 최소 간선을 선택해도 되는 이유를 교환 논증으로 설명해 보세요."
+  },
+  {
+    "id": "rewind-tick-interpolation-evidence",
+    "parentId": "lag-compensation-rewind",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "보간 상태와 실제 틱 상태 중 하나를 선택할 때 재현성과 체감 공정성을 어떻게 비교하나요?",
+    "question": "과거 공격 판정에서 실제 틱 상태와 보간 상태를 선택합니다. 재현성·벽 관통·공정성을 어떻게 비교하나요?"
+  },
+  {
+    "id": "vector-clock-member-retirement",
+    "parentId": "lamport-vector-clock",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "동적 항목 제거",
+    "question": "벡터 시계의 옛 참여자 항목을 삭제하려 합니다. 지연 메시지와 ID 재사용에서 어떤 인과 정보가 사라지나요?"
+  },
+  {
+    "id": "readiness-flapping-hysteresis",
+    "parentId": "load-balancer-health-draining",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "flapping readiness가 트래픽을 출렁이게 할 때 어떤 hysteresis를 둘까요?",
+    "question": "readiness가 켜졌다 꺼지며 남은 서버의 부하가 출렁입니다. 복귀·실패 임계와 실제 용량을 어떻게 조정하나요?"
+  },
+  {
+    "id": "production-replay-data-redaction",
+    "parentId": "load-test-realism",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "운영 트래픽 재생에서 개인정보와 쓰기 효과를 어떤 방식으로 치환할까요?",
+    "question": "운영 트래픽을 부하 테스트에 재생합니다. 개인정보·자격·외부 쓰기 효과를 어떤 대체 데이터와 endpoint로 격리하나요?"
+  },
+  {
+    "id": "hazard-pointer-publish-recheck",
+    "parentId": "lock-free-aba-reclamation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "hazard pointer를 게시한 뒤 포인터를 다시 읽는 재검증이 왜 필요한가요?",
+    "question": "hazard pointer를 게시한 뒤 원본 포인터를 다시 읽어야 합니다. 어떤 회수 경쟁을 막는 절차인가요?"
+  },
+  {
+    "id": "error-log-rate-sampling",
+    "parentId": "logging-performance-safety",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "장애 중 로그 폭주를 제한하면서 최초 원인과 빈도를 어떤 샘플링으로 남길까요?",
+    "question": "같은 오류 로그가 폭주합니다. 최초 원인과 발생 빈도를 잃지 않으면서 상세 로그를 어떻게 제한하나요?"
+  },
+  {
+    "id": "lfu-aging-popularity-shift",
+    "parentId": "lru-cache-policy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "갑자기 인기가 바뀐 키를 LFU 계열이 늦게 반영하는 이유와 aging 방법을 설명해 보세요.",
+    "question": "인기 키가 바뀌었는데 LFU가 과거 핫키를 계속 보존합니다. 빈도 감쇠와 재입장 정책은 어떻게 정하나요?"
+  },
+  {
+    "id": "huge-page-allocation-fragmentation",
+    "parentId": "memory-fragmentation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "huge page가 일반 페이지보다 할당·회수에서 더 까다로운 이유는 무엇인가요?",
+    "question": "대형 페이지를 쓰려는데 충분한 총 메모리에도 할당이 어렵습니다. 연속 물리 공간·압축·회수 비용은 무엇인가요?"
+  },
+  {
+    "id": "rss-pss-shared-memory-accounting",
+    "parentId": "memory-rss-vs-heap",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공유 페이지가 많은 프로세스에서 RSS와 PSS를 어떤 의사결정에 사용하나요?",
+    "question": "여러 프로세스가 페이지를 공유합니다. RSS 합과 PSS는 어떤 메모리 용량 판단에 각각 맞나요?"
+  },
+  {
+    "id": "external-merge-fanin-buffer-budget",
+    "parentId": "merge-sort-external",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "다중 병합 fan-in을 늘릴 때 단계 수와 파일별 버퍼 크기가 어떻게 맞바뀌는지 설명해 보세요.",
+    "question": "외부 정렬의 fan-in을 늘립니다. 병합 단계 감소와 파일별 버퍼·FD·임시 공간은 어떻게 계산하나요?"
+  },
+  {
+    "id": "event-versus-business-dedup-key",
+    "parentId": "message-consumer-idempotency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "이벤트 ID 대신 주문 ID 같은 논리적 처리의 고유 키를 써도 되는 조건과 위험은 무엇인가요?",
+    "question": "중복 방지 키로 event ID 대신 주문 ID를 씁니다. 같은 주문의 서로 다른 정상 이벤트를 합치지 않으려면 어떻게 하나요?"
+  },
+  {
+    "id": "out-of-order-buffer-bounds",
+    "parentId": "message-ordering-scope",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "순서가 깨진 이벤트를 보류할 때 메모리·시간 상한과 재동기화는 어떻게 정할까요?",
+    "question": "역순 이벤트를 기다리는 버퍼가 계속 커집니다. 메모리·대기 상한과 snapshot 재동기화는 어떻게 정하나요?"
+  },
+  {
+    "id": "rpc-event-log-team-ownership",
+    "parentId": "messaging-tool-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "장기 재생 로그와 즉시 RPC를 분리할 때 팀별 운영 책임은 어떻게 나눌까요?",
+    "question": "즉시 RPC와 장기 이벤트 재생을 분리합니다. 스키마·보관·재처리·SLO의 운영 책임은 어떻게 나누나요?"
+  },
+  {
+    "id": "metric-exemplar-trace-selection",
+    "parentId": "metrics-cardinality",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "exemplar를 모든 요청이 아니라 일부 요청에만 연결해야 하는 기준은 무엇인가요?",
+    "question": "지연 메트릭에 exemplar로 trace를 연결합니다. 모든 요청을 넣지 않고 어떤 표본과 보존 범위를 선택하나요?"
+  },
+  {
+    "id": "phishing-resistant-mfa-recovery",
+    "parentId": "mfa-recovery-policy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "피싱 저항 MFA와 OTP의 복구 정책을 같은 신뢰 등급으로 볼 수 있을까요?",
+    "question": "패스키와 OTP의 복구 경로를 설계합니다. 피싱 저항 수준이 복구·새 자격 등록에서 낮아지지 않게 어떻게 하나요?"
+  },
+  {
+    "id": "mst-uniqueness-tie-contract",
+    "parentId": "minimum-spanning-tree",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "동일한 최소 비용을 갖는 여러 MST가 생기는 조건과 결과 검증 기준을 설명해 보세요.",
+    "question": "동점 간선이 있으면 항상 MST가 여러 개인가요? 유일성과 올바른 결과 검증은 어떤 조건으로 판단하나요?"
+  },
+  {
+    "id": "classification-threshold-review-budget",
+    "parentId": "ml-classification-metrics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "오탐·미탐 비용과 검토 인력 한도를 함께 넣어 임계값을 선택해 보세요.",
+    "question": "오탐·미탐 비용과 사람 검토 인력이 제한되어 있습니다. 자동 차단·검토·통과 임계값을 어떻게 정하나요?"
+  },
+  {
+    "id": "batch-size-learning-rate-noise",
+    "parentId": "ml-gradient-learning-rate",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "배치 크기와 학습률을 함께 바꾸면서 sample당 업데이트량과 gradient noise를 비교해 보세요.",
+    "question": "배치 크기와 학습률을 함께 바꿉니다. 업데이트 횟수·gradient noise·처리 샘플 기준을 어떻게 맞춰 비교하나요?"
+  },
+  {
+    "id": "class-weight-threshold-interaction",
+    "parentId": "ml-loss-objective",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "클래스 가중치 변화가 재현율·정밀도·검토 처리량에 미치는 영향을 임계값별로 비교해 보세요.",
+    "question": "희귀 클래스 가중치를 높였습니다. 학습 손실 변화와 실제 정밀도·재현율·검토량은 어떻게 함께 평가하나요?"
+  },
+  {
+    "id": "bias-variance-training-curves",
+    "parentId": "ml-overfitting-generalization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "편향·분산 관점에서 두 곡선이 모두 낮은 경우와 격차가 큰 경우의 조치를 비교해 보세요.",
+    "question": "훈련·검증 성능이 둘 다 낮은 경우와 격차가 큰 경우는 어떤 개선을 각각 먼저 검토하나요?"
+  },
+  {
+    "id": "rolling-validation-future-holdout",
+    "parentId": "ml-train-validation-test",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "시계열 rolling validation과 단일 미래 holdout을 운영 변화와 계산 비용 기준으로 비교해 보세요.",
+    "question": "시간 순서가 있는 데이터에서 rolling validation과 미래 holdout을 어떤 누출·변화·계산 비용으로 비교하나요?"
+  },
+  {
+    "id": "pdb-budget-readiness-recovery",
+    "parentId": "k8s-pdb-eviction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "새 Pod가 준비되지 않아 disruptionsAllowed가 회복되지 않을 때 스케줄링과 readiness를 어떻게 분리 진단할까요.",
+    "question": "새 Pod가 준비되지 않아 PDB 예산이 회복되지 않습니다. 배치 실패와 readiness 실패를 어떻게 나누나요?"
+  },
+  {
+    "id": "statefulset-startup-quorum-order",
+    "parentId": "k8s-pod-deployment-statefulset",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "순차 시작과 병렬 시작이 데이터 서비스의 quorum·복구 시간에 미치는 영향을 비교해 보세요.",
+    "question": "상태 저장 클러스터의 Pod를 순차 또는 병렬 시작합니다. readiness가 quorum을 기다리면 어떤 교착이 생길 수 있나요?"
+  },
+  {
+    "id": "grpc-http-probe-auth-timeout",
+    "parentId": "k8s-probe-contract",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "gRPC probe와 HTTP probe를 보안·타임아웃·실패 의미 기준으로 비교해 보세요.",
+    "question": "gRPC probe와 HTTP probe를 선택합니다. 인증·port·timeout·서비스별 상태의 지원을 무엇으로 확인하나요?"
+  },
+  {
+    "id": "k8s-finalizer-external-cleanup",
+    "parentId": "k8s-reconciliation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "finalizer가 남은 객체의 소유 외부 자원과 정리 완료를 어떻게 조사할까요.",
+    "question": "Kubernetes 객체가 Terminating에 남아 있습니다. finalizer의 외부 자원과 정리 실패를 어떻게 조사하나요?"
+  },
+  {
+    "id": "sidecar-log-resource-interference",
+    "parentId": "k8s-requests-limits",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "사이드카의 로그 폭주가 애플리케이션 Pod의 배치와 OOM에 미치는 영향을 어떻게 측정할까요.",
+    "question": "sidecar 로그가 폭주합니다. Pod의 배치·CPU·메모리와 주 앱 지연에 어떤 간섭이 생기나요?"
+  },
+  {
+    "id": "single-replica-zero-downtime-rollout",
+    "parentId": "k8s-rolling-update-capacity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "replica가 하나인 서비스에서 무중단 교체를 하려면 자원·readiness·호환성에 어떤 전제가 필요한가요.",
+    "question": "replica가 하나인 API를 무중단 교체하려 합니다. 추가 용량·readiness·연결·데이터 호환에는 어떤 전제가 필요한가요?"
+  },
+  {
+    "id": "storage-snapshot-database-consistency",
+    "parentId": "k8s-stateful-storage",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "스토리지 스냅샷과 DB 논리 백업을 일관된 복구 시점과 검증 방법으로 비교해 보세요.",
+    "question": "볼륨 snapshot으로 DB를 복구하려 합니다. crash-consistent·앱 일관성과 논리 백업은 어떻게 검증하나요?"
+  },
+  {
+    "id": "kafka-idempotence-inflight-order",
+    "parentId": "kafka-acks-isr",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "idempotence와 in-flight",
+    "question": "Kafka producer의 in-flight 요청 수와 idempotence 설정을 바꿉니다. 재시도 중복과 순서 보장은 어떤 조건을 요구하나요?"
+  },
+  {
+    "id": "kafka-pause-versus-leave-group",
+    "parentId": "kafka-consumer-group",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "pause와 탈퇴",
+    "question": "Kafka 소비자가 포화돼 pause합니다. poll·heartbeat·그룹 탈퇴와 partition 소유권은 어떻게 다른가요?"
+  },
+  {
+    "id": "kafka-multipartition-transaction-read",
+    "parentId": "kafka-idempotent-producer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "다중 partition 원자성",
+    "question": "여러 topic partition에 한 transaction으로 출력합니다. 소비자가 read_committed로 보는 원자성 범위는 무엇인가요?"
+  },
+  {
+    "id": "kraft-metadata-change-load",
+    "parentId": "kafka-kraft-role",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "metadata 변경 부하",
+    "question": "topic·partition 변경이 매우 많습니다. KRaft metadata 로그와 controller의 병목을 어떻게 관찰하나요?"
+  },
+  {
+    "id": "kafka-new-topic-cutover",
+    "parentId": "kafka-partition-expansion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "새 topic cutover",
+    "question": "새 Kafka topic으로 이전합니다. 옛·새 로그의 시작 위치·키 순서·중복 발행을 어떻게 전환하나요?"
+  },
+  {
+    "id": "kafka-null-key-partitioning",
+    "parentId": "kafka-partition-offset",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "키 없는 레코드",
+    "question": "Kafka 레코드에 key가 없습니다. 분배·순서·compaction 요구에 어떤 제한이 생기나요?"
+  },
+  {
+    "id": "kafka-worker-queue-revocation",
+    "parentId": "kafka-rebalance-processing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "워커 큐 폐기 내구화",
+    "question": "partition 소유권을 잃을 때 메모리 worker 큐를 버립니다. 어떤 커밋 위치와 내구 기록이 있어야 누락 없이 재처리하나요?"
+  },
+  {
+    "id": "kafka-compact-delete-latest-loss",
+    "parentId": "kafka-retention-compaction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "compact·delete 시간 한계",
+    "question": "compact와 delete를 함께 설정했습니다. 키의 최신 값도 삭제될 수 있는 조건과 snapshot 복구는 무엇인가요?"
+  },
+  {
+    "id": "karpenter-consolidate-after-churn",
+    "parentId": "karpenter-consolidation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "consolidateAfter를 길게 할 때 비용 절감과 반복 재배치 안정성이 어떻게 달라질까요.",
+    "question": "consolidateAfter를 늘리면 노드 비용과 반복 재배치·예열 손실은 어떻게 달라지나요?"
+  },
+  {
+    "id": "pvc-nodepool-zone-conflict",
+    "parentId": "karpenter-node-provisioning",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "PVC의 영역 제약과 NodePool 조건이 충돌할 때 scheduler 이벤트와 NodeClaim 상태를 어떻게 읽을까요.",
+    "question": "PVC 영역과 NodePool 조건이 맞지 않아 Pod가 Pending입니다. scheduler와 NodeClaim의 어느 상태를 확인하나요?"
+  },
+  {
+    "id": "checkpoint-frequency-rework-budget",
+    "parentId": "karpenter-spot-interruption",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "checkpoint 주기와 허용 가능한 유실·재처리 작업량을 수치 대신 어떤 계약으로 연결할까요.",
+    "question": "중단 가능한 worker의 checkpoint 주기를 정합니다. 기록 비용과 최대 재작업·불확정 효과를 어떻게 비교하나요?"
+  },
+  {
+    "id": "keda-activation-target-boundaries",
+    "parentId": "keda-hpa-role",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "activation threshold와 HPA target을 짧은 burst와 지속 부하에 맞춰 어떻게 분리할까요.",
+    "question": "KEDA activation threshold와 HPA target을 따로 둡니다. 작은 backlog가 처리되지 않는 조건은 무엇인가요?"
+  },
+  {
+    "id": "kafka-commit-interval-scaling-noise",
+    "parentId": "keda-kafka-partitions",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "커밋 간격으로 lag가 출렁일 때 autoscaling이 진동하지 않게 어떤 관찰 창을 둘까요.",
+    "question": "커밋 간격 때문에 Kafka lag가 주기적으로 튑니다. autoscaling의 관찰 창과 안정화는 어떻게 조정하나요?"
+  },
+  {
+    "id": "warm-pod-versus-warm-node",
+    "parentId": "keda-scale-zero",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "노드 공급이 느릴 때 warm Pod와 warm node 중 무엇을 유지할지 비용·지연으로 비교해 보세요.",
+    "question": "첫 작업 지연을 줄이려 warm Pod나 warm node를 유지합니다. 이미지·시작·준비·비용을 어떻게 비교하나요?"
+  },
+  {
+    "id": "dense-graph-prim-without-heap",
+    "parentId": "kruskal-prim-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "정점 수가 작고 그래프가 조밀할 때 힙 없는 Prim이 유리할 수 있는 이유를 말해 보세요.",
+    "question": "정점 수가 작고 그래프가 조밀합니다. O(V²) Prim이 힙 기반 구현보다 유리할 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "rewind-window-abuse-limits",
+    "parentId": "lag-compensation-rewind",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "rewind 허용 시간이 급격히 변하는 클라이언트의 입력을 어떤 정책과 감사 지표로 제한하나요?",
+    "question": "클라이언트의 추정 지연이 급변합니다. rewind 범위를 무한히 늘리지 않고 입력 시각을 어떻게 검증하나요?"
+  },
+  {
+    "id": "soak-leak-versus-warmup",
+    "parentId": "load-test-realism",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "soak test에서 누수와 단순 warm-up을 어떤 추세로 구분할까요?",
+    "question": "장시간 부하에서 메모리가 늘어납니다. 정상 예열·캐시·allocator 보유와 누수를 어떤 추세로 구분하나요?"
+  },
+  {
+    "id": "epoch-stalled-reader-memory",
+    "parentId": "lock-free-aba-reclamation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "epoch에 오래 머무는 스레드를 감지하고 회수 메모리를 제한하는 방법은 무엇인가요?",
+    "question": "epoch 안에서 오래 멈춘 독자가 회수를 막습니다. 살아 있는 참조를 강제 해제하지 않고 메모리를 어떻게 제한하나요?"
+  },
+  {
+    "id": "transactional-audit-record",
+    "parentId": "logging-performance-safety",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "감사 이벤트와 데이터 변경 트랜잭션을 연결할 때 내구성과 중복을 어떻게 보장할까요?",
+    "question": "데이터 변경과 보안 감사 기록을 반드시 함께 남겨야 합니다. 일반 비동기 로그와 어떤 내구 경계를 다르게 두나요?"
+  },
+  {
+    "id": "sharded-cache-capacity-skew",
+    "parentId": "lru-cache-policy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "샤드별 캐시에서 핫키가 한 샤드에 몰릴 때 재분배·용량 정책을 어떻게 바꿀지 말해 보세요.",
+    "question": "샤드별 캐시에서 한 샤드만 가득 찹니다. 재분배·공유 여유 용량·핫키 분리의 비용은 무엇인가요?"
+  },
+  {
+    "id": "allocator-size-class-waste",
+    "parentId": "memory-fragmentation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "size class가 내부 단편화를 줄이는 대신 만들 수 있는 낭비는 무엇인가요?",
+    "question": "할당기가 크기 등급으로 메모리를 관리합니다. 내부 낭비와 자유 공간 재사용은 어떻게 맞바뀌나요?"
+  },
+  {
+    "id": "cgroup-file-anon-memory-pressure",
+    "parentId": "memory-rss-vs-heap",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "컨테이너 OOM 직전에 파일 캐시와 anonymous memory를 어떻게 식별할까요?",
+    "question": "컨테이너 OOM 직전 파일 cache와 anonymous memory가 늘었습니다. 어떤 메모리가 회수 가능한지 어떻게 확인하나요?"
+  },
+  {
+    "id": "external-sort-natural-runs",
+    "parentId": "merge-sort-external",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "이미 정렬된 구간을 활용해 run 수와 디스크 쓰기를 줄이는 방법을 말해 보세요.",
+    "question": "입력에 이미 정렬된 구간이 많습니다. natural run 탐지로 디스크 쓰기를 줄일 때 어떤 안정성·최악 비용이 남나요?"
+  },
+  {
+    "id": "duplicate-event-payload-conflict",
+    "parentId": "message-consumer-idempotency",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "같은 event ID가 다른 payload로 재전달될 때 어떤 상태와 경보를 남길까요?",
+    "question": "동일 event ID가 다른 payload로 재전달됐습니다. 기존 성공 반환·거절·경보 중 어떤 정책을 적용하나요?"
+  },
+  {
+    "id": "managed-queue-full-cost",
+    "parentId": "messaging-tool-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "관리형 큐 비용을 요청 수 외에 보관·데이터 이동·재전달까지 어떻게 계산할까요?",
+    "question": "관리형 큐 비용을 추정합니다. API 요청 수 외에 보관·재전달·데이터 이동·중복 처리 비용은 어떻게 포함하나요?"
+  },
+  {
+    "id": "tenant-slo-cardinality-budget",
+    "parentId": "metrics-cardinality",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "테넌트별 SLO를 제한된 집계로 제공할 때 어떤 상한을 둘까요?",
+    "question": "테넌트별 SLO를 제공해야 합니다. 라벨 수를 제한하면서 작은 테넌트의 오류를 어떻게 관측하나요?"
+  },
+  {
+    "id": "account-recovery-cooling-period",
+    "parentId": "mfa-recovery-policy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "복구 직후 지연을 두는 동안 어떤 기능을 허용하고 어떤 기능을 막을까요?",
+    "question": "계정 복구 직후 민감한 변경에 대기 시간을 둡니다. 허용 기능·알림·긴급 해제 정책을 어떻게 나누나요?"
+  },
+  {
+    "id": "mst-redundant-network-design",
+    "parentId": "minimum-spanning-tree",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "최소 비용 연결에 이중 경로가 필요할 때 MST가 깨지는 이유를 말해 보세요.",
+    "question": "최소 비용으로 연결한 트리에 단일 회선 장애 대응도 필요합니다. MST만으로 부족한 이유와 추가 조건은 무엇인가요?"
+  },
+  {
+    "id": "precision-recall-base-rate-shift",
+    "parentId": "ml-classification-metrics",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "같은 순위 모델에서 양성 비율이 바뀔 때 PR 곡선과 실제 정밀도가 어떻게 달라지는지 비교해 보세요.",
+    "question": "같은 순위 모델인데 양성 비율이 바뀌자 정밀도가 달라졌습니다. PR 지표와 운영 결과를 어떻게 해석하나요?"
+  },
+  {
+    "id": "learning-rate-warmup-decay-eval",
+    "parentId": "ml-gradient-learning-rate",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "warmup·decay를 적용한 곡선에서 검증 성능과 계산 비용의 개선 시점을 확인해 보세요.",
+    "question": "warmup과 decay를 적용한 학습이 좋아 보입니다. 검증 성능·동일 계산 예산·수렴 시점을 어떻게 비교하나요?"
+  },
+  {
+    "id": "surrogate-loss-operational-metric",
+    "parentId": "ml-loss-objective",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "직접 미분하기 어려운 운영 지표마다 어떤 대체 손실을 선택할지 안정성과 편향으로 검토해 보세요.",
+    "question": "운영 목표는 직접 미분하기 어렵습니다. 대체 손실을 선택할 때 목표와의 불일치·안정성을 어떻게 검증하나요?"
+  },
+  {
+    "id": "augmentation-label-invariance",
+    "parentId": "ml-overfitting-generalization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "라벨 의미를 바꾸는 증강이 가능한 도메인에서 허용 변환을 검증하는 테스트를 설계해 보세요.",
+    "question": "데이터 증강이 원래 라벨 의미를 바꿀 수 있습니다. 허용할 변환을 어떤 도메인 근거와 테스트로 고르나요?"
+  },
+  {
+    "id": "cross-validation-fold-correlation",
+    "parentId": "ml-train-validation-test",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "교차 검증 평균·분산·접기 간 상관을 최종 모델 선택의 불확실성과 연결해 보세요.",
+    "question": "교차 검증 점수의 평균과 분산을 봅니다. 겹치는 학습 자료와 그룹 의존성은 불확실성 해석에 어떤 영향을 주나요?"
+  },
+  {
+    "id": "server-side-apply-field-ownership",
+    "parentId": "k8s-reconciliation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "서로 다른 controller가 같은 필드를 변경할 때 server-side apply와 소유권을 어떻게 정리할까요.",
+    "question": "두 controller가 같은 필드를 바꿉니다. server-side apply의 필드 소유권 충돌을 어떻게 해결하나요?"
+  },
+  {
+    "id": "kraft-quorum-broker-recovery-order",
+    "parentId": "kafka-kraft-role",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "quorum 복구 순서",
+    "question": "Kafka metadata quorum과 데이터 broker가 함께 중단됐습니다. ID·로그·할당을 어떤 순서로 복구 검증하나요?"
+  },
+  {
+    "id": "karpenter-drift-versus-consolidation",
+    "parentId": "karpenter-consolidation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "Node drift 교체와 consolidation을 목적·대상·중단 조건·관측 지표로 비교해 보세요.",
+    "question": "Karpenter의 drift 교체와 consolidation은 어떤 목적·대상·중단 조건이 다른가요?"
+  },
+  {
+    "id": "cloud-capacity-instance-diversity",
+    "parentId": "karpenter-node-provisioning",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "클라우드 용량 부족에 인스턴스 유형을 넓힐 때 비용·보안·예측 가능성을 어떻게 관리할까요.",
+    "question": "클라우드 용량 부족으로 인스턴스 유형을 넓힙니다. 비용·아키텍처·성능·보안 조건을 어떻게 보존하나요?"
+  },
+  {
+    "id": "spot-ondemand-minimum-capacity",
+    "parentId": "karpenter-spot-interruption",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "on-demand와 Spot을 섞을 때 핵심 최소 용량과 비용 상한을 장애 시나리오로 검증해 보세요.",
+    "question": "Spot과 on-demand를 섞습니다. 동시에 Spot을 잃어도 유지할 핵심 용량과 비용 상한은 어떻게 검증하나요?"
+  },
+  {
+    "id": "mst-edge-update-replacement",
+    "parentId": "kruskal-prim-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "간선 추가·삭제가 계속되는 그래프에서 재계산과 동적 MST의 교환을 설명해 보세요.",
+    "question": "이미 구한 MST에 간선이 추가되거나 삭제됩니다. 재계산 대신 어떤 cycle·cut의 대체 간선을 찾아야 하나요?"
+  },
+  {
+    "id": "hitbox-history-compression",
+    "parentId": "lag-compensation-rewind",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "과거 hitbox 이력의 저장량을 줄이면서 빠른 대상과 느린 대상의 판정 정확성을 유지하려면 어떻게 하나요?",
+    "question": "과거 hitbox 이력의 메모리를 줄입니다. 빠른 대상의 판정 오차와 샘플·압축 비용을 어떻게 맞추나요?"
+  },
+  {
+    "id": "weighted-throughput-workload-mix",
+    "parentId": "load-test-realism",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "비용이 다른 요청을 하나의 TPS로 집계할 때 가중 처리율을 어떻게 정의할까요?",
+    "question": "작은 조회와 큰 집계를 하나의 TPS로 보고합니다. 요청 혼합과 가중 처리량은 어떻게 정의해야 비교가 공정한가요?"
+  },
+  {
+    "id": "wait-free-lock-free-progress",
+    "parentId": "lock-free-aba-reclamation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "wait-free와 lock-free의 보장을 실제 API 계약으로 어떻게 구분할까요?",
+    "question": "lock-free가 각 스레드의 완료 시간을 보장하나요? wait-free와 전체 진행·개별 기아를 어떻게 구분하나요?"
+  },
+  {
+    "id": "external-correlation-id-validation",
+    "parentId": "logging-performance-safety",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "외부 상관 ID의 길이·문자 제한이 로그 주입과 저장 비용에 왜 필요한가요?",
+    "question": "외부가 보낸 상관 ID를 로그에 씁니다. 길이·문자·개행·출처 검증이 왜 필요한가요?"
+  },
+  {
+    "id": "cache-expiry-eviction-priority",
+    "parentId": "lru-cache-policy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "TTL 만료와 용량 eviction이 겹칠 때 데이터 종류별 제거 우선순위를 설계해 보세요.",
+    "question": "TTL 만료와 메모리 eviction이 함께 일어납니다. 재생성 비용과 신선도를 기준으로 어떤 항목을 먼저 제거하나요?"
+  },
+  {
+    "id": "fragmentation-versus-leak-experiment",
+    "parentId": "memory-fragmentation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "장시간 할당 패턴에서 단편화와 실제 메모리 누수를 어떤 그래프로 분리할까요?",
+    "question": "장시간 할당 뒤 RSS가 높습니다. 살아 있는 객체 누수와 단편화를 어떤 대조 부하로 구분하나요?"
+  },
+  {
+    "id": "external-sort-key-offset-indirection",
+    "parentId": "merge-sort-external",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "정렬 키와 원본 레코드를 분리 저장할 때 I/O와 재구성 비용이 어떻게 달라지는지 비교해 보세요.",
+    "question": "큰 레코드 대신 키와 파일 offset만 정렬합니다. 이동량 절감과 최종 랜덤 읽기의 손익은 어떻게 비교하나요?"
+  },
+  {
+    "id": "hoare-mesa-monitor-signal",
+    "parentId": "monitor-synchronization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Hoare식과 Mesa식 모니터의 signal 후 실행 순서를 비교해 보세요.",
+    "question": "조건을 알린 뒤 실행권이 즉시 대기자에게 넘어가는 모니터와 나중에 경쟁하는 모니터는 무엇이 다른가요?"
+  },
+  {
+    "id": "multi-paxos-noop-gap",
+    "parentId": "multi-paxos-leader",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "no-op",
+    "question": "Multi-Paxos 로그의 중간 슬롯이 비었습니다. 언제 no-op을 제안하고 이전 수락값은 어떻게 보존하나요?"
+  },
+  {
+    "id": "game-reservation-deterministic-aging",
+    "parentId": "multiagent-cell-reservation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "고정 우선순위가 만드는 기아를 aging과 라운드 로빈으로 줄일 때 틱 결정성을 어떻게 유지하나요?",
+    "question": "NPC 예약의 기아를 줄이려 aging을 적용합니다. 우선순위 변경과 리플레이 결정성을 어떻게 함께 유지하나요?"
+  },
+  {
+    "id": "cross-account-transfer-coordination",
+    "parentId": "mutex-vs-serial-execution",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "두 계정 사이의 이체를 처리할 때 잠금 순서, 상위 조정자, 버전 검사 중 무엇을 선택할까요?",
+    "question": "계정별 직렬 실행기를 사용하는데 두 계정 사이 이체가 필요합니다. 상위 조정·잠금 순서·버전 검사는 어떻게 선택하나요?"
+  },
+  {
+    "id": "domain-error-http-mapping",
+    "parentId": "mvc-responsibilities",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "입력 검증 실패·업무 규칙에 따른 거절·인프라 장애를 HTTP 응답으로 바꾸는 책임은 어느 계층에 둘까요?",
+    "question": "형식 오류·업무 거절·인프라 장애를 HTTP 응답으로 바꿉니다. 도메인과 controller 사이 책임은 어떻게 나누나요?"
+  },
+  {
+    "id": "nats-inbox-request-lifetime",
+    "parentId": "nats-request-reply",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "inbox 재사용",
+    "question": "NATS request-reply의 inbox를 재사용합니다. 늦은 응답이 새 요청에 섞이지 않게 어떤 상관 ID와 수명을 두나요?"
+  },
+  {
+    "id": "jetstream-pull-batch-ack-memory",
+    "parentId": "nats-slow-consumer",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "JetStream pull batch 크기가 메모리·ACK 지연·재전달에 어떤 영향을 주나요?",
+    "question": "JetStream pull batch를 크게 잡았습니다. 메모리·ACK 지연·재전달·worker 수에 어떤 영향이 있나요?"
+  },
+  {
+    "id": "nats-account-import-export-trust",
+    "parentId": "nats-subject-isolation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "account 간 import/export가 만드는 방향성 신뢰를 어떤 최소 subject로 제한할까요?",
+    "question": "NATS account 사이 import·export를 구성합니다. 방향·subject·권한을 어떤 최소 범위로 제한하나요?"
+  },
+  {
+    "id": "nats-wildcard-token-matching",
+    "parentId": "nats-subject-queue-group",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "wildcard 범위",
+    "question": "NATS subject의 *와 >는 어떤 token 범위를 매칭하며 이름 설계의 경계 오류는 어떻게 시험하나요?"
+  },
+  {
+    "id": "voxel-resolution-clearance-loss",
+    "parentId": "navmesh-grid-voxel",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "복셀 해상도를 낮출 때 최소 통로·층 높이·경사 정보를 잃는 기준을 어떻게 정하나요?",
+    "question": "복셀 해상도를 낮춰 메모리를 줄입니다. 좁은 통로·층 높이·경사 정보가 사라지는 기준은 어떻게 검증하나요?"
+  },
+  {
+    "id": "normal-form-all-candidate-keys",
+    "parentId": "normal-forms-partial-transitive",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 후보키에서 2NF·3NF를 검사해 보세요.",
+    "question": "후보키가 여러 개인 테이블의 2NF·3NF를 검사합니다. 기본키 하나만 보면 어떤 종속을 놓치나요?"
+  },
+  {
+    "id": "many-to-many-enrollment-constraints",
+    "parentId": "normalization-anomalies",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "다대다 수강 스키마와 후보키·외래키를 설계해 보세요.",
+    "question": "학생과 강좌의 다대다 수강 관계를 설계합니다. 관계의 속성·중복 신청·삭제 정책은 어디에 두나요?"
+  },
+  {
+    "id": "numa-cross-pool-object-transfer",
+    "parentId": "numa-memory-locality",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "노드별 pool 사이에 객체를 넘길 때 소유권 이전 비용을 어떻게 측정할까요?",
+    "question": "NUMA 노드별 풀 사이에 객체를 넘깁니다. 할당·사용·반환 위치와 소유권 이동 비용을 어떻게 측정하나요?"
+  },
+  {
+    "id": "oidc-nonce-state-binding",
+    "parentId": "oauth-oidc-pkce",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "nonce와 state가 각각 어느 세션·자격에 묶여야 하는지 비교해 보세요.",
+    "question": "OIDC의 nonce와 OAuth state는 각각 어떤 응답·세션에 묶이며 서로를 대체할 수 있나요?"
+  },
+  {
+    "id": "migration-authorization-change",
+    "parentId": "on-demand-data-migration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "자격 변경 권위",
+    "question": "사용자 데이터 이전 중 권한이나 대표 계정이 바뀝니다. 복사 완료와 접근 공개는 어떤 현재 상태를 다시 검사하나요?"
+  },
+  {
+    "id": "aggregate-cross-object-invariant",
+    "parentId": "oop-encapsulation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "서로 연관된 두 객체의 불변식을 한 객체가 함께 보장해야 할 때 경계를 어떻게 정할까요?",
+    "question": "서로 다른 객체 두 개가 함께 지켜야 할 규칙이 있습니다. aggregate·서비스 transaction의 경계를 어떻게 정하나요?"
+  },
+  {
+    "id": "clock-page-replacement-approximation",
+    "parentId": "page-replacement-thrashing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Clock이 접근 비트로 LRU를 근사할 때 어떤 참조 패턴에서 오차가 커질까요?",
+    "question": "Clock은 접근 비트로 최근성을 근사합니다. 어떤 참조 패턴에서 LRU와 다른 페이지를 제거하나요?"
+  },
+  {
+    "id": "segmented-paging-translation",
+    "parentId": "paging-segmentation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "세그먼트 내부 페이징이 외부 단편화를 어떻게 줄이는지 설명해 보세요.",
+    "question": "세그먼트 내부를 페이지로 나눕니다. 논리 영역·주소 변환·외부 단편화는 어떻게 함께 처리되나요?"
+  },
+  {
+    "id": "password-hash-policy-migration",
+    "parentId": "password-storage",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "정책을 올린 뒤 장기 미접속 계정을 전환하는 만료·재설정 기준은 무엇일까요?",
+    "question": "비밀번호 해시 정책을 강화했습니다. 로그인하지 않는 오래된 계정은 어떤 재설정·만료 절차로 전환하나요?"
+  },
+  {
+    "id": "path-smoothing-weighted-cost",
+    "parentId": "path-smoothing-validation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "가중 지형에서 waypoint 수를 줄이는 것과 실제 이동 비용을 줄이는 것을 어떻게 비교하나요?",
+    "question": "경로의 코너를 직선으로 줄였더니 비싼 지형을 통과합니다. 거리 단축과 이동 비용 감소는 어떻게 구분하나요?"
+  },
+  {
+    "id": "paxos-competing-proposers-liveness",
+    "parentId": "paxos-prepare-accept",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "경쟁 proposer",
+    "question": "여러 Paxos proposer가 더 높은 ballot을 반복합니다. 안전성은 유지돼도 진행하지 못하는 이유와 완화책은 무엇인가요?"
+  },
+  {
+    "id": "prepared-server-emulated-contract",
+    "parentId": "prepared-statement-injection",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "드라이버의 서버·클라이언트 준비 차이를 확인해 보세요.",
+    "question": "드라이버의 서버 측 준비와 클라이언트 에뮬레이션은 파라미터 분리·계획 재사용에서 무엇을 확인해야 하나요?"
+  },
+  {
+    "id": "nonpreemptive-priority-blocking",
+    "parentId": "priority-queue-starvation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "비선점 작업이 실행 중이면 높은 우선순위 요청도 왜 즉시 실행되지 않나요?",
+    "question": "높은 우선순위 작업이 와도 낮은 우선순위의 긴 작업이 끝나지 않습니다. 비선점 실행과 큐 우선순위는 어떻게 다른가요?"
+  },
+  {
+    "id": "io-complete-ready-queue-delay",
+    "parentId": "process-state-suspended",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "I/O 완료 후 Ready 큐에서 오래 기다리는 이유는 무엇인가요?",
+    "question": "I/O는 끝났는데 요청이 늦게 재개됩니다. Ready 큐 대기와 이전 I/O 대기를 어떻게 분리하나요?"
+  },
+  {
+    "id": "shared-memory-owner-death-recovery",
+    "parentId": "process-vs-thread",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공유 메모리에서 owner가 죽었을 때 잠금 복구와 데이터 복구는 어떻게 나누나요?",
+    "question": "공유 메모리의 락 소유자가 죽었습니다. 락을 다시 얻는 것과 부분 변경 데이터를 복구하는 것은 어떻게 다른가요?"
+  },
+  {
+    "id": "lock-hold-versus-wait-time",
+    "parentId": "profiling-cpu-offcpu",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "락 보유 중 실행 시간과 락을 기다린 시간을 어떤 이벤트로 나눌까요?",
+    "question": "락 대기가 길어졌습니다. 락을 보유한 시간과 기다린 시간을 어떤 사건·스택으로 나누어 기록하나요?"
+  },
+  {
+    "id": "process-pool-large-payload-transfer",
+    "parentId": "python-asyncio-blocking",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "프로세스 풀로 큰 인자를 보낼 때 직렬화·복사 비용을 어떻게 줄일까요?",
+    "question": "Python 프로세스 풀에 큰 배열을 넘깁니다. 직렬화·복사·shared memory·작업 크기의 손익은 어떻게 측정하나요?"
+  },
+  {
+    "id": "celery-visibility-late-ack-interaction",
+    "parentId": "python-celery-retries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "visibility timeout과 late ACK가 함께 있을 때 재전달 시점을 어떻게 계산할까요?",
+    "question": "Celery의 late ACK와 broker visibility timeout을 함께 씁니다. 긴 작업과 worker 종료의 재전달은 어떻게 검증하나요?"
+  },
+  {
+    "id": "python-protocol-property-generics",
+    "parentId": "python-duck-typing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Protocol에서 property·generic 타입을 표현할 때 정적 검사 범위는 어떻게 달라지나요?",
+    "question": "Python Protocol에 property와 제네릭을 선언합니다. 정적 검사와 런타임 구조 검사는 어디까지 다른가요?"
+  },
+  {
+    "id": "python-yield-from-control",
+    "parentId": "python-generator-iterator",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`yield from`과 generator의 send·throw·close는 제어를 어떻게 주고받나요?",
+    "question": "yield from은 generator의 값뿐 아니라 send·throw·close를 어떻게 위임하나요?"
+  },
+  {
+    "id": "python-c-extension-gil-release",
+    "parentId": "python-gil-parallelism",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "GIL을 해제하는 C 확장과 순수 Python loop의 프로파일은 어떻게 다를까요?",
+    "question": "C 확장을 호출하면 Python 스레드의 CPU 작업이 병렬화될 수 있나요? GIL 해제 범위와 내부 스레드를 어떻게 확인하나요?"
+  },
+  {
+    "id": "python-c3-linearization-example",
+    "parentId": "python-mro-super",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "C3 선형화의 후보 head와 tail을 손으로 어떻게 계산할까요?",
+    "question": "다이아몬드 상속의 C3 MRO를 계산합니다. 후보 head를 tail과 비교하는 규칙은 왜 필요한가요?"
+  },
+  {
+    "id": "python-default-evaluation-late-binding",
+    "parentId": "python-mutable-default",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "기본값 평가 시점과 클로저의 late binding은 어떤 실행 시점 차이가 있나요?",
+    "question": "가변 기본값 공유와 closure의 late binding은 값이 결정되는 시점에서 어떻게 다른가요?"
+  },
+  {
+    "id": "pypy-trace-guard-observation",
+    "parentId": "python-pypy-jit",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "PyPy JIT 로그에서 실제 trace와 guard 실패를 어떻게 확인할까요?",
+    "question": "PyPy의 반복 코드가 최적화됐는지 확인합니다. trace와 guard 실패·예열 비용은 어떻게 관찰하나요?"
+  },
+  {
+    "id": "python-weakref-ownership",
+    "parentId": "python-refcount-cycles",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "weakref가 소유 순환을 끊는 데 적합한 관계는 무엇인가요?",
+    "question": "Python observer와 cache의 참조를 weakref로 바꾸려 합니다. 실제 소유 관계와 수명 보장을 어떻게 구분하나요?"
+  },
+  {
+    "id": "python-deepcopy-memo-aliasing",
+    "parentId": "python-shallow-deep-copy",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "deepcopy memo가 순환과 별칭 보존에 어떻게 기여하나요?",
+    "question": "deepcopy는 순환과 같은 객체를 가리키는 여러 참조를 어떻게 처리하나요? memo가 없다면 어떤 문제가 생기나요?"
+  },
+  {
+    "id": "python-sort-key-function-cost",
+    "parentId": "python-timsort-stability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "키 함수 비용을 정렬 비교 비용과 어떻게 분리해 측정할까요?",
+    "question": "Python 정렬이 느립니다. key 함수 계산과 비교·병합 비용을 어떻게 분리해 측정하나요?"
+  },
+  {
+    "id": "introsort-depth-fallback",
+    "parentId": "quicksort-worst-case",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "introsort가 재귀 깊이를 기준으로 힙 정렬로 바꾸는 이유를 설명해 보세요.",
+    "question": "introsort가 재귀 깊이 한도에서 heapsort로 전환합니다. 최악 시간과 stack 상한은 어떻게 연결되나요?"
+  },
+  {
+    "id": "raft-follower-readindex-wait",
+    "parentId": "raft-linearizable-read",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "follower ReadIndex",
+    "question": "Raft follower가 선형화 읽기를 제공합니다. 리더에게 받은 read index와 로컬 apply를 어떻게 연결하나요?"
+  },
+  {
+    "id": "raft-client-request-result-dedup",
+    "parentId": "raft-log-commit-apply",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "요청 ID 결과 조회",
+    "question": "Raft 명령은 커밋됐지만 응답을 잃었습니다. 요청 ID별 결과를 상태 머신과 snapshot에 어떻게 보관하나요?"
+  },
+  {
+    "id": "raft-snapshot-applied-log-boundary",
+    "parentId": "raft-snapshot-compaction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "생성 중 로그 경계",
+    "question": "Raft commit은 120, apply는 115까지 진행됐습니다. snapshot과 남길 로그의 경계는 무엇이어야 하나요?"
+  },
+  {
+    "id": "raft-log-freshness-term-index",
+    "parentId": "raft-term-election",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "log term/index",
+    "question": "Raft 후보의 로그 길이가 더 긴데 투표를 못 받습니다. 마지막 log term과 index의 비교는 왜 그 순서인가요?"
+  },
+  {
+    "id": "ranking-reward-adjustment-ledger",
+    "parentId": "ranking-cutoff-rewards",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "부정 점수 정정으로 이미 지급한 보상이 바뀔 때 회수·차액·다음 시즌 반영을 어떻게 감사하나요?",
+    "question": "부정 점수 정정으로 지급한 보상이 바뀝니다. 원래 권리와 회수·차액 지급을 어떤 별도 원장으로 관리하나요?"
+  },
+  {
+    "id": "distributed-topk-merge-complexity",
+    "parentId": "ranking-global-topk",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "S개 샤드의 top-K 후보를 힙으로 병합할 때 시간·메모리·네트워크 비용을 계산해 보세요.",
+    "question": "샤드 S개의 정렬된 상위 K 후보를 병합합니다. heap·네트워크·메모리 비용은 어떻게 계산하나요?"
+  },
+  {
+    "id": "ranking-merge-dedup-tie-boundary",
+    "parentId": "ranking-top-k",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "샤드별 후보 병합에서 중복 사용자와 동점 경계를 어떻게 처리할지 설명해 보세요.",
+    "question": "샤드 후보에 같은 사용자가 중복되고 K위 동점자가 많습니다. 병합의 중복·동점 범위를 어떻게 정하나요?"
+  },
+  {
+    "id": "rate-limit-weighted-request-cost",
+    "parentId": "rate-limiting-algorithms",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "요청별 비용이 다를 때 토큰을 어떻게 차감하나요?",
+    "question": "가벼운 조회와 큰 보고서 생성에 같은 토큰을 차감합니다. 요청별 비용 가중치와 동시성 제한은 어떻게 조합하나요?"
+  },
+  {
+    "id": "red-black-delete-black-height",
+    "parentId": "red-black-tree-invariants",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "검정 노드 삭제가 삽입보다 복잡한 이유를 검정 높이 변화로 설명해 보세요.",
+    "question": "Red-Black Tree의 검정 노드를 삭제합니다. 삽입과 다른 검정 높이 복구는 어떤 불변식을 유지하나요?"
+  },
+  {
+    "id": "redis-scan-cleanup-idempotency",
+    "parentId": "redis-bigkey-scan",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "중복 키를 만나는 정리 작업을 어떤 조건부 연산으로 멱등화할까요?",
+    "question": "SCAN으로 같은 키를 여러 번 만날 수 있습니다. 값이 바뀌는 중 삭제 작업을 어떤 버전 조건으로 안전하게 만드나요?"
+  },
+  {
+    "id": "redis-cross-account-transfer-slot",
+    "parentId": "redis-cluster-hash-tags",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "서로 다른 계정 이체를 단일 슬롯 모델로 바꿀지 비교해 보세요.",
+    "question": "서로 다른 계정 키가 다른 Redis 슬롯에 있습니다. 이체를 단일 슬롯으로 묶을지 별도 조정할지 어떻게 비교하나요?"
+  },
+  {
+    "id": "redis-hash-field-expiry-layout",
+    "parentId": "redis-data-types-encoding",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "해시를 여러 키로 쪼갤 때 TTL·원자성 비용을 비교해 보세요.",
+    "question": "Redis hash를 여러 키로 나눌지 필드 만료 기능을 쓸지 결정합니다. 버전·원자성·메타데이터 비용은 어떻게 비교하나요?"
+  },
+  {
+    "id": "redis-volatile-no-eligible-key",
+    "parentId": "redis-expiry-eviction",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "volatile 정책에서 TTL 키 부족 시 쓰기 결과를 확인해 보세요.",
+    "question": "volatile eviction 정책인데 TTL이 있는 키가 부족합니다. 메모리 압박에서 새 쓰기는 어떻게 동작하나요?"
+  },
+  {
+    "id": "redis-multi-queue-runtime-errors",
+    "parentId": "redis-pipeline-transaction-lua",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "MULTI 큐잉 오류와 EXEC 실행 오류를 구분해 보세요.",
+    "question": "Redis MULTI의 큐잉 오류와 EXEC 중 실행 오류는 어떤 차이가 있으며 앞선 변경은 rollback되나요?"
+  },
+  {
+    "id": "redis-fork-rewrite-memory-peak",
+    "parentId": "redis-rdb-aof",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "rewrite 중 쓰기 버퍼와 메모리 피크를 재현해 보세요.",
+    "question": "Redis AOF rewrite 중 쓰기가 많습니다. copy-on-write·버퍼·디스크의 최대 비용을 어떤 부하로 재현하나요?"
+  },
+  {
+    "id": "redis-sentinel-quorum-majority",
+    "parentId": "redis-sentinel-cluster",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "Sentinel quorum과 승격 조건을 실제 장애로 확인해 보세요.",
+    "question": "Sentinel의 장애 판단 quorum과 failover 승인에 필요한 다수 조건은 어떻게 다른가요?"
+  },
+  {
+    "id": "redis-waitaof-wait-boundary",
+    "parentId": "redis-wait-durability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "WAITAOF와 WAIT가 확인하는 내구 지점을 비교해 보세요.",
+    "question": "Redis WAIT와 WAITAOF는 어떤 복제·디스크 확인을 각각 제공하며 승격·외부 효과에는 어떤 한계가 남나요?"
+  },
+  {
+    "id": "refresh-token-multitab-serialization",
+    "parentId": "refresh-token-rotation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "멀티 탭·멀티 기기의 갱신 직렬화 책임을 클라이언트와 서버에 어떻게 나눌까요?",
+    "question": "브라우저 여러 탭이 같은 refresh token으로 동시에 갱신합니다. client 직렬화와 서버 회전 상태는 어떻게 나누나요?"
+  },
+  {
+    "id": "terminal-state-correction-transition",
+    "parentId": "retry-safe-state-machine",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "종료 상태를 다시 열어야 하는 처리 흐름은 어떤 별도 전이를 두나요?",
+    "question": "완료·취소 상태를 다시 바꿔야 하는 정정이 있습니다. 종료 상태를 몰래 덮지 않고 어떤 별도 전이를 두나요?"
+  },
+  {
+    "id": "round-robin-cycle-wait-bound",
+    "parentId": "round-robin-time-quantum",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "작업 수가 늘 때 한 바퀴 대기가 p99에 미치는 영향을 어떻게 계산할까요?",
+    "question": "Round Robin의 runnable 작업 수가 늘었습니다. 한 바퀴 대기와 quantum이 응답 지연에 어떤 영향을 주나요?"
+  },
+  {
+    "id": "saga-orchestration-choreography",
+    "parentId": "saga-compensation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "오케스트레이션과 코레오그래피의 추적성·결합도 차이는 무엇인가요?",
+    "question": "saga를 중앙 조정자나 이벤트 협력으로 만듭니다. 추적성·결합·순환·보상 책임은 어떻게 다른가요?"
+  },
+  {
+    "id": "jwks-unknown-kid-fetch-storm",
+    "parentId": "secret-key-rotation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공개키 캐시가 새 kid를 모를 때 재조회 폭주를 어떻게 제한할까요?",
+    "question": "새 kid를 모르는 서비스가 JWKS를 반복 조회합니다. 캐시·singleflight·실패 backoff를 어떻게 조합하나요?"
+  },
+  {
+    "id": "semaphore-acquire-cancel-race",
+    "parentId": "semaphore-mutex",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "acquire 전 취소와 acquire 후 취소를 코드에서 어떻게 구분할까요?",
+    "question": "허가를 얻기 전과 얻은 직후 취소가 발생합니다. 허가를 누수하거나 두 번 반환하지 않게 어떻게 구분하나요?"
+  },
+  {
+    "id": "service-data-owner-migration",
+    "parentId": "service-boundary-design",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "데이터 소유권을 이전할 때 직접 DB 조회를 어떤 API·이벤트로 바꾸나요?",
+    "question": "서비스 경계를 옮기며 상대 DB 직접 조회를 없앱니다. API·이벤트·읽기 모델과 쓰기 권위는 어떤 순서로 전환하나요?"
+  },
+  {
+    "id": "segmented-sieve-first-multiple",
+    "parentId": "sieve-prime-numbers",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "구간 체에서 작은 소수 목록을 만들고 각 소수의 첫 표시 위치를 계산하는 방법을 설명해 보세요.",
+    "question": "구간 [L,R]에서 소수를 구합니다. 각 소수 p의 첫 제거 위치에 p²와 ceil(L/p)를 함께 사용하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "lazy-initialization-publication-failure",
+    "parentId": "singleton-global-state",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "지연 초기화에서 메모리 가시성과 생성자 예외를 안전하게 처리하는 방법은 무엇인가요?",
+    "question": "공유 객체를 지연 초기화합니다. 생성자 예외·불완전 공개·동시 첫 접근은 어떻게 처리하나요?"
+  },
+  {
+    "id": "multiwindow-burn-rate-alerts",
+    "parentId": "slo-error-budget",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "다중 윈도우 burn rate로 잡음과 지속 장애를 어떻게 구분하나요?",
+    "question": "짧은 오류 급증과 지속 저하를 모두 감지하려 합니다. 다중 시간 창의 burn rate를 어떻게 조합하나요?"
+  },
+  {
+    "id": "policy-owned-interface-boundary",
+    "parentId": "solid-dependency-inversion",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "추상화가 고수준 모듈의 소유인지 저수준 모듈의 소유인지 판단하는 기준은 무엇인가요?",
+    "question": "인터페이스는 있지만 DB 패키지가 소유합니다. 추상화의 소유와 고수준 정책의 의존 방향은 어떻게 판단하나요?"
+  },
+  {
+    "id": "variance-behavioral-subtyping",
+    "parentId": "solid-liskov",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공분산 반환과 반공변 입력 타입을 사용하는 언어에서 타입 규칙과 행동 계약은 어떻게 함께 확인할까요?",
+    "question": "반공변 입력과 공변 반환의 타입 규칙을 지키면 행동 치환도 보장되나요? 사전·사후조건은 어떻게 따로 검사하나요?"
+  },
+  {
+    "id": "inplace-stable-sort-independence",
+    "parentId": "sorting-stability",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "제자리 정렬과 안정 정렬이 서로 독립적인 속성인 이유를 예로 말해 보세요.",
+    "question": "제자리 정렬과 안정 정렬은 같은 속성인가요? 추가 메모리와 동점 순서 보장을 어떻게 구분하나요?"
+  },
+  {
+    "id": "hierarchical-grid-promotion-dedup",
+    "parentId": "spatial-hash-grid",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "조회 반경과 객체 크기 분포가 여러 규모일 때 다단계 격자의 승격·중복 검사를 어떻게 설계하나요?",
+    "question": "객체 크기가 다양해 다단계 격자를 씁니다. 승격·강등·여러 레벨 조회에서 후보 중복과 누락을 어떻게 막나요?"
+  },
+  {
+    "id": "sqlserver-updlock-version-read",
+    "parentId": "sqlserver-rcsi-snapshot",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "`UPDLOCK`과 버전 읽기를 섞을 때 어떤 잠금·시점 계약을 확인하나요?",
+    "question": "SQL Server에서 버전 읽기와 UPDLOCK을 섞습니다. 읽는 시점과 쓰기 대기·충돌은 어떤 설정을 따라가나요?"
+  },
+  {
+    "id": "sqs-fifo-hot-message-group",
+    "parentId": "sqs-visibility-timeout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "FIFO 핫 group",
+    "question": "SQS FIFO의 한 message group만 밀립니다. 소비자를 늘려도 안 풀리는 이유와 순서 범위 변경의 비용은 무엇인가요?"
+  },
+  {
+    "id": "streaming-ssr-partial-hydration",
+    "parentId": "ssr-csr-hydration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "스트리밍 SSR·부분 hydration이 상호작용 경계와 오류 처리를 어떻게 바꿀까요?",
+    "question": "스트리밍 SSR과 부분 hydration을 적용합니다. 콘텐츠 표시·상호작용·중간 오류의 경계는 어떻게 달라지나요?"
+  },
+  {
+    "id": "undo-redo-branch-history",
+    "parentId": "stack-queue-traversal",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "redo를 추가할 때 실행·undo·새 분기에서 두 스택을 갱신하는 규칙을 설명해 보세요.",
+    "question": "undo 뒤 새 작업을 실행했습니다. undo·redo 두 스택과 외부 효과의 보정은 어떻게 바뀌나요?"
+  },
+  {
+    "id": "shadow-write-side-effect-isolation",
+    "parentId": "strangler-migration",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "shadow write의 부수 효과를 어떻게 격리하나요?",
+    "question": "새 시스템에 shadow traffic을 보냅니다. 실제 결제·메일·쓰기 효과를 중복 실행하지 않고 무엇을 비교하나요?"
+  },
+  {
+    "id": "fanout-multiple-error-report",
+    "parentId": "structured-concurrency-fanout",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "여러 오류 중 대표 오류와 나머지 진단을 어떻게 구성하나요?",
+    "question": "하위 호출 여러 개가 동시에 실패합니다. 대표 오류·부분 결과·나머지 진단을 어떻게 구성하나요?"
+  },
+  {
+    "id": "linux-vdso-clock-read",
+    "parentId": "syscall-user-kernel",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "vDSO가 일부 시간 조회에서 커널 진입을 줄이는 원리는 무엇인가요?",
+    "question": "일부 시간 조회가 vDSO로 처리됩니다. 커널 진입을 줄이면서 시간 정보를 어떻게 안전하게 읽나요?"
+  },
+  {
+    "id": "bandwidth-delay-product-window",
+    "parentId": "tcp-flow-vs-congestion-control",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "대역폭·RTT가 큰 경로에서 윈도우와 in-flight 데이터가 중요한 이유는 무엇일까요?",
+    "question": "대역폭과 RTT가 모두 큰 연결에서 처리량이 낮습니다. in-flight 바이트와 창 크기는 어떤 관계가 있나요?"
+  },
+  {
+    "id": "tls-record-tcp-packet-buffering",
+    "parentId": "tcp-nagle-delayed-ack",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "TLS 레코드 버퍼링과 TCP 세그먼트화를 어떤 관측 시각으로 분리할까요?",
+    "question": "작은 메시지가 늦게 나갑니다. 앱 write·TLS record·TCP segment·실제 NIC 전송을 어떻게 나눠 관찰하나요?"
+  },
+  {
+    "id": "ring-buffer-parser-view-lifetime",
+    "parentId": "tcp-stream-message-framing",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "링 버퍼나 scatter/gather를 쓰면서 파싱 결과와 수신 버퍼 수명을 어떻게 관리할까요?",
+    "question": "수신 ring buffer의 일부를 복사 없이 파싱 결과로 넘깁니다. wrap·확장·재사용에서 참조 수명을 어떻게 보호하나요?"
+  },
+  {
+    "id": "tcp-simultaneous-open-state",
+    "parentId": "tcp-three-way-handshake",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "동시 오픈과 SYN 재전송에서 TCP 상태 전이를 어떻게 그릴까요?",
+    "question": "양쪽 TCP endpoint가 동시에 SYN을 보냅니다. 일반 연결 시작과 상태 전이는 어떻게 다른가요?"
+  },
+  {
+    "id": "close-wait-application-close-leak",
+    "parentId": "tcp-time-wait",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "CLOSE_WAIT 증가가 TIME_WAIT 증가와 다른 애플리케이션 경로를 어떻게 보여 줄까요?",
+    "question": "CLOSE_WAIT가 계속 늘어납니다. 상대 FIN 수신 뒤 앱의 close 누락과 정상 짧은 대기를 어떻게 구분하나요?"
+  },
+  {
+    "id": "mutation-test-detection-power",
+    "parentId": "tdd-red-green-refactor",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "실패를 확인하기 위해 구현을 일부러 깨뜨리는 검증과 mutation testing은 어떤 차이가 있을까요?",
+    "question": "테스트 검출력을 확인하려고 코드를 의도적으로 바꿉니다. mutation testing의 생존 변이와 동등 변이는 어떻게 해석하나요?"
+  },
+  {
+    "id": "hierarchical-timing-wheel-cascade",
+    "parentId": "timing-wheel-vs-heap",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "계층형 휠에서 긴 만료를 상위 버킷에 두고 아래로 내리는 조건을 설명해 보세요.",
+    "question": "긴 타이머를 계층형 휠의 상위 버킷에 둡니다. 언제 아래로 내리고 조기 실행·회전 수를 어떻게 처리하나요?"
+  },
+  {
+    "id": "asid-pcid-address-space-tags",
+    "parentId": "tlb-page-table",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "ASID·PCID가 주소 공간별 변환을 어떻게 구분하나요?",
+    "question": "ASID·PCID는 서로 다른 프로세스의 TLB 변환을 어떻게 구분하며 context switch 비용을 무엇까지 줄이나요?"
+  },
+  {
+    "id": "certificate-pinning-rotation-recovery",
+    "parentId": "tls-certificate-validation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "인증서 pinning이 정상 교체와 긴급 복구에 만드는 운영 비용은 무엇일까요?",
+    "question": "앱에 인증서 pinning을 넣습니다. 정상 키 교체·긴급 유출·오래된 앱의 복구 경로는 어떻게 준비하나요?"
+  },
+  {
+    "id": "optimistic-retry-hotkey-abort",
+    "parentId": "transaction-and-lost-update",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "낙관적 동시성 제어의 재시도를 언제 포기할지, 반복되는 충돌을 어떤 지표로 판단할까요?",
+    "question": "낙관적 갱신 충돌이 계속 발생합니다. 재시도 중단과 키별 직렬화 전환을 어떤 지표로 판단하나요?"
+  },
+  {
+    "id": "outbox-claim-lease-recovery",
+    "parentId": "transactional-outbox",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "여러 전달자의 claim과 lease 만료를 어떻게 안전하게 설계하나요?",
+    "question": "여러 outbox 발행자가 claim합니다. lease 만료와 늦은 완료·재발행은 어떤 owner·버전으로 처리하나요?"
+  },
+  {
+    "id": "game-state-input-delivery-classes",
+    "parentId": "udp-reliability-choice",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "스냅샷과 입력 명령을 서로 다른 큐·순서·재전송 정책으로 나누는 이유는 무엇일까요?",
+    "question": "게임 snapshot과 입력 명령을 다른 전달 큐에 둡니다. 최신성·순서·재전송 요구를 어떻게 나누나요?"
+  },
+  {
+    "id": "rollback-union-find-path-compression",
+    "parentId": "union-find-connectivity",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "롤백 Union-Find에서 경로 압축을 그대로 쓰기 어려운 이유를 변경 이력으로 설명해 보세요.",
+    "question": "Union-Find를 rollback하려 합니다. 경로 압축이 변경 이력과 충돌하는 이유와 대안은 무엇인가요?"
+  },
+  {
+    "id": "huge-page-fault-tlb-tradeoff",
+    "parentId": "virtual-memory-page-fault",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 3,
+    "sourcePrompt": "대형 페이지를 적용할 때 fault 단위와 TLB 비용을 어떻게 비교할까요?",
+    "question": "대형 페이지를 적용합니다. TLB miss 절감과 첫 fault·메모리 낭비·할당 비용은 어떻게 비교하나요?"
+  },
+  {
+    "id": "voxel-halo-version-consistency",
+    "parentId": "voxel-chunk-boundaries",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "ghost cell을 둘 때 원본 청크와 halo의 버전 불일치를 어떻게 감지하나요?",
+    "question": "청크 경계에 ghost cell을 복사합니다. 원본과 halo가 다른 버전일 때 어떤 검사를 보류해야 하나요?"
+  },
+  {
+    "id": "derived-data-version-lag-slo",
+    "parentId": "voxel-derived-data-update",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "원본과 파생 버전 차이를 어떤 지표·경보·SLO로 운영하나요?",
+    "question": "원본 지형과 충돌·경로 데이터의 버전이 벌어집니다. 허용 조합·임시 정책·지연 SLO를 어떻게 관리하나요?"
+  },
+  {
+    "id": "voxel-static-dynamic-overlay",
+    "parentId": "voxel-occupancy-representation",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "동적 점유 계층과 정적 지형 계층의 결과를 합칠 때 우선순위·버전을 어떻게 검사하나요?",
+    "question": "정적 고체와 동적 문·객체 점유를 합칩니다. 우선순위·독립 벽·버전의 의미를 어떻게 보존하나요?"
+  },
+  {
+    "id": "dda-supercover-corner-cells",
+    "parentId": "voxel-raycast-dda",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "일반 DDA와 supercover가 모서리에서 방문하는 셀 집합을 어떤 테스트로 비교하나요?",
+    "question": "광선이 복셀 모서리나 꼭짓점을 정확히 지납니다. DDA와 supercover의 방문 셀 집합은 어떻게 다른가요?"
+  },
+  {
+    "id": "voxel-palette-bitmap-update-cost",
+    "parentId": "voxel-sparse-storage",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "팔레트 압축 청크와 비트맵 표현을 주변 조회·재인코딩 패턴별로 어떻게 비교하나요?",
+    "question": "팔레트 압축 청크와 비트맵을 비교합니다. 재질 분포·이웃 조회·단일 셀 변경의 비용은 어떻게 다른가요?"
+  },
+  {
+    "id": "offline-client-snapshot-switch",
+    "parentId": "websocket-heartbeat-reconnect",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "오래 오프라인인 클라이언트의 이벤트 보관과 스냅샷 전환 기준은 무엇일까요?",
+    "question": "오래 오프라인인 client가 이벤트 보관 범위를 벗어났습니다. snapshot과 증분 재생을 어떤 기준으로 전환하나요?"
+  },
+  {
+    "id": "portable-io-buffer-ownership",
+    "parentId": "windows-epoll-porting",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "공통 I/O 인터페이스의 버퍼 소유를 호출자와 OS 어댑터 중 어디에 둘까요?",
+    "question": "IOCP와 epoll을 같은 인터페이스로 감쌉니다. 버퍼 소유·준비·완료·취소를 어느 계층에서 표현하나요?"
+  },
+  {
+    "id": "cross-boundary-combat-authority",
+    "parentId": "world-partition-handoff",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 1,
+    "sourcePrompt": "경계 양쪽 캐릭터의 공격·충돌 판정을 어느 owner가 맡을지 epoch와 함께 어떻게 정하나요?",
+    "question": "서로 다른 공간 서버의 두 캐릭터가 공격합니다. 기준 틱·상태 snapshot·피해 확정 owner를 어떻게 정하나요?"
+  },
+  {
+    "id": "java-wait-notify-monitor-owner",
+    "parentId": "monitor-synchronization",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "Java wait/notify에서 모니터 소유 조건은 무엇인가요?",
+    "question": "Java wait·notify를 호출할 때 어떤 객체의 monitor를 소유해야 하며 wait는 어떤 락을 풀어 주나요?"
+  },
+  {
+    "id": "paxos-chosen-apply-prefix",
+    "parentId": "multi-paxos-leader",
+    "sourceSection": "더 파고들 거리",
+    "sourceOrdinal": 2,
+    "sourcePrompt": "pipeline 적용 순서",
+    "question": "Paxos 슬롯 12가 11보다 먼저 선택됐습니다. chosen·learned·순차 apply는 어떻게 나누나요?"
+  }
+]

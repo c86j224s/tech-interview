@@ -2,7 +2,7 @@
 id: bulkhead-isolation
 title: "추천 API가 느려졌는데 로그인도 함께 지연됩니다. 공유 워커나 연결 풀이 원인이라면 어떻게 격리하나요?"
 answerMinutes: 5
-followups: [{"id": "bounded-queue-backpressure", "prompt": "풀을 분리했어도 추천 요청이 무한히 대기하면 메모리가 찹니다. 실행 상한과 대기 상한은 어떻게 함께 정할까요?"}, {"id": "circuit-breaker", "prompt": "느린 의존성에 허용한 자원마저 계속 낭비된다면, 언제 호출 자체를 잠시 막을까요?"}, {"id": "structured-concurrency-fanout", "prompt": "추천을 생략해 응답했다면 이미 시작한 추천 호출의 종료는 누가 책임져야 할까요?"}]
+followups: [{"id":"tenant-resource-bulkheads","prompt":"일부 테넌트의 큰 요청이 다른 테넌트까지 지연시킵니다. 워커·연결·큐를 어떤 단위로 격리하나요?"},{"id":"reserved-shared-capacity-borrowing","prompt":"기능별 예약 용량과 공용 여유 용량을 함께 둡니다. 장애 때 빌려 쓴 자원을 어떻게 회수하나요?"},{"id":"bounded-queue-backpressure","prompt":"풀을 분리했어도 추천 요청이 무한히 대기하면 메모리가 찹니다. 실행 상한과 대기 상한은 어떻게 함께 정할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -54,6 +54,6 @@ related: ["bounded-queue-backpressure","circuit-breaker"]
 
 ## 더 파고들 거리
 
-- 테넌트별 자원 격리를 어떤 단위로 적용할까요?
-- 예약 용량과 공용 여유 용량을 장애 때 어떻게 조정할까요?
+- [일부 테넌트의 큰 요청이 다른 테넌트까지 지연시킵니다. 워커·연결·큐를 어떤 단위로 격리하나요?](/tech-interview/questions/tenant-resource-bulkheads/)
+- [기능별 예약 용량과 공용 여유 용량을 함께 둡니다. 장애 때 빌려 쓴 자원을 어떻게 회수하나요?](/tech-interview/questions/reserved-shared-capacity-borrowing/)
 - 격리 풀이 가득 찼을 때 실패·대기·대체 중 무엇을 고를까요?

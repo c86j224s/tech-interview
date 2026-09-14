@@ -2,7 +2,7 @@
 id: sqlserver-rcsi-snapshot
 title: "SQL Server 트랜잭션에서 같은 행을 두 번 읽는 사이 다른 요청이 값을 바꿨습니다. RCSI와 SNAPSHOT은 두 번째 읽기와 이후 쓰기 충돌을 어떻게 다르게 처리하나요?"
 answerMinutes: 5
-followups: [{"id": "transaction-and-lost-update", "prompt": "두 읽기가 같은 시점을 봐도 서로 다른 행을 고치는 요청들이 전체 규칙을 깨뜨릴 수 있을까요?"}, {"id": "db-mvcc-snapshot", "prompt": "보고서가 오래된 시점을 계속 읽는 동안 이전 행 버전은 언제까지 남아야 할까요?"}, {"id": "request-timeout-idempotency", "prompt": "충돌로 트랜잭션을 다시 실행할 때 이미 호출한 외부 API까지 안전하게 반복할 수 있을까요?"}]
+followups: [{"id":"sqlserver-updlock-version-read","prompt":"SQL Server에서 버전 읽기와 UPDLOCK을 섞습니다. 읽는 시점과 쓰기 대기·충돌은 어떤 설정을 따라가나요?"},{"id":"transaction-and-lost-update","prompt":"두 읽기가 같은 시점을 봐도 서로 다른 행을 고치는 요청들이 전체 규칙을 깨뜨릴 수 있을까요?"},{"id":"db-mvcc-snapshot","prompt":"보고서가 오래된 시점을 계속 읽는 동안 이전 행 버전은 언제까지 남아야 할까요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["SQL Server","RCSI","SNAPSHOT"]
@@ -53,6 +53,6 @@ SNAPSHOT 트랜잭션이 과거 잔액 100을 읽었다고 하겠습니다. 그 
 
 ## 더 파고들 거리
 
-- `UPDLOCK`과 버전 읽기를 섞을 때 어떤 잠금·시점 계약을 확인하나요?
+- [SQL Server에서 버전 읽기와 UPDLOCK을 섞습니다. 읽는 시점과 쓰기 대기·충돌은 어떤 설정을 따라가나요?](/tech-interview/questions/sqlserver-updlock-version-read/)
 - 버전 저장소 위치와 정리 비용은 설정에 따라 어떻게 달라지나요?
 - 충돌 재시도는 전체 트랜잭션과 일부 문장 중 어디까지 다시 실행하나요?

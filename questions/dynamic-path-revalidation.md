@@ -2,7 +2,7 @@
 id: dynamic-path-revalidation
 title: "NPC가 경로를 찾은 뒤 문이 닫히거나 목표가 바뀌었습니다. 기존 경로와 뒤늦게 도착한 탐색 결과를 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"jps-plus-preprocessing","prompt":"문 하나의 변경이 방향별 점프 전처리 데이터의 어느 범위를 무효화하는지 안전하게 추적하려면 무엇을 기록하겠습니까?"},{"id":"path-smoothing-validation","prompt":"경로의 다음 코너를 직선으로 줄인 직후 동적 장애물이 생기면 재검증 범위와 재탐색 시점을 어떻게 정하겠습니까?"},{"id":"behavior-tree-running","prompt":"NPC가 재탐색을 기다리는 Running 상태에서 도주 조건이 생기면 기존 경로 작업의 결과를 어떤 순서로 취소하겠습니까?"}]
+followups: [{"id":"path-dependency-version-granularity","prompt":"경로에 참조한 셀이나 청크 버전을 저장합니다. 너무 넓거나 좁은 무효화 단위는 어떤 비용과 누락을 만드나요?"},{"id":"moving-target-replan-cadence","prompt":"추적 대상이 계속 움직입니다. 매 틱 재탐색하지 않으면서 경로 오차와 안전성을 어떻게 관리하나요?"},{"id":"jps-plus-preprocessing","prompt":"문 하나의 변경이 방향별 점프 전처리 데이터의 어느 범위를 무효화하는지 안전하게 추적하려면 무엇을 기록하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["경로 탐색","동적 장애물","맵 버전"]
@@ -41,6 +41,6 @@ related: ["jps-plus-preprocessing","retry-safe-state-machine"]
 
 ## 더 파고들 거리
 
-- 경로가 참조한 셀·청크 버전을 저장할 때 메모리와 무효화 정확성을 어떻게 절충하나요?
-- 목표가 계속 움직이는 추적 대상일 때 재탐색 주기와 경로 추종 오차를 어떻게 정하나요?
+- [경로에 참조한 셀이나 청크 버전을 저장합니다. 너무 넓거나 좁은 무효화 단위는 어떤 비용과 누락을 만드나요?](/tech-interview/questions/path-dependency-version-granularity/)
+- [추적 대상이 계속 움직입니다. 매 틱 재탐색하지 않으면서 경로 오차와 안전성을 어떻게 관리하나요?](/tech-interview/questions/moving-target-replan-cadence/)
 - 증분 탐색으로 이전 계산을 재사용해도 최단성·안전성을 유지하는 조건은 무엇인가요?

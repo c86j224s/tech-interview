@@ -2,7 +2,7 @@
 id: elasticsearch-refresh-visibility
 title: "Elasticsearch가 문서 저장 성공을 반환했는데 바로 실행한 검색에는 문서가 없습니다. 왜 지연되며 즉시 확인이 필요한 화면은 어떻게 만드나요?"
 answerMinutes: 5
-followups: [{"id":"db-read-replica-consistency","prompt":"원본 DB의 복제 지연과 Elasticsearch refresh 지연을 함께 겪을 때 사용자 최신성 계약을 어떻게 분리하나요?"},{"id":"elasticsearch-shard-mapping","prompt":"검색 가시성 지연이 커질 때 mapping·샤드 수와 refresh 비용을 어떤 실행 지표로 다시 평가하나요?"},{"id":"redis-rdb-aof","prompt":"refresh와 Redis의 지속성 설정이 각각 가시성과 장애 복구를 다루는 차이를 설명해 보세요."}]
+followups: [{"id":"elasticsearch-wait-for-refresh-cost","prompt":"Elasticsearch 쓰기에 refresh=wait_for와 강제 refresh를 적용하면 대기·세그먼트·병합 비용이 어떻게 다른가요?"},{"id":"elasticsearch-get-search-readback","prompt":"저장한 문서를 ID GET으로는 보는데 검색에는 없습니다. read-after-write 화면을 어떤 경로로 구성하나요?"},{"id":"db-read-replica-consistency","prompt":"원본 DB의 복제 지연과 Elasticsearch refresh 지연을 함께 겪을 때 사용자 최신성 계약을 어떻게 분리하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Elasticsearch","refresh","검색"]
@@ -43,6 +43,6 @@ refresh는 검색 리더가 새 세그먼트를 보게 하는 작업이지 모�
 
 ## 더 파고들 거리
 
-- `refresh=wait_for`와 즉시 강제 refresh의 비용을 비교해 보세요.
-- ID 기반 GET과 검색의 가시성 계약을 테스트해 보세요.
+- [Elasticsearch 쓰기에 refresh=wait_for와 강제 refresh를 적용하면 대기·세그먼트·병합 비용이 어떻게 다른가요?](/tech-interview/questions/elasticsearch-wait-for-refresh-cost/)
+- [저장한 문서를 ID GET으로는 보는데 검색에는 없습니다. read-after-write 화면을 어떤 경로로 구성하나요?](/tech-interview/questions/elasticsearch-get-search-readback/)
 - 대량 색인·샤드 장애·복구 뒤 검색 노출을 검증해 보세요.

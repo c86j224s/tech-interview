@@ -2,7 +2,7 @@
 id: rate-limiting-algorithms
 title: "API의 평균 요청률과 순간 버스트를 제한할 때 고정 윈도우와 토큰 버킷을 어떻게 선택하나요?"
 answerMinutes: 5
-followups: [{"id": "bounded-queue-backpressure", "prompt": "속도 제한을 통과한 요청이 DB 큐에 쌓일 때 동시 실행 상한과 대기 큐를 어떻게 조합할까요?"}, {"id": "authentication-vs-authorization", "prompt": "로그인 요청과 인증된 사용자의 자원 요청에서 IP·계정별 제한과 인가 검사를 어떤 순서로 적용하겠습니까?"}, {"id": "slo-error-budget", "prompt": "요청을 제한해 보호한 결과와 사용자가 받은 정상 거절을 SLO·오류 예산에서 어떻게 분류할까요?"}]
+followups: [{"id":"rate-limit-weighted-request-cost","prompt":"가벼운 조회와 큰 보고서 생성에 같은 토큰을 차감합니다. 요청별 비용 가중치와 동시성 제한은 어떻게 조합하나요?"},{"id":"bounded-queue-backpressure","prompt":"속도 제한을 통과한 요청이 DB 큐에 쌓일 때 동시 실행 상한과 대기 큐를 어떻게 조합할까요?"},{"id":"authentication-vs-authorization","prompt":"로그인 요청과 인증된 사용자의 자원 요청에서 IP·계정별 제한과 인가 검사를 어떤 순서로 적용하겠습니까?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ IP만으로 로그인 제한을 걸면 공유 NAT 사용자가 함께 막힐 수
 
 ## 더 파고들 거리
 
-- 요청별 비용이 다를 때 토큰을 어떻게 차감하나요?
+- [가벼운 조회와 큰 보고서 생성에 같은 토큰을 차감합니다. 요청별 비용 가중치와 동시성 제한은 어떻게 조합하나요?](/tech-interview/questions/rate-limit-weighted-request-cost/)
 - 제한 저장소 장애 시 fail-open과 fail-closed를 어떤 API별 기준으로 고르나요?
 - 공유 IP 환경에서 로그인 제한의 오탐을 어떻게 줄이나요?

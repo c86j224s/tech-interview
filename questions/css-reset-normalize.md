@@ -2,7 +2,7 @@
 id: css-reset-normalize
 title: "같은 폼과 목록이 브라우저마다 다르게 보입니다. 기본 스타일을 초기화하는 reset과 차이를 보정하는 normalize 중 무엇을 선택하고, 접근성은 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"css-cascade-specificity","prompt":"reset과 컴포넌트 스타일이 동시에 적용될 때 기본 선언을 이기는 cascade layer와 specificity를 어떤 순서로 관리할까요?"},{"id":"browser-rendering-layout","prompt":"전역 reset으로 많은 요소의 스타일이 바뀔 때 실제 layout·paint 범위와 성능 영향을 어떻게 확인하나요?"},{"id":"ssr-csr-hydration","prompt":"서버와 클라이언트가 서로 다른 기본 class나 스타일을 사용하면 시각 차이와 hydration 경고를 어떻게 분리해 진단할까요?"}]
+followups: [{"id":"form-appearance-accessibility","prompt":"폼 control의 appearance를 없애고 직접 그립니다. 키보드·포커스·disabled·고대비 상태를 어떻게 보존하나요?"},{"id":"scoped-reset-typography-layers","prompt":"컴포넌트 reset이 전역 글꼴과 링크 스타일을 덮습니다. 범위·상속·layer의 책임을 어떻게 정하나요?"},{"id":"css-cascade-specificity","prompt":"reset과 컴포넌트 스타일이 동시에 적용될 때 기본 선언을 이기는 cascade layer와 specificity를 어떤 순서로 관리할까요?"}]
 difficulty: 하
 category: 웹
 tags: ["CSS","reset","normalize","접근성","기본 스타일"]
@@ -49,6 +49,6 @@ reset은 시각적 속성을 지우는 도구일 뿐 의미론적 HTML을 대신
 
 ## 더 파고들 거리
 
-- form control의 appearance를 바꿀 때 반드시 보존해야 할 브라우저 기능은 무엇인가요?
-- 컴포넌트 범위 reset과 전역 typography가 충돌하면 layer·상속을 어떻게 정할까요?
+- [폼 control의 appearance를 없애고 직접 그립니다. 키보드·포커스·disabled·고대비 상태를 어떻게 보존하나요?](/tech-interview/questions/form-appearance-accessibility/)
+- [컴포넌트 reset이 전역 글꼴과 링크 스타일을 덮습니다. 범위·상속·layer의 책임을 어떻게 정하나요?](/tech-interview/questions/scoped-reset-typography-layers/)
 - prefers-reduced-motion과 강제 색상 환경에서 reset 결과를 어떤 시나리오로 검증할까요?

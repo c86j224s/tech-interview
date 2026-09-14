@@ -2,7 +2,7 @@
 id: ml-classification-metrics
 title: "양성 사례가 매우 드문 분류기에서 정확도가 99%입니다. 이 숫자만으로 모델이 좋은지 판단하지 않으려면 무엇을 함께 봐야 하나요?"
 answerMinutes: 5
-followups: [{"id":"ml-loss-objective","prompt":"재현율을 높이고 싶은데 학습 손실은 계속 내려간다면 운영 지표와 최적화 목적의 불일치를 어떤 순서로 진단하겠습니까?"},{"id":"ml-train-validation-test","prompt":"임계값과 확률 보정 방법까지 여러 번 선택했다면 테스트 점수를 오염시키지 않도록 데이터를 어떻게 다시 나누겠습니까?"},{"id":"ml-overfitting-generalization","prompt":"검증 PR-AUC는 높지만 실제 신규 사용자에서 재현율이 떨어진다면 과적합과 분포 변화를 어떤 증거로 구분하겠습니까?"}]
+followups: [{"id":"classification-threshold-review-budget","prompt":"오탐·미탐 비용과 사람 검토 인력이 제한되어 있습니다. 자동 차단·검토·통과 임계값을 어떻게 정하나요?"},{"id":"precision-recall-base-rate-shift","prompt":"같은 순위 모델인데 양성 비율이 바뀌자 정밀도가 달라졌습니다. PR 지표와 운영 결과를 어떻게 해석하나요?"},{"id":"ml-loss-objective","prompt":"재현율을 높이고 싶은데 학습 손실은 계속 내려간다면 운영 지표와 최적화 목적의 불일치를 어떤 순서로 진단하겠습니까?"}]
 difficulty: 하
 category: 머신러닝
 tags: ["머신러닝","분류","정확도","정밀도","재현율"]
@@ -43,6 +43,6 @@ related: ["ml-loss-objective"]
 
 ## 더 파고들 거리
 
-- 오탐·미탐 비용과 검토 인력 한도를 함께 넣어 임계값을 선택해 보세요.
-- 같은 순위 모델에서 양성 비율이 바뀔 때 PR 곡선과 실제 정밀도가 어떻게 달라지는지 비교해 보세요.
+- [오탐·미탐 비용과 사람 검토 인력이 제한되어 있습니다. 자동 차단·검토·통과 임계값을 어떻게 정하나요?](/tech-interview/questions/classification-threshold-review-budget/)
+- [같은 순위 모델인데 양성 비율이 바뀌자 정밀도가 달라졌습니다. PR 지표와 운영 결과를 어떻게 해석하나요?](/tech-interview/questions/precision-recall-base-rate-shift/)
 - 확률 보정 곡선과 임계값별 혼동 행렬로 자동 차단·사람 검토·통과 구간을 나눠 보세요.

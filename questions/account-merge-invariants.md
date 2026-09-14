@@ -2,7 +2,7 @@
 id: account-merge-invariants
 title: "구매 내역과 보상을 가진 두 계정을 하나로 합치려 합니다. 무엇을 합치고 무엇을 보존해야 하며, 중간 실패는 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id": "saga-compensation", "prompt": "병합 중 한 서비스가 커밋한 뒤 다음 단계와 자동 보상이 실패한다면, 어떤 상태로 남기고 어떻게 회복할까요?"}, {"id": "account-linking-proof", "prompt": "두 계정의 소유권 증명이 서로 다른 인증 수단에 걸쳐 있을 때 자동 병합을 허용할 최소 증거는 무엇일까요?"}, {"id": "retry-safe-state-machine", "prompt": "병합 요청이 타임아웃으로 재전송될 때 단계 전이와 중복 지급을 어떻게 막을까요?"}]
+followups: [{"id":"account-merge-late-payment","prompt":"계정 병합 중 원본 계정으로 결제 완료가 도착했습니다. 대표 계정에 권리를 빠짐없이 한 번만 반영하려면 어떻게 하나요?"},{"id":"account-merge-cancellation-boundary","prompt":"계정 병합을 중간에 취소하려 합니다. 단순 예약 해제와 이미 옮긴 권리의 보정을 어떻게 나누나요?"},{"id":"saga-compensation","prompt":"병합 중 한 서비스가 커밋한 뒤 다음 단계와 자동 보상이 실패한다면, 어떤 상태로 남기고 어떻게 회복할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["account-linking-proof","saga-compensation"]
 
 ## 더 파고들 거리
 
-- 병합 중 원본으로 들어온 결제를 대표 계정에 어떻게 연결할까요?
-- 병합 취소가 가능한 단계와 불가능한 단계를 어떻게 나눌까요?
+- [계정 병합 중 원본 계정으로 결제 완료가 도착했습니다. 대표 계정에 권리를 빠짐없이 한 번만 반영하려면 어떻게 하나요?](/tech-interview/questions/account-merge-late-payment/)
+- [계정 병합을 중간에 취소하려 합니다. 단순 예약 해제와 이미 옮긴 권리의 보정을 어떻게 나누나요?](/tech-interview/questions/account-merge-cancellation-boundary/)
 - 교차 병합 요청의 순환과 중복을 어떻게 막을까요?

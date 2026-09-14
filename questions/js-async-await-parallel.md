@@ -2,7 +2,7 @@
 id: js-async-await-parallel
 title: "화면을 그리려면 서로 독립적인 API 두 개의 결과가 필요합니다. 순차 await와 Promise.all 중 무엇을 선택하고, 하나가 실패하면 나머지 요청은 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"js-promise-error-chain","prompt":"Promise.all의 한 rejection을 호출자에게 전파하면서 이미 성공한 하위 결과는 어떻게 폐기하거나 보상할까요?"},{"id":"structured-concurrency-fanout","prompt":"AbortSignal을 지원하지 않는 하위 API가 남으면 부모 응답 종료와 실제 작업 종료를 어떻게 표시할까요?"},{"id":"request-timeout-idempotency","prompt":"병렬 요청 중 일부가 서버에 반영된 뒤 브라우저가 타임아웃되면 재시도 전에 무엇을 조회할까요?"}]
+followups: [{"id":"promise-combinator-success-contract","prompt":"Promise.all·allSettled·any·race는 어떤 시점에 성공·실패하며 남은 작업을 취소하나요?"},{"id":"shared-abortsignal-completed-results","prompt":"여러 fetch가 AbortSignal을 공유합니다. 일부 완료 뒤 abort하면 결과와 아직 진행 중인 작업은 어떻게 나누나요?"},{"id":"js-promise-error-chain","prompt":"Promise.all의 한 rejection을 호출자에게 전파하면서 이미 성공한 하위 결과는 어떻게 폐기하거나 보상할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["JavaScript","async/await","Promise.all","병렬 실행","취소"]
@@ -64,6 +64,6 @@ Promise.all의 결과 배열은 완료된 순서가 아니라 입력 Promise의 
 
 ## 더 파고들 거리
 
-- `all`, `allSettled`, `any`, `race`의 성공 조건을 한 작업 표로 비교해 보세요.
-- 여러 fetch에 하나의 AbortSignal을 공유할 때 이미 완료된 응답은 어떻게 처리할까요?
+- [Promise.all·allSettled·any·race는 어떤 시점에 성공·실패하며 남은 작업을 취소하나요?](/tech-interview/questions/promise-combinator-success-contract/)
+- [여러 fetch가 AbortSignal을 공유합니다. 일부 완료 뒤 abort하면 결과와 아직 진행 중인 작업은 어떻게 나누나요?](/tech-interview/questions/shared-abortsignal-completed-results/)
 - 일부 변경이 성공한 뒤 재시도 전에 서버 상태를 어떻게 확인할까요?

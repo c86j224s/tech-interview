@@ -2,7 +2,7 @@
 id: websocket-heartbeat-reconnect
 title: "WebSocket 하트비트로 연결 생존을 확인하고 재연결 뒤 누락·중복 메시지를 복구하려면 어떤 상태를 저장해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"request-timeout-idempotency","prompt":"WebSocket으로 주문 결과를 받기 전에 연결이 끊겼다면, 재연결 이벤트와 주문 API 재시도를 어떤 ID로 멱등화하겠습니까?"},{"id":"tcp-time-wait","prompt":"빈번한 WebSocket 재연결이 TIME_WAIT와 임시 포트에 부담을 준다면, 하트비트·백오프·연결 수명을 어떻게 조정하겠습니까?"},{"id":"dns-cache-failover","prompt":"DNS 장애 전환에서 기존 WebSocket을 새 서버로 옮겨야 한다면, 서버 드레이닝과 클라이언트 재연결 순서를 어떻게 정하겠습니까?"}]
+followups: [{"id":"offline-client-snapshot-switch","prompt":"오래 오프라인인 client가 이벤트 보관 범위를 벗어났습니다. snapshot과 증분 재생을 어떤 기준으로 전환하나요?"},{"id":"request-timeout-idempotency","prompt":"WebSocket으로 주문 결과를 받기 전에 연결이 끊겼다면, 재연결 이벤트와 주문 API 재시도를 어떤 ID로 멱등화하겠습니까?"},{"id":"tcp-time-wait","prompt":"빈번한 WebSocket 재연결이 TIME_WAIT와 임시 포트에 부담을 준다면, 하트비트·백오프·연결 수명을 어떻게 조정하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -49,6 +49,6 @@ TCP나 WebSocket 소켓이 로컬에서 아직 닫히지 않았다는 사실과 
 
 ## 더 파고들 거리
 
-- 오래 오프라인인 클라이언트의 이벤트 보관과 스냅샷 전환 기준은 무엇일까요?
+- [오래 오프라인인 client가 이벤트 보관 범위를 벗어났습니다. snapshot과 증분 재생을 어떤 기준으로 전환하나요?](/tech-interview/questions/offline-client-snapshot-switch/)
 - heartbeat는 정상인데 실제 요청만 느릴 때 전송·처리·DB 중 어느 구간을 측정할까요?
 - 여러 기기의 커서와 세션 소유권을 사용자 전역 상태와 어떻게 나눌까요?

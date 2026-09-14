@@ -2,7 +2,7 @@
 id: astar-heuristic
 title: "게임 맵에서 최단 경로는 유지하면서 Dijkstra보다 탐색 범위를 줄이려 합니다. A*의 휴리스틱은 어떤 역할을 하며 어떤 조건을 만족해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"astar-open-closed","prompt":"휴리스틱이 허용적이지만 일관되지 않을 때 이미 확장한 셀의 비용을 어떻게 다시 반영하겠습니까?"},{"id":"jps-symmetry-pruning","prompt":"균일 비용 격자에서 같은 비용의 경로가 많다면 휴리스틱을 바꾸는 것과 JPS를 적용하는 것을 어떤 기준으로 비교하겠습니까?"},{"id":"path-smoothing-validation","prompt":"A*가 최단 경로를 반환한 뒤 코너를 줄이면 원래 비용·통과 가능성 보장을 어떻게 다시 확인하겠습니까?"}]
+followups: [{"id":"astar-inconsistent-reopen-example","prompt":"A*의 휴리스틱은 허용적이지만 일관되지 않습니다. 닫힌 노드를 재오픈하지 않으면 어떤 경로를 놓칠 수 있나요?"},{"id":"weighted-astar-quality-budget","prompt":"Weighted A*의 휴리스틱 가중치를 높이려 합니다. 탐색 시간과 경로 비용의 손실을 어떤 전제에서 비교하나요?"},{"id":"astar-open-closed","prompt":"휴리스틱이 허용적이지만 일관되지 않을 때 이미 확장한 셀의 비용을 어떻게 다시 반영하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["A*","경로 탐색","휴리스틱"]
@@ -41,6 +41,6 @@ Dijkstra는 출발점에서 현재까지의 누적 비용이 작은 노드를 �
 
 ## 더 파고들 거리
 
-- 일관성 없는 휴리스틱에서 재오픈을 하지 않으면 어떤 반례가 생기나요?
-- Weighted A*의 가중치를 키울 때 얻는 속도와 잃는 최적성은 어떻게 측정하나요?
+- [A*의 휴리스틱은 허용적이지만 일관되지 않습니다. 닫힌 노드를 재오픈하지 않으면 어떤 경로를 놓칠 수 있나요?](/tech-interview/questions/astar-inconsistent-reopen-example/)
+- [Weighted A*의 휴리스틱 가중치를 높이려 합니다. 탐색 시간과 경로 비용의 손실을 어떤 전제에서 비교하나요?](/tech-interview/questions/weighted-astar-quality-budget/)
 - 동점 우선순위가 경로의 지그재그와 탐색량에 미치는 영향을 어떻게 검증하나요?

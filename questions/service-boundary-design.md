@@ -2,7 +2,7 @@
 id: service-boundary-design
 title: "주문·결제·재고 테이블을 각각 서비스로 나누자는 제안이 나왔습니다. 어떤 변경은 함께 확정해야 하는지와 데이터 소유권을 기준으로 경계를 어떻게 검토하나요?"
 answerMinutes: 5
-followups: [{"id": "saga-compensation", "prompt": "주문·결제·재고를 분리한 뒤 배송 실패가 발생하면 어떤 상태를 보상하고 어떤 것은 대사로 남길까요?"}, {"id": "transactional-outbox", "prompt": "서비스 경계가 이벤트로 연결될 때 DB 상태와 발행 유실을 어떤 outbox 계약으로 줄일까요?"}, {"id": "strangler-migration", "prompt": "모듈 경계에서 프로세스 서비스로 점진 분리할 때 쓰기 권위와 라우팅을 어떻게 옮길까요?"}]
+followups: [{"id":"service-data-owner-migration","prompt":"서비스 경계를 옮기며 상대 DB 직접 조회를 없앱니다. API·이벤트·읽기 모델과 쓰기 권위는 어떤 순서로 전환하나요?"},{"id":"saga-compensation","prompt":"주문·결제·재고를 분리한 뒤 배송 실패가 발생하면 어떤 상태를 보상하고 어떤 것은 대사로 남길까요?"},{"id":"transactional-outbox","prompt":"서비스 경계가 이벤트로 연결될 때 DB 상태와 발행 유실을 어떤 outbox 계약으로 줄일까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["saga-compensation"]
 
 ## 더 파고들 거리
 
-- 데이터 소유권을 이전할 때 직접 DB 조회를 어떤 API·이벤트로 바꾸나요?
+- [서비스 경계를 옮기며 상대 DB 직접 조회를 없앱니다. API·이벤트·읽기 모델과 쓰기 권위는 어떤 순서로 전환하나요?](/tech-interview/questions/service-data-owner-migration/)
 - 공유 라이브러리가 배포 독립성을 깨는 조건은 무엇인가요?
 - 서비스를 다시 합치는 것을 고려할 운영 신호는 무엇인가요?

@@ -2,7 +2,7 @@
 id: jetstream-durable-consumer
 title: "분석과 알림 서비스가 같은 JetStream 메시지를 각각 읽어야 합니다. stream과 durable consumer를 어떻게 나누고 재시작 위치를 유지하나요?"
 answerMinutes: 5
-followups: [{"id":"nats-core-jetstream","prompt":"오프라인 중 유실되어도 되는 알림과 반드시 처리할 주문 이벤트를 어떻게 나누나요?"},{"id":"jetstream-ack-redelivery","prompt":"durable 위치가 있어도 ACK 유실 재전달의 중복 효과를 어떻게 막나요?"},{"id":"kafka-consumer-group","prompt":"서비스별 독립 consumer와 group 내부 인스턴스 분산을 Kafka와 비교해 보세요."}]
+followups: [{"id":"jetstream-pull-push-demand","prompt":"JetStream의 pull과 push 소비를 비교합니다. 수신량·미확인 메시지·앱 worker 예산을 어떻게 연결하나요?"},{"id":"jetstream-retention-fanout-contract","prompt":"분석과 알림이 같은 stream을 독립 소비합니다. Limits·Interest·WorkQueue 보관 정책은 어떤 삭제 조건이 다른가요?"},{"id":"nats-core-jetstream","prompt":"오프라인 중 유실되어도 되는 알림과 반드시 처리할 주문 이벤트를 어떻게 나누나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["NATS","JetStream","durable consumer"]
@@ -50,6 +50,6 @@ limits·WorkQueue·Interest retention에 따라 메시지 삭제 시점이 다�
 
 ## 더 파고들 거리
 
-- pull·push 흐름 제어
-- retention별 삭제
+- [JetStream의 pull과 push 소비를 비교합니다. 수신량·미확인 메시지·앱 worker 예산을 어떻게 연결하나요?](/tech-interview/questions/jetstream-pull-push-demand/)
+- [분석과 알림이 같은 stream을 독립 소비합니다. Limits·Interest·WorkQueue 보관 정책은 어떤 삭제 조건이 다른가요?](/tech-interview/questions/jetstream-retention-fanout-contract/)
 - checkpoint 복구

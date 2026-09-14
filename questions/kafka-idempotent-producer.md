@@ -2,7 +2,7 @@
 id: kafka-idempotent-producer
 title: "Kafka 발행 응답을 못 받아 재시도하고, 소비자도 같은 메시지를 다시 처리할 수 있습니다. 멱등 프로듀서를 켜면 어떤 중복이 줄고 어떤 중복은 남나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-transactions-external-db","prompt":"Kafka transaction이 외부 DB를 원자적으로 포함하지 않는 이유와 inbox 대안을 설명해 보세요."},{"id":"message-consumer-idempotency","prompt":"consumer 재처리에서 이벤트 ID와 처리 기록으로 외부 효과를 한 번만 만드는 방법은 무엇인가요?"},{"id":"kafka-acks-isr","prompt":"idempotent producer와 acks·ISR이 각각 제공하는 보장 범위는 무엇인가요?"}]
+followups: [{"id":"kafka-transactional-id-fencing","prompt":"같은 transactional.id로 두 producer가 실행됩니다. 새 epoch와 fenced 오류는 어떤 소유권을 뜻하나요?"},{"id":"kafka-multipartition-transaction-read","prompt":"여러 topic partition에 한 transaction으로 출력합니다. 소비자가 read_committed로 보는 원자성 범위는 무엇인가요?"},{"id":"kafka-transactions-external-db","prompt":"Kafka transaction이 외부 DB를 원자적으로 포함하지 않는 이유와 inbox 대안을 설명해 보세요."}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","멱등 프로듀서","중복"]
@@ -50,6 +50,6 @@ consumer가 DB를 바꾸고 offset commit 전에 죽으면 같은 레코드를 �
 
 ## 더 파고들 거리
 
-- transactional.id fencing
-- 다중 partition 원자성
+- [같은 transactional.id로 두 producer가 실행됩니다. 새 epoch와 fenced 오류는 어떤 소유권을 뜻하나요?](/tech-interview/questions/kafka-transactional-id-fencing/)
+- [여러 topic partition에 한 transaction으로 출력합니다. 소비자가 read_committed로 보는 원자성 범위는 무엇인가요?](/tech-interview/questions/kafka-multipartition-transaction-read/)
 - 키 보관 기간

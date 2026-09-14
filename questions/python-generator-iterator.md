@@ -2,7 +2,7 @@
 id: python-generator-iterator
 title: "큰 데이터를 generator로 한 번 순회한 뒤 다시 읽으니 아무 값도 나오지 않습니다. iterable·iterator·generator는 무엇이 다르며 다시 순회하려면 어떻게 해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"python-asyncio-blocking","prompt":"동기 generator가 느린 파일 읽기를 수행할 때 asyncio 이벤트 루프와 어떻게 분리할까요?"},{"id":"python-duck-typing","prompt":"Protocol 인자가 재사용 가능한 iterable인지 단일 소비 iterator인지 계약에 어떻게 표현할까요?"},{"id":"go-channel-close-ownership","prompt":"generator 소비자 중단과 Go 채널 생산자 취소는 종료 신호를 각각 어디에서 소유하나요?"}]
+followups: [{"id":"python-yield-from-control","prompt":"yield from은 generator의 값뿐 아니라 send·throw·close를 어떻게 위임하나요?"},{"id":"python-asyncio-blocking","prompt":"동기 generator가 느린 파일 읽기를 수행할 때 asyncio 이벤트 루프와 어떻게 분리할까요?"},{"id":"python-duck-typing","prompt":"Protocol 인자가 재사용 가능한 iterable인지 단일 소비 iterator인지 계약에 어떻게 표현할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["Python","iterable","iterator","generator","지연 평가"]
@@ -58,6 +58,6 @@ itertools.tee로 소비자를 나누면 각자가 독립적으로 진행하는 �
 
 ## 더 파고들 거리
 
-- `yield from`과 generator의 send·throw·close는 제어를 어떻게 주고받나요?
+- [yield from은 generator의 값뿐 아니라 send·throw·close를 어떻게 위임하나요?](/tech-interview/questions/python-yield-from-control/)
 - 같은 generator를 여러 소비자가 공유할 때 소비 순서가 어떻게 섞이나요?
 - async generator의 `__anext__`와 일반 iterator의 종료 계약은 무엇이 다른가요?

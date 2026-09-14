@@ -2,7 +2,7 @@
 id: raft-linearizable-read
 title: "네트워크 단절 뒤에도 이전 Raft 리더가 읽기 요청을 받고 있습니다. 로컬 상태를 바로 반환해도 되며, 최신성을 보장하려면 무엇을 확인해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"raft-log-commit-apply","prompt":"commit됐지만 apply되지 않은 로그가 있을 때 어디까지 기다려야 하나요?"},{"id":"consistency-linearizability","prompt":"선형화 읽기와 오래된 follower 읽기를 언제 나누나요?"},{"id":"raft-term-election","prompt":"term 변경 뒤 옛 leader 로컬 읽기가 안전하지 않은 이유는 무엇인가요?"}]
+followups: [{"id":"raft-follower-readindex-wait","prompt":"Raft follower가 선형화 읽기를 제공합니다. 리더에게 받은 read index와 로컬 apply를 어떻게 연결하나요?"},{"id":"raft-log-commit-apply","prompt":"commit됐지만 apply되지 않은 로그가 있을 때 어디까지 기다려야 하나요?"},{"id":"consistency-linearizability","prompt":"선형화 읽기와 오래된 follower 읽기를 언제 나누나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Raft","ReadIndex","선형화 가능성"]
@@ -50,6 +50,6 @@ lease read는 유효한 리더 임대 기간 안에서 쿼럼 왕복을 줄일 �
 
 ## 더 파고들 거리
 
-- follower ReadIndex
+- [Raft follower가 선형화 읽기를 제공합니다. 리더에게 받은 read index와 로컬 apply를 어떻게 연결하나요?](/tech-interview/questions/raft-follower-readindex-wait/)
 - current term commit
 - 읽기 배치

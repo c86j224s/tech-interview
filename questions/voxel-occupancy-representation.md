@@ -2,7 +2,7 @@
 id: voxel-occupancy-representation
 title: "복셀의 물리적 고체 여부와 특정 에이전트의 이동 가능 여부를 하나의 점유 비트로 표현하면 어떤 규칙을 잃게 되나요?"
 answerMinutes: 5
-followups: [{"id":"navmesh-grid-voxel","prompt":"에이전트 반경이 다른 지상 이동에서 복셀 원본으로부터 NavMesh·격자 walkable 결과를 어떻게 파생하겠습니까?"},{"id":"voxel-derived-data-update","prompt":"동적 문 상태가 바뀌었을 때 정적 점유·동적 점유·에이전트별 이동성 캐시를 어떤 순서로 갱신하겠습니까?"},{"id":"voxel-sparse-storage","prompt":"정적 지형은 압축 청크이고 동적 점유는 자주 바뀔 때 읽기 경로와 갱신 경로를 어떻게 분리하겠습니까?"}]
+followups: [{"id":"voxel-static-dynamic-overlay","prompt":"정적 고체와 동적 문·객체 점유를 합칩니다. 우선순위·독립 벽·버전의 의미를 어떻게 보존하나요?"},{"id":"navmesh-grid-voxel","prompt":"에이전트 반경이 다른 지상 이동에서 복셀 원본으로부터 NavMesh·격자 walkable 결과를 어떻게 파생하겠습니까?"},{"id":"voxel-derived-data-update","prompt":"동적 문 상태가 바뀌었을 때 정적 점유·동적 점유·에이전트별 이동성 캐시를 어떤 순서로 갱신하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["복셀","점유","이동 가능성"]
@@ -40,5 +40,5 @@ related: ["navmesh-grid-voxel"]
 ## 더 파고들 거리
 
 - clearance를 미리 계산할 때 여러 에이전트 프로필의 메모리와 조회 비용을 어떻게 절충하나요?
-- 동적 점유 계층과 정적 지형 계층의 결과를 합칠 때 우선순위·버전을 어떻게 검사하나요?
+- [정적 고체와 동적 문·객체 점유를 합칩니다. 우선순위·독립 벽·버전의 의미를 어떻게 보존하나요?](/tech-interview/questions/voxel-static-dynamic-overlay/)
 - 서버와 클라이언트의 지형 버전이 다를 때 이동 제한과 보정 메시지를 어떤 상태로 표현하나요?

@@ -2,7 +2,7 @@
 id: http-cache-validation
 title: "개인정보가 포함된 HTTP 응답을 캐시하면서 최신 여부도 확인하려면 Cache-Control, ETag, 304를 어떻게 조합하나요?"
 answerMinutes: 5
-followups: [{"id":"http-get-post-semantics","prompt":"조회 응답을 POST로 바꿔 URL 노출을 줄이려 한다면, 캐시·재시도·민감정보 보호를 각각 어떻게 다시 판단하겠습니까?"},{"id":"cache-aside-consistency","prompt":"원본 DB가 바뀐 직후 캐시가 조건부 검증을 수행한다면, 오래된 표현이 다시 저장되는 경합을 어떻게 막겠습니까?"},{"id":"api-backward-compatibility","prompt":"캐시된 구버전 JSON을 새 클라이언트가 읽어야 한다면 필드 추가와 ETag 변경 정책을 어떻게 호환시키겠습니까?"}]
+followups: [{"id":"http-strong-weak-etag","prompt":"HTTP 응답의 바이트는 바뀌었지만 의미는 같습니다. strong·weak ETag를 재검증·범위 전송에 어떻게 구분하나요?"},{"id":"http-get-post-semantics","prompt":"조회 응답을 POST로 바꿔 URL 노출을 줄이려 한다면, 캐시·재시도·민감정보 보호를 각각 어떻게 다시 판단하겠습니까?"},{"id":"cache-aside-consistency","prompt":"원본 DB가 바뀐 직후 캐시가 조건부 검증을 수행한다면, 오래된 표현이 다시 저장되는 경합을 어떻게 막겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["HTTP","캐시","Cache-Control","ETag","304"]
@@ -49,5 +49,5 @@ HTTP 캐시는 저장할 수 있는지, 저장된 표현을 검증 없이 재사
 ## 더 파고들 거리
 
 - 사용자별 쿠키 응답에서 Vary 설정과 공유 캐시 키를 어떤 테스트로 검증할까요?
-- 강한 ETag와 약한 ETag를 표현 동일성·의미 동일성 요구에 어떻게 매핑할까요?
+- [HTTP 응답의 바이트는 바뀌었지만 의미는 같습니다. strong·weak ETag를 재검증·범위 전송에 어떻게 구분하나요?](/tech-interview/questions/http-strong-weak-etag/)
 - stale-while-revalidate의 허용 지연과 개인정보 응답 예외를 어떻게 정할까요?

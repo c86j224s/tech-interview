@@ -2,7 +2,7 @@
 id: k8s-probe-contract
 title: "초기화가 오래 걸리는 앱을 Kubernetes가 계속 재시작합니다. startup·readiness·liveness probe를 어떤 역할로 나눠야 하나요?"
 answerMinutes: 5
-followups: [{"id":"load-balancer-health-draining","prompt":"readiness가 실패한 뒤에도 로드밸런서의 기존 연결이 남아 있다면 endpoint 전파와 연결 드레이닝을 어떤 순서로 확인하겠습니까?"},{"id":"graceful-shutdown","prompt":"종료 신호와 liveness 실패가 동시에 발생했을 때 새 유입·기존 요청·DB 풀 정리를 어떤 우선순위로 실행하겠습니까?"},{"id":"k8s-hpa-scaling","prompt":"예열 중 Pod가 CPU를 많이 사용하지만 readiness는 아직 실패한 상태라면 HPA가 보는 지표와 실제 서비스 용량을 어떻게 해석하겠습니까?"}]
+followups: [{"id":"probe-dependency-load-amplification","prompt":"모든 Pod의 health probe가 DB 쿼리를 실행합니다. 장애 중 연쇄 부하를 어떻게 줄이고 대체 신호를 고르나요?"},{"id":"grpc-http-probe-auth-timeout","prompt":"gRPC probe와 HTTP probe를 선택합니다. 인증·port·timeout·서비스별 상태의 지원을 무엇으로 확인하나요?"},{"id":"load-balancer-health-draining","prompt":"readiness가 실패한 뒤에도 로드밸런서의 기존 연결이 남아 있다면 endpoint 전파와 연결 드레이닝을 어떤 순서로 확인하겠습니까?"}]
 difficulty: 하
 category: 인프라
 tags: ["Kubernetes","probe","헬스 체크"]
@@ -43,6 +43,6 @@ probe의 `periodSeconds`, `timeoutSeconds`, `failureThreshold`는 감지 지연�
 
 ## 더 파고들 거리
 
-- 비싼 DB 쿼리를 probe에 넣었을 때 발생할 연쇄 부하와 대체 상태 신호를 설명해 보세요.
-- gRPC probe와 HTTP probe를 보안·타임아웃·실패 의미 기준으로 비교해 보세요.
+- [모든 Pod의 health probe가 DB 쿼리를 실행합니다. 장애 중 연쇄 부하를 어떻게 줄이고 대체 신호를 고르나요?](/tech-interview/questions/probe-dependency-load-amplification/)
+- [gRPC probe와 HTTP probe를 선택합니다. 인증·port·timeout·서비스별 상태의 지원을 무엇으로 확인하나요?](/tech-interview/questions/grpc-http-probe-auth-timeout/)
 - readiness가 자주 출렁일 때 임계값을 늘리기 전에 어떤 애플리케이션 원인을 측정할까요.

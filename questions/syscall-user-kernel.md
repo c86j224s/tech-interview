@@ -2,7 +2,7 @@
 id: syscall-user-kernel
 title: "파일을 읽는 시스템 호출이 일반 함수 호출보다 비싸다고 합니다. 사용자 모드에서 커널로 들어갈 때 무엇이 달라지며 항상 다른 스레드로 전환되나요?"
 answerMinutes: 5
-followups: [{"id":"io-readiness-vs-completion","prompt":"readiness 통지와 실제 read 완료를 결합할 때 syscall·버퍼·블로킹 경계를 어떻게 설계할까요?"},{"id":"context-switch-overhead","prompt":"블로킹 syscall이 만드는 자발적 전환과 과도한 작업자 경쟁을 어떤 지표로 분리할까요?"},{"id":"virtual-memory-page-fault","prompt":"파일 read와 memory-mapped 접근에서 첫 페이지 fault가 syscall 비용과 어떻게 다르게 나타날까요?"}]
+followups: [{"id":"linux-vdso-clock-read","prompt":"일부 시간 조회가 vDSO로 처리됩니다. 커널 진입을 줄이면서 시간 정보를 어떻게 안전하게 읽나요?"},{"id":"io-readiness-vs-completion","prompt":"readiness 통지와 실제 read 완료를 결합할 때 syscall·버퍼·블로킹 경계를 어떻게 설계할까요?"},{"id":"context-switch-overhead","prompt":"블로킹 syscall이 만드는 자발적 전환과 과도한 작업자 경쟁을 어떤 지표로 분리할까요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["시스템 호출","커널 모드","컨텍스트 스위칭"]
@@ -45,6 +45,6 @@ nonblocking syscall은 준비되지 않았다는 결과를 즉시 반환할 수 
 
 ## 더 파고들 거리
 
-- vDSO가 일부 시간 조회에서 커널 진입을 줄이는 원리는 무엇인가요?
+- [일부 시간 조회가 vDSO로 처리됩니다. 커널 진입을 줄이면서 시간 정보를 어떻게 안전하게 읽나요?](/tech-interview/questions/linux-vdso-clock-read/)
 - 사용자 버퍼의 포인터 검증과 복사가 필요한 이유는 무엇인가요?
 - 비동기 I/O 배치에서 제출·완료·사용자 콜백 비용을 어떻게 나눌까요?

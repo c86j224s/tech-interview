@@ -2,7 +2,7 @@
 id: elasticsearch-shard-mapping
 title: "검색용 데이터에 정확한 ID 조회와 본문 검색이 함께 있습니다. Elasticsearch의 mapping과 shard 수를 어떻게 정해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"elasticsearch-refresh-visibility","prompt":"mapping·샤드 변경 뒤 색인 ACK와 검색 가시성 지연을 어떻게 별도로 검증하나요?"},{"id":"btree-hash-index","prompt":"정확한 ID 동등 조회와 범위·정렬 조회에서 관계형 B+tree와 Elasticsearch keyword의 접근을 어떻게 비교하나요?"},{"id":"composite-index-column-order","prompt":"테넌트·날짜 필터와 정렬·집계를 함께 제공할 때 인덱스와 샤드 키를 어떤 요구로 정하나요?"}]
+followups: [{"id":"elasticsearch-docvalues-inverted-index","prompt":"Elasticsearch의 역색인과 doc values는 본문 검색·정렬·집계에서 각각 어떤 접근을 지원하나요?"},{"id":"elasticsearch-alias-reindex-cutover","prompt":"mapping 변경을 위해 새 인덱스로 재색인합니다. 동시 쓰기·삭제를 놓치지 않고 alias를 언제 전환하나요?"},{"id":"elasticsearch-refresh-visibility","prompt":"mapping·샤드 변경 뒤 색인 ACK와 검색 가시성 지연을 어떻게 별도로 검증하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["Elasticsearch","shard","mapping"]
@@ -43,6 +43,6 @@ Elasticsearch 버전과 노드 역할·heap·디스크에 따라 적정 샤드 �
 
 ## 더 파고들 거리
 
-- doc values와 역색인의 검색·집계 역할을 비교해 보세요.
-- mapping 변경과 alias 전환의 무중단 절차를 검증해 보세요.
+- [Elasticsearch의 역색인과 doc values는 본문 검색·정렬·집계에서 각각 어떤 접근을 지원하나요?](/tech-interview/questions/elasticsearch-docvalues-inverted-index/)
+- [mapping 변경을 위해 새 인덱스로 재색인합니다. 동시 쓰기·삭제를 놓치지 않고 alias를 언제 전환하나요?](/tech-interview/questions/elasticsearch-alias-reindex-cutover/)
 - 높은 카디널리티 집계가 heap·p99에 미치는 영향을 측정해 보세요.

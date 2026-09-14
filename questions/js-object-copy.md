@@ -2,7 +2,7 @@
 id: js-object-copy
 title: "객체를 spread로 복사했는데 중첩 값이 함께 바뀝니다. 얕은 복사와 structuredClone의 범위는 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"js-prototype-lookup","prompt":"spread 복사본의 own 프로퍼티와 원본 prototype 프로퍼티 조회가 어떻게 달라질까요?"},{"id":"js-equality-coercion","prompt":"깊은 복사 전후 객체를 ===로 비교해도 내용 동등성을 알 수 없는 이유는 무엇인가요?"},{"id":"python-shallow-deep-copy","prompt":"JavaScript structuredClone과 Python deepcopy가 함수·사용자 객체를 처리하는 한계는 어떻게 다른가요?"}]
+followups: [{"id":"js-spread-getter-descriptor","prompt":"getter가 있는 객체를 spread로 복사합니다. getter 실행 시점과 새 프로퍼티 descriptor는 어떻게 달라지나요?"},{"id":"immutable-proxy-update-cost","prompt":"불변 업데이트에서 직접 경로 복사와 proxy 기반 라이브러리를 비교합니다. 변경률·읽기·할당 비용은 어떻게 측정하나요?"},{"id":"js-prototype-lookup","prompt":"spread 복사본의 own 프로퍼티와 원본 prototype 프로퍼티 조회가 어떻게 달라질까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","객체 복사","spread","structuredClone","참조 공유"]
@@ -61,6 +61,6 @@ spread는 열거 가능한 own 프로퍼티의 값을 읽어 새 객체에 넣�
 
 ## 더 파고들 거리
 
-- getter 프로퍼티를 spread할 때 값 평가와 descriptor가 어떻게 달라지나요?
+- [getter가 있는 객체를 spread로 복사합니다. getter 실행 시점과 새 프로퍼티 descriptor는 어떻게 달라지나요?](/tech-interview/questions/js-spread-getter-descriptor/)
 - structured clone의 순환 참조와 transferable 버퍼는 원본에 어떤 변화를 주나요?
-- 불변 업데이트와 Immer의 프록시 비용을 어떤 변경 패턴에서 비교할까요?
+- [불변 업데이트에서 직접 경로 복사와 proxy 기반 라이브러리를 비교합니다. 변경률·읽기·할당 비용은 어떻게 측정하나요?](/tech-interview/questions/immutable-proxy-update-cost/)

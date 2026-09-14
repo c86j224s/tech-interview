@@ -2,7 +2,7 @@
 id: python-pypy-jit
 title: "반복 계산이 많은 Python 서비스를 PyPy로 옮기려 합니다. trace JIT가 유리한 코드와 예열·C 확장 때문에 불리할 수 있는 경우를 어떻게 검증하나요?"
 answerMinutes: 5
-followups: [{"id":"jvm-bytecode-jit","prompt":"PyPy와 JVM의 예열 비용을 짧은 요청 서비스에서 어떤 측정 구간으로 나눌까요?"},{"id":"python-gil-parallelism","prompt":"PyPy에서 C 확장 호출과 순수 Python 루프가 스레드 병렬성에 미치는 영향을 어떻게 검증할까요?"},{"id":"load-test-realism","prompt":"PyPy 성능 비교에서 캐시·입력 분포·프로세스 재시작 조건을 운영과 어떻게 맞출까요?"}]
+followups: [{"id":"pypy-trace-guard-observation","prompt":"PyPy의 반복 코드가 최적화됐는지 확인합니다. trace와 guard 실패·예열 비용은 어떻게 관찰하나요?"},{"id":"jvm-bytecode-jit","prompt":"PyPy와 JVM의 예열 비용을 짧은 요청 서비스에서 어떤 측정 구간으로 나눌까요?"},{"id":"python-gil-parallelism","prompt":"PyPy에서 C 확장 호출과 순수 Python 루프가 스레드 병렬성에 미치는 영향을 어떻게 검증할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","PyPy","trace JIT","예열","C 확장"]
@@ -45,6 +45,6 @@ PyPy가 모든 Python 프로그램을 CPython보다 빠르게 실행하는 것�
 
 ## 더 파고들 거리
 
-- PyPy JIT 로그에서 실제 trace와 guard 실패를 어떻게 확인할까요?
+- [PyPy의 반복 코드가 최적화됐는지 확인합니다. trace와 guard 실패·예열 비용은 어떻게 관찰하나요?](/tech-interview/questions/pypy-trace-guard-observation/)
 - 객체 다형성·예외·할당이 trace 최적화를 방해하는 사례는 무엇인가요?
 - CFFI와 CPython C API 확장의 선택이 호환성과 성능에 어떤 차이를 만들까요?

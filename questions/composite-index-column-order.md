@@ -2,7 +2,7 @@
 id: composite-index-column-order
 title: "특정 고객의 최근 주문 20개를 조회하려 합니다. 고객 ID와 주문 시각의 복합 인덱스 순서를 어떻게 정하고, 선택한 순서가 쿼리에 맞는지 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"db-keyset-pagination","prompt":"같은 시각 주문이 많을 때 고객별 최근 목록을 OFFSET 대신 키셋 커서로 어떻게 이어 가나요?"},{"id":"clustered-secondary-index","prompt":"복합 보조 인덱스가 covering이 아닐 때 클러스터링 키와 lookup 비용을 어떻게 측정하나요?"},{"id":"db-query-plan-regression","prompt":"데이터 편중으로 고객별 추정 행 수가 달라질 때 통계와 파라미터 계획을 어떤 순서로 점검하나요?"}]
+followups: [{"id":"composite-range-order-plan","prompt":"복합 인덱스에서 앞 컬럼은 범위 조건이고 뒤 컬럼은 정렬입니다. 정렬 생략이 가능한지 어떤 구간을 그려 보나요?"},{"id":"keyset-wide-key-cost","prompt":"페이지 커서의 보조 키를 길게 만들었습니다. 결정적 정렬의 이점과 인덱스·전송 비용을 어떻게 비교하나요?"},{"id":"db-keyset-pagination","prompt":"같은 시각 주문이 많을 때 고객별 최근 목록을 OFFSET 대신 키셋 커서로 어떻게 이어 가나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -50,6 +50,6 @@ SQL Server에서는 반환용 컬럼을 INCLUDE로 넣어 covering을 만들 수
 
 ## 더 파고들 거리
 
-- 복합 키의 범위 조건과 정렬 구간을 실행 계획으로 그려 보세요.
+- [복합 인덱스에서 앞 컬럼은 범위 조건이고 뒤 컬럼은 정렬입니다. 정렬 생략이 가능한지 어떤 구간을 그려 보나요?](/tech-interview/questions/composite-range-order-plan/)
 - 편중 데이터에서 통계 추정과 실제 행의 차이를 재현해 보세요.
-- 키셋 페이지네이션과 클러스터링 키 폭의 상호 비용을 비교해 보세요.
+- [페이지 커서의 보조 키를 길게 만들었습니다. 결정적 정렬의 이점과 인덱스·전송 비용을 어떻게 비교하나요?](/tech-interview/questions/keyset-wide-key-cost/)

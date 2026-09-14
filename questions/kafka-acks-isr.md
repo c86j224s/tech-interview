@@ -2,7 +2,7 @@
 id: kafka-acks-isr
 title: "Kafka에서 복제 계수 3, acks=all, min.insync.replicas=2일 때 ISR이 2개 또는 1개로 줄면 생산 요청은 어떻게 되나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-idempotent-producer","prompt":"생산 응답 유실 재시도에서 idempotence가 줄이는 중복과 외부 DB에 남는 중복은 무엇인가요?"},{"id":"kafka-kraft-role","prompt":"partition leader 장애와 KRaft controller quorum 장애를 어떻게 구분하나요?"},{"id":"consensus-quorum-failure","prompt":"ISR 하나가 최신처럼 보여도 생산을 거부하는 이유를 quorum과 비교해 보세요."}]
+followups: [{"id":"kafka-unclean-election-policy","prompt":"Kafka에서 unclean leader election을 허용합니다. 쓰기 재개와 성공 레코드 손실의 대가를 어떻게 정하나요?"},{"id":"kafka-idempotence-inflight-order","prompt":"Kafka producer의 in-flight 요청 수와 idempotence 설정을 바꿉니다. 재시도 중복과 순서 보장은 어떤 조건을 요구하나요?"},{"id":"kafka-idempotent-producer","prompt":"생산 응답 유실 재시도에서 idempotence가 줄이는 중복과 외부 DB에 남는 중복은 무엇인가요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","acks","ISR"]
@@ -53,5 +53,5 @@ acks는 소비자가 읽고 DB를 반영한 확인도 아니고 모든 노드가
 ## 더 파고들 거리
 
 - ISR 지표
-- unclean 허용 분류
-- idempotence와 in-flight
+- [Kafka에서 unclean leader election을 허용합니다. 쓰기 재개와 성공 레코드 손실의 대가를 어떻게 정하나요?](/tech-interview/questions/kafka-unclean-election-policy/)
+- [Kafka producer의 in-flight 요청 수와 idempotence 설정을 바꿉니다. 재시도 중복과 순서 보장은 어떤 조건을 요구하나요?](/tech-interview/questions/kafka-idempotence-inflight-order/)

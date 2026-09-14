@@ -2,7 +2,7 @@
 id: db-query-plan-regression
 title: "배포나 SQL 수정이 없었는데 같은 쿼리가 갑자기 느려졌습니다. 실행 계획이 바뀌었는지 어떻게 확인하고 어떤 원인을 조사하나요?"
 answerMinutes: 5
-followups: [{"id":"composite-index-column-order","prompt":"추정 행과 실제 행이 다른 쿼리에서 통계·인덱스 선행 컬럼을 어떤 순서로 점검하나요?"},{"id":"db-read-replica-consistency","prompt":"주 DB 계획은 같지만 읽기 복제본에서만 느려진다면 지연·부하·실행 계획을 어떻게 분리하나요?"},{"id":"db-pool-long-transactions","prompt":"실행 계획은 정상인데 풀 대기가 길다면 DB 쿼리 시간과 연결 보유 시간을 어떻게 구분하나요?"}]
+followups: [{"id":"query-memory-grant-over-under","prompt":"쿼리 메모리가 부족해 spill이 나거나 과다 예약으로 다른 쿼리가 기다립니다. 두 상태를 어떻게 구분하나요?"},{"id":"query-plan-history-sampling","prompt":"실행 계획 이력을 남기려 합니다. 파라미터·지연·보존·샘플링을 어떤 범위로 수집하나요?"},{"id":"composite-index-column-order","prompt":"추정 행과 실제 행이 다른 쿼리에서 통계·인덱스 선행 컬럼을 어떤 순서로 점검하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ SQL이나 배포를 바꾸지 않아도 데이터 분포, 통계, 캐시된 계�
 
 ## 더 파고들 거리
 
-- 메모리 grant 부족과 과다 할당의 증상을 비교해 보세요.
-- 계획 이력 수집의 범위·샘플링·보존 기간을 정해 보세요.
+- [쿼리 메모리가 부족해 spill이 나거나 과다 예약으로 다른 쿼리가 기다립니다. 두 상태를 어떻게 구분하나요?](/tech-interview/questions/query-memory-grant-over-under/)
+- [실행 계획 이력을 남기려 합니다. 파라미터·지연·보존·샘플링을 어떤 범위로 수집하나요?](/tech-interview/questions/query-plan-history-sampling/)
 - 데이터 편중에서 seek·scan·lookup 선택을 재현해 보세요.

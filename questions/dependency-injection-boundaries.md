@@ -2,7 +2,7 @@
 id: dependency-injection-boundaries
 title: "외부 API를 호출하고 실제 시간을 기다리는 코드의 실패를 테스트하기 어렵습니다. 의존성 주입은 어떻게 도움이 되며 어디까지 적용하나요?"
 answerMinutes: 5
-followups: [{"id": "solid-dependency-inversion", "prompt": "DB 구현을 교체해도 정책이 바뀌지 않게 하려면 주입되는 인터페이스의 소유권과 메서드 의미를 어떻게 정할까요?"}, {"id": "deterministic-concurrency-testing", "prompt": "주입한 시계·스케줄러로 타임아웃과 재시도 경쟁을 결정적으로 재현하려면 어떤 신호를 기록할까요?"}, {"id": "tdd-red-green-refactor", "prompt": "외부 API 경계를 주입 가능한 구조로 바꾸는 리팩터링을 동작 보존과 함께 어떻게 검증할까요?"}]
+followups: [{"id":"virtual-clock-timeout-testing","prompt":"실제 sleep 없이 timeout과 완료 경쟁을 시험합니다. 가상 시계와 스케줄러에 어떤 제어 지점을 두나요?"},{"id":"fake-real-repository-contract-tests","prompt":"가짜 DB는 테스트를 통과하지만 실제 DB는 경쟁에서 실패합니다. 두 구현에 공유할 계약 테스트는 무엇인가요?"},{"id":"solid-dependency-inversion","prompt":"DB 구현을 교체해도 정책이 바뀌지 않게 하려면 주입되는 인터페이스의 소유권과 메서드 의미를 어떻게 정할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["service-boundary-design"]
 
 ## 더 파고들 거리
 
-- 시계와 스케줄러를 주입해 타임아웃 경쟁을 어떻게 재현할까요?
-- 가짜 DB와 실제 DB의 계약 테스트를 어떻게 공유할까요?
+- [실제 sleep 없이 timeout과 완료 경쟁을 시험합니다. 가상 시계와 스케줄러에 어떤 제어 지점을 두나요?](/tech-interview/questions/virtual-clock-timeout-testing/)
+- [가짜 DB는 테스트를 통과하지만 실제 DB는 경쟁에서 실패합니다. 두 구현에 공유할 계약 테스트는 무엇인가요?](/tech-interview/questions/fake-real-repository-contract-tests/)
 - 인터페이스가 구현 세부사항을 그대로 노출하면 어떤 문제가 생기나요?

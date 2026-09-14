@@ -2,7 +2,7 @@
 id: kafka-consumer-group
 title: "Kafka 파티션이 3개인데 같은 그룹의 소비자를 5개로 늘렸습니다. 왜 일부 소비자는 일을 하지 않으며 언제 확장이 도움이 되나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-rebalance-processing","prompt":"처리 중 partition을 잃으면 연속 완료 offset과 외부 작업을 어떤 순서로 정리하나요?"},{"id":"kafka-partition-offset","prompt":"읽은 위치가 아니라 어느 offset까지만 commit할 수 있나요?"},{"id":"kafka-partition-expansion","prompt":"partition 수를 늘리면 같은 키 순서가 왜 깨지나요?"}]
+followups: [{"id":"kafka-parallel-completion-watermark","prompt":"Kafka 레코드 10·11·12를 병렬 처리해 11·12만 끝났습니다. 커밋할 다음 위치를 어떤 자료구조로 관리하나요?"},{"id":"kafka-pause-versus-leave-group","prompt":"Kafka 소비자가 포화돼 pause합니다. poll·heartbeat·그룹 탈퇴와 partition 소유권은 어떻게 다른가요?"},{"id":"kafka-rebalance-processing","prompt":"처리 중 partition을 잃으면 연속 완료 offset과 외부 작업을 어떤 순서로 정리하나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["Kafka","consumer group","병렬성"]
@@ -50,6 +50,6 @@ partition이 12개여도 한 partition이 전체 요청의 90%를 가지면 워�
 
 ## 더 파고들 거리
 
-- 완료 watermark
+- [Kafka 레코드 10·11·12를 병렬 처리해 11·12만 끝났습니다. 커밋할 다음 위치를 어떤 자료구조로 관리하나요?](/tech-interview/questions/kafka-parallel-completion-watermark/)
 - 핫키 처리
-- pause와 탈퇴
+- [Kafka 소비자가 포화돼 pause합니다. poll·heartbeat·그룹 탈퇴와 partition 소유권은 어떻게 다른가요?](/tech-interview/questions/kafka-pause-versus-leave-group/)

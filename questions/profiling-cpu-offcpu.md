@@ -2,7 +2,7 @@
 id: profiling-cpu-offcpu
 title: "서버 CPU 사용률은 낮은데 일부 요청이 오래 걸립니다. 계산이 느린 것과 자원을 기다리는 것을 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"distributed-tracing-boundaries","prompt":"off-CPU 원인을 trace의 서비스·큐·풀 span과 어떤 순서로 대조할까요?"},{"id":"context-switch-overhead","prompt":"낮은 CPU와 높은 컨텍스트 스위치가 함께 보일 때 정상 I/O와 과도한 경쟁을 어떻게 나눌까요?"},{"id":"db-pool-long-transactions","prompt":"쿼리는 짧지만 connection pool 대기가 긴 요청에서 연결을 오래 보유한 트랜잭션을 어떻게 찾을까요?"}]
+followups: [{"id":"lock-hold-versus-wait-time","prompt":"락 대기가 길어졌습니다. 락을 보유한 시간과 기다린 시간을 어떤 사건·스택으로 나누어 기록하나요?"},{"id":"distributed-tracing-boundaries","prompt":"off-CPU 원인을 trace의 서비스·큐·풀 span과 어떤 순서로 대조할까요?"},{"id":"context-switch-overhead","prompt":"낮은 CPU와 높은 컨텍스트 스위치가 함께 보일 때 정상 I/O와 과도한 경쟁을 어떻게 나눌까요?"}]
 difficulty: 하
 category: 성능
 tags:
@@ -46,6 +46,6 @@ off-CPU 시간이 길다는 사실도 원인 그 자체는 아닙니다. 락 대
 
 ## 더 파고들 거리
 
-- 락 보유 중 실행 시간과 락을 기다린 시간을 어떤 이벤트로 나눌까요?
+- [락 대기가 길어졌습니다. 락을 보유한 시간과 기다린 시간을 어떤 사건·스택으로 나누어 기록하나요?](/tech-interview/questions/lock-hold-versus-wait-time/)
 - 짧은 대기를 sampling profile이 놓칠 때 어떤 오판이 생길까요?
 - 단일 event loop 포화를 per-core 지표와 trace로 어떻게 확인할까요?

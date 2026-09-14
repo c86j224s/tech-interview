@@ -2,7 +2,7 @@
 id: tlb-page-table
 title: "큰 메모리 영역을 불규칙하게 읽는 프로그램에서 TLB miss가 늘었습니다. TLB는 주소 변환 비용을 어떻게 줄이며 miss와 페이지 폴트는 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"virtual-memory-page-fault","prompt":"TLB miss 뒤 page-table walk로 끝나는 경우와 실제 major fault를 성능 지표에서 어떻게 구분할까요?"},{"id":"paging-segmentation","prompt":"페이지 크기와 보호 권한이 주소 변환·테이블 비용을 어떻게 바꾸는지 설명해 보세요."},{"id":"numa-memory-locality","prompt":"NUMA remote access와 TLB miss가 함께 늘 때 어느 병목이 주원인인지 어떤 실험으로 확인할까요?"}]
+followups: [{"id":"asid-pcid-address-space-tags","prompt":"ASID·PCID는 서로 다른 프로세스의 TLB 변환을 어떻게 구분하며 context switch 비용을 무엇까지 줄이나요?"},{"id":"virtual-memory-page-fault","prompt":"TLB miss 뒤 page-table walk로 끝나는 경우와 실제 major fault를 성능 지표에서 어떻게 구분할까요?"},{"id":"paging-segmentation","prompt":"페이지 크기와 보호 권한이 주소 변환·테이블 비용을 어떻게 바꾸는지 설명해 보세요."}]
 difficulty: 하
 category: 운영체제
 tags: ["TLB","페이지 테이블","가상 메모리"]
@@ -45,6 +45,6 @@ TLB miss는 페이지 테이블 walk를 추가하지만 walk 결과가 캐시에
 
 ## 더 파고들 거리
 
-- ASID·PCID가 주소 공간별 변환을 어떻게 구분하나요?
+- [ASID·PCID는 서로 다른 프로세스의 TLB 변환을 어떻게 구분하며 context switch 비용을 무엇까지 줄이나요?](/tech-interview/questions/asid-pcid-address-space-tags/)
 - 페이지 테이블 변경 뒤 다른 코어의 낡은 TLB를 어떻게 무효화하나요?
 - 연속 배열과 포인터 추적에서 TLB reach를 어떤 수치로 비교할까요?

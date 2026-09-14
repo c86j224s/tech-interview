@@ -2,7 +2,7 @@
 id: iocp-worker-shutdown
 title: "IOCP 서버에 수신·송신 작업이 남아 있는 채 종료 신호가 왔습니다. 워커와 완료 포트는 어떤 순서로 종료하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-cancel-drain","prompt":"CancelIoEx가 성공한 뒤에도 정상 완료가 도착할 수 있다면, 연결별 작업 카운터와 버퍼 반환을 어떤 시점에 끝내겠습니까?"},{"id":"graceful-shutdown","prompt":"IOCP 서버가 HTTP 요청과 메시지 작업을 함께 처리한다면 네트워크 drain과 DB 풀 종료의 전체 순서를 어떻게 확장하겠습니까?"},{"id":"iocp-gqcs-error-contract","prompt":"종료 중 GQCS의 반환값·OVERLAPPED·완료 키를 조합해 실패 완료·timeout·사용자 종료 패킷을 어떻게 구분하겠습니까?"}]
+followups: [{"id":"shutdown-independent-audit-sink","prompt":"종료 로그가 이미 닫힌 DB나 worker에 의존합니다. 마지막 정리 결과를 어떤 별도 관측 경로로 남기나요?"},{"id":"iocp-timeout-loop-versus-stop-packet","prompt":"GQCS timeout으로 종료를 확인하는 방식과 명시적인 제어 패킷 방식은 응답성·CPU·정리에서 어떻게 다른가요?"},{"id":"iocp-cancel-drain","prompt":"CancelIoEx가 성공한 뒤에도 정상 완료가 도착할 수 있다면, 연결별 작업 카운터와 버퍼 반환을 어떤 시점에 끝내겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","정상 종료","워커"]
@@ -46,6 +46,6 @@ IOCP 포트부터 닫으면 미완료 I/O의 완료를 회수하고 `OVERLAPPED`
 
 ## 더 파고들 거리
 
-- 종료 로그가 닫히는 DB·워커에 의존하지 않도록 어떤 관측 경로를 둘까요?
-- GQCS timeout 제어 루프와 명시적 종료 패킷 방식을 어떤 조건에서 선택할까요?
+- [종료 로그가 이미 닫힌 DB나 worker에 의존합니다. 마지막 정리 결과를 어떤 별도 관측 경로로 남기나요?](/tech-interview/questions/shutdown-independent-audit-sink/)
+- [GQCS timeout으로 종료를 확인하는 방식과 명시적인 제어 패킷 방식은 응답성·CPU·정리에서 어떻게 다른가요?](/tech-interview/questions/iocp-timeout-loop-versus-stop-packet/)
 - 전역·연결별 작업 수가 서로 어긋나지 않도록 카운터 불변식을 어떻게 검증할까요?

@@ -2,7 +2,7 @@
 id: kafka-kraft-role
 title: "Kafka에서 컨트롤러 노드 장애와 데이터 파티션 리더 장애가 각각 발생했습니다. KRaft의 합의와 파티션 복제는 어떤 상태를 관리하며 어떻게 역할이 다른가요?"
 answerMinutes: 5
-followups: [{"id":"kafka-acks-isr","prompt":"data leader 장애에서 ISR과 min ISR이 생산을 어떻게 제한하나요?"},{"id":"raft-log-commit-apply","prompt":"controller metadata log의 commit·apply와 사용자 partition 복제를 어떻게 비교하나요?"},{"id":"consensus-quorum-failure","prompt":"controller quorum 과반을 잃은 한 노드가 metadata를 독자 확정하면 안 되는 이유는 무엇인가요?"}]
+followups: [{"id":"kraft-combined-resource-contention","prompt":"Kafka controller와 broker를 같은 프로세스에 둡니다. 데이터 I/O가 metadata 합의에 주는 간섭은 어떻게 측정하나요?"},{"id":"kraft-metadata-change-load","prompt":"topic·partition 변경이 매우 많습니다. KRaft metadata 로그와 controller의 병목을 어떻게 관찰하나요?"},{"id":"kraft-quorum-broker-recovery-order","prompt":"Kafka metadata quorum과 데이터 broker가 함께 중단됐습니다. ID·로그·할당을 어떤 순서로 복구 검증하나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","KRaft","메타데이터"]
@@ -52,6 +52,6 @@ controller와 broker를 같은 프로세스에 두는 combined mode는 소규모
 
 ## 더 파고들 거리
 
-- combined 자원 경합
-- metadata 변경 부하
-- quorum 복구 순서
+- [Kafka controller와 broker를 같은 프로세스에 둡니다. 데이터 I/O가 metadata 합의에 주는 간섭은 어떻게 측정하나요?](/tech-interview/questions/kraft-combined-resource-contention/)
+- [topic·partition 변경이 매우 많습니다. KRaft metadata 로그와 controller의 병목을 어떻게 관찰하나요?](/tech-interview/questions/kraft-metadata-change-load/)
+- [Kafka metadata quorum과 데이터 broker가 함께 중단됐습니다. ID·로그·할당을 어떤 순서로 복구 검증하나요?](/tech-interview/questions/kraft-quorum-broker-recovery-order/)

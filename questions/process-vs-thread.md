@@ -2,7 +2,7 @@
 id: process-vs-thread
 title: "공유 캐시를 빠르게 사용하는 서버와 실패한 작업자를 격리해야 하는 서버에서 프로세스와 스레드는 어떤 기준으로 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"context-switch-overhead","prompt":"프로세스 격리로 전환·IPC 비용이 늘었을 때 실제 장애 감소와 성능 비용을 어떻게 함께 판단할까요?"},{"id":"numa-memory-locality","prompt":"프로세스별 캐시 복제가 NUMA 원격 접근보다 유리한지 어떤 데이터 크기와 접근 패턴으로 비교할까요?"},{"id":"mutex-vs-serial-execution","prompt":"같은 계정 상태를 여러 스레드가 공유할 때 락과 계정별 순차 실행 중 무엇이 더 적합한지 어떻게 결정할까요?"}]
+followups: [{"id":"shared-memory-owner-death-recovery","prompt":"공유 메모리의 락 소유자가 죽었습니다. 락을 다시 얻는 것과 부분 변경 데이터를 복구하는 것은 어떻게 다른가요?"},{"id":"context-switch-overhead","prompt":"프로세스 격리로 전환·IPC 비용이 늘었을 때 실제 장애 감소와 성능 비용을 어떻게 함께 판단할까요?"},{"id":"numa-memory-locality","prompt":"프로세스별 캐시 복제가 NUMA 원격 접근보다 유리한지 어떤 데이터 크기와 접근 패턴으로 비교할까요?"}]
 difficulty: 하
 category: 운영체제
 tags:
@@ -50,6 +50,6 @@ related:
 
 ## 더 파고들 거리
 
-- 공유 메모리에서 owner가 죽었을 때 잠금 복구와 데이터 복구는 어떻게 나누나요?
+- [공유 메모리의 락 소유자가 죽었습니다. 락을 다시 얻는 것과 부분 변경 데이터를 복구하는 것은 어떻게 다른가요?](/tech-interview/questions/shared-memory-owner-death-recovery/)
 - 프로세스 전환과 스레드 전환의 주소 변환·캐시 비용을 어떤 실험으로 비교할까요?
 - 신뢰할 수 없는 플러그인의 메모리·CPU 격리 경계를 어디에 둘까요?

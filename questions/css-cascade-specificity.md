@@ -2,7 +2,7 @@
 id: css-cascade-specificity
 title: "부모에 글자색을 지정하고 컴포넌트 스타일도 추가했는데 예상과 다른 색이 표시됩니다. 상속과 여러 스타일시트의 선언 중 어떤 값이 적용되는지 어떤 순서로 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"css-reset-normalize","prompt":"브라우저 기본 스타일을 줄이려는 reset이 cascade와 포커스·제목 의미에 어떤 영향을 줄 수 있는지 어떻게 검증하나요?"},{"id":"browser-rendering-layout","prompt":"선택된 스타일이 색상만 바꾸는지 크기와 위치까지 바꾸는지에 따라 렌더링 비용을 어떻게 판단하나요?"},{"id":"ssr-csr-hydration","prompt":"서버와 클라이언트가 서로 다른 class를 처음 렌더하면 cascade 결과와 hydration 일치를 어떻게 확인할까요?"}]
+followups: [{"id":"css-where-is-specificity","prompt":"컴포넌트 스타일을 쉽게 덮어쓸 수 있게 만들려 합니다. :where와 :is의 명시도 차이는 무엇인가요?"},{"id":"css-cascade-layer-priority","prompt":"기존 CSS에 cascade layer를 도입합니다. 일반 선언·important·레이어 밖 스타일의 우선순위는 어떻게 바뀌나요?"},{"id":"css-unset-inherit-initial","prompt":"상속되지 않는 CSS 속성에 unset과 inherit를 적용하면 어떤 값이 되며 initial과는 어떻게 다른가요?"}]
 difficulty: 하
 category: 웹
 tags: ["CSS","cascade","specificity","상속","선택자"]
@@ -54,6 +54,6 @@ ID 선택자와 `!important`를 계속 추가하면 컴포넌트가 서로의 �
 
 ## 더 파고들 거리
 
-- `:where()`와 `:is()`가 컴포넌트 선택자 설계에 주는 차이는 무엇일까요?
-- cascade layer 도입으로 기존 스타일의 승자와 유지보수 책임이 어떻게 바뀔까요?
-- 상속되지 않는 속성에서 `unset`과 `inherit`가 실제로 만드는 값을 비교해 보세요.
+- [컴포넌트 스타일을 쉽게 덮어쓸 수 있게 만들려 합니다. :where와 :is의 명시도 차이는 무엇인가요?](/tech-interview/questions/css-where-is-specificity/)
+- [기존 CSS에 cascade layer를 도입합니다. 일반 선언·important·레이어 밖 스타일의 우선순위는 어떻게 바뀌나요?](/tech-interview/questions/css-cascade-layer-priority/)
+- [상속되지 않는 CSS 속성에 unset과 inherit를 적용하면 어떤 값이 되며 initial과는 어떻게 다른가요?](/tech-interview/questions/css-unset-inherit-initial/)

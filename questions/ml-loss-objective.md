@@ -2,7 +2,7 @@
 id: ml-loss-objective
 title: "모델의 학습 오차는 줄었는데 실제 성능 지표는 좋아지지 않습니다. 손실 함수와 학습 목적은 평가 지표와 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"ml-classification-metrics","prompt":"소수 클래스 재현율을 높이기 위해 손실 가중치를 바꿨다면 정밀도·임계값·사람 검토량을 어떤 표로 함께 평가하겠습니까?"},{"id":"ml-gradient-learning-rate","prompt":"objective는 내려가는데 batch 손실이 튄다면 정규화 항·기울기·학습률을 어떤 로그로 분리해 진단하겠습니까?"},{"id":"ml-overfitting-generalization","prompt":"훈련 objective만 계속 개선되고 검증 지표가 악화된다면 정규화와 데이터 확대 중 무엇을 먼저 선택할 근거를 세우겠습니까?"}]
+followups: [{"id":"class-weight-threshold-interaction","prompt":"희귀 클래스 가중치를 높였습니다. 학습 손실 변화와 실제 정밀도·재현율·검토량은 어떻게 함께 평가하나요?"},{"id":"surrogate-loss-operational-metric","prompt":"운영 목표는 직접 미분하기 어렵습니다. 대체 손실을 선택할 때 목표와의 불일치·안정성을 어떻게 검증하나요?"},{"id":"ml-classification-metrics","prompt":"소수 클래스 재현율을 높이기 위해 손실 가중치를 바꿨다면 정밀도·임계값·사람 검토량을 어떤 표로 함께 평가하겠습니까?"}]
 difficulty: 하
 category: 머신러닝
 tags: ["머신러닝","손실 함수","학습 목적","평가 지표"]
@@ -43,6 +43,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 클래스 가중치 변화가 재현율·정밀도·검토 처리량에 미치는 영향을 임계값별로 비교해 보세요.
-- 직접 미분하기 어려운 운영 지표마다 어떤 대체 손실을 선택할지 안정성과 편향으로 검토해 보세요.
+- [희귀 클래스 가중치를 높였습니다. 학습 손실 변화와 실제 정밀도·재현율·검토량은 어떻게 함께 평가하나요?](/tech-interview/questions/class-weight-threshold-interaction/)
+- [운영 목표는 직접 미분하기 어렵습니다. 대체 손실을 선택할 때 목표와의 불일치·안정성을 어떻게 검증하나요?](/tech-interview/questions/surrogate-loss-operational-metric/)
 - 훈련·검증 곡선에서 예측 손실과 정규화 항을 분리 기록해 과적합 원인을 찾아 보세요.

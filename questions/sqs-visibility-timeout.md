@@ -2,7 +2,7 @@
 id: sqs-visibility-timeout
 title: "SQS 메시지를 처리하는 동안 visibility timeout이 지나 다른 워커도 같은 메시지를 받았습니다. 기존 작업은 중단되며 중복 반영과 메시지 삭제는 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"message-consumer-idempotency","prompt":"삭제 응답 유실로 재전달되면 event ID 처리 기록을 어떤 DB 제약으로 보호하나요?"},{"id":"jetstream-ack-redelivery","prompt":"SQS visibility와 JetStream AckWait의 공통 재전달 경계와 차이는 무엇인가요?"},{"id":"request-timeout-idempotency","prompt":"처리 결과가 불확실할 때 결과 조회와 재시도를 어떤 작업 ID로 연결하나요?"}]
+followups: [{"id":"sqs-fifo-hot-message-group","prompt":"SQS FIFO의 한 message group만 밀립니다. 소비자를 늘려도 안 풀리는 이유와 순서 범위 변경의 비용은 무엇인가요?"},{"id":"message-consumer-idempotency","prompt":"삭제 응답 유실로 재전달되면 event ID 처리 기록을 어떤 DB 제약으로 보호하나요?"},{"id":"jetstream-ack-redelivery","prompt":"SQS visibility와 JetStream AckWait의 공통 재전달 경계와 차이는 무엇인가요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["SQS","visibility timeout","메시지"]
@@ -51,5 +51,5 @@ DLQ 재처리에서는 원래 이벤트 ID와 오류·시도 이력을 유지합
 ## 더 파고들 거리
 
 - 긴 timeout 복구 지연
-- FIFO 핫 group
+- [SQS FIFO의 한 message group만 밀립니다. 소비자를 늘려도 안 풀리는 이유와 순서 범위 변경의 비용은 무엇인가요?](/tech-interview/questions/sqs-fifo-hot-message-group/)
 - DLQ 순서

@@ -2,7 +2,7 @@
 id: hash-collision-resolution
 title: "해시 테이블에서 다른 키가 같은 버킷에 들어오면 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"hash-table-resize","prompt":"부하율이 임계값을 넘어 테이블을 키운다면, 버킷 위치가 다시 계산되는 동안 조회·삽입·삭제를 어떻게 안전하게 처리하겠습니까?"},{"id":"java-equals-hashcode","prompt":"키 객체의 필드를 저장 후 바꿀 수 있는 언어라면, equals와 hashCode 계약이 테이블에서 어떤 실패를 만들 수 있는지 설명해 보세요."},{"id":"redis-data-types-encoding","prompt":"해시 테이블 대신 Redis 자료형을 선택한다면, 필요한 키별 연산과 내부 메모리 표현을 어떻게 확인하겠습니까?"}]
+followups: [{"id":"linear-probing-primary-clustering","prompt":"선형 탐사 해시 테이블에 충돌 키가 쌓입니다. 1차 클러스터링은 탐사 길이를 어떻게 늘리나요?"},{"id":"hash-flooding-random-seed-boundary","prompt":"외부 키를 받는 해시 테이블에서 충돌 공격을 줄이려 합니다. 해시 시드와 입력 제한이 각각 무엇을 보호하나요?"},{"id":"hash-table-resize","prompt":"부하율이 임계값을 넘어 테이블을 키운다면, 버킷 위치가 다시 계산되는 동안 조회·삽입·삭제를 어떻게 안전하게 처리하겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["해시 테이블","충돌","개방 주소법"]
@@ -51,6 +51,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 선형 탐사에서 1차 클러스터링이 생기고 탐사 길이가 늘어나는 과정을 설명해 보세요.
-- 공개 입력을 받는 서버에서 충돌 공격과 해시 시드가 어떤 방어를 제공하는지 말해 보세요.
+- [선형 탐사 해시 테이블에 충돌 키가 쌓입니다. 1차 클러스터링은 탐사 길이를 어떻게 늘리나요?](/tech-interview/questions/linear-probing-primary-clustering/)
+- [외부 키를 받는 해시 테이블에서 충돌 공격을 줄이려 합니다. 해시 시드와 입력 제한이 각각 무엇을 보호하나요?](/tech-interview/questions/hash-flooding-random-seed-boundary/)
 - 가변 객체를 키로 허용해야 할 때 불변 키·재삽입·복합 키 설계를 비교해 보세요.

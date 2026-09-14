@@ -2,7 +2,7 @@
 id: hash-sharding-and-resharding
 title: "계정 키를 해싱해 DB를 나눴는데 한 샤드에 부하가 몰립니다. 샤드를 추가하면 해결되며 기존 데이터는 어떻게 옮기나요?"
 answerMinutes: 5
-followups: [{"id":"on-demand-data-migration","prompt":"사용자 단위 데이터 이동의 checkpoint·lease·완료 검증은 어떻게 구성하나요?"},{"id":"transaction-and-lost-update","prompt":"핫키를 하위 샤드로 나눌 때 잔액 순서와 lost update를 어떻게 막나요?"},{"id":"distributed-lock-fencing","prompt":"샤드 소유권 전환 후 옛 라우터의 쓰기를 어떤 토큰으로 차단하나요?"}]
+followups: [{"id":"shard-snapshot-log-handoff-point","prompt":"샤드 snapshot을 복사하면서 변경 로그를 따라갑니다. 복사본과 로그 시작 위치를 어떻게 같은 기준에 묶나요?"},{"id":"hot-key-semantic-sharding","prompt":"단일 계정 키가 쓰기 병목입니다. 하위 키로 분할해도 되는 누적 통계와 분할하기 어려운 잔액은 무엇이 다른가요?"},{"id":"on-demand-data-migration","prompt":"사용자 단위 데이터 이동의 checkpoint·lease·완료 검증은 어떻게 구성하나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -57,6 +57,6 @@ related:
 
 ## 더 파고들 거리
 
-- snapshot과 로그 시작 위치
-- 핫키 하위 분할
+- [샤드 snapshot을 복사하면서 변경 로그를 따라갑니다. 복사본과 로그 시작 위치를 어떻게 같은 기준에 묶나요?](/tech-interview/questions/shard-snapshot-log-handoff-point/)
+- [단일 계정 키가 쓰기 병목입니다. 하위 키로 분할해도 되는 누적 통계와 분할하기 어려운 잔액은 무엇이 다른가요?](/tech-interview/questions/hot-key-semantic-sharding/)
 - 이중 쓰기 대사

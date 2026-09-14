@@ -2,7 +2,7 @@
 id: path-smoothing-validation
 title: "격자나 NavMesh에서 찾은 경로의 코너를 직선으로 줄일 때 캐릭터 반경·경사·동적 장애물을 어떻게 재검증하나요?"
 answerMinutes: 5
-followups: [{"id":"grid-diagonal-corner","prompt":"스무딩 선분이 두 벽의 모서리를 비스듬히 지날 때 캐릭터 크기별로 어떤 통과 규칙을 적용하겠습니까?"},{"id":"navmesh-grid-voxel","prompt":"NavMesh corridor와 복셀 충돌 표현의 경계에서 스무딩 결과가 같은 이동 가능성을 갖는지 어떻게 검증하겠습니까?"},{"id":"dynamic-path-revalidation","prompt":"스무딩된 다음 선분을 실행하기 전에 동적 문이 바뀌면 재검증·부분 유지·재탐색 중 무엇을 선택하겠습니까?"}]
+followups: [{"id":"path-smoothing-weighted-cost","prompt":"경로의 코너를 직선으로 줄였더니 비싼 지형을 통과합니다. 거리 단축과 이동 비용 감소는 어떻게 구분하나요?"},{"id":"grid-diagonal-corner","prompt":"스무딩 선분이 두 벽의 모서리를 비스듬히 지날 때 캐릭터 크기별로 어떤 통과 규칙을 적용하겠습니까?"},{"id":"navmesh-grid-voxel","prompt":"NavMesh corridor와 복셀 충돌 표현의 경계에서 스무딩 결과가 같은 이동 가능성을 갖는지 어떻게 검증하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["경로 탐색","경로 스무딩","충돌"]
@@ -39,6 +39,6 @@ related: ["navmesh-grid-voxel","grid-diagonal-corner"]
 
 ## 더 파고들 거리
 
-- 가중 지형에서 waypoint 수를 줄이는 것과 실제 이동 비용을 줄이는 것을 어떻게 비교하나요?
+- [경로의 코너를 직선으로 줄였더니 비싼 지형을 통과합니다. 거리 단축과 이동 비용 감소는 어떻게 구분하나요?](/tech-interview/questions/path-smoothing-weighted-cost/)
 - swept-volume과 점 raycast의 모서리·속도 차이를 어떤 반례로 검증하나요?
 - 긴 선분의 재검증 주기를 줄이면서 동적 장애물에 대한 안전 여유를 어떻게 정하나요?

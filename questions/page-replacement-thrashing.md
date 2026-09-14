@@ -2,7 +2,7 @@
 id: page-replacement-thrashing
 title: "프로세스들이 페이지를 계속 밀어내고 다시 읽으며 느려집니다. 페이지 교체 정책과 작업 집합을 어떻게 보나요?"
 answerMinutes: 5
-followups: [{"id":"virtual-memory-page-fault","prompt":"페이지 교체로 인한 major fault와 초기 매핑·copy-on-write fault를 관측값으로 어떻게 구분할까요?"},{"id":"lru-cache-policy","prompt":"메모리 작업 집합과 애플리케이션 LRU 캐시가 서로 페이지를 밀어낼 때 어떤 정책을 먼저 바꾸나요?"},{"id":"memory-rss-vs-heap","prompt":"RSS 감소와 작업 집합 축소가 실제 사용자 지연 개선으로 이어지는지 어떻게 확인하나요?"}]
+followups: [{"id":"clock-page-replacement-approximation","prompt":"Clock은 접근 비트로 최근성을 근사합니다. 어떤 참조 패턴에서 LRU와 다른 페이지를 제거하나요?"},{"id":"virtual-memory-page-fault","prompt":"페이지 교체로 인한 major fault와 초기 매핑·copy-on-write fault를 관측값으로 어떻게 구분할까요?"},{"id":"lru-cache-policy","prompt":"메모리 작업 집합과 애플리케이션 LRU 캐시가 서로 페이지를 밀어낼 때 어떤 정책을 먼저 바꾸나요?"}]
 difficulty: 중하
 category: 운영체제
 tags: ["페이지 교체","작업 집합","스래싱"]
@@ -42,6 +42,6 @@ FIFO는 가장 먼저 들어온 페이지를 내보내므로 구현이 단순하
 
 ## 더 파고들 거리
 
-- Clock이 접근 비트로 LRU를 근사할 때 어떤 참조 패턴에서 오차가 커질까요?
+- [Clock은 접근 비트로 최근성을 근사합니다. 어떤 참조 패턴에서 LRU와 다른 페이지를 제거하나요?](/tech-interview/questions/clock-page-replacement-approximation/)
 - 전역 교체가 서로 다른 작업 집합을 가진 프로세스에 미치는 간섭을 어떻게 실험할까요?
 - 작업 집합의 시간 창을 부하 변화에 맞게 선택하는 방법은 무엇인가요?

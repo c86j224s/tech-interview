@@ -24,7 +24,7 @@ export function loadQuestions() {
   }
   if (entries.map((entry) => entry.id).join() !== [...ids].sort().join()) throw new Error('인덱스를 ID 오름차순으로 정렬하세요.');
   const files = fs.readdirSync(directory).filter((name) => name.endsWith('.md')).sort();
-  if (files.join() !== [...ids].sort().map((id) => `${id}.md`).join()) throw new Error('인덱스와 문항 파일이 일치하지 않습니다.');
+  if (files.join() !== [...ids].map((id) => `${id}.md`).sort().join()) throw new Error('인덱스와 문항 파일이 일치하지 않습니다.');
 
   return entries.map(({ id, question }, index) => {
     const { data, content } = matter(fs.readFileSync(new URL(`${id}.md`, directory), 'utf8'));
@@ -38,6 +38,11 @@ export function loadQuestions() {
     if (!data.tags.length) fail('태그 누락');
     if (data.related.some((related) => !ids.has(related) || related === id)) fail('잘못된 연관 문항');
     if (data.answerMinutes !== undefined && data.answerMinutes !== 5) fail('보강 답변의 목표 시간은 5분으로 지정하세요.');
+    if (data.promotedFrom !== undefined) {
+      const source = data.promotedFrom;
+      if (!source || typeof source !== 'object' || Object.keys(source).sort().join(',') !== 'id,prompt'
+        || !ids.has(source.id) || source.id === id || typeof source.prompt !== 'string' || !source.prompt.trim()) fail('잘못된 승격 원문 정보');
+    }
     const followups = data.followups ?? [];
     if (!Array.isArray(followups) || followups.length > 3) fail('꼬리 질문은 최대 3개까지 연결하세요.');
     const followupIds = new Set();

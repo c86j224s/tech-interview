@@ -2,7 +2,7 @@
 id: numa-memory-locality
 title: "NUMA 서버에서 작업 스레드를 늘렸는데 처리량이 떨어졌습니다. 메모리 배치와 CPU 이동이 원인인지 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"cpu-cache-false-sharing","prompt":"NUMA 원격 접근과 같은 캐시 라인의 거짓 공유를 하드웨어 지표로 어떻게 분리할까요?"},{"id":"process-vs-thread","prompt":"프로세스로 격리한 worker가 데이터 복제 비용을 만들 때 NUMA 지역성과 격리를 어떤 기준으로 맞바꾸나요?"},{"id":"atomics-memory-order","prompt":"노드별 카운터를 원자 연산으로 합칠 때 메모리 순서와 집계 지연을 어떻게 정하나요?"}]
+followups: [{"id":"numa-cross-pool-object-transfer","prompt":"NUMA 노드별 풀 사이에 객체를 넘깁니다. 할당·사용·반환 위치와 소유권 이동 비용을 어떻게 측정하나요?"},{"id":"cpu-cache-false-sharing","prompt":"NUMA 원격 접근과 같은 캐시 라인의 거짓 공유를 하드웨어 지표로 어떻게 분리할까요?"},{"id":"process-vs-thread","prompt":"프로세스로 격리한 worker가 데이터 복제 비용을 만들 때 NUMA 지역성과 격리를 어떤 기준으로 맞바꾸나요?"}]
 difficulty: 하
 category: 운영체제
 tags:
@@ -45,6 +45,6 @@ NUMA 서버에서는 CPU와 메모리가 여러 노드로 나뉘며 모든 메�
 
 ## 더 파고들 거리
 
-- 노드별 pool 사이에 객체를 넘길 때 소유권 이전 비용을 어떻게 측정할까요?
+- [NUMA 노드별 풀 사이에 객체를 넘깁니다. 할당·사용·반환 위치와 소유권 이동 비용을 어떻게 측정하나요?](/tech-interview/questions/numa-cross-pool-object-transfer/)
 - 페이지 이동과 작업 이동 중 어느 쪽이 유리한지 어떤 대조 실험을 할까요?
 - NUMA와 false sharing이 동시에 보이는 구조체를 어떻게 재배치할까요?

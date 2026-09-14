@@ -2,7 +2,7 @@
 id: tdd-red-green-refactor
 title: "테스트를 먼저 썼지만 바로 통과했습니다. 이것도 TDD의 Red-Green-Refactor라고 할 수 있을까요?"
 answerMinutes: 5
-followups: [{"id": "dependency-injection-boundaries", "prompt": "외부 API 실패를 TDD로 다룰 때 주입한 가짜 구현과 실제 계약 테스트를 어떤 순서로 조합할까요?"}, {"id": "ci-dummy-client-integration", "prompt": "단위 테스트가 통과한 뒤 로그인부터 응답까지의 사용자 계약을 CI 더미 클라이언트로 어떻게 보완할까요?"}, {"id": "solid-liskov", "prompt": "하위 타입의 금지된 상태 전이를 잡는 테스트를 부모 계약의 Red 단계로 어떻게 설계할까요?"}]
+followups: [{"id":"mutation-test-detection-power","prompt":"테스트 검출력을 확인하려고 코드를 의도적으로 바꿉니다. mutation testing의 생존 변이와 동등 변이는 어떻게 해석하나요?"},{"id":"dependency-injection-boundaries","prompt":"외부 API 실패를 TDD로 다룰 때 주입한 가짜 구현과 실제 계약 테스트를 어떤 순서로 조합할까요?"},{"id":"ci-dummy-client-integration","prompt":"단위 테스트가 통과한 뒤 로그인부터 응답까지의 사용자 계약을 CI 더미 클라이언트로 어떻게 보완할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["TDD","테스트 우선","리팩터링","회귀 테스트"]
@@ -47,6 +47,6 @@ Red에서 문법 오류나 의존성 누락으로 실패한 것은 할인 규칙
 
 ## 더 파고들 거리
 
-- 실패를 확인하기 위해 구현을 일부러 깨뜨리는 검증과 mutation testing은 어떤 차이가 있을까요?
+- [테스트 검출력을 확인하려고 코드를 의도적으로 바꿉니다. mutation testing의 생존 변이와 동등 변이는 어떻게 해석하나요?](/tech-interview/questions/mutation-test-detection-power/)
 - 외부 API를 사용하는 코드를 TDD로 다룰 때 단위 테스트와 계약·통합 테스트를 어떻게 나눌까요?
 - 테스트가 리팩터링을 방해하는 경우 테스트가 구현 세부사항에 결합됐는지 어떻게 판단할까요?

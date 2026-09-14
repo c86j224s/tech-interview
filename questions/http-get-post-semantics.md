@@ -2,7 +2,7 @@
 id: http-get-post-semantics
 title: "검색과 등록 API의 HTTP 메서드를 정하려 합니다. GET과 POST의 의미는 어떻게 다르며, 민감한 값을 POST 본문에 넣는 것만으로 보호할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"http-cache-validation","prompt":"개인별 검색 결과를 POST로 보내면서도 캐시 효율을 얻고 싶다면, 캐시 키와 개인정보 경계를 어떻게 설계하겠습니까?"},{"id":"request-timeout-idempotency","prompt":"POST 응답이 유실되어 생성 여부를 모를 때, 같은 idempotency key의 결과를 어떤 저장소와 수명으로 조회하겠습니까?"},{"id":"csrf-vs-xss","prompt":"쿠키 인증을 쓰는 상태 변경 POST가 브라우저에서 위조되지 않도록 메서드 의미 외에 어떤 검사를 추가하겠습니까?"}]
+followups: [{"id":"idempotency-record-expiry-contract","prompt":"멱등 기록을 삭제한 뒤 오래된 재시도가 왔습니다. 새로운 요청으로 실행할지 거절할지 어떤 유효기간 계약을 두나요?"},{"id":"safe-http-observational-effects","prompt":"GET 처리도 로그와 통계 카운터를 바꿉니다. 안전한 메서드의 허용된 관찰 효과와 업무 변경을 어떻게 구분하나요?"},{"id":"http-cache-validation","prompt":"개인별 검색 결과를 POST로 보내면서도 캐시 효율을 얻고 싶다면, 캐시 키와 개인정보 경계를 어떻게 설계하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags: ["HTTP","GET","POST","안전성","캐시"]
@@ -46,6 +46,6 @@ GET은 캐시와 링크 공유에 자연스럽지만, 실제 저장과 재사용
 
 ## 더 파고들 거리
 
-- idempotency key가 만료된 뒤 늦은 재시도가 도착하는 경우를 어떻게 처리할까요?
+- [멱등 기록을 삭제한 뒤 오래된 재시도가 왔습니다. 새로운 요청으로 실행할지 거절할지 어떤 유효기간 계약을 두나요?](/tech-interview/questions/idempotency-record-expiry-contract/)
 - GET 응답이 쿠키와 Accept-Language에 따라 달라질 때 캐시 키를 어떻게 정의할까요?
-- 안전한 메서드의 로그·카운터 효과와 캐시 부작용의 허용 범위를 어떻게 정할까요?
+- [GET 처리도 로그와 통계 카운터를 바꿉니다. 안전한 메서드의 허용된 관찰 효과와 업무 변경을 어떻게 구분하나요?](/tech-interview/questions/safe-http-observational-effects/)

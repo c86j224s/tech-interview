@@ -2,7 +2,7 @@
 id: graph-representation
 title: "정점은 많지만 연결은 적은 그래프를 저장하려 합니다. 인접 행렬과 인접 리스트 중 무엇을 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"bfs-dfs-shortest-path","prompt":"저장한 그래프에서 모든 간선 비용이 같고 최단 이동 횟수가 필요하다면, 이웃 표현을 어떤 순서로 소비하겠습니까?"},{"id":"kruskal-prim-choice","prompt":"간선 비용으로 최소 신장 트리를 구한다면, 인접 리스트·행렬 중 선택이 Kruskal과 Prim의 구현 비용을 어떻게 바꾸겠습니까?"},{"id":"spatial-hash-grid","prompt":"정점 대신 공간 객체의 주변 후보를 반복 조회해야 한다면, 그래프 표현과 비슷한 희소·조밀 선택을 셀 구조에 어떻게 적용하겠습니까?"}]
+followups: [{"id":"csr-graph-update-cost","prompt":"희소 그래프를 CSR로 저장합니다. 연속 순회의 이점과 간선 삽입·삭제의 재구성 비용은 무엇인가요?"},{"id":"reverse-adjacency-index","prompt":"방향 그래프의 역간선을 별도로 저장합니다. 역탐색 이점과 동시 갱신·메모리 비용은 어떻게 맞추나요?"},{"id":"bfs-dfs-shortest-path","prompt":"저장한 그래프에서 모든 간선 비용이 같고 최단 이동 횟수가 필요하다면, 이웃 표현을 어떤 순서로 소비하겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["그래프","인접 행렬","인접 리스트"]
@@ -47,6 +47,6 @@ related: []
 
 ## 더 파고들 거리
 
-- CSR이 정적 희소 그래프의 순회에 유리하지만 갱신에 불리한 이유를 설명해 보세요.
-- 역방향 간선을 함께 저장할 때 메모리 비용과 탐색 이득을 비교해 보세요.
+- [희소 그래프를 CSR로 저장합니다. 연속 순회의 이점과 간선 삽입·삭제의 재구성 비용은 무엇인가요?](/tech-interview/questions/csr-graph-update-cost/)
+- [방향 그래프의 역간선을 별도로 저장합니다. 역탐색 이점과 동시 갱신·메모리 비용은 어떻게 맞추나요?](/tech-interview/questions/reverse-adjacency-index/)
 - 비트 행렬이 조밀 그래프나 집합 연산에서 효과적인 조건을 말해 보세요.

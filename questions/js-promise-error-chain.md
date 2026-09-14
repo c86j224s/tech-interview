@@ -2,7 +2,7 @@
 id: js-promise-error-chain
 title: "Promise 체인 중간에서 오류를 잡고 대체 값을 반환했습니다. 뒤의 then은 실행되며, 호출자에게 실패를 계속 전달하려면 어떻게 해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"js-event-loop-microtasks","prompt":"catch에서 복구한 then이 어느 마이크로태스크 시점에 실행되는지 어떻게 관찰할까요?"},{"id":"js-async-await-parallel","prompt":"Promise.all 안의 한 작업이 reject된 뒤 다른 작업의 부작용과 오류를 어떻게 수집할까요?"},{"id":"request-timeout-idempotency","prompt":"catch에서 재시도하기 전 이전 Promise가 외부 변경을 완료했는지 모를 때 어떤 멱등 계약이 필요할까요?"}]
+followups: [{"id":"promise-executor-then-throw","prompt":"Promise executor와 then callback에서 각각 throw했습니다. 실행 시점과 rejection 관찰은 어떻게 다른가요?"},{"id":"promise-rejection-nearest-handler","prompt":"여러 then·catch가 연결돼 있습니다. throw·반환값·다시 던짐에 따라 어느 handler가 오류를 받나요?"},{"id":"js-event-loop-microtasks","prompt":"catch에서 복구한 then이 어느 마이크로태스크 시점에 실행되는지 어떻게 관찰할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["JavaScript","Promise","예외 전파","catch"]
@@ -55,6 +55,6 @@ then(success, failure)의 failure는 같은 then의 success가 던진 오류를 
 
 ## 더 파고들 거리
 
-- Promise 생성자 실행부의 동기 throw와 then 내부 throw는 관찰 시점이 어떻게 다른가요?
-- 여러 catch에서 가장 가까운 rejection 경계는 어떻게 선택되나요?
+- [Promise executor와 then callback에서 각각 throw했습니다. 실행 시점과 rejection 관찰은 어떻게 다른가요?](/tech-interview/questions/promise-executor-then-throw/)
+- [여러 then·catch가 연결돼 있습니다. throw·반환값·다시 던짐에 따라 어느 handler가 오류를 받나요?](/tech-interview/questions/promise-rejection-nearest-handler/)
 - unhandled rejection을 기록하면서 프로세스 종료 정책을 어떻게 정할까요?

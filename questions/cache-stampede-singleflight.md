@@ -2,7 +2,7 @@
 id: cache-stampede-singleflight
 title: "인기 상품의 캐시가 만료되자 여러 서버가 동시에 같은 데이터를 DB에서 읽습니다. 중복 조회와 사용자 대기를 어떻게 줄이나요?"
 answerMinutes: 5
-followups: [{"id":"cache-aside-consistency","prompt":"singleflight 중 늦게 끝난 옛 읽기가 새 캐시 값을 덮는다면 어떤 버전 검사가 필요할까요?"},{"id":"bulkhead-isolation","prompt":"여러 인기 키가 동시에 만료될 때 DB와 워커 자원을 어떻게 격리하겠습니까?"},{"id":"circuit-breaker","prompt":"원본이 계속 실패할 때 채우기 재시도를 언제 중단하고 어떤 응답을 주겠습니까?"}]
+followups: [{"id":"singleflight-waiter-cancellation","prompt":"같은 조회를 합친 singleflight에서 첫 요청자가 취소했습니다. 공유 작업과 나머지 대기자의 수명을 어떻게 분리하나요?"},{"id":"cache-outage-origin-admission","prompt":"인기 키 하나의 만료와 캐시 전체 장애는 원본 DB 부하가 어떻게 다르며 우회 요청을 어떻게 제한하나요?"},{"id":"cache-aside-consistency","prompt":"singleflight 중 늦게 끝난 옛 읽기가 새 캐시 값을 덮는다면 어떤 버전 검사가 필요할까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -53,6 +53,6 @@ related: ["cache-aside-consistency"]
 
 ## 더 파고들 거리
 
-- 첫 호출자 취소와 공유 작업 수명
-- 캐시 전체 장애와 단일 만료 판별
+- [같은 조회를 합친 singleflight에서 첫 요청자가 취소했습니다. 공유 작업과 나머지 대기자의 수명을 어떻게 분리하나요?](/tech-interview/questions/singleflight-waiter-cancellation/)
+- [인기 키 하나의 만료와 캐시 전체 장애는 원본 DB 부하가 어떻게 다르며 우회 요청을 어떻게 제한하나요?](/tech-interview/questions/cache-outage-origin-admission/)
 - 분산 lease 세대 검증

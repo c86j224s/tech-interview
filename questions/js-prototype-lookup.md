@@ -2,7 +2,7 @@
 id: js-prototype-lookup
 title: "객체에 직접 값을 넣었다가 삭제했는데 같은 이름의 값이 여전히 조회됩니다. 프로토타입을 따라 찾는 과정과 class 메서드의 저장 위치를 설명해 보세요."
 answerMinutes: 5
-followups: [{"id":"js-object-copy","prompt":"prototype의 가변 배열과 spread 복사본을 함께 사용할 때 어느 데이터가 공유되나요?"},{"id":"js-this-binding","prompt":"prototype 메서드를 변수로 분리 호출하면 property lookup과 this 바인딩은 각각 어떻게 진행되나요?"},{"id":"authentication-vs-authorization","prompt":"외부 키를 객체 프로퍼티로 해석한 결과와 사용자의 자원 접근 권한 검사를 어떤 순서로 분리할까요?"}]
+followups: [{"id":"js-property-existence-undefined","prompt":"Object.hasOwn·in·undefined 비교는 속성의 존재와 상속·값 부재를 어떻게 다르게 판단하나요?"},{"id":"prototype-chain-performance","prompt":"prototype chain을 여러 단계로 늘렸습니다. lookup·최적화·디버깅 비용을 어떤 실제 접근 패턴으로 비교하나요?"},{"id":"js-object-copy","prompt":"prototype의 가변 배열과 spread 복사본을 함께 사용할 때 어느 데이터가 공유되나요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["JavaScript","프로토타입","프로퍼티 조회","class","shadowing"]
@@ -59,6 +59,6 @@ class의 prototype 메서드는 기본적으로 열거되지 않지만 객체 �
 
 ## 더 파고들 거리
 
-- Object.hasOwn·in·undefined 비교가 존재성에서 어떻게 다른가요?
-- prototype chain이 길어질 때 lookup 비용과 디버깅 복잡도를 어떻게 측정할까요?
+- [Object.hasOwn·in·undefined 비교는 속성의 존재와 상속·값 부재를 어떻게 다르게 판단하나요?](/tech-interview/questions/js-property-existence-undefined/)
+- [prototype chain을 여러 단계로 늘렸습니다. lookup·최적화·디버깅 비용을 어떤 실제 접근 패턴으로 비교하나요?](/tech-interview/questions/prototype-chain-performance/)
 - Map과 Object.create(null)을 외부 키 저장소로 선택하는 기준은 무엇인가요?

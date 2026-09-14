@@ -2,7 +2,7 @@
 id: ranking-top-k
 title: "실시간 게임 랭킹에서 상위 K명, 임의 사용자의 순위, 보상 확정을 각각 어떤 자료구조와 기준으로 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"ranking-global-topk","prompt":"사용자 점수가 여러 샤드에 나뉘어 있다면, 샤드별 후보를 전역 top-K로 병합해도 되는 충분조건은 무엇입니까?"},{"id":"redis-sorted-set-ranking","prompt":"Redis sorted set을 실시간 랭킹 저장소로 쓴다면, 기본 동점 순서와 서비스의 달성 시각 순서를 어떻게 일치시키겠습니까?"},{"id":"ranking-cutoff-rewards","prompt":"마감 직전에 도착한 점수와 이미 계산한 보상 목록이 충돌한다면, 어느 집계 버전으로 재처리하겠습니까?"}]
+followups: [{"id":"ranking-merge-dedup-tie-boundary","prompt":"샤드 후보에 같은 사용자가 중복되고 K위 동점자가 많습니다. 병합의 중복·동점 범위를 어떻게 정하나요?"},{"id":"ranking-global-topk","prompt":"사용자 점수가 여러 샤드에 나뉘어 있다면, 샤드별 후보를 전역 top-K로 병합해도 되는 충분조건은 무엇입니까?"},{"id":"redis-sorted-set-ranking","prompt":"Redis sorted set을 실시간 랭킹 저장소로 쓴다면, 기본 동점 순서와 서비스의 달성 시각 순서를 어떻게 일치시키겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags:
@@ -50,6 +50,6 @@ K 주변의 유한한 여분 후보는 재스캔 횟수를 줄이지만 반복�
 
 ## 더 파고들 거리
 
-- 샤드별 후보 병합에서 중복 사용자와 동점 경계를 어떻게 처리할지 설명해 보세요.
+- [샤드 후보에 같은 사용자가 중복되고 K위 동점자가 많습니다. 병합의 중복·동점 범위를 어떻게 정하나요?](/tech-interview/questions/ranking-merge-dedup-tie-boundary/)
 - 점수·달성 시각·사용자 ID를 저장소의 오름차순/내림차순 API에 맞게 표현해 보세요.
 - 확정 스냅샷 생성 중 들어온 이벤트를 다음 버전으로 넘기는 원장 구조를 말해 보세요.

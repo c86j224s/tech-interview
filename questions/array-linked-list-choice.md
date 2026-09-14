@@ -2,7 +2,7 @@
 id: array-linked-list-choice
 title: "목록의 중간에 항목을 자주 삽입해 성능을 개선하려 합니다. 배열을 연결 리스트로 바꾸기 전에 삽입 위치를 찾는 방식과 조회 패턴을 왜 확인해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"dynamic-array-amortized","prompt":"삽입 위치는 끝으로 고정됐지만 배열이 가득 찰 때만 지연이 튄다면, 평균 비용과 개별 요청 지연을 어떻게 분리해 보겠습니까?"},{"id":"graph-representation","prompt":"목록 대신 이웃 관계를 저장하는 그래프라면, 연결이 희소한 경우 어떤 표현이 순회와 메모리에 유리한지 어떻게 판단하겠습니까?"},{"id":"heap-vs-sorted-array","prompt":"중간 삽입이 아니라 항상 가장 작은 우선순위만 꺼내야 한다면, 전체 순서를 유지하지 않는 구조를 선택할 근거는 무엇입니까?"}]
+followups: [{"id":"array-of-pointers-tradeoff","prompt":"큰 객체 대신 포인터를 배열에 저장하면 삽입 이동량은 줄어듭니다. 추가되는 캐시·소유권 비용은 무엇인가요?"},{"id":"deque-versus-order-tree","prompt":"양끝 삽입·삭제와 임의 위치 조회가 함께 필요합니다. deque와 순서 정보를 가진 균형 트리는 어떻게 비교하나요?"},{"id":"dynamic-array-amortized","prompt":"삽입 위치는 끝으로 고정됐지만 배열이 가득 찰 때만 지연이 튄다면, 평균 비용과 개별 요청 지연을 어떻게 분리해 보겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["배열","연결 리스트","지역성"]
@@ -45,6 +45,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 원소 대신 포인터를 배열에 저장할 때 이동 비용과 캐시 비용이 어떻게 맞바뀌는지 설명해 보세요.
+- [큰 객체 대신 포인터를 배열에 저장하면 삽입 이동량은 줄어듭니다. 추가되는 캐시·소유권 비용은 무엇인가요?](/tech-interview/questions/array-of-pointers-tradeoff/)
 - 반복자를 오래 보관하는 자료구조에서 삽입·삭제가 참조를 무효화하는 조건을 비교해 보세요.
-- 양끝 삽입·삭제와 임의 위치 조회가 함께 필요할 때 deque와 균형 트리를 어떻게 구분할지 말해 보세요.
+- [양끝 삽입·삭제와 임의 위치 조회가 함께 필요합니다. deque와 순서 정보를 가진 균형 트리는 어떻게 비교하나요?](/tech-interview/questions/deque-versus-order-tree/)

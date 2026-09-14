@@ -2,7 +2,7 @@
 id: cpu-cache-false-sharing
 title: "두 스레드가 서로 다른 카운터만 수정하는데 함께 실행하면 느려집니다. 데이터 경합이 없어도 이런 일이 생길 수 있으며, 어떻게 확인하고 줄이나요?"
 answerMinutes: 5
-followups: [{"id":"numa-memory-locality","prompt":"cache line을 분리했는데 NUMA remote access가 남을 때 두 비용을 어떤 지표로 나눠 볼까요?"},{"id":"atomics-memory-order","prompt":"작업자별 로컬 카운터를 합칠 때 원자 연산과 메모리 순서를 어떻게 최소화할까요?"},{"id":"process-vs-thread","prompt":"프로세스별 카운터 복제가 거짓 공유를 줄이는 대신 메모리를 늘릴 때 어느 조건에서 선택할까요?"}]
+followups: [{"id":"cache-readonly-sharing-versus-writes","prompt":"여러 코어가 같은 cache line을 읽기만 합니다. 쓰기 무효화가 있는 공유와 비용이 어떻게 다른가요?"},{"id":"false-sharing-evidence-experiment","prompt":"cache miss 지표가 높습니다. 이것만으로 false sharing을 확정할 수 없으며 어떤 배치 비교가 필요한가요?"},{"id":"numa-memory-locality","prompt":"cache line을 분리했는데 NUMA remote access가 남을 때 두 비용을 어떤 지표로 나눠 볼까요?"}]
 difficulty: 하
 category: 성능
 tags:
@@ -48,6 +48,6 @@ related: ["process-vs-thread"]
 
 ## 더 파고들 거리
 
-- 읽기 전용 공유 line도 쓰기 무효화와 같은 비용을 만들 수 있나요?
-- 하드웨어 성능 카운터가 거짓 공유를 직접 증명하지 못하는 이유는 무엇인가요?
+- [여러 코어가 같은 cache line을 읽기만 합니다. 쓰기 무효화가 있는 공유와 비용이 어떻게 다른가요?](/tech-interview/questions/cache-readonly-sharing-versus-writes/)
+- [cache miss 지표가 높습니다. 이것만으로 false sharing을 확정할 수 없으며 어떤 배치 비교가 필요한가요?](/tech-interview/questions/false-sharing-evidence-experiment/)
 - NUMA·cache line·작업 분할을 동시에 최적화할 때 어떤 순서를 택할까요?

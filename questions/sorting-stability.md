@@ -2,7 +2,7 @@
 id: sorting-stability
 title: "점수로 정렬한 뒤 동점자의 기존 순서를 유지하려 합니다. 안정 정렬은 어떤 보장인가요?"
 answerMinutes: 5
-followups: [{"id":"ranking-top-k","prompt":"동점자의 기존 입력 순서가 서버마다 다를 수 있는 실시간 랭킹이라면, 안정 정렬 대신 어떤 결정적 보조 키를 선택하겠습니까?"},{"id":"quicksort-worst-case","prompt":"최악 지연을 줄이는 퀵 정렬 변형을 선택하면서도 안정성이 필요하다면, 알고리즘 보장과 추가 메모리의 교환을 어떻게 판단하겠습니까?"},{"id":"python-timsort-stability","prompt":"이미 정렬된 구간과 안정성이 모두 필요하다면, 적응형 정렬의 구현 특성과 언어 라이브러리 계약을 어떻게 구분해 설명하겠습니까?"}]
+followups: [{"id":"inplace-stable-sort-independence","prompt":"제자리 정렬과 안정 정렬은 같은 속성인가요? 추가 메모리와 동점 순서 보장을 어떻게 구분하나요?"},{"id":"ranking-top-k","prompt":"동점자의 기존 입력 순서가 서버마다 다를 수 있는 실시간 랭킹이라면, 안정 정렬 대신 어떤 결정적 보조 키를 선택하겠습니까?"},{"id":"quicksort-worst-case","prompt":"최악 지연을 줄이는 퀵 정렬 변형을 선택하면서도 안정성이 필요하다면, 알고리즘 보장과 추가 메모리의 교환을 어떻게 판단하겠습니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["정렬","안정성","비교자"]
@@ -48,5 +48,5 @@ related: ["ranking-top-k"]
 ## 더 파고들 거리
 
 - 점수 내림차순과 가입일 오름차순을 안정 정렬 두 번으로 구현하는 순서를 설명해 보세요.
-- 제자리 정렬과 안정 정렬이 서로 독립적인 속성인 이유를 예로 말해 보세요.
+- [제자리 정렬과 안정 정렬은 같은 속성인가요? 추가 메모리와 동점 순서 보장을 어떻게 구분하나요?](/tech-interview/questions/inplace-stable-sort-independence/)
 - NaN이나 부분 순서 값이 비교자에 들어올 때 안정성과 전체 순서가 어떻게 달라지는지 설명해 보세요.

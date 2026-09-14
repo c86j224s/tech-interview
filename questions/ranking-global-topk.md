@@ -2,7 +2,7 @@
 id: ranking-global-topk
 title: "사용자별 점수가 샤드에 완전히 분할된 경우 샤드별 상위 K명만으로 전역 상위 K명을 구할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"ranking-top-k","prompt":"전역 상위 K뿐 아니라 임의 사용자의 정확한 순위와 마감 보상도 필요하다면, 후보 병합만으로 부족한 부분을 어떤 구조와 버전으로 보완하겠습니까?"},{"id":"redis-sorted-set-ranking","prompt":"각 샤드가 Redis sorted set으로 점수를 관리한다면, 동점·정밀도·중복 갱신을 전역 병합 전에 어떻게 고정하겠습니까?"},{"id":"ranking-cutoff-rewards","prompt":"마감 직전 한 샤드가 늦게 도착한 점수를 반영한다면, 잠정 랭킹과 보상 확정 집계를 어떤 기준 버전으로 나누겠습니까?"}]
+followups: [{"id":"distributed-topk-merge-complexity","prompt":"샤드 S개의 정렬된 상위 K 후보를 병합합니다. heap·네트워크·메모리 비용은 어떻게 계산하나요?"},{"id":"ranking-top-k","prompt":"전역 상위 K뿐 아니라 임의 사용자의 정확한 순위와 마감 보상도 필요하다면, 후보 병합만으로 부족한 부분을 어떤 구조와 버전으로 보완하겠습니까?"},{"id":"redis-sorted-set-ranking","prompt":"각 샤드가 Redis sorted set으로 점수를 관리한다면, 동점·정밀도·중복 갱신을 전역 병합 전에 어떻게 고정하겠습니까?"}]
 difficulty: 중하
 category: 자료구조
 tags: ["랭킹","top-K","샤딩"]
@@ -47,6 +47,6 @@ related: ["ranking-top-k"]
 
 ## 더 파고들 거리
 
-- S개 샤드의 top-K 후보를 힙으로 병합할 때 시간·메모리·네트워크 비용을 계산해 보세요.
+- [샤드 S개의 정렬된 상위 K 후보를 병합합니다. heap·네트워크·메모리 비용은 어떻게 계산하나요?](/tech-interview/questions/distributed-topk-merge-complexity/)
 - 샤드 하나가 응답하지 않을 때 정확도와 사용자 화면 상태를 어떻게 표시할지 설계해 보세요.
 - 분할 점수의 정확한 top-K를 위해 상한·하한이나 반복 후보 확장을 어떻게 사용할지 말해 보세요.

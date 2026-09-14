@@ -2,7 +2,7 @@
 id: db-unique-constraint-race
 title: "두 사용자가 같은 계정명을 동시에 가입할 때 사전 중복 조회가 모두 통과하는 이유와 DB 고유 제약 처리 방법은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"transaction-and-lost-update","prompt":"고유 제약 외에 같은 회원 행의 상태를 동시에 변경할 때 어떤 갱신 조건을 추가해야 하나요?"},{"id":"prepared-statement-injection","prompt":"고유 키 조회와 INSERT를 파라미터화하면서 동적 정렬·식별자는 어떻게 제한하나요?"},{"id":"db-online-schema-migration","prompt":"기존 중복 데이터를 정리한 뒤 고유 제약을 운영 중 추가할 때 호환·검증 순서는 무엇인가요?"}]
+followups: [{"id":"soft-delete-name-reuse-conflict","prompt":"탈퇴 계정의 이름을 재사용한 뒤 원래 계정을 복구합니다. 활성 행 고유 제약과 복구 충돌은 어떻게 다루나요?"},{"id":"multi-region-name-reservation","prompt":"여러 지역에서 같은 사용자명을 동시에 등록합니다. 지역별 UNIQUE 밖의 전역 예약 권위는 어디에 두나요?"},{"id":"transaction-and-lost-update","prompt":"고유 제약 외에 같은 회원 행의 상태를 동시에 변경할 때 어떤 갱신 조건을 추가해야 하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ related: ["transaction-and-lost-update"]
 
 ## 더 파고들 거리
 
-- 소프트 삭제와 부분 인덱스의 엔진별 동작을 확인해 보세요.
-- 다중 지역 전역 유일성의 권위 위치를 설계해 보세요.
+- [탈퇴 계정의 이름을 재사용한 뒤 원래 계정을 복구합니다. 활성 행 고유 제약과 복구 충돌은 어떻게 다루나요?](/tech-interview/questions/soft-delete-name-reuse-conflict/)
+- [여러 지역에서 같은 사용자명을 동시에 등록합니다. 지역별 UNIQUE 밖의 전역 예약 권위는 어디에 두나요?](/tech-interview/questions/multi-region-name-reservation/)
 - 고유 오류와 멱등 재시도를 관측·검증하는 테스트를 만들어 보세요.

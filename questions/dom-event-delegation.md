@@ -2,7 +2,7 @@
 id: dom-event-delegation
 title: "동적으로 추가되는 목록 항목의 클릭을 한 곳에서 처리하려면 이벤트 위임을 어떻게 적용하나요?"
 answerMinutes: 5
-followups: [{"id":"css-cascade-specificity","prompt":"위임으로 찾은 항목의 상태 class가 여러 스타일과 충돌할 때 동작 코드와 최종 CSS 값을 어떻게 분리해 확인하나요?"},{"id":"js-event-loop-microtasks","prompt":"클릭 handler가 DOM을 갱신하고 Promise callback에서 다시 읽을 때 이벤트 작업과 microtask의 실행 순서를 어떻게 판단하나요?"},{"id":"browser-rendering-layout","prompt":"대량 목록 클릭 뒤 각 항목의 layout을 측정해야 한다면 handler 안의 DOM 읽기·쓰기를 어떻게 배치할까요?"}]
+followups: [{"id":"capture-versus-bubble-delegation","prompt":"부모에서 이벤트를 위임했지만 일부 이벤트는 받지 못합니다. capture와 bubble 위임을 어떤 조건으로 선택하나요?"},{"id":"shadow-dom-composed-path","prompt":"Shadow DOM 안에서 발생한 클릭의 target이 바뀌어 보입니다. retargeting과 composedPath로 어떤 경계를 확인하나요?"},{"id":"css-cascade-specificity","prompt":"위임으로 찾은 항목의 상태 class가 여러 스타일과 충돌할 때 동작 코드와 최종 CSS 값을 어떻게 분리해 확인하나요?"}]
 difficulty: 하
 category: 웹
 tags: ["DOM","이벤트","버블링","이벤트 위임","JavaScript"]
@@ -61,6 +61,6 @@ Shadow DOM 경계에서는 target이 재지정될 수 있어 외부 조상에서
 
 ## 더 파고들 거리
 
-- 캡처 위임이 버블 위임보다 필요한 이벤트는 어떤 경우일까요?
-- Shadow DOM 경계에서 target 재지정과 composedPath를 어떻게 확인할까요?
+- [부모에서 이벤트를 위임했지만 일부 이벤트는 받지 못합니다. capture와 bubble 위임을 어떤 조건으로 선택하나요?](/tech-interview/questions/capture-versus-bubble-delegation/)
+- [Shadow DOM 안에서 발생한 클릭의 target이 바뀌어 보입니다. retargeting과 composedPath로 어떤 경계를 확인하나요?](/tech-interview/questions/shadow-dom-composed-path/)
 - pointer·keyboard 이벤트를 하나의 항목 활성화 모델로 묶으려면 무엇을 보완할까요?

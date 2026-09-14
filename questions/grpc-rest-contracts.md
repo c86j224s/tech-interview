@@ -2,7 +2,7 @@
 id: grpc-rest-contracts
 title: "여러 언어의 내부 서비스가 REST API로 통신합니다. gRPC로 바꾸면 계약 관리와 실행 비용에서 무엇이 달라지나요?"
 answerMinutes: 5
-followups: [{"id": "api-backward-compatibility", "prompt": "protobuf 필드와 enum을 추가해도 구버전 소비자가 오동작하는 경우를 어떤 계약 테스트로 찾을까요?"}, {"id": "deadline-cancellation-propagation", "prompt": "gRPC deadline이 내부 DB·외부 API까지 전파되지 않을 때 어디에 취소 경계를 둘까요?"}, {"id": "k8s-service-network", "prompt": "HTTP/2 연결 재사용이 새 Pod로의 요청 분산에 미치는 영향을 어떻게 관찰할까요?"}]
+followups: [{"id":"grpc-stream-application-backpressure","prompt":"gRPC 스트림의 흐름 제어가 있어도 앱 작업 큐가 늘어납니다. 수신·큐·실행의 예산을 어떻게 연결하나요?"},{"id":"grpc-domain-error-retry-semantics","prompt":"잔액 부족을 gRPC 전송 장애처럼 반환했습니다. 상태 코드와 업무 거절을 어떻게 나눠 잘못된 재시도를 막나요?"},{"id":"api-backward-compatibility","prompt":"protobuf 필드와 enum을 추가해도 구버전 소비자가 오동작하는 경우를 어떤 계약 테스트로 찾을까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ REST는 JSON 직렬화 형식 자체가 아니라 자원과 HTTP 의미를 활�
 
 ## 더 파고들 거리
 
-- 클라이언트 스트리밍에서 백프레셔는 작업 큐까지 어떻게 이어져야 할까요?
+- [gRPC 스트림의 흐름 제어가 있어도 앱 작업 큐가 늘어납니다. 수신·큐·실행의 예산을 어떻게 연결하나요?](/tech-interview/questions/grpc-stream-application-backpressure/)
 - HTTP/2 연결 재사용이 인스턴스별 부하 편중을 만드는 경우는 무엇인가요?
-- 잔액 부족 같은 규칙상 거절을 전송 오류로 표현하면 어떤 재시도 문제가 생길까요?
+- [잔액 부족을 gRPC 전송 장애처럼 반환했습니다. 상태 코드와 업무 거절을 어떻게 나눠 잘못된 재시도를 막나요?](/tech-interview/questions/grpc-domain-error-retry-semantics/)

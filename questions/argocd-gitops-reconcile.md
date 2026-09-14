@@ -2,7 +2,7 @@
 id: argocd-gitops-reconcile
 title: "Argo CD로 관리하는 Deployment를 운영자가 kubectl로 직접 수정했습니다. Git과 실제 설정이 달라지면 어떻게 감지되며, 어느 쪽 상태가 유지되나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-reconciliation","prompt":"Argo CD가 리소스를 다시 적용했다고 보고했지만 Pod가 아직 준비되지 않았다면 선언 저장부터 실제 서비스 준비까지 어떤 상태를 추적하겠습니까?"},{"id":"feature-flag-rollout","prompt":"Git 선언은 정상으로 되돌렸지만 이미 새 코드가 기록한 데이터가 남아 있다면 인프라 동기화와 애플리케이션 복구를 어떻게 분리하겠습니까?"},{"id":"argocd-prune-rollback","prompt":"Argo CD가 추적하던 리소스 정의를 Git에서 제거했다면, prune 전에 어떤 의존 관계와 데이터 보호 조건을 확인하겠습니까?"}]
+followups: [{"id":"argocd-hpa-field-ownership","prompt":"HPA가 바꾸는 replicas를 Argo CD 비교에서 제외합니다. 필요한 소유권 분리와 수동 drift 감지는 어떻게 함께 유지하나요?"},{"id":"argocd-source-error-vs-health","prompt":"Argo CD가 Git을 읽지 못하는 경우와 Git 선언이 잘못된 경우를 Sync·Health·현재 Pod 상태로 어떻게 구분하나요?"},{"id":"k8s-reconciliation","prompt":"Argo CD가 리소스를 다시 적용했다고 보고했지만 Pod가 아직 준비되지 않았다면 선언 저장부터 실제 서비스 준비까지 어떤 상태를 추적하겠습니까?"}]
 difficulty: 하
 category: 인프라
 tags: ["Argo CD","GitOps","동기화"]
@@ -41,6 +41,6 @@ Deployment의 replica를 Argo CD와 HPA가 동시에 쓰면 한쪽은 4로, 다�
 
 ## 더 파고들 거리
 
-- HPA가 관리하는 replicas를 Argo CD diff에서 제외할 때 누락된 수동 변경을 어떻게 보완할지 설명해 보세요.
-- Git 저장소 접근 장애와 잘못된 Git 선언을 Health·Sync·실행 중 Pod 상태로 어떻게 구분할까요.
+- [HPA가 바꾸는 replicas를 Argo CD 비교에서 제외합니다. 필요한 소유권 분리와 수동 drift 감지는 어떻게 함께 유지하나요?](/tech-interview/questions/argocd-hpa-field-ownership/)
+- [Argo CD가 Git을 읽지 못하는 경우와 Git 선언이 잘못된 경우를 Sync·Health·현재 Pod 상태로 어떻게 구분하나요?](/tech-interview/questions/argocd-source-error-vs-health/)
 - self-heal을 잠깐 중지하는 동안 새 drift가 생기지 않게 어떤 만료와 감사 기록을 둘까요.

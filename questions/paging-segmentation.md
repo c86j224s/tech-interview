@@ -2,7 +2,7 @@
 id: paging-segmentation
 title: "프로세스 메모리를 코드·데이터 같은 논리 영역으로 관리하는 방식과 고정 크기 블록으로 나누는 방식을 비교하려 합니다. 세그멘테이션과 페이징은 주소 변환·보호·단편화에서 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"tlb-page-table","prompt":"페이지 크기를 키울 때 TLB 범위 이득과 내부 단편화·page fault 비용을 어떤 패턴으로 비교할까요?"},{"id":"virtual-memory-page-fault","prompt":"페이지 테이블 매핑 부재와 권한 위반이 모두 fault를 만들 때 실제 디스크 접근 여부를 어떻게 확인하나요?"},{"id":"memory-fragmentation","prompt":"페이징이 일반 가상 할당의 외부 단편화를 줄여도 어떤 내부 낭비를 남기나요?"}]
+followups: [{"id":"segmented-paging-translation","prompt":"세그먼트 내부를 페이지로 나눕니다. 논리 영역·주소 변환·외부 단편화는 어떻게 함께 처리되나요?"},{"id":"tlb-page-table","prompt":"페이지 크기를 키울 때 TLB 범위 이득과 내부 단편화·page fault 비용을 어떤 패턴으로 비교할까요?"},{"id":"virtual-memory-page-fault","prompt":"페이지 테이블 매핑 부재와 권한 위반이 모두 fault를 만들 때 실제 디스크 접근 여부를 어떻게 확인하나요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["페이징","세그멘테이션","가상 메모리"]
@@ -42,6 +42,6 @@ related: ["virtual-memory-page-fault"]
 
 ## 더 파고들 거리
 
-- 세그먼트 내부 페이징이 외부 단편화를 어떻게 줄이는지 설명해 보세요.
+- [세그먼트 내부를 페이지로 나눕니다. 논리 영역·주소 변환·외부 단편화는 어떻게 함께 처리되나요?](/tech-interview/questions/segmented-paging-translation/)
 - 큰 페이지가 TLB miss와 메모리 낭비를 동시에 바꾸는 이유는 무엇인가요?
 - 페이지 권한과 세그먼트 권한이 결합될 때 실행·쓰기 보호는 어디서 검사되나요?

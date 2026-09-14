@@ -2,7 +2,7 @@
 id: backup-restore-rpo-rto
 title: "매일 DB 백업은 성공하지만 실제 복원은 해 본 적이 없습니다. 장애 때 감당할 데이터 유실과 중단 시간을 기준으로 무엇을 검증해야 하나요?"
 answerMinutes: 5
-followups: [{"id": "db-wal-durability", "prompt": "커밋 직후 전원이 꺼져도 WAL로 복구하려면 어떤 저장 순서와 내구성 설정을 확인해야 할까요?"}, {"id": "slo-error-budget", "prompt": "복구 시간 목표를 사용자 흐름 SLO와 연결할 때 어떤 기능을 먼저 복구하고 무엇을 정상 거절로 볼까요?"}, {"id": "transactional-outbox", "prompt": "여러 서비스의 백업 시점이 다를 때 DB 상태와 이벤트를 어떤 기준점으로 함께 복구할까요?"}]
+followups: [{"id":"restore-drill-data-isolation","prompt":"실제 백업으로 복구 훈련을 합니다. 개인정보와 옛 outbox의 외부 효과를 어떻게 격리하나요?"},{"id":"cross-service-backup-cut","prompt":"주문·결제 서비스의 백업 시점이 다릅니다. 공통 복구 기준과 불일치 대사는 어떻게 구성하나요?"},{"id":"db-wal-durability","prompt":"커밋 직후 전원이 꺼져도 WAL로 복구하려면 어떤 저장 순서와 내구성 설정을 확인해야 할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,5 +52,5 @@ RTO 측정의 시작점을 권한 승인 시점으로 늦추면 장애 탐지와
 ## 더 파고들 거리
 
 - 시점 복구에서 잘못된 변경 직전을 어떻게 정확히 찾을까요?
-- 복구 훈련 데이터의 개인정보 노출을 어떻게 제한할까요?
-- 여러 서비스의 백업 시점이 다르면 주문·결제 같은 관련 데이터의 일관성은 어떻게 복구할까요?
+- [실제 백업으로 복구 훈련을 합니다. 개인정보와 옛 outbox의 외부 효과를 어떻게 격리하나요?](/tech-interview/questions/restore-drill-data-isolation/)
+- [주문·결제 서비스의 백업 시점이 다릅니다. 공통 복구 기준과 불일치 대사는 어떻게 구성하나요?](/tech-interview/questions/cross-service-backup-cut/)

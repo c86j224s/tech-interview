@@ -2,7 +2,7 @@
 id: tcp-flow-vs-congestion-control
 title: "TCP 전송이 느려졌는데 수신 앱도 느리고 네트워크에도 손실이 보입니다. 흐름 제어와 혼잡 제어는 무엇을 각각 제한하며 어떤 지표로 원인을 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-nagle-delayed-ack","prompt":"수신 앱은 빠른데 작은 메시지의 RTT만 튄다면, 흐름·혼잡 제어 외에 Nagle과 지연 ACK를 어떤 실험으로 분리하겠습니까?"},{"id":"http2-head-of-line-blocking","prompt":"한 HTTP/2 연결의 여러 스트림이 동시에 느려질 때 수신 윈도우 축소와 TCP 손실 중 무엇인지 어떻게 확인하겠습니까?"},{"id":"udp-reliability-choice","prompt":"UDP로 전환해 흐름 제어를 직접 구현한다면 수신자·네트워크·애플리케이션 각 큐의 상한을 어떻게 설계하겠습니까?"}]
+followups: [{"id":"bandwidth-delay-product-window","prompt":"대역폭과 RTT가 모두 큰 연결에서 처리량이 낮습니다. in-flight 바이트와 창 크기는 어떤 관계가 있나요?"},{"id":"tcp-nagle-delayed-ack","prompt":"수신 앱은 빠른데 작은 메시지의 RTT만 튄다면, 흐름·혼잡 제어 외에 Nagle과 지연 ACK를 어떤 실험으로 분리하겠습니까?"},{"id":"http2-head-of-line-blocking","prompt":"한 HTTP/2 연결의 여러 스트림이 동시에 느려질 때 수신 윈도우 축소와 TCP 손실 중 무엇인지 어떻게 확인하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -53,6 +53,6 @@ related: ["tcp-stream-message-framing"]
 
 ## 더 파고들 거리
 
-- 대역폭·RTT가 큰 경로에서 윈도우와 in-flight 데이터가 중요한 이유는 무엇일까요?
+- [대역폭과 RTT가 모두 큰 연결에서 처리량이 낮습니다. in-flight 바이트와 창 크기는 어떤 관계가 있나요?](/tech-interview/questions/bandwidth-delay-product-window/)
 - 손실 기반과 지연 기반 혼잡 제어가 관찰하는 신호를 어떻게 비교할까요?
 - TCP 윈도우와 별도로 애플리케이션 큐에 백프레셔가 필요한 이유는 무엇일까요?

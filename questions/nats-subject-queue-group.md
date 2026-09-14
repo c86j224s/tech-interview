@@ -2,7 +2,7 @@
 id: nats-subject-queue-group
 title: "같은 이벤트를 분석 서비스와 알림 서비스가 각각 받아야 하고, 각 서비스 안에서는 인스턴스 하나만 처리해야 합니다. NATS subject와 queue group을 어떻게 구성하나요?"
 answerMinutes: 5
-followups: [{"id":"nats-core-jetstream","prompt":"오프라인 유실을 허용할 상태와 JetStream이 필요한 이벤트를 어떻게 나누나요?"},{"id":"nats-request-reply","prompt":"같은 subject의 여러 responder에서 queue group은 응답 수를 어떻게 바꾸나요?"},{"id":"nats-subject-isolation","prompt":"tenant 토큰이 있어도 교차 수신되는 권한 실수는 무엇인가요?"}]
+followups: [{"id":"nats-wildcard-token-matching","prompt":"NATS subject의 *와 >는 어떤 token 범위를 매칭하며 이름 설계의 경계 오류는 어떻게 시험하나요?"},{"id":"nats-core-jetstream","prompt":"오프라인 유실을 허용할 상태와 JetStream이 필요한 이벤트를 어떻게 나누나요?"},{"id":"nats-request-reply","prompt":"같은 subject의 여러 responder에서 queue group은 응답 수를 어떻게 바꾸나요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["NATS","subject","queue group"]
@@ -52,6 +52,6 @@ subject의 점으로 나뉜 조각을 token이라고 합니다. `orders.*.create
 
 ## 더 파고들 거리
 
-- wildcard 범위
+- [NATS subject의 *와 >는 어떤 token 범위를 매칭하며 이름 설계의 경계 오류는 어떻게 시험하나요?](/tech-interview/questions/nats-wildcard-token-matching/)
 - tenant 권한
 - 의도된 중복

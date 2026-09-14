@@ -2,7 +2,7 @@
 id: db-lock-escalation
 title: "UPDATE로 바뀐 행은 몇 개뿐인데 다른 요청이 오래 기다립니다. 실제 잠금 범위와 보유 시간을 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"deadlock-prevention","prompt":"잠금 범위를 줄였는데도 두 트랜잭션이 교착하면 획득 순서와 재시도를 어떻게 설계하나요?"},{"id":"db-mvcc-snapshot","prompt":"MVCC 환경에서 읽기 잠금이 줄어도 UPDATE와 스키마 변경이 기다리는 이유는 무엇인가요?"},{"id":"db-pool-long-transactions","prompt":"쿼리는 짧고 잠금 보유·연결 보유만 긴 요청을 어떤 코드 경계에서 분리하나요?"}]
+followups: [{"id":"database-lock-resource-diagnosis","prompt":"DB에서 다른 요청을 막는 자원이 row·key·page·gap 중 무엇인지 어떻게 관찰하고 엔진별로 해석하나요?"},{"id":"database-log-lock-pressure-priority","prompt":"대량 갱신에서 로그 압력과 잠금 대기가 함께 늘어납니다. 어느 병목을 먼저 줄였는지 어떻게 검증하나요?"},{"id":"deadlock-prevention","prompt":"잠금 범위를 줄였는데도 두 트랜잭션이 교착하면 획득 순서와 재시도를 어떻게 설계하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ related: ["deadlock-prevention","composite-index-column-order"]
 
 ## 더 파고들 거리
 
-- DBMS별 행·키·페이지·gap 잠금 관찰 방법을 비교해 보세요.
+- [DB에서 다른 요청을 막는 자원이 row·key·page·gap 중 무엇인지 어떻게 관찰하고 엔진별로 해석하나요?](/tech-interview/questions/database-lock-resource-diagnosis/)
 - 대량 작업의 재시작 키와 배치 커밋 기준을 만들어 보세요.
-- 로그 압력과 잠금 압력이 동시에 커질 때 우선순위를 정해 보세요.
+- [대량 갱신에서 로그 압력과 잠금 대기가 함께 늘어납니다. 어느 병목을 먼저 줄였는지 어떻게 검증하나요?](/tech-interview/questions/database-log-lock-pressure-priority/)

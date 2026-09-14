@@ -2,7 +2,7 @@
 id: navmesh-grid-voxel
 title: "지상 이동·셀 단위 변경·3차원 구조가 각각 필요할 때 NavMesh·격자·복셀 중 어떤 경로 공간을 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"path-smoothing-validation","prompt":"NavMesh portal이나 격자 코너를 단순화한 뒤 서로 다른 에이전트 반경의 통과 가능성을 어떻게 재검증하겠습니까?"},{"id":"voxel-occupancy-representation","prompt":"복셀의 고체 상태와 에이전트별 이동 가능성을 분리하지 않으면 어떤 경로 오류가 생기며 어떤 데이터를 추가하겠습니까?"},{"id":"voxel-chunk-boundaries","prompt":"격자·복셀 청크 경계가 NavMesh 포털과 맞닿을 때 미로딩 이웃을 빈 공간으로 오인하지 않게 어떤 상태를 두겠습니까?"}]
+followups: [{"id":"voxel-resolution-clearance-loss","prompt":"복셀 해상도를 낮춰 메모리를 줄입니다. 좁은 통로·층 높이·경사 정보가 사라지는 기준은 어떻게 검증하나요?"},{"id":"path-smoothing-validation","prompt":"NavMesh portal이나 격자 코너를 단순화한 뒤 서로 다른 에이전트 반경의 통과 가능성을 어떻게 재검증하겠습니까?"},{"id":"voxel-occupancy-representation","prompt":"복셀의 고체 상태와 에이전트별 이동 가능성을 분리하지 않으면 어떤 경로 오류가 생기며 어떤 데이터를 추가하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["NavMesh","격자","복셀"]
@@ -40,5 +40,5 @@ NavMesh는 장애물 변경 때 지역 재베이크 범위를 관리하고, 격�
 ## 더 파고들 거리
 
 - 여러 크기 에이전트가 같은 NavMesh나 격자를 재사용하도록 어떤 clearance 데이터를 bake하나요?
-- 복셀 해상도를 낮출 때 최소 통로·층 높이·경사 정보를 잃는 기준을 어떻게 정하나요?
+- [복셀 해상도를 낮춰 메모리를 줄입니다. 좁은 통로·층 높이·경사 정보가 사라지는 기준은 어떻게 검증하나요?](/tech-interview/questions/voxel-resolution-clearance-loss/)
 - 지역별 표현을 연결하는 포털이 한쪽 버전만 최신일 때 경로를 언제 보류하나요?

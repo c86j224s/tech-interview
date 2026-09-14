@@ -2,7 +2,7 @@
 id: tcp-stream-message-framing
 title: "TCP로 메시지를 두 번 보내면 받는 쪽에서도 두 번에 나눠 읽게 되나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-send-order","prompt":"여러 스레드가 같은 연결의 프레임을 보낼 때 수신자가 올바른 경계를 복원하도록 송신 큐와 WSASend 완료를 어떻게 묶겠습니까?"},{"id":"windows-epoll-porting","prompt":"IOCP의 완료 버퍼와 epoll의 부분 read를 같은 프레이밍 계약으로 제공하려면 상태와 버퍼 소유권을 어떻게 추상화하겠습니까?"},{"id":"request-timeout-idempotency","prompt":"프레임 전체를 보냈지만 응답 전에 연결이 끊겼다면, 요청이 처리됐는지 모르는 상태를 어떻게 재시도하겠습니까?"}]
+followups: [{"id":"ring-buffer-parser-view-lifetime","prompt":"수신 ring buffer의 일부를 복사 없이 파싱 결과로 넘깁니다. wrap·확장·재사용에서 참조 수명을 어떻게 보호하나요?"},{"id":"iocp-send-order","prompt":"여러 스레드가 같은 연결의 프레임을 보낼 때 수신자가 올바른 경계를 복원하도록 송신 큐와 WSASend 완료를 어떻게 묶겠습니까?"},{"id":"windows-epoll-porting","prompt":"IOCP의 완료 버퍼와 epoll의 부분 read를 같은 프레이밍 계약으로 제공하려면 상태와 버퍼 소유권을 어떻게 추상화하겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -57,6 +57,6 @@ send 성공이나 TCP ACK는 상대 애플리케이션의 DB 처리를 보장하
 
 ## 더 파고들 거리
 
-- 링 버퍼나 scatter/gather를 쓰면서 파싱 결과와 수신 버퍼 수명을 어떻게 관리할까요?
+- [수신 ring buffer의 일부를 복사 없이 파싱 결과로 넘깁니다. wrap·확장·재사용에서 참조 수명을 어떻게 보호하나요?](/tech-interview/questions/ring-buffer-parser-view-lifetime/)
 - 구분자 방식과 길이 헤더 방식이 손상된 입력 복구·바이너리 처리에서 어떻게 다를까요?
 - 느린 수신자에게 보낼 프레임의 중요도별 폐기·백프레셔 정책을 어떻게 정할까요?

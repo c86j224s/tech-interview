@@ -2,7 +2,7 @@
 id: karpenter-consolidation
 title: "Karpenter로 사용률이 낮은 노드를 줄이려는데 그 위에 Pod가 실행 중입니다. consolidation은 어떤 이동을 일으키며 중단과 재배치를 어떻게 대비하나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-pdb-eviction","prompt":"PDB 때문에 consolidation eviction이 계속 거절될 때 가용성 보호와 노드 교체 진행성을 어떤 지표와 승인 기준으로 조정하겠습니까?"},{"id":"karpenter-node-provisioning","prompt":"consolidation으로 Pod를 옮길 대체 노드가 필요할 때 NodePool 제약과 실제 Node Ready까지의 시간을 어떻게 검증하겠습니까?"},{"id":"k8s-rolling-update-capacity","prompt":"consolidation과 롤링 업데이트가 동시에 실행되면 surge·unavailable 용량을 어떻게 계산해 피크 직전의 과도한 중단을 막겠습니까?"}]
+followups: [{"id":"karpenter-session-disruption-policy","prompt":"장기 게임 세션 Pod의 자발적 재배치를 줄이려 합니다. disruption 보호와 강제 장애 복구를 어떻게 나누나요?"},{"id":"karpenter-consolidate-after-churn","prompt":"consolidateAfter를 늘리면 노드 비용과 반복 재배치·예열 손실은 어떻게 달라지나요?"},{"id":"karpenter-drift-versus-consolidation","prompt":"Karpenter의 drift 교체와 consolidation은 어떤 목적·대상·중단 조건이 다른가요?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Karpenter","consolidation","비용"]
@@ -43,6 +43,6 @@ NodePool의 인스턴스 유형·가용 영역·taint·capacity type·비용 조
 
 ## 더 파고들 거리
 
-- 장기 세션 Pod를 자발적 disruption에서 보호하면서 강제 장애와 구분하는 정책을 설계해 보세요.
-- consolidateAfter를 길게 할 때 비용 절감과 반복 재배치 안정성이 어떻게 달라질까요.
-- Node drift 교체와 consolidation을 목적·대상·중단 조건·관측 지표로 비교해 보세요.
+- [장기 게임 세션 Pod의 자발적 재배치를 줄이려 합니다. disruption 보호와 강제 장애 복구를 어떻게 나누나요?](/tech-interview/questions/karpenter-session-disruption-policy/)
+- [consolidateAfter를 늘리면 노드 비용과 반복 재배치·예열 손실은 어떻게 달라지나요?](/tech-interview/questions/karpenter-consolidate-after-churn/)
+- [Karpenter의 drift 교체와 consolidation은 어떤 목적·대상·중단 조건이 다른가요?](/tech-interview/questions/karpenter-drift-versus-consolidation/)

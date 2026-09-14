@@ -2,7 +2,7 @@
 id: lag-compensation-rewind
 title: "지연된 공격 입력을 서버가 과거 위치로 되감아 판정할 때 어떤 시간·충돌·공정성 한계가 생기나요?"
 answerMinutes: 5
-followups: [{"id":"authoritative-server-input","prompt":"클라이언트가 주장하는 발사 시각과 입력 번호가 충돌하면 서버는 어떤 값을 권위 있는 기준으로 삼겠습니까?"},{"id":"continuous-collision","prompt":"과거 시점의 투사체와 움직이는 장애물을 함께 판정할 때 선분 구간과 충돌 시간을 어떻게 복원하겠습니까?"},{"id":"voxel-derived-data-update","prompt":"되감기 이력이 참조하는 충돌 파생 데이터가 현재 원본 버전과 다를 때 어떤 버전의 판정을 허용하겠습니까?"}]
+followups: [{"id":"rewind-tick-interpolation-evidence","prompt":"과거 공격 판정에서 실제 틱 상태와 보간 상태를 선택합니다. 재현성·벽 관통·공정성을 어떻게 비교하나요?"},{"id":"rewind-window-abuse-limits","prompt":"클라이언트의 추정 지연이 급변합니다. rewind 범위를 무한히 늘리지 않고 입력 시각을 어떻게 검증하나요?"},{"id":"hitbox-history-compression","prompt":"과거 hitbox 이력의 메모리를 줄입니다. 빠른 대상의 판정 오차와 샘플·압축 비용을 어떻게 맞추나요?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["지연 보정","rewind","피격 판정"]
@@ -41,6 +41,6 @@ related: ["authoritative-server-input"]
 
 ## 더 파고들 거리
 
-- 보간 상태와 실제 틱 상태 중 하나를 선택할 때 재현성과 체감 공정성을 어떻게 비교하나요?
-- rewind 허용 시간이 급격히 변하는 클라이언트의 입력을 어떤 정책과 감사 지표로 제한하나요?
-- 과거 hitbox 이력의 저장량을 줄이면서 빠른 대상과 느린 대상의 판정 정확성을 유지하려면 어떻게 하나요?
+- [과거 공격 판정에서 실제 틱 상태와 보간 상태를 선택합니다. 재현성·벽 관통·공정성을 어떻게 비교하나요?](/tech-interview/questions/rewind-tick-interpolation-evidence/)
+- [클라이언트의 추정 지연이 급변합니다. rewind 범위를 무한히 늘리지 않고 입력 시각을 어떻게 검증하나요?](/tech-interview/questions/rewind-window-abuse-limits/)
+- [과거 hitbox 이력의 메모리를 줄입니다. 빠른 대상의 판정 오차와 샘플·압축 비용을 어떻게 맞추나요?](/tech-interview/questions/hitbox-history-compression/)

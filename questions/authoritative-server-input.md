@@ -2,7 +2,7 @@
 id: authoritative-server-input
 title: "클라이언트가 이동 위치와 공격 결과를 서버에 보냅니다. 서버는 무엇을 그대로 받아들이고 무엇을 다시 계산해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"lag-compensation-rewind","prompt":"지연된 공격의 화면 일치를 위해 과거 상태를 사용할 때 서버가 허용할 시간 범위와 공정성 기준을 어떻게 정하겠습니까?"},{"id":"multiagent-cell-reservation","prompt":"두 이동 입력이 같은 틱에 같은 셀을 요구하면 검증과 점유 확정을 어떤 원자적 순서로 결합하겠습니까?"},{"id":"fixed-timestep-catchup","prompt":"서버가 밀린 틱을 처리하는 동안 입력이 쌓이면 오래된 입력과 핵심 전투 판정을 어떤 우선순위로 다루겠습니까?"}]
+followups: [{"id":"game-input-sequence-gap","prompt":"서버가 받은 게임 입력 번호가 중간에 비었습니다. 기다림·다음 입력 처리·재동기화 중 무엇을 선택하나요?"},{"id":"client-prediction-input-replay","prompt":"클라이언트가 서버 확정 상태 뒤의 입력을 다시 적용합니다. 충돌·시간 간격·중복 입력의 오차는 어떻게 줄이나요?"},{"id":"lag-compensation-rewind","prompt":"지연된 공격의 화면 일치를 위해 과거 상태를 사용할 때 서버가 허용할 시간 범위와 공정성 기준을 어떻게 정하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["권위 서버","입력 검증","전투"]
@@ -39,6 +39,6 @@ related: ["multiagent-cell-reservation"]
 
 ## 더 파고들 거리
 
-- 입력 번호가 누락됐을 때 기다림·보간·거절 중 어떤 정책이 공정한가요?
-- 확정 상태 이후 입력을 재적용하는 클라이언트 예측에서 충돌 오차를 어떻게 줄이나요?
+- [서버가 받은 게임 입력 번호가 중간에 비었습니다. 기다림·다음 입력 처리·재동기화 중 무엇을 선택하나요?](/tech-interview/questions/game-input-sequence-gap/)
+- [클라이언트가 서버 확정 상태 뒤의 입력을 다시 적용합니다. 충돌·시간 간격·중복 입력의 오차는 어떻게 줄이나요?](/tech-interview/questions/client-prediction-input-replay/)
 - 서버 판정과 리플레이 재생의 결정성을 유지하려면 난수와 시간은 어떻게 관리하나요?

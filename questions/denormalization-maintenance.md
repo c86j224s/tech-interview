@@ -2,7 +2,7 @@
 id: denormalization-maintenance
 title: "조회 속도를 위해 주문 요약에 상품명과 합계 금액을 복사하려 합니다. 중복을 안전하게 유지하려면 무엇을 정해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"normalization-anomalies","prompt":"반정규화 전 원본을 정규화하지 않으면 어떤 수정·삽입·삭제 이상이 남는지 확인해 보세요."},{"id":"db-n-plus-one","prompt":"N+1을 줄이기 위해 요약을 복사할지 JOIN·배치 조회를 개선할지 어떤 측정으로 비교하나요?"},{"id":"transactional-outbox","prompt":"원본 커밋과 요약 갱신 이벤트의 유실·중복·순서 문제를 outbox로 어떻게 다루나요?"}]
+followups: [{"id":"projection-snapshot-versus-delta-version","prompt":"읽기 모델의 늦은 이벤트를 버전으로 버립니다. 전체 상태 이벤트와 증분 이벤트는 왜 처리 조건이 다른가요?"},{"id":"projection-selective-rebuild","prompt":"원본과 일부 요약 행이 다릅니다. 전체 삭제 없이 대조·선택 재생성·실시간 이벤트 적용을 어떻게 조합하나요?"},{"id":"normalization-anomalies","prompt":"반정규화 전 원본을 정규화하지 않으면 어떤 수정·삽입·삭제 이상이 남는지 확인해 보세요."}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["반정규화","중복 데이터","갱신 책임","읽기 모델"]
@@ -43,6 +43,6 @@ related: ["normalization-anomalies","db-n-plus-one"]
 
 ## 더 파고들 거리
 
-- 순서가 뒤집힌 갱신 이벤트를 버전으로 차단해 보세요.
-- 원본·요약 대조 쿼리와 선택적 재생성 절차를 만들어 보세요.
+- [읽기 모델의 늦은 이벤트를 버전으로 버립니다. 전체 상태 이벤트와 증분 이벤트는 왜 처리 조건이 다른가요?](/tech-interview/questions/projection-snapshot-versus-delta-version/)
+- [원본과 일부 요약 행이 다릅니다. 전체 삭제 없이 대조·선택 재생성·실시간 이벤트 적용을 어떻게 조합하나요?](/tech-interview/questions/projection-selective-rebuild/)
 - 합계 저장과 조회 계산의 CPU·I/O·정정 비용을 측정해 보세요.

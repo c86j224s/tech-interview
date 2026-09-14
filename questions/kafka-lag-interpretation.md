@@ -2,7 +2,7 @@
 id: kafka-lag-interpretation
 title: "Kafka consumer lag가 큰 파티션이 보일 때 소비자 수를 늘리기 전에 어떤 원인을 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-consumer-group","prompt":"파티션 수보다 consumer가 많을 때 유휴 Pod가 생기는 조건과 확장 한계를 어떻게 설명할까요?"},{"id":"keda-kafka-partitions","prompt":"KEDA가 lag를 보고 Pod를 늘려도 파티션 수 때문에 처리율이 늘지 않는 상황을 어떻게 검증할까요?"},{"id":"bounded-queue-backpressure","prompt":"consumer 처리율보다 DB 처리율이 낮을 때 내부 큐와 backpressure를 어떤 순서로 조정할까요?"}]
+followups: [{"id":"kafka-commit-lag-versus-effect-lag","prompt":"Kafka offset은 자주 커밋되지만 DB 처리는 늦거나 그 반대입니다. 로그 lag와 실제 작업 나이를 어떻게 구분하나요?"},{"id":"kafka-consumer-group","prompt":"파티션 수보다 consumer가 많을 때 유휴 Pod가 생기는 조건과 확장 한계를 어떻게 설명할까요?"},{"id":"keda-kafka-partitions","prompt":"KEDA가 lag를 보고 Pod를 늘려도 파티션 수 때문에 처리율이 늘지 않는 상황을 어떻게 검증할까요?"}]
 difficulty: 중하
 category: 성능
 tags: ["Kafka","consumer lag","관측"]
@@ -43,6 +43,6 @@ offset commit 시점은 lag 숫자와 장애 시 의미를 바꿉니다. 처리 
 
 ## 더 파고들 거리
 
-- 긴 DB 트랜잭션이 커밋 lag와 실제 처리 지연을 어떻게 어긋나게 하나요?
+- [Kafka offset은 자주 커밋되지만 DB 처리는 늦거나 그 반대입니다. 로그 lag와 실제 작업 나이를 어떻게 구분하나요?](/tech-interview/questions/kafka-commit-lag-versus-effect-lag/)
 - DLQ 전환을 정상 처리율과 복구 대상에서 어떻게 분리할까요?
 - 파티션 key 편중을 재분배하기 전에 순서 보장 요구를 어떻게 확인할까요?

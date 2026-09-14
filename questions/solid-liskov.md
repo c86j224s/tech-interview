@@ -2,7 +2,7 @@
 id: solid-liskov
 title: "직사각형 API의 하위 타입이 높이를 바꾸자 너비도 함께 바뀝니다. 왜 치환에 실패한 걸까요?"
 answerMinutes: 5
-followups: [{"id": "api-backward-compatibility", "prompt": "하위 타입의 반환 형식은 같지만 새 상태 값과 예외 의미가 바뀐다면 API 호환성은 어떻게 판정할까요?"}, {"id": "inheritance-composition", "prompt": "치환되지 않는 하위 타입을 조합이나 역할 인터페이스로 분리할 때 클라이언트 계약을 어떻게 도출할까요?"}, {"id": "solid-dependency-inversion", "prompt": "추상 저장소 구현이 부모 계약보다 엄격한 입력을 요구할 때 의존성 역전의 이점이 왜 사라질까요?"}]
+followups: [{"id":"variance-behavioral-subtyping","prompt":"반공변 입력과 공변 반환의 타입 규칙을 지키면 행동 치환도 보장되나요? 사전·사후조건은 어떻게 따로 검사하나요?"},{"id":"api-backward-compatibility","prompt":"하위 타입의 반환 형식은 같지만 새 상태 값과 예외 의미가 바뀐다면 API 호환성은 어떻게 판정할까요?"},{"id":"inheritance-composition","prompt":"치환되지 않는 하위 타입을 조합이나 역할 인터페이스로 분리할 때 클라이언트 계약을 어떻게 도출할까요?"}]
 difficulty: 중하
 category: 설계
 tags: ["SOLID","리스코프 치환 원칙","계약","사전조건","사후조건"]
@@ -47,6 +47,6 @@ related: ["api-backward-compatibility"]
 
 ## 더 파고들 거리
 
-- 공분산 반환과 반공변 입력 타입을 사용하는 언어에서 타입 규칙과 행동 계약은 어떻게 함께 확인할까요?
+- [반공변 입력과 공변 반환의 타입 규칙을 지키면 행동 치환도 보장되나요? 사전·사후조건은 어떻게 따로 검사하나요?](/tech-interview/questions/variance-behavioral-subtyping/)
 - 부모 계약에 명시되지 않은 암묵적 동작을 발견하면 문서와 테스트를 어떻게 보완할까요?
 - 상속 대신 인터페이스 분리로 바꿀 때 클라이언트별 최소 계약을 어떻게 도출할까요?

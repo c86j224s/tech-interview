@@ -2,7 +2,7 @@
 id: db-online-schema-migration
 title: "운영 중인 DB의 문자열 상태를 새 코드 컬럼으로 옮기려 합니다. 구버전 서버가 남아 있고 쓰기가 계속될 때 어떻게 전환하나요?"
 answerMinutes: 5
-followups: [{"id":"db-lock-escalation","prompt":"백필 배치가 다른 요청을 막는다면 탐색 인덱스·배치 크기·잠금 보유 시간을 어떻게 조정하나요?"},{"id":"db-wal-durability","prompt":"두 컬럼을 함께 기록한 커밋이 장애 뒤에도 보존되도록 어떤 로그·복구 조건을 검증하나요?"},{"id":"transactional-outbox","prompt":"스키마 전환 중 변경 이벤트를 발행해야 한다면 DB 변경과 이벤트 유실을 어떻게 연결하나요?"}]
+followups: [{"id":"backfill-checkpoint-concurrent-write","prompt":"백필이 읽은 값을 쓰기 전에 정상 요청이 같은 행을 바꿨습니다. checkpoint와 충돌 행을 어떻게 재개 가능하게 관리하나요?"},{"id":"dual-column-source-of-truth","prompt":"이전·새 컬럼을 함께 쓰는데 값이 다릅니다. 어느 표현이 원본인지와 보정 기준을 어떻게 정하나요?"},{"id":"db-lock-escalation","prompt":"백필 배치가 다른 요청을 막는다면 탐색 인덱스·배치 크기·잠금 보유 시간을 어떻게 조정하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ PostgreSQL, MySQL, SQL Server의 DDL 잠금·온라인 인덱스·메타데이�
 
 ## 더 파고들 거리
 
-- 백필 진행 위치와 충돌 행을 재시작 가능하게 저장해 보세요.
-- 두 표현 불일치의 원본·버전 기준과 복구 절차를 만들어 보세요.
+- [백필이 읽은 값을 쓰기 전에 정상 요청이 같은 행을 바꿨습니다. checkpoint와 충돌 행을 어떻게 재개 가능하게 관리하나요?](/tech-interview/questions/backfill-checkpoint-concurrent-write/)
+- [이전·새 컬럼을 함께 쓰는데 값이 다릅니다. 어느 표현이 원본인지와 보정 기준을 어떻게 정하나요?](/tech-interview/questions/dual-column-source-of-truth/)
 - NOT NULL·기본값 추가의 엔진별 비용을 실제 데이터에서 확인해 보세요.

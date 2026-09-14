@@ -2,7 +2,7 @@
 id: grid-diagonal-corner
 title: "격자 맵에서 목적지 칸은 비어 있지만 양옆에 벽이 있습니다. 캐릭터가 대각선으로 그 모서리를 지나가도 되나요?"
 answerMinutes: 5
-followups: [{"id":"navmesh-grid-voxel","prompt":"같은 월드에서 에이전트 크기가 크게 다를 때 격자 팽창과 NavMesh의 clearance 데이터를 어떻게 비교하겠습니까?"},{"id":"astar-heuristic","prompt":"대각 이동을 제한하는 규칙이 바뀌면 기존 휴리스틱이 여전히 실제 비용의 하한인지 어떻게 검증하겠습니까?"},{"id":"path-smoothing-validation","prompt":"대각 셀 경로의 코너를 직선으로 줄일 때 모서리 여유와 캐릭터 footprint를 어떤 검사로 보존하겠습니까?"}]
+followups: [{"id":"obstacle-inflation-profile-storage","prompt":"장애물을 캐릭터 반경만큼 팽창시키면 좁은 통로가 사라집니다. 여러 크기의 경로 데이터를 어떻게 저장하나요?"},{"id":"shared-clearance-map-query","prompt":"서로 다른 반경의 캐릭터가 같은 clearance map을 사용합니다. 어떤 기하·해상도 조건을 확인해야 하나요?"},{"id":"navmesh-grid-voxel","prompt":"같은 월드에서 에이전트 크기가 크게 다를 때 격자 팽창과 NavMesh의 clearance 데이터를 어떻게 비교하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["격자","충돌","대각 이동"]
@@ -46,6 +46,6 @@ S와 G는 비어 있지만 두 벽이 모서리에서 맞닿아 있습니다. �
 
 ## 더 파고들 거리
 
-- 장애물 팽창으로 한 칸 통로가 사라질 때 에이전트별 경로 데이터의 저장 비용을 어떻게 관리하나요?
-- 서로 다른 반경의 에이전트가 clearance 맵을 공유할 수 있는 조건은 무엇인가요?
+- [장애물을 캐릭터 반경만큼 팽창시키면 좁은 통로가 사라집니다. 여러 크기의 경로 데이터를 어떻게 저장하나요?](/tech-interview/questions/obstacle-inflation-profile-storage/)
+- [서로 다른 반경의 캐릭터가 같은 clearance map을 사용합니다. 어떤 기하·해상도 조건을 확인해야 하나요?](/tech-interview/questions/shared-clearance-map-query/)
 - 셀 경계의 부동소수점 오차로 서버와 클라이언트의 대각 판정이 달라지면 어떻게 수렴시키나요?

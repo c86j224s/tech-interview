@@ -2,7 +2,7 @@
 id: iocp-immediate-completion
 title: "WSARecv가 즉시 성공해서 버퍼를 정리했는데 IOCP 완료 패킷이 다시 왔습니다. 왜 이중 처리가 생기며 어떤 경로가 정리를 맡아야 하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-completion-key-overlapped","prompt":"즉시 완료 패킷에서도 수신 작업의 컨텍스트를 정확히 찾으려면 OVERLAPPED와 연결 key를 어떻게 준비해야 합니까?"},{"id":"iocp-cancel-drain","prompt":"즉시 성공과 취소가 겹친다면 제출 스레드와 완료 워커 중 누가 버퍼 수명을 최종 해제해야 합니까?"},{"id":"io-readiness-vs-completion","prompt":"epoll 이식에서는 즉시 성공 완료와 준비 이벤트를 같은 의미로 취급하면 안 되는 이유를 연결 상태 머신으로 설명해 보세요."}]
+followups: [{"id":"windows-skip-success-completion","prompt":"FILE_SKIP_COMPLETION_PORT_ON_SUCCESS를 적용합니다. 즉시 성공과 pending 완료의 정리 경로는 어떻게 달라지나요?"},{"id":"iocp-completion-before-submit-return","prompt":"완료 worker가 WSARecv 호출 반환보다 먼저 실행됩니다. 작업 참조 획득과 제출 실패 rollback은 어떤 순서를 지켜야 하나요?"},{"id":"iocp-completion-key-overlapped","prompt":"즉시 완료 패킷에서도 수신 작업의 컨텍스트를 정확히 찾으려면 OVERLAPPED와 연결 key를 어떻게 준비해야 합니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","중첩 I/O","즉시 완료"]
@@ -56,6 +56,6 @@ ret == 0 또는 (ret == SOCKET_ERROR이고 WSAGetLastError() == WSA_IO_PENDING)
 
 ## 더 파고들 거리
 
-- FILE_SKIP_COMPLETION_PORT_ON_SUCCESS를 적용할 수 있는 핸들·작업 조건은 무엇일까요?
-- 완료 워커가 제출 함수 반환 전에 실행될 때 참조 획득 순서를 어떻게 증명할까요?
+- [FILE_SKIP_COMPLETION_PORT_ON_SUCCESS를 적용합니다. 즉시 성공과 pending 완료의 정리 경로는 어떻게 달라지나요?](/tech-interview/questions/windows-skip-success-completion/)
+- [완료 worker가 WSARecv 호출 반환보다 먼저 실행됩니다. 작업 참조 획득과 제출 실패 rollback은 어떤 순서를 지켜야 하나요?](/tech-interview/questions/iocp-completion-before-submit-return/)
 - 통지 생략 성공과 pending 실패를 공통 작업 상태 머신으로 어떻게 표현할까요?

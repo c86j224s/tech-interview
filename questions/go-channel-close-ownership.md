@@ -2,7 +2,7 @@
 id: go-channel-close-ownership
 title: "여러 고루틴이 하나의 채널로 결과를 보냅니다. 수신자가 먼저 종료할 때 채널을 닫아도 되며, close는 누가 해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"goroutine-lifecycle-and-leaks","prompt":"소비자가 먼저 취소했는데 생산자가 외부 API에서 돌아오지 않는다면 고루틴 수명을 어디까지 제한할까요?"},{"id":"deadline-cancellation-propagation","prompt":"context 취소를 무시하는 송신 작업이 남는다면 응답 종료와 실제 작업 종료를 어떻게 관측할까요?"},{"id":"structured-concurrency-fanout","prompt":"첫 생산자 오류 뒤 나머지 결과를 버릴 때 채널 close와 취소 전파의 순서를 어떻게 정할까요?"}]
+followups: [{"id":"go-producer-failure-channel-close","prompt":"여러 생산자 중 하나가 실패했습니다. 취소 전파·남은 송신·채널 close를 어떤 순서로 수행하나요?"},{"id":"go-directional-channel-api","prompt":"Go 함수에 송신 전용·수신 전용 채널을 전달합니다. 타입이 제한하는 동작과 close 소유권은 어떻게 다른가요?"},{"id":"goroutine-lifecycle-and-leaks","prompt":"소비자가 먼저 취소했는데 생산자가 외부 API에서 돌아오지 않는다면 고루틴 수명을 어디까지 제한할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -59,5 +59,5 @@ nil 채널에서의 송수신은 진행하지 않으며 select에서 해당 case
 ## 더 파고들 거리
 
 - nil 채널·닫힌 채널·버퍼 가득 찬 채널은 `select`에서 각각 어떻게 동작할까요?
-- 생산자 중 한 명의 오류 뒤 채널을 닫기 전 어떤 취소 순서를 지켜야 할까요?
-- 송신 전용 `chan<- T`와 수신 전용 `<-chan T`를 함수 경계에 어떻게 배치할까요?
+- [여러 생산자 중 하나가 실패했습니다. 취소 전파·남은 송신·채널 close를 어떤 순서로 수행하나요?](/tech-interview/questions/go-producer-failure-channel-close/)
+- [Go 함수에 송신 전용·수신 전용 채널을 전달합니다. 타입이 제한하는 동작과 close 소유권은 어떻게 다른가요?](/tech-interview/questions/go-directional-channel-api/)

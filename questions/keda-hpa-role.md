@@ -2,7 +2,7 @@
 id: keda-hpa-role
 title: "CPU는 낮아도 Kafka lag가 쌓이는 소비자 서비스를 확장하려 합니다. KEDA와 HPA는 어떤 지표와 제어를 각각 맡으며 Pod 수를 어떻게 바꾸나요?"
 answerMinutes: 5
-followups: [{"id":"keda-kafka-partitions","prompt":"KEDA가 lag를 보고 partition 수보다 많은 Pod를 만들었다면 유휴 consumer와 hot partition을 어떤 지표로 구분하겠습니까?"},{"id":"k8s-hpa-scaling","prompt":"KEDA가 desired replica를 늘렸지만 Pod가 Pending인 동안 lag와 메시지 나이를 어떻게 보호하겠습니까?"},{"id":"kafka-lag-interpretation","prompt":"전체 lag는 커졌지만 한 partition만 뜨겁다면 consumer 수를 늘리기 전에 처리 비용과 키 분포를 어떻게 확인하겠습니까?"}]
+followups: [{"id":"keda-scaledjob-scaledobject-lifetime","prompt":"KEDA ScaledJob과 ScaledObject를 선택합니다. 단위 작업과 장수 consumer의 수명·재시도 차이는 무엇인가요?"},{"id":"keda-activation-target-boundaries","prompt":"KEDA activation threshold와 HPA target을 따로 둡니다. 작은 backlog가 처리되지 않는 조건은 무엇인가요?"},{"id":"keda-kafka-partitions","prompt":"KEDA가 lag를 보고 partition 수보다 많은 Pod를 만들었다면 유휴 consumer와 hot partition을 어떤 지표로 구분하겠습니까?"}]
 difficulty: 하
 category: 인프라
 tags: ["KEDA","HPA","자동 확장"]
@@ -45,6 +45,6 @@ lag가 잠깐 증가할 때 즉시 scale up하고 곧바로 scale down하면 리
 
 ## 더 파고들 거리
 
-- ScaledObject와 ScaledJob을 장수 consumer와 단위 작업의 수명·재처리 기준으로 비교해 보세요.
+- [KEDA ScaledJob과 ScaledObject를 선택합니다. 단위 작업과 장수 consumer의 수명·재시도 차이는 무엇인가요?](/tech-interview/questions/keda-scaledjob-scaledobject-lifetime/)
 - 외부 메트릭 수집 실패 때 replica 유지·확대·축소 중 어떤 선택이 안전한지 장애 비용으로 판단해 보세요.
-- activation threshold와 HPA target을 짧은 burst와 지속 부하에 맞춰 어떻게 분리할까요.
+- [KEDA activation threshold와 HPA target을 따로 둡니다. 작은 backlog가 처리되지 않는 조건은 무엇인가요?](/tech-interview/questions/keda-activation-target-boundaries/)

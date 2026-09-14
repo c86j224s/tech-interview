@@ -2,7 +2,7 @@
 id: timing-wheel-vs-heap
 title: "수십만 개 타이머를 관리할 때 최소 힙과 타이밍 휠을 정밀도·취소·만료 집중으로 어떻게 비교하나요?"
 answerMinutes: 5
-followups: [{"id":"fixed-timestep-catchup","prompt":"서버가 잠깐 멈춰 만료와 틱이 함께 밀렸다면, 모든 작업을 즉시 따라잡는 정책이 안정성을 해칠 수 있는 이유는 무엇입니까?"},{"id":"deadline-cancellation-propagation","prompt":"타이머가 요청 취소를 알리는 역할이라면, 응답 deadline과 실제 하위 작업 종료를 어떤 상태로 구분하겠습니까?"},{"id":"priority-queue-starvation","prompt":"만료 시간이 같은 작업 중 일부가 계속 뒤로 밀린다면, 실행 예산과 공정성을 어떤 보조 규칙으로 조정하겠습니까?"}]
+followups: [{"id":"hierarchical-timing-wheel-cascade","prompt":"긴 타이머를 계층형 휠의 상위 버킷에 둡니다. 언제 아래로 내리고 조기 실행·회전 수를 어떻게 처리하나요?"},{"id":"fixed-timestep-catchup","prompt":"서버가 잠깐 멈춰 만료와 틱이 함께 밀렸다면, 모든 작업을 즉시 따라잡는 정책이 안정성을 해칠 수 있는 이유는 무엇입니까?"},{"id":"deadline-cancellation-propagation","prompt":"타이머가 요청 취소를 알리는 역할이라면, 응답 deadline과 실제 하위 작업 종료를 어떤 상태로 구분하겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags:
@@ -50,6 +50,6 @@ related: ["game-server-tick-budget"]
 
 ## 더 파고들 거리
 
-- 계층형 휠에서 긴 만료를 상위 버킷에 두고 아래로 내리는 조건을 설명해 보세요.
+- [긴 타이머를 계층형 휠의 상위 버킷에 둡니다. 언제 아래로 내리고 조기 실행·회전 수를 어떻게 처리하나요?](/tech-interview/questions/hierarchical-timing-wheel-cascade/)
 - 취소와 만료가 경합할 때 정확히 한 번의 콜백을 어떤 API 계약으로 정의할지 말해 보세요.
 - 같은 시각에 몰린 재시도 타이머를 jitter와 실행 예산으로 분산하는 방법을 설명해 보세요.

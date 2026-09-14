@@ -2,7 +2,7 @@
 id: dynamic-array-amortized
 title: "동적 배열의 append는 대부분 빠른데 가끔 오래 걸립니다. 왜 평균 비용과 한 번의 지연을 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"hash-table-resize","prompt":"배열이 아니라 버킷을 늘리는 해시 테이블에서 같은 확장 지연이 생긴다면, 재배치와 조회 일관성을 어떻게 관리하겠습니까?"},{"id":"go-slice-backing-array","prompt":"다른 코드가 배열의 일부를 참조하고 있을 때 append가 재할당되면, 원본과 참조의 공유 여부를 어떤 계약으로 확인하겠습니까?"},{"id":"fixed-timestep-catchup","prompt":"게임 틱 안에서 동적 배열 확장이 발생해 한 틱 예산을 넘는다면, 예약·고정 버퍼·작업 분할 중 무엇을 선택하겠습니까?"}]
+followups: [{"id":"dynamic-array-growth-factor","prompt":"동적 배열 성장률을 2배에서 더 작게 바꿉니다. 전체 복사량과 여유 메모리·할당 피크는 어떻게 달라지나요?"},{"id":"dynamic-array-shrink-hysteresis","prompt":"배열 사용량이 경계 근처에서 오르내려 확장·축소가 반복됩니다. 서로 다른 임계값은 왜 필요한가요?"},{"id":"hash-table-resize","prompt":"배열이 아니라 버킷을 늘리는 해시 테이블에서 같은 확장 지연이 생긴다면, 재배치와 조회 일관성을 어떻게 관리하겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["동적 배열","분할 상환","용량"]
@@ -47,6 +47,6 @@ related: ["go-slice-backing-array"]
 
 ## 더 파고들 거리
 
-- 성장 배율을 작게 또는 크게 잡았을 때 이동량과 여유 메모리의 변화를 설명해 보세요.
-- 축소 임계값이 너무 가까울 때 확장·축소가 반복되는 이유와 완화 방법을 말해 보세요.
+- [동적 배열 성장률을 2배에서 더 작게 바꿉니다. 전체 복사량과 여유 메모리·할당 피크는 어떻게 달라지나요?](/tech-interview/questions/dynamic-array-growth-factor/)
+- [배열 사용량이 경계 근처에서 오르내려 확장·축소가 반복됩니다. 서로 다른 임계값은 왜 필요한가요?](/tech-interview/questions/dynamic-array-shrink-hysteresis/)
 - 재할당 뒤 인덱스·포인터·슬라이스가 유효한지 언어별 계약을 확인하는 방법을 말해 보세요.

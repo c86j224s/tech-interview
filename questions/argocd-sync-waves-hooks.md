@@ -2,7 +2,7 @@
 id: argocd-sync-waves-hooks
 title: "새 버전의 앱이 변경된 DB 스키마를 요구합니다. Argo CD에서 마이그레이션과 앱 배포 순서를 어떻게 정하고, 앞 단계가 실패하면 어떻게 해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"db-online-schema-migration","prompt":"구버전 서버가 계속 쓰는 동안 새 컬럼을 채워야 한다면 이중 쓰기와 읽기 전환의 순서를 어떻게 검증하겠습니까?"},{"id":"k8s-reconciliation","prompt":"hook Job은 성공했지만 새 Deployment Pod가 Pending이라면 Argo CD의 순서 성공과 실제 실행 준비를 어떤 상태로 나누겠습니까?"},{"id":"argocd-prune-rollback","prompt":"계약을 축소하는 단계에서 옛 컬럼을 제거한 뒤 앱 rollback이 필요해졌다면 무엇이 자동 복구되지 않는지 어떻게 판단하겠습니까?"}]
+followups: [{"id":"shared-db-migration-owner","prompt":"여러 앱이 같은 DB를 사용합니다. 마이그레이션의 실행 소유자와 각 앱의 호환 배포 순서는 어떻게 정하나요?"},{"id":"gitops-hook-evidence-retention","prompt":"배포 hook이 실패했는데 Pod와 로그가 삭제됐습니다. 재시작 뒤에도 실패 근거와 실행 결과를 어떻게 보존하나요?"},{"id":"db-online-schema-migration","prompt":"구버전 서버가 계속 쓰는 동안 새 컬럼을 채워야 한다면 이중 쓰기와 읽기 전환의 순서를 어떻게 검증하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Argo CD","sync wave","hook"]
@@ -44,5 +44,5 @@ PreSync hook이 실패하면 새 앱을 적용하지 않고 기존 앱을 유지
 ## 더 파고들 거리
 
 - migration 버전 기록과 checkpoint를 이용해 부분 백필을 안전하게 재개하는 방법을 설명해 보세요.
-- 동일 DB를 여러 앱이 공유할 때 migration 소유권과 배포 순서를 어떻게 정할까요.
-- hook 로그가 삭제되거나 sync controller가 재시작돼도 실패 근거를 어떻게 보존할까요.
+- [여러 앱이 같은 DB를 사용합니다. 마이그레이션의 실행 소유자와 각 앱의 호환 배포 순서는 어떻게 정하나요?](/tech-interview/questions/shared-db-migration-owner/)
+- [배포 hook이 실패했는데 Pod와 로그가 삭제됐습니다. 재시작 뒤에도 실패 근거와 실행 결과를 어떻게 보존하나요?](/tech-interview/questions/gitops-hook-evidence-retention/)

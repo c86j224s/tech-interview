@@ -2,7 +2,7 @@
 id: udp-reliability-choice
 title: "실시간 게임 메시지의 최신성·순서·손실 요구에 따라 TCP와 UDP 또는 검증된 전송 계층을 어떻게 선택하나요?"
 answerMinutes: 5
-followups: [{"id":"tcp-flow-vs-congestion-control","prompt":"UDP로 최신 스냅샷을 보내더라도 네트워크 혼잡으로 피해를 주지 않으려면 어떤 송신률·큐 지표를 제어하겠습니까?"},{"id":"request-timeout-idempotency","prompt":"UDP 명령 ACK가 유실되어 같은 명령을 재전송할 때, 서버의 중복 반영을 어떤 ID와 상태로 막겠습니까?"},{"id":"websocket-heartbeat-reconnect","prompt":"실시간 연결이 끊긴 뒤 스냅샷과 중요 이벤트를 복구해야 한다면, 커서·재전송 범위를 어떻게 나누겠습니까?"}]
+followups: [{"id":"game-state-input-delivery-classes","prompt":"게임 snapshot과 입력 명령을 다른 전달 큐에 둡니다. 최신성·순서·재전송 요구를 어떻게 나누나요?"},{"id":"tcp-flow-vs-congestion-control","prompt":"UDP로 최신 스냅샷을 보내더라도 네트워크 혼잡으로 피해를 주지 않으려면 어떤 송신률·큐 지표를 제어하겠습니까?"},{"id":"request-timeout-idempotency","prompt":"UDP 명령 ACK가 유실되어 같은 명령을 재전송할 때, 서버의 중복 반영을 어떤 ID와 상태로 막겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -49,6 +49,6 @@ UDP의 데이터그램 경계를 이용하더라도 애플리케이션 메시지
 
 ## 더 파고들 거리
 
-- 스냅샷과 입력 명령을 서로 다른 큐·순서·재전송 정책으로 나누는 이유는 무엇일까요?
+- [게임 snapshot과 입력 명령을 다른 전달 큐에 둡니다. 최신성·순서·재전송 요구를 어떻게 나누나요?](/tech-interview/questions/game-state-input-delivery-classes/)
 - MTU를 넘는 메시지 재조립 상태의 수명·메모리 상한을 어떻게 정할까요?
 - 순서 번호가 순환할 때 새 패킷과 오래된 패킷을 어떻게 비교할까요?

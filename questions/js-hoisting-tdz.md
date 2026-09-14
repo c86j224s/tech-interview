@@ -2,7 +2,7 @@
 id: js-hoisting-tdz
 title: "함수 안에서 선언문보다 먼저 변수를 읽었더니 var는 undefined이고 let·const는 ReferenceError입니다. 변수의 생성과 초기화 시점은 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"js-closure-loop","prompt":"let의 반복별 바인딩이 클로저에 보이는 값과 var의 단일 바인딩은 어떻게 연결되나요?"},{"id":"js-this-binding","prompt":"함수 표현식을 const에 담기 전 호출할 때 TDZ와 this 분리 호출을 어떻게 구분할까요?"},{"id":"java-generics-erasure","prompt":"Java의 선언 시점 타입 검사와 JavaScript의 실행 시 바인딩 초기화는 어떤 층의 안전성을 제공하나요?"}]
+followups: [{"id":"js-function-declaration-expression-init","prompt":"선언 전 함수를 호출합니다. 함수 선언문과 var·let에 넣은 함수 표현식은 언제 호출 가능해지나요?"},{"id":"js-block-shadowing-tdz","prompt":"블록 밖 변수가 있는데 블록 안 let 선언 전에 읽으면 오류가 납니다. shadowing과 TDZ는 어떻게 적용되나요?"},{"id":"js-closure-loop","prompt":"let의 반복별 바인딩이 클로저에 보이는 값과 var의 단일 바인딩은 어떻게 연결되나요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","호이스팅","var","TDZ"]
@@ -59,6 +59,6 @@ TDZ는 코드의 위아래 위치만으로 정해지는 것이 아니라 실제 
 
 ## 더 파고들 거리
 
-- 함수 선언문과 함수 표현식의 호출 가능 시점을 어떻게 비교할까요?
-- 중첩 블록의 shadowing이 바깥 변수를 언제 가리는지 어떤 예로 보일까요?
+- [선언 전 함수를 호출합니다. 함수 선언문과 var·let에 넣은 함수 표현식은 언제 호출 가능해지나요?](/tech-interview/questions/js-function-declaration-expression-init/)
+- [블록 밖 변수가 있는데 블록 안 let 선언 전에 읽으면 오류가 납니다. shadowing과 TDZ는 어떻게 적용되나요?](/tech-interview/questions/js-block-shadowing-tdz/)
 - module의 top-level let과 전역 객체 프로퍼티가 다른 이유는 무엇인가요?

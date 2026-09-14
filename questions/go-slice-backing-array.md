@@ -2,7 +2,7 @@
 id: go-slice-backing-array
 title: "Go 슬라이스를 다른 변수에 대입한 뒤 복사본의 원소를 바꿨더니 원본도 바뀝니다. 어떤 저장 공간을 공유하며 독립된 복사본은 어떻게 만드나요?"
 answerMinutes: 5
-followups: [{"id":"go-interface-typed-nil","prompt":"슬라이스를 any에 넣을 때 nil 슬라이스와 nil 인터페이스를 어떻게 구분해 반환할까요?"},{"id":"goroutine-lifecycle-and-leaks","prompt":"비동기 소비자가 끝나기 전에 슬라이스의 backing array를 풀에 반환하면 어떤 데이터 경합이 생길까요?"},{"id":"cpp-coroutine-frame-lifetime","prompt":"C++ 코루틴 버퍼 수명과 Go 슬라이스 버퍼 수명을 비교할 때 값 복사가 각각 무엇을 보장하나요?"}]
+followups: [{"id":"go-full-slice-capacity-boundary","prompt":"full slice expression으로 cap을 줄였습니다. append 격리와 기존 원소 수정의 공유는 어떻게 다른가요?"},{"id":"go-small-slice-large-array-retention","prompt":"큰 배열의 일부만 슬라이스로 보관합니다. 작은 길이가 큰 backing array를 붙잡는 문제를 어떻게 찾고 줄이나요?"},{"id":"go-interface-typed-nil","prompt":"슬라이스를 any에 넣을 때 nil 슬라이스와 nil 인터페이스를 어떻게 구분해 반환할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -84,6 +84,6 @@ copy는 원소 참조를 옮기는 얕은 복사이며 겹치는 슬라이스 �
 
 ## 더 파고들 거리
 
-- full slice expression으로 cap을 제한해도 직접 원소 수정이 공유되는 이유는 무엇인가요?
-- 작은 슬라이스가 큰 배열을 붙잡는 보유 경로를 heap profile에서 어떻게 찾을까요?
+- [full slice expression으로 cap을 줄였습니다. append 격리와 기존 원소 수정의 공유는 어떻게 다른가요?](/tech-interview/questions/go-full-slice-capacity-boundary/)
+- [큰 배열의 일부만 슬라이스로 보관합니다. 작은 길이가 큰 backing array를 붙잡는 문제를 어떻게 찾고 줄이나요?](/tech-interview/questions/go-small-slice-large-array-retention/)
 - 여러 고루틴의 버퍼 소유권 반환을 어떤 완료 신호로 확정할까요?

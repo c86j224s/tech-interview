@@ -2,7 +2,7 @@
 id: nats-slow-consumer
 title: "NATS slow consumer 경고가 서버 전체 병목인지 특정 subscriber의 처리 지연인지 어떻게 구분하고 대응하나요?"
 answerMinutes: 5
-followups: [{"id":"bounded-queue-backpressure","prompt":"subscriber 내부 큐가 가득 찰 때 block·drop·disconnect를 어떤 메시지 보장에 따라 선택할까요?"},{"id":"jetstream-ack-redelivery","prompt":"AckWait 만료로 재전달된 메시지가 원래 작업과 겹칠 때 중복 효과를 어떻게 막을까요?"},{"id":"nats-core-jetstream","prompt":"놓친 알림은 버려도 되지만 작업은 재생해야 할 때 Core NATS와 JetStream을 어떻게 나눌까요?"}]
+followups: [{"id":"jetstream-pull-batch-ack-memory","prompt":"JetStream pull batch를 크게 잡았습니다. 메모리·ACK 지연·재전달·worker 수에 어떤 영향이 있나요?"},{"id":"bounded-queue-backpressure","prompt":"subscriber 내부 큐가 가득 찰 때 block·drop·disconnect를 어떤 메시지 보장에 따라 선택할까요?"},{"id":"jetstream-ack-redelivery","prompt":"AckWait 만료로 재전달된 메시지가 원래 작업과 겹칠 때 중복 효과를 어떻게 막을까요?"}]
 difficulty: 중하
 category: 성능
 tags: ["NATS","slow consumer","백프레셔"]
@@ -43,6 +43,6 @@ JetStream pull batch가 너무 크면 메모리와 AckWait 압박이 커지고 �
 
 ## 더 파고들 거리
 
-- JetStream pull batch 크기가 메모리·ACK 지연·재전달에 어떤 영향을 주나요?
+- [JetStream pull batch를 크게 잡았습니다. 메모리·ACK 지연·재전달·worker 수에 어떤 영향이 있나요?](/tech-interview/questions/jetstream-pull-batch-ack-memory/)
 - callback에서 긴 DB 작업을 직접 수행할 때 어떤 순서 역전과 pending 증가가 생길까요?
 - 연결이 잠시 끊긴 뒤 snapshot 동기화를 시작할 때 producer와 subscriber를 어떻게 조정할까요?

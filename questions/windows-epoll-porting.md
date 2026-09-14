@@ -2,7 +2,7 @@
 id: windows-epoll-porting
 title: "Windows IOCP 서버를 Linux epoll로 이식할 때 완료 통지와 준비 통지의 차이를 연결 상태 머신에 어떻게 반영하나요?"
 answerMinutes: 5
-followups: [{"id":"io-readiness-vs-completion","prompt":"IOCP 완료와 epoll 준비의 차이를 공통 read API로 감출 때, 호출자에게 반드시 남겨야 할 버퍼·재시도 계약은 무엇입니까?"},{"id":"tcp-stream-message-framing","prompt":"두 OS에서 부분 읽기가 서로 다른 위치에서 발생해도 같은 프레임을 복원하려면 수신 상태 머신의 불변식은 무엇입니까?"},{"id":"iocp-cancel-drain","prompt":"IOCP 작업은 취소 완료를 drain하지만 epoll 감시는 제거하는 상황에서, 연결 컨텍스트의 공통 종료 조건을 어떻게 정의하겠습니까?"}]
+followups: [{"id":"portable-io-buffer-ownership","prompt":"IOCP와 epoll을 같은 인터페이스로 감쌉니다. 버퍼 소유·준비·완료·취소를 어느 계층에서 표현하나요?"},{"id":"io-readiness-vs-completion","prompt":"IOCP 완료와 epoll 준비의 차이를 공통 read API로 감출 때, 호출자에게 반드시 남겨야 할 버퍼·재시도 계약은 무엇입니까?"},{"id":"tcp-stream-message-framing","prompt":"두 OS에서 부분 읽기가 서로 다른 위치에서 발생해도 같은 프레임을 복원하려면 수신 상태 머신의 불변식은 무엇입니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","epoll","이식성"]
@@ -47,6 +47,6 @@ FD와 `OVERLAPPED`는 재사용 시 위험의 모양이 다릅니다. IOCP는 �
 
 ## 더 파고들 거리
 
-- 공통 I/O 인터페이스의 버퍼 소유를 호출자와 OS 어댑터 중 어디에 둘까요?
+- [IOCP와 epoll을 같은 인터페이스로 감쌉니다. 버퍼 소유·준비·완료·취소를 어느 계층에서 표현하나요?](/tech-interview/questions/portable-io-buffer-ownership/)
 - 콜백 재진입과 한 연결의 동시 read·write를 어떤 계약과 테스트로 제한할까요?
 - io_uring을 IOCP와 비교할 때 완료 모델과 제공 버퍼 수명에서 무엇을 별도 검증할까요?

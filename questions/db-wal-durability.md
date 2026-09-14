@@ -2,7 +2,7 @@
 id: db-wal-durability
 title: "DB가 커밋 성공을 응답한 직후 서버 전원이 꺼졌습니다. 데이터 페이지가 아직 디스크에 쓰이지 않았어도 복구할 수 있는 이유와 필요한 설정은 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"backup-restore-rpo-rto","prompt":"WAL과 백업을 조합해 허용 데이터 유실량과 복구 시간을 어떤 시험으로 검증하나요?"},{"id":"redis-rdb-aof","prompt":"Redis의 RDB·AOF도 로그와 스냅샷의 내구 지점을 다르게 만든다는 점을 어떻게 비교하나요?"},{"id":"request-timeout-idempotency","prompt":"커밋 응답이 유실돼 결과가 불확실할 때 재시도 중복을 어떤 요청 기록으로 막나요?"}]
+followups: [{"id":"group-commit-checkpoint-tradeoff","prompt":"여러 commit을 한 번의 flush로 묶고 checkpoint 주기를 바꿉니다. 대기·로그·복구 시간은 어떻게 달라지나요?"},{"id":"backup-restore-rpo-rto","prompt":"WAL과 백업을 조합해 허용 데이터 유실량과 복구 시간을 어떤 시험으로 검증하나요?"},{"id":"redis-rdb-aof","prompt":"Redis의 RDB·AOF도 로그와 스냅샷의 내구 지점을 다르게 만든다는 점을 어떻게 비교하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -46,6 +46,6 @@ PostgreSQL의 WAL flush, SQL Server의 transaction log flush와 recovery, MySQL/
 
 ## 더 파고들 거리
 
-- group commit과 체크포인트 빈도의 비용을 비교해 보세요.
+- [여러 commit을 한 번의 flush로 묶고 checkpoint 주기를 바꿉니다. 대기·로그·복구 시간은 어떻게 달라지나요?](/tech-interview/questions/group-commit-checkpoint-tradeoff/)
 - 커밋 응답 유실 뒤 상태 조회·멱등 재시도를 설계해 보세요.
 - 로그 보존·아카이브와 백업 복구의 범위를 연결해 보세요.

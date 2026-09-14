@@ -2,7 +2,7 @@
 id: k8s-stateful-storage
 title: "StatefulSet의 Pod가 재시작할 때 PVC가 다시 붙는다면 데이터의 복제·일관성·가용성도 보장되나요?"
 answerMinutes: 5
-followups: [{"id":"backup-restore-rpo-rto","prompt":"PVC 스냅샷은 복원됐지만 마지막 커밋 시점과 복구 시간이 목표와 다르다면 RPO·RTO를 어떤 테스트 결과로 다시 정하겠습니까?"},{"id":"k8s-pod-deployment-statefulset","prompt":"StatefulSet의 ordinal 이름은 유지되지만 DB 복제 역할이 바뀔 수 있다면 컨트롤러와 애플리케이션이 각각 관리할 상태를 어떻게 나누겠습니까?"},{"id":"db-wal-durability","prompt":"볼륨 스냅샷 시점에 데이터 페이지와 WAL이 따로 남아 있다면 커밋 성공 기록을 어떤 순서로 복구하고 검증하겠습니까?"}]
+followups: [{"id":"wait-for-first-consumer-topology","prompt":"WaitForFirstConsumer가 PVC와 Pod의 영역 선택을 늦춥니다. 배치 이점과 데이터 복제는 어떻게 다른가요?"},{"id":"storage-snapshot-database-consistency","prompt":"볼륨 snapshot으로 DB를 복구하려 합니다. crash-consistent·앱 일관성과 논리 백업은 어떻게 검증하나요?"},{"id":"backup-restore-rpo-rto","prompt":"PVC 스냅샷은 복원됐지만 마지막 커밋 시점과 복구 시간이 목표와 다르다면 RPO·RTO를 어떤 테스트 결과로 다시 정하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Kubernetes","PVC","스토리지"]
@@ -43,6 +43,6 @@ Pod 재시작은 비교적 약한 시험입니다. 노드 전원 차단, 네트�
 
 ## 더 파고들 거리
 
-- WaitForFirstConsumer가 PV 바인딩과 Pod 영역 선택에 미치는 영향을 데이터 복제와 구분해 설명해 보세요.
+- [WaitForFirstConsumer가 PVC와 Pod의 영역 선택을 늦춥니다. 배치 이점과 데이터 복제는 어떻게 다른가요?](/tech-interview/questions/wait-for-first-consumer-topology/)
 - reclaimPolicy가 Delete일 때 PVC·PV 삭제와 백엔드 볼륨 보존의 보호 절차를 정해 보세요.
-- 스토리지 스냅샷과 DB 논리 백업을 일관된 복구 시점과 검증 방법으로 비교해 보세요.
+- [볼륨 snapshot으로 DB를 복구하려 합니다. crash-consistent·앱 일관성과 논리 백업은 어떻게 검증하나요?](/tech-interview/questions/storage-snapshot-database-consistency/)

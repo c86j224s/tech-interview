@@ -2,7 +2,7 @@
 id: cors-preflight
 title: "웹 앱에서 다른 출처의 API에 요청했더니 OPTIONS가 먼저 전송되고 본 요청은 막힙니다. 브라우저는 무엇을 확인하며, 이 검사와 API 인증은 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id":"csrf-vs-xss","prompt":"preflight가 발생하지 않는 쿠키 기반 POST가 서버에 도착할 수 있다면 CORS 외에 어떤 CSRF 방어를 적용해야 하나요?"},{"id":"http-get-post-semantics","prompt":"검색은 GET이고 등록은 POST인데 CORS 정책과 별개로 메서드 의미·캐시·재시도 계약을 어떻게 정하나요?"},{"id":"authentication-vs-authorization","prompt":"허용된 출처에서 보낸 인증 요청이라도 다른 사용자의 주문을 읽지 못하게 하려면 어떤 자원별 인가가 필요한가요?"}]
+followups: [{"id":"cors-safelisted-request-boundary","prompt":"교차 출처 fetch 중 어떤 요청은 OPTIONS 없이 전송됩니다. safelisted 조건과 본 요청의 인가는 어떻게 다른가요?"},{"id":"cors-preflight-cache-policy-change","prompt":"CORS 정책을 바꿨지만 브라우저에 이전 preflight 허용이 남아 있습니다. 실제 요청의 안전성을 어떻게 유지하나요?"},{"id":"csrf-vs-xss","prompt":"preflight가 발생하지 않는 쿠키 기반 POST가 서버에 도착할 수 있다면 CORS 외에 어떤 CSRF 방어를 적용해야 하나요?"}]
 difficulty: 하
 category: 웹
 tags: ["CORS","출처","OPTIONS","preflight","credentials"]
@@ -47,6 +47,6 @@ CORS 오류를 해결하려고 서버가 요청의 `Origin`을 무조건 `Access
 
 ## 더 파고들 거리
 
-- 어떤 safelisted 조건을 벗어날 때 preflight가 생기는지 분류해 보세요.
-- preflight cache가 정책 변경 뒤 남아 있는 동안 안전하게 전환하는 방법은 무엇일까요?
+- [교차 출처 fetch 중 어떤 요청은 OPTIONS 없이 전송됩니다. safelisted 조건과 본 요청의 인가는 어떻게 다른가요?](/tech-interview/questions/cors-safelisted-request-boundary/)
+- [CORS 정책을 바꿨지만 브라우저에 이전 preflight 허용이 남아 있습니다. 실제 요청의 안전성을 어떻게 유지하나요?](/tech-interview/questions/cors-preflight-cache-policy-change/)
 - 서버 간 호출과 네이티브 앱 호출에 CORS 대신 어떤 인증·인가 경계를 둘까요?

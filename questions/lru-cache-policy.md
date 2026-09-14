@@ -2,7 +2,7 @@
 id: lru-cache-policy
 title: "LRU 캐시에 대량 순차 조회가 들어온 뒤 자주 쓰던 항목까지 사라집니다. 왜 이런 일이 생기며 항목 크기와 접근 패턴을 반영해 정책을 어떻게 조정하나요?"
 answerMinutes: 5
-followups: [{"id":"cache-stampede-singleflight","prompt":"스캔 오염을 막았지만 인기 키가 만료되는 순간 여러 서버가 동시에 원본을 조회한다면, 어떤 요청 병합을 추가하겠습니까?"},{"id":"redis-expiry-eviction","prompt":"캐시 항목이 TTL 만료와 메모리 eviction 중 어느 이유로 사라졌는지 모른다면, 정책을 조정하기 위해 어떤 관측을 남기겠습니까?"},{"id":"cache-aside-consistency","prompt":"캐시를 우회한 스캔 중 원본 값이 수정된다면, cache-aside의 무효화 순서와 오래된 값 재삽입을 어떻게 막겠습니까?"}]
+followups: [{"id":"lfu-aging-popularity-shift","prompt":"인기 키가 바뀌었는데 LFU가 과거 핫키를 계속 보존합니다. 빈도 감쇠와 재입장 정책은 어떻게 정하나요?"},{"id":"sharded-cache-capacity-skew","prompt":"샤드별 캐시에서 한 샤드만 가득 찹니다. 재분배·공유 여유 용량·핫키 분리의 비용은 무엇인가요?"},{"id":"cache-expiry-eviction-priority","prompt":"TTL 만료와 메모리 eviction이 함께 일어납니다. 재생성 비용과 신선도를 기준으로 어떤 항목을 먼저 제거하나요?"}]
 difficulty: 하
 category: 자료구조
 tags:
@@ -50,6 +50,6 @@ LRU는 최근 접근 항목이 다시 필요하다는 시간 지역성 가정을
 
 ## 더 파고들 거리
 
-- 갑자기 인기가 바뀐 키를 LFU 계열이 늦게 반영하는 이유와 aging 방법을 설명해 보세요.
-- 샤드별 캐시에서 핫키가 한 샤드에 몰릴 때 재분배·용량 정책을 어떻게 바꿀지 말해 보세요.
-- TTL 만료와 용량 eviction이 겹칠 때 데이터 종류별 제거 우선순위를 설계해 보세요.
+- [인기 키가 바뀌었는데 LFU가 과거 핫키를 계속 보존합니다. 빈도 감쇠와 재입장 정책은 어떻게 정하나요?](/tech-interview/questions/lfu-aging-popularity-shift/)
+- [샤드별 캐시에서 한 샤드만 가득 찹니다. 재분배·공유 여유 용량·핫키 분리의 비용은 무엇인가요?](/tech-interview/questions/sharded-cache-capacity-skew/)
+- [TTL 만료와 메모리 eviction이 함께 일어납니다. 재생성 비용과 신선도를 기준으로 어떤 항목을 먼저 제거하나요?](/tech-interview/questions/cache-expiry-eviction-priority/)

@@ -2,7 +2,7 @@
 id: collision-broad-narrow-phase
 title: "많은 캐릭터의 충돌을 검사하려 합니다. 충돌 후보를 먼저 추리는 broad phase와 실제 형상을 검사하는 narrow phase를 왜 나누나요?"
 answerMinutes: 5
-followups: [{"id":"spatial-hash-grid","prompt":"객체 크기와 밀집도가 크게 다른 월드에서 uniform grid와 계층 구조의 셀 크기를 어떻게 비교하겠습니까?"},{"id":"continuous-collision","prompt":"한 틱에 경계를 가로지르는 투사체를 broad phase에서 놓치지 않도록 어떤 이동 경계를 만들겠습니까?"},{"id":"voxel-raycast-dda","prompt":"복셀 raycast를 broad phase로 사용할 때 경계 모서리의 셀 포함 규칙이 충돌 누락에 어떤 영향을 주나요?"}]
+followups: [{"id":"collision-grid-aabb-tree-choice","prompt":"객체 크기와 이동률이 다른 월드에서 uniform grid와 동적 AABB 트리를 어떤 부하로 비교하나요?"},{"id":"collision-layer-index-update","prompt":"충돌 레이어가 실행 중 바뀝니다. broad phase의 필터와 위치 인덱스가 같은 상태를 보게 하려면 어떻게 하나요?"},{"id":"spatial-hash-grid","prompt":"객체 크기와 밀집도가 크게 다른 월드에서 uniform grid와 계층 구조의 셀 크기를 어떻게 비교하겠습니까?"}]
 difficulty: 하
 category: 게임 서버
 tags: ["충돌","broad phase","공간 인덱스"]
@@ -43,6 +43,6 @@ narrow phase에서는 실제 캡슐·박스·메시의 교차, 높이와 경사,
 
 ## 더 파고들 거리
 
-- uniform grid와 동적 AABB 트리를 분포·이동률·객체 크기별로 어떤 실험으로 비교하나요?
-- 충돌 레이어를 broad phase에서 제외할 때 동적 레이어 변경을 어떻게 인덱스에 반영하나요?
+- [객체 크기와 이동률이 다른 월드에서 uniform grid와 동적 AABB 트리를 어떤 부하로 비교하나요?](/tech-interview/questions/collision-grid-aabb-tree-choice/)
+- [충돌 레이어가 실행 중 바뀝니다. broad phase의 필터와 위치 인덱스가 같은 상태를 보게 하려면 어떻게 하나요?](/tech-interview/questions/collision-layer-index-update/)
 - 연속 충돌에서 swept 경계의 보수성을 높일 때 후보 폭증을 어떻게 제한하나요?

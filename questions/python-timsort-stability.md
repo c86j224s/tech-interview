@@ -2,7 +2,7 @@
 id: python-timsort-stability
 title: "Python에서 일부 정렬된 데이터를 다시 정렬하고 동점자의 기존 순서도 유지하려 합니다. sort의 보장과 이미 정렬된 구간을 활용하는 구현 특성을 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"sorting-stability","prompt":"Python 안정 정렬과 언어 중립적인 안정성 정의를 동점자 예제로 어떻게 연결할까요?"},{"id":"jvm-bytecode-jit","prompt":"CPython sort의 구현 최적화와 JVM JIT의 런타임 최적화를 성능 계약과 어떻게 구분할까요?"},{"id":"load-test-realism","prompt":"부분 정렬 run의 비율과 키 함수 비용을 운영 데이터에서 어떻게 재현해 측정할까요?"}]
+followups: [{"id":"python-sort-key-function-cost","prompt":"Python 정렬이 느립니다. key 함수 계산과 비교·병합 비용을 어떻게 분리해 측정하나요?"},{"id":"sorting-stability","prompt":"Python 안정 정렬과 언어 중립적인 안정성 정의를 동점자 예제로 어떻게 연결할까요?"},{"id":"jvm-bytecode-jit","prompt":"CPython sort의 구현 최적화와 JVM JIT의 런타임 최적화를 성능 계약과 어떻게 구분할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","sort","Timsort","run","안정성"]
@@ -47,6 +47,6 @@ list.sort는 원본 리스트를 바꾸고 None을 반환하며 sorted는 새 �
 
 ## 더 파고들 거리
 
-- 키 함수 비용을 정렬 비교 비용과 어떻게 분리해 측정할까요?
+- [Python 정렬이 느립니다. key 함수 계산과 비교·병합 비용을 어떻게 분리해 측정하나요?](/tech-interview/questions/python-sort-key-function-cost/)
 - 안정 정렬을 두 번 적용하는 방식과 복합 키 한 번의 차이는 무엇인가요?
 - NaN이나 서로 비교할 수 없는 키가 섞일 때 결과 계약을 어떻게 정할까요?

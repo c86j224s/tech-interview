@@ -2,7 +2,7 @@
 id: redis-expiry-eviction
 title: "Redis 키가 설정한 TTL보다 일찍 사라졌습니다. 만료와 maxmemory eviction의 차이를 어떻게 확인하고 어떤 데이터를 제거해도 되는지 정책을 정하나요?"
 answerMinutes: 5
-followups: [{"id":"redis-data-types-encoding","prompt":"자료형·원소 크기·큰 키가 만료·eviction과 lazy freeing 비용에 어떤 영향을 주나요?"},{"id":"redis-rdb-aof","prompt":"만료·eviction 상태가 RDB와 AOF 재시작 후 어떻게 보존되거나 재생되는지 무엇을 검증하나요?"},{"id":"lru-cache-policy","prompt":"allkeys·volatile 정책에서 LRU 근사와 실제 접근 빈도가 제거 결과를 어떻게 바꾸나요?"}]
+followups: [{"id":"redis-volatile-no-eligible-key","prompt":"volatile eviction 정책인데 TTL이 있는 키가 부족합니다. 메모리 압박에서 새 쓰기는 어떻게 동작하나요?"},{"id":"redis-data-types-encoding","prompt":"자료형·원소 크기·큰 키가 만료·eviction과 lazy freeing 비용에 어떤 영향을 주나요?"},{"id":"redis-rdb-aof","prompt":"만료·eviction 상태가 RDB와 AOF 재시작 후 어떻게 보존되거나 재생되는지 무엇을 검증하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["Redis","TTL","eviction"]
@@ -43,6 +43,6 @@ TTL 만료는 키에 설정된 시간이 지나 수명이 끝나는 시간 조�
 
 ## 더 파고들 거리
 
-- volatile 정책에서 TTL 키 부족 시 쓰기 결과를 확인해 보세요.
+- [volatile eviction 정책인데 TTL이 있는 키가 부족합니다. 메모리 압박에서 새 쓰기는 어떻게 동작하나요?](/tech-interview/questions/redis-volatile-no-eligible-key/)
 - lazy freeing의 명령 지연과 RSS 하락 시점을 측정해 보세요.
 - 중요한 만료 작업을 durable 상태·큐와 분리해 보세요.

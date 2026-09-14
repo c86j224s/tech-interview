@@ -2,7 +2,7 @@
 id: clustered-secondary-index
 title: "주문 테이블에 기본키와 고객 ID 인덱스가 있는데 고객별 주문 조회 비용이 예상보다 큽니다. DB의 실제 행 배치와 보조 인덱스가 행을 찾는 방식을 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"btree-hash-index","prompt":"고객 ID와 주문 시각을 이용하는 조회에서 B+tree가 해시보다 적합한 이유를 어떤 계획으로 확인하나요?"},{"id":"composite-index-column-order","prompt":"고객별 최근 주문 조회의 복합 인덱스에서 클러스터링과 선행 컬럼을 어떻게 함께 판단하나요?"},{"id":"db-query-plan-regression","prompt":"클러스터드 구조를 바꾼 뒤 특정 고객만 느려졌다면 추정 행 수와 lookup을 어떻게 비교하나요?"}]
+followups: [{"id":"heap-clustered-row-lookup","prompt":"같은 보조 인덱스 조회를 힙과 클러스터드 테이블에서 실행합니다. 행 locator와 추가 읽기 비용은 어떻게 다른가요?"},{"id":"sequential-key-page-contention","prompt":"순차 키는 페이지 분할을 줄이는데 삽입이 한곳에 몰립니다. 임의 키와 비교해 어떤 경합·공간 비용을 보나요?"},{"id":"btree-hash-index","prompt":"고객 ID와 주문 시각을 이용하는 조회에서 B+tree가 해시보다 적합한 이유를 어떤 계획으로 확인하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["클러스터드 인덱스","보조 인덱스","기본키","물리적 저장"]
@@ -43,6 +43,6 @@ SQL Server의 클러스터드 인덱스와 힙은 보조 인덱스가 행을 찾
 
 ## 더 파고들 거리
 
-- 힙과 클러스터드 테이블의 동일 질의 계획을 비교해 보세요.
-- 순차 키와 임의 키의 페이지 분할·삽입 경합을 측정해 보세요.
+- [같은 보조 인덱스 조회를 힙과 클러스터드 테이블에서 실행합니다. 행 locator와 추가 읽기 비용은 어떻게 다른가요?](/tech-interview/questions/heap-clustered-row-lookup/)
+- [순차 키는 페이지 분할을 줄이는데 삽입이 한곳에 몰립니다. 임의 키와 비교해 어떤 경합·공간 비용을 보나요?](/tech-interview/questions/sequential-key-page-contention/)
 - 키 폭이 보조 인덱스와 캐시 적중률에 미치는 영향을 계산해 보세요.

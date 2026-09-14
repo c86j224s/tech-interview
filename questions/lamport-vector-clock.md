@@ -2,7 +2,7 @@
 id: lamport-vector-clock
 title: "두 지역이 같은 문서를 독립적으로 수정했을 때 Lamport 시계와 벡터 시계는 무엇을 알 수 있고 무엇을 결정하지 못하나요?"
 answerMinutes: 5
-followups: [{"id":"distributed-clock-order","prompt":"벽시계와 논리 시계를 표시 시각·적용 순서에 어떻게 나눠 쓰나요?"},{"id":"consistency-linearizability","prompt":"동시 수정 감지와 좌석 확정처럼 단일 권위 순서가 필요한 문제를 어떻게 나누나요?"},{"id":"kafka-partition-offset","prompt":"partition offset이 벡터 시계처럼 전역 인과를 표현하지 못하는 이유는 무엇인가요?"}]
+followups: [{"id":"vector-clock-member-retirement","prompt":"벡터 시계의 옛 참여자 항목을 삭제하려 합니다. 지연 메시지와 ID 재사용에서 어떤 인과 정보가 사라지나요?"},{"id":"distributed-clock-order","prompt":"벽시계와 논리 시계를 표시 시각·적용 순서에 어떻게 나눠 쓰나요?"},{"id":"consistency-linearizability","prompt":"동시 수정 감지와 좌석 확정처럼 단일 권위 순서가 필요한 문제를 어떻게 나누나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["논리 시계","Lamport","벡터 시계"]
@@ -48,6 +48,6 @@ Lamport 시계는 로컬 사건 때 카운터를 늘리고 메시지에 그 값�
 
 ## 더 파고들 거리
 
-- 동적 항목 제거
+- [벡터 시계의 옛 참여자 항목을 삭제하려 합니다. 지연 메시지와 ID 재사용에서 어떤 인과 정보가 사라지나요?](/tech-interview/questions/vector-clock-member-retirement/)
 - HLC
 - CRDT 병합

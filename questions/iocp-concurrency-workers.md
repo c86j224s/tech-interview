@@ -2,7 +2,7 @@
 id: iocp-concurrency-workers
 title: "IOCP에 concurrency 값을 지정하고 워커 스레드를 따로 만들었습니다. 이 값은 생성한 스레드 수와 무엇이 다른가요?"
 answerMinutes: 5
-followups: [{"id":"context-switch-overhead","prompt":"concurrency와 워커 수를 올린 뒤 처리량은 증가했지만 컨텍스트 스위치가 급증했다면, 어떤 지표로 적정점을 찾겠습니까?"},{"id":"iocp-batch-fairness","prompt":"한 워커가 완료를 대량으로 꺼내 오래 처리한다면, 실행 예산과 배치 크기로 짧은 요청을 어떻게 보호하겠습니까?"},{"id":"iocp-worker-shutdown","prompt":"일부 워커가 외부 호출에 막힌 상태에서 종료해야 한다면, 종료 패킷과 실제 I/O drain 조건을 어떻게 분리하겠습니까?"}]
+followups: [{"id":"iocp-worker-wakeup-locality","prompt":"IOCP의 대기 worker 깨움 방식은 cache locality와 공정성에 어떤 영향을 주며 어떤 수치를 관찰하나요?"},{"id":"iocp-blocking-offload-queue","prompt":"블로킹 callback을 별도 풀로 보냈더니 그 큐가 늘어납니다. 완료 수집과 실행 풀의 상한을 어떻게 연결하나요?"},{"id":"context-switch-overhead","prompt":"concurrency와 워커 수를 올린 뒤 처리량은 증가했지만 컨텍스트 스위치가 급증했다면, 어떤 지표로 적정점을 찾겠습니까?"}]
 difficulty: 하
 category: 네트워크
 tags: ["IOCP","concurrency","스레드"]
@@ -46,6 +46,6 @@ concurrency를 낮추는 것이 동시 요청의 논리 순서를 만들지는 �
 
 ## 더 파고들 거리
 
-- IOCP의 대기 워커 깨움 방식이 캐시 지역성과 처리 공정성에 어떤 영향을 줄까요?
-- 블로킹 완료 처리를 별도 풀로 보낼 때 그 풀의 대기열 상한은 어떻게 정할까요?
+- [IOCP의 대기 worker 깨움 방식은 cache locality와 공정성에 어떤 영향을 주며 어떤 수치를 관찰하나요?](/tech-interview/questions/iocp-worker-wakeup-locality/)
+- [블로킹 callback을 별도 풀로 보냈더니 그 큐가 늘어납니다. 완료 수집과 실행 풀의 상한을 어떻게 연결하나요?](/tech-interview/questions/iocp-blocking-offload-queue/)
 - GetQueuedCompletionStatusEx 배치가 처리량과 짧은 요청 지연을 어떻게 바꿀까요?

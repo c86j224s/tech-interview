@@ -2,7 +2,7 @@
 id: slo-error-budget
 title: "프로세스는 계속 살아 있는데 사용자는 요청 실패와 긴 대기를 겪습니다. SLO와 오류 예산을 무엇으로 정의하고 배포·안정화 우선순위에 어떻게 사용하나요?"
 answerMinutes: 5
-followups: [{"id": "throughput-vs-latency", "prompt": "동시 요청을 늘려 처리량은 올랐지만 p99가 악화될 때 SLO와 용량 결정을 어떻게 바꿀까요?"}, {"id": "incident-mitigation-root-cause", "prompt": "배포 장애 중 오류 예산을 기준으로 롤백·기능 축소·안정화 우선순위를 어떻게 정할까요?"}, {"id": "backup-restore-rpo-rto", "prompt": "복구 시간 목표와 사용자 흐름 SLO가 충돌할 때 어떤 기능을 먼저 복원할까요?"}]
+followups: [{"id":"multiwindow-burn-rate-alerts","prompt":"짧은 오류 급증과 지속 저하를 모두 감지하려 합니다. 다중 시간 창의 burn rate를 어떻게 조합하나요?"},{"id":"throughput-vs-latency","prompt":"동시 요청을 늘려 처리량은 올랐지만 p99가 악화될 때 SLO와 용량 결정을 어떻게 바꿀까요?"},{"id":"incident-mitigation-root-cause","prompt":"배포 장애 중 오류 예산을 기준으로 롤백·기능 축소·안정화 우선순위를 어떻게 정할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ SLO는 서비스 품질을 측정 가능한 목표로 표현한 것입니다. �
 
 ## 더 파고들 거리
 
-- 다중 윈도우 burn rate로 잡음과 지속 장애를 어떻게 구분하나요?
+- [짧은 오류 급증과 지속 저하를 모두 감지하려 합니다. 다중 시간 창의 burn rate를 어떻게 조합하나요?](/tech-interview/questions/multiwindow-burn-rate-alerts/)
 - 저트래픽 기능에서 SLO의 통계적 한계를 어떻게 보완하나요?
 - 종속 서비스 목표를 사용자 흐름 목표로 어떻게 조합하나요?

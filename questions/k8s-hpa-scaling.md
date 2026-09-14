@@ -2,7 +2,7 @@
 id: k8s-hpa-scaling
 title: "Kubernetes HPA의 목표 replica 수는 늘었는데 응답 지연이 그대로입니다. 새 Pod의 준비 상태와 실제 병목을 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-requests-limits","prompt":"CPU 기반 HPA의 request를 절반으로 낮추자는 제안이 나왔을 때 배치·QoS·확장 판단에 어떤 변화를 예상하겠습니까?"},{"id":"bounded-queue-backpressure","prompt":"HPA가 준비되기 전 요청이 계속 유입된다면 대기열의 실행 수와 대기 상한을 어떻게 정해 장애 전파를 막겠습니까?"},{"id":"keda-hpa-role","prompt":"CPU는 낮고 Kafka lag만 증가한다면 HPA 입력을 이벤트 메트릭으로 바꾸고도 확인해야 할 병목은 무엇입니까?"}]
+followups: [{"id":"hpa-external-metric-failure","prompt":"HPA의 외부 지표 수집이 끊겼습니다. 실제 replica 동작과 유지·확장·축소 fallback을 어떻게 검증하나요?"},{"id":"hpa-startup-cpu-window","prompt":"새 Pod 예열 CPU가 높아 HPA를 흔듭니다. 준비·초기화·측정 창을 어떻게 분리하나요?"},{"id":"k8s-requests-limits","prompt":"CPU 기반 HPA의 request를 절반으로 낮추자는 제안이 나왔을 때 배치·QoS·확장 판단에 어떤 변화를 예상하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Kubernetes","HPA","자동 확장"]
@@ -43,6 +43,6 @@ scale down은 비용과 안정화의 균형 문제입니다. 짧은 부하 변�
 
 ## 더 파고들 거리
 
-- 외부 메트릭 수집이 끊겼을 때 HPA의 실제 replica 변화와 안전한 fallback을 어떻게 확인할까요.
-- 예열 중 Pod의 CPU가 높아 목표 계산을 흔들 때 initialization과 측정 창을 어떻게 분리할까요.
+- [HPA의 외부 지표 수집이 끊겼습니다. 실제 replica 동작과 유지·확장·축소 fallback을 어떻게 검증하나요?](/tech-interview/questions/hpa-external-metric-failure/)
+- [새 Pod 예열 CPU가 높아 HPA를 흔듭니다. 준비·초기화·측정 창을 어떻게 분리하나요?](/tech-interview/questions/hpa-startup-cpu-window/)
 - 동일 Deployment에 수동 replica 변경과 여러 autoscaler가 붙었을 때 필드 책임을 어떻게 정리할까요.

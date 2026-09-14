@@ -2,7 +2,7 @@
 id: karpenter-spot-interruption
 title: "Spot 노드에 중단 통지가 왔을 때 큐 작업·게임 세션·대체 용량을 어떻게 처리해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"graceful-shutdown","prompt":"중단 통지가 온 뒤 새 유입을 막았지만 DB 작업과 메시지 처리가 남아 있다면 종료 순서와 제한 시간을 어떻게 정하겠습니까?"},{"id":"message-consumer-idempotency","prompt":"ACK 직전 Spot 노드가 꺼져 같은 메시지가 다시 왔다면 포인트나 결제 효과가 한 번만 반영됐음을 어떤 조건으로 보장하겠습니까?"},{"id":"karpenter-node-provisioning","prompt":"대체 Spot 노드가 클라우드 용량 부족으로 생기지 않을 때 핵심 용량과 여러 인스턴스 후보를 어떻게 운영하겠습니까?"}]
+followups: [{"id":"spot-notification-loss-recovery","prompt":"Spot 중단 알림 전달 경로가 실패했습니다. 알림 없이도 worker와 사용자 세션을 어떻게 복구하나요?"},{"id":"checkpoint-frequency-rework-budget","prompt":"중단 가능한 worker의 checkpoint 주기를 정합니다. 기록 비용과 최대 재작업·불확정 효과를 어떻게 비교하나요?"},{"id":"spot-ondemand-minimum-capacity","prompt":"Spot과 on-demand를 섞습니다. 동시에 Spot을 잃어도 유지할 핵심 용량과 비용 상한은 어떻게 검증하나요?"}]
 difficulty: 중하
 category: 인프라
 tags: ["Karpenter","Spot","중단 처리"]
@@ -45,6 +45,6 @@ Spot이 회수된 뒤 다른 Spot 인스턴스가 즉시 생긴다는 보장도 
 
 ## 더 파고들 거리
 
-- 중단 이벤트 전달 경로 자체가 실패했을 때 heartbeat·노드 상태·재전달로 어떻게 보완할까요.
-- checkpoint 주기와 허용 가능한 유실·재처리 작업량을 수치 대신 어떤 계약으로 연결할까요.
-- on-demand와 Spot을 섞을 때 핵심 최소 용량과 비용 상한을 장애 시나리오로 검증해 보세요.
+- [Spot 중단 알림 전달 경로가 실패했습니다. 알림 없이도 worker와 사용자 세션을 어떻게 복구하나요?](/tech-interview/questions/spot-notification-loss-recovery/)
+- [중단 가능한 worker의 checkpoint 주기를 정합니다. 기록 비용과 최대 재작업·불확정 효과를 어떻게 비교하나요?](/tech-interview/questions/checkpoint-frequency-rework-budget/)
+- [Spot과 on-demand를 섞습니다. 동시에 Spot을 잃어도 유지할 핵심 용량과 비용 상한은 어떻게 검증하나요?](/tech-interview/questions/spot-ondemand-minimum-capacity/)

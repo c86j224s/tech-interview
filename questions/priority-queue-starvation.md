@@ -2,7 +2,7 @@
 id: priority-queue-starvation
 title: "우선순위가 높은 작업이 계속 들어와 낮은 작업은 오래 기다립니다. 중요한 작업을 먼저 처리하면서도 기아를 막으려면 큐와 실행 자원을 어떻게 조정하나요?"
 answerMinutes: 5
-followups: [{"id": "bounded-queue-backpressure", "prompt": "우선순위별 큐가 모두 차면 어떤 작업을 거절하고 어떤 작업에 실행 예산을 남길까요?"}, {"id": "bulkhead-isolation", "prompt": "고우선순위 작업의 외부 연결 점유가 커질 때 기능별 워커·풀 격리를 어떻게 적용할까요?"}, {"id": "cpu-scheduling-policies", "prompt": "운영체제 스케줄러의 선점과 애플리케이션 우선순위 큐가 서로 다른 기아를 만들 수 있는 이유는 무엇일까요?"}]
+followups: [{"id":"nonpreemptive-priority-blocking","prompt":"높은 우선순위 작업이 와도 낮은 우선순위의 긴 작업이 끝나지 않습니다. 비선점 실행과 큐 우선순위는 어떻게 다른가요?"},{"id":"bounded-queue-backpressure","prompt":"우선순위별 큐가 모두 차면 어떤 작업을 거절하고 어떤 작업에 실행 예산을 남길까요?"},{"id":"bulkhead-isolation","prompt":"고우선순위 작업의 외부 연결 점유가 커질 때 기능별 워커·풀 격리를 어떻게 적용할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -50,6 +50,6 @@ aging에 상한을 두어 낮은 작업이 영원히 고우선순위를 넘지 �
 
 ## 더 파고들 거리
 
-- 비선점 작업이 실행 중이면 높은 우선순위 요청도 왜 즉시 실행되지 않나요?
+- [높은 우선순위 작업이 와도 낮은 우선순위의 긴 작업이 끝나지 않습니다. 비선점 실행과 큐 우선순위는 어떻게 다른가요?](/tech-interview/questions/nonpreemptive-priority-blocking/)
 - 우선순위 역전과 일반적인 queue starvation을 어떤 관측으로 구분할까요?
 - 테넌트별 공정성과 기능별 중요도를 계층 스케줄러에서 어떻게 결합할까요?

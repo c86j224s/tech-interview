@@ -2,7 +2,7 @@
 id: js-event-loop-microtasks
 title: "한 JavaScript 실행 흐름에서 동기 로그, 이미 이행된 Promise의 콜백, 지연 0인 setTimeout을 등록했습니다. 왜 등록 순서와 실행 순서가 다를 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"js-promise-error-chain","prompt":"마이크로태스크 안에서 throw한 오류가 동기 try/catch에 잡히지 않는 이유는 Promise 상태와 어떻게 연결되나요?"},{"id":"python-asyncio-blocking","prompt":"JavaScript 이벤트 루프와 asyncio 이벤트 루프에서 긴 동기 계산을 분리하는 수단은 어떻게 다른가요?"},{"id":"throughput-vs-latency","prompt":"마이크로태스크 폭주를 줄인 뒤 처리량과 입력 지연이 어떻게 달라졌는지 어떤 지표로 확인할까요?"}]
+followups: [{"id":"node-nexttick-microtask-context","prompt":"Node에서 nextTick과 Promise callback의 순서를 확인합니다. 실행 문맥·모듈 종류·버전을 왜 함께 고정해야 하나요?"},{"id":"browser-microtask-starvation","prompt":"microtask가 계속 다음 microtask를 만듭니다. 렌더링과 입력이 굶지 않도록 언제 실행권을 넘기나요?"},{"id":"js-promise-error-chain","prompt":"마이크로태스크 안에서 throw한 오류가 동기 try/catch에 잡히지 않는 이유는 Promise 상태와 어떻게 연결되나요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["JavaScript","이벤트 루프","마이크로태스크","Promise"]
@@ -58,6 +58,6 @@ console.log('B');
 
 ## 더 파고들 거리
 
-- Node의 `process.nextTick`과 Promise microtask의 우선순위를 어떤 버전에서 재현할까요?
-- 브라우저 microtask 폭주가 렌더링·입력 지연으로 이어지는 경로는 무엇인가요?
+- [Node에서 nextTick과 Promise callback의 순서를 확인합니다. 실행 문맥·모듈 종류·버전을 왜 함께 고정해야 하나요?](/tech-interview/questions/node-nexttick-microtask-context/)
+- [microtask가 계속 다음 microtask를 만듭니다. 렌더링과 입력이 굶지 않도록 언제 실행권을 넘기나요?](/tech-interview/questions/browser-microtask-starvation/)
 - event loop lag를 CPU 계산·I/O callback 대기와 어떤 계측으로 분리할까요?

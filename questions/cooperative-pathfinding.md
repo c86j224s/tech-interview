@@ -2,7 +2,7 @@
 id: cooperative-pathfinding
 title: "좁은 격자 통로에서 두 캐릭터가 서로 마주 보고 이동합니다. 개별 최단 경로만 찾으면 왜 막히며, 도착 시간까지 포함하면 무엇이 달라지나요?"
 answerMinutes: 5
-followups: [{"id":"multiagent-cell-reservation","prompt":"같은 시간 슬롯을 두 캐릭터가 동시에 예약할 때 조회와 점유 확정을 어떤 원자적 경계에 두겠습니까?"},{"id":"grid-diagonal-corner","prompt":"시간 충돌이 없더라도 대각 이동이 벽 모서리를 통과한다면 공간 상태에 어떤 추가 검사를 넣겠습니까?"},{"id":"path-smoothing-validation","prompt":"예약된 격자 경로의 코너를 직선으로 줄일 때 기존 시간 슬롯과 충돌 안전성을 어떻게 보존하겠습니까?"}]
+followups: [{"id":"reservation-horizon-replanning","prompt":"이동 예약을 짧은 미래 구간만 잡습니다. 다음 구간에서 나타나는 충돌과 계획 단절을 어떻게 줄이나요?"},{"id":"corridor-deadlock-priority-aging","prompt":"좁은 통로의 NPC가 반복 교착합니다. 우선순위 변경·양보 위치·후퇴 가능성을 어떻게 함께 판단하나요?"},{"id":"multiagent-cell-reservation","prompt":"같은 시간 슬롯을 두 캐릭터가 동시에 예약할 때 조회와 점유 확정을 어떤 원자적 경계에 두겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["다중 에이전트","경로 탐색","예약 테이블"]
@@ -41,6 +41,6 @@ related: ["multiagent-cell-reservation"]
 
 ## 더 파고들 거리
 
-- 예약 horizon을 짧게 했을 때 늦게 드러나는 충돌을 어떤 재계획 정책으로 줄이나요?
-- 좁은 통로에서 반복 교착이 발생하면 우선순위를 언제 바꾸고 변경 비용을 어떻게 제한하나요?
+- [이동 예약을 짧은 미래 구간만 잡습니다. 다음 구간에서 나타나는 충돌과 계획 단절을 어떻게 줄이나요?](/tech-interview/questions/reservation-horizon-replanning/)
+- [좁은 통로의 NPC가 반복 교착합니다. 우선순위 변경·양보 위치·후퇴 가능성을 어떻게 함께 판단하나요?](/tech-interview/questions/corridor-deadlock-priority-aging/)
 - 정확한 공동 탐색과 지역 회피를 에이전트 수·지연 예산에 따라 어떻게 혼합하나요?

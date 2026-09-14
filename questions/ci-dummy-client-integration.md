@@ -2,7 +2,7 @@
 id: ci-dummy-client-integration
 title: "서버 내부를 리팩토링한 뒤 로그인부터 요청·응답까지 기존 동작이 유지되는지 CI에서 확인하려 합니다. 더미 클라이언트는 무엇을 검증해야 하며 부하 테스트와는 어떻게 다른가요?"
 answerMinutes: 5
-followups: [{"id": "load-test-realism", "prompt": "통합 시나리오가 통과한 뒤 운영 부하에서도 결과가 유지되는지 어떤 데이터·캐시 조건을 맞춰야 할까요?"}, {"id": "deterministic-concurrency-testing", "prompt": "여러 더미 클라이언트가 같은 상태를 바꿀 때 재현 가능한 실행 순서를 어떻게 넣을까요?"}, {"id": "websocket-heartbeat-reconnect", "prompt": "재접속 뒤 누락·중복 이벤트까지 검증하려면 클라이언트가 어떤 위치와 세션 상태를 저장해야 할까요?"}]
+followups: [{"id":"protocol-test-partial-order","prompt":"서버 이벤트 순서는 일부만 정해져 있습니다. 통합 테스트에서 유효한 비결정적 순서를 어떻게 표현하나요?"},{"id":"packet-replay-versus-state-scenario","prompt":"과거 패킷 로그 재생과 상태 기반 더미 클라이언트 테스트는 각각 어떤 오류를 찾고 놓치나요?"},{"id":"load-test-realism","prompt":"통합 시나리오가 통과한 뒤 운영 부하에서도 결과가 유지되는지 어떤 데이터·캐시 조건을 맞춰야 할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["통합 테스트","더미 클라이언트","CI"]
@@ -47,6 +47,6 @@ related: ["deterministic-concurrency-testing","load-test-realism"]
 
 ## 더 파고들 거리
 
-- 서버 패킷 순서가 비결정적일 때 테스트 기대값은 어떻게 표현할까요?
-- 과거 패킷 로그 재생과 상태 기반 시나리오는 어떤 차이가 있나요?
+- [서버 이벤트 순서는 일부만 정해져 있습니다. 통합 테스트에서 유효한 비결정적 순서를 어떻게 표현하나요?](/tech-interview/questions/protocol-test-partial-order/)
+- [과거 패킷 로그 재생과 상태 기반 더미 클라이언트 테스트는 각각 어떤 오류를 찾고 놓치나요?](/tech-interview/questions/packet-replay-versus-state-scenario/)
 - 실패한 테스트의 월드 상태를 작게 축소해 재현하려면 어떻게 할까요?

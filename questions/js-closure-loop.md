@@ -2,7 +2,7 @@
 id: js-closure-loop
 title: "반복문 안에서 만든 콜백이 마지막 값만 출력합니다. var와 let의 클로저 캡처는 왜 다르게 보이나요?"
 answerMinutes: 5
-followups: [{"id":"js-hoisting-tdz","prompt":"반복별 let 바인딩의 생성 시점과 TDZ는 콜백이 실행될 때 어떤 영향을 주나요?"},{"id":"js-arrow-this","prompt":"반복문 콜백이 바깥 this와 반복 변수를 함께 캡처할 때 어느 값이 호출 시점에 결정되나요?"},{"id":"js-this-binding","prompt":"콜백을 메서드로 넘겼다가 분리 호출하면 클로저와 this의 규칙은 어떻게 조합되나요?"}]
+followups: [{"id":"foreach-parameter-loop-binding","prompt":"forEach 매개변수와 for 문의 let은 callback마다 어떻게 다른 바인딩을 만들며 객체 공유는 어디에 남나요?"},{"id":"closure-private-class-field-testing","prompt":"클로저의 private 상태와 class private field를 테스트합니다. 내부 표현을 고정하지 않고 어떤 외부 계약을 검증하나요?"},{"id":"js-hoisting-tdz","prompt":"반복별 let 바인딩의 생성 시점과 TDZ는 콜백이 실행될 때 어떤 영향을 주나요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","클로저","스코프","var","let"]
@@ -56,6 +56,6 @@ console.log(letFns.map(fn => fn())); // [0, 1, 2]
 
 ## 더 파고들 거리
 
-- forEach 콜백 매개변수와 for-loop의 let 바인딩은 어떤 점에서 같은 효과를 내나요?
+- [forEach 매개변수와 for 문의 let은 callback마다 어떻게 다른 바인딩을 만들며 객체 공유는 어디에 남나요?](/tech-interview/questions/foreach-parameter-loop-binding/)
 - 클로저가 DOM을 보유해 생기는 누수를 어떤 리스너 수명으로 줄일까요?
-- 클로저 private 상태와 class private field의 테스트 경계를 어떻게 비교할까요?
+- [클로저의 private 상태와 class private field를 테스트합니다. 내부 표현을 고정하지 않고 어떤 외부 계약을 검증하나요?](/tech-interview/questions/closure-private-class-field-testing/)

@@ -2,7 +2,7 @@
 id: paxos-prepare-accept
 title: "Paxos에서 제안자가 응답을 받기 전에 멈추고 새 제안자가 시작했습니다. 이미 수락된 값과 충돌하지 않도록 prepare와 accept에서 무엇을 확인하고 기록하나요?"
 answerMinutes: 5
-followups: [{"id":"multi-paxos-leader","prompt":"여러 슬롯에서 stable leader가 prepare 비용을 어떻게 줄이고 교체 때 무엇을 보존하나요?"},{"id":"consensus-vs-replication","prompt":"acceptor에 복제하는 것과 Paxos chosen은 어떻게 다른가요?"},{"id":"raft-term-election","prompt":"Paxos ballot과 Raft term의 늦은 메시지 처리 공통점은 무엇인가요?"}]
+followups: [{"id":"paxos-competing-proposers-liveness","prompt":"여러 Paxos proposer가 더 높은 ballot을 반복합니다. 안전성은 유지돼도 진행하지 못하는 이유와 완화책은 무엇인가요?"},{"id":"multi-paxos-leader","prompt":"여러 슬롯에서 stable leader가 prepare 비용을 어떻게 줄이고 교체 때 무엇을 보존하나요?"},{"id":"consensus-vs-replication","prompt":"acceptor에 복제하는 것과 Paxos chosen은 어떻게 다른가요?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["Paxos","합의","ballot"]
@@ -50,6 +50,6 @@ acceptor는 더 낮은 ballot을 받지 않겠다는 약속과 수락 ballot·va
 
 ## 더 파고들 거리
 
-- 경쟁 proposer
+- [여러 Paxos proposer가 더 높은 ballot을 반복합니다. 안전성은 유지돼도 진행하지 못하는 이유와 완화책은 무엇인가요?](/tech-interview/questions/paxos-competing-proposers-liveness/)
 - learner 단절
 - ballot과 슬롯

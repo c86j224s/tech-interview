@@ -2,7 +2,7 @@
 id: iocp-completion-key-overlapped
 title: "한 소켓에서 수신과 송신을 동시에 제출했습니다. IOCP 완료를 받을 때 어느 연결의 어느 작업인지 completion key와 OVERLAPPED로 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-immediate-completion","prompt":"WSARecv가 즉시 성공해도 완료 패킷이 올 수 있다면, 작업 컨텍스트의 참조를 제출 전후 어느 시점에 확보하겠습니까?"},{"id":"iocp-cancel-drain","prompt":"연결 key가 논리적으로 폐기된 뒤 취소 완료가 도착하면, 컨텍스트와 버퍼를 언제 해제할 수 있습니까?"},{"id":"iocp-worker-shutdown","prompt":"사용자 종료 패킷과 커널 I/O 완료가 섞인 포트에서 워커가 안전하게 끝났음을 어떤 조건으로 판단하겠습니까?"}]
+followups: [{"id":"iocp-user-packet-tagging","prompt":"IOCP에 사용자 패킷을 직접 게시합니다. 커널 I/O 완료와 종료·제어 패킷을 어떤 타입 규약으로 구분하나요?"},{"id":"iocp-immediate-completion","prompt":"WSARecv가 즉시 성공해도 완료 패킷이 올 수 있다면, 작업 컨텍스트의 참조를 제출 전후 어느 시점에 확보하겠습니까?"},{"id":"iocp-cancel-drain","prompt":"연결 key가 논리적으로 폐기된 뒤 취소 완료가 도착하면, 컨텍스트와 버퍼를 언제 해제할 수 있습니까?"}]
 difficulty: 하
 category: 네트워크
 tags: ["IOCP","Windows","OVERLAPPED"]
@@ -50,4 +50,4 @@ OVERLAPPED에서 바깥 객체를 복원하려면 실제 포함 관계와 타입
 
 - 컨텍스트 풀 주소가 재사용될 때 늦은 완료를 세대 번호로 어떻게 걸러낼까요?
 - 작업별 참조와 연결별 참조를 제출·완료·취소에서 언제 증감할까요?
-- 사용자 정의 패킷에서 OVERLAPPED null 규약과 커널 완료를 어떤 타입 정보로 분리할까요?
+- [IOCP에 사용자 패킷을 직접 게시합니다. 커널 I/O 완료와 종료·제어 패킷을 어떤 타입 규약으로 구분하나요?](/tech-interview/questions/iocp-user-packet-tagging/)

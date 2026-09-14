@@ -2,7 +2,7 @@
 id: keda-kafka-partitions
 title: "Kafka consumer group의 파티션 수보다 KEDA가 소비자 Pod를 많이 만들 때 처리량이 늘지 않는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"kafka-consumer-group","prompt":"partition 3개에 consumer 5개를 배치했을 때 유휴 consumer와 리밸런싱 비용을 실제 assignment와 처리율로 어떻게 확인하겠습니까?"},{"id":"kafka-partition-expansion","prompt":"키별 순서가 중요한 topic의 partition을 늘려야 한다면 기존 이벤트와 새 이벤트의 순서 전환을 어떤 기준으로 보장하겠습니까?"},{"id":"keda-hpa-role","prompt":"lag를 KEDA 입력으로 사용하되 커밋 간격 때문에 값이 출렁인다면 target·cooldown·stabilization을 어떻게 조정하겠습니까?"}]
+followups: [{"id":"keda-idle-consumer-capacity","prompt":"Kafka partition보다 많은 유휴 consumer를 허용합니다. 재할당 준비 이점과 유휴·리밸런싱 비용은 어떻게 평가하나요?"},{"id":"kafka-commit-interval-scaling-noise","prompt":"커밋 간격 때문에 Kafka lag가 주기적으로 튑니다. autoscaling의 관찰 창과 안정화는 어떻게 조정하나요?"},{"id":"kafka-consumer-group","prompt":"partition 3개에 consumer 5개를 배치했을 때 유휴 consumer와 리밸런싱 비용을 실제 assignment와 처리율로 어떻게 확인하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["KEDA","Kafka","자동 확장"]
@@ -45,6 +45,6 @@ consumer 수를 늘리거나 줄일 때 리밸런싱이 발생해 기존 소비�
 
 ## 더 파고들 거리
 
-- allowIdleConsumers가 주는 재할당 선점 효과와 유휴 비용을 어떤 운영 조건에서 허용할까요.
+- [Kafka partition보다 많은 유휴 consumer를 허용합니다. 재할당 준비 이점과 유휴·리밸런싱 비용은 어떻게 평가하나요?](/tech-interview/questions/keda-idle-consumer-capacity/)
 - partition 증설이 키별 순서를 바꿀 수 있는 이유와 전환 검증 방법을 설명해 보세요.
-- 커밋 간격으로 lag가 출렁일 때 autoscaling이 진동하지 않게 어떤 관찰 창을 둘까요.
+- [커밋 간격 때문에 Kafka lag가 주기적으로 튑니다. autoscaling의 관찰 창과 안정화는 어떻게 조정하나요?](/tech-interview/questions/kafka-commit-interval-scaling-noise/)

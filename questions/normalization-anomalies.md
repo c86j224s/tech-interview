@@ -2,7 +2,7 @@
 id: normalization-anomalies
 title: "수강생과 강좌 정보를 한 행에 함께 저장했더니 수정·삽입·삭제 때 이상 현상이 생깁니다. 무엇이 문제인가요?"
 answerMinutes: 5
-followups: [{"id":"functional-dependency-keys","prompt":"학생·강좌·신청 스키마에서 업무 규칙으로 후보키와 함수 종속을 어떻게 정하나요?"},{"id":"normal-forms-partial-transitive","prompt":"수강 테이블의 복합키에서 부분·이행 종속을 제거하는 분해를 어떻게 작성하나요?"},{"id":"dbms-vs-files","prompt":"이런 이상과 동시 갱신을 파일 잠금 대신 DBMS 제약·트랜잭션으로 맡길 때 무엇이 달라지나요?"}]
+followups: [{"id":"many-to-many-enrollment-constraints","prompt":"학생과 강좌의 다대다 수강 관계를 설계합니다. 관계의 속성·중복 신청·삭제 정책은 어디에 두나요?"},{"id":"functional-dependency-keys","prompt":"학생·강좌·신청 스키마에서 업무 규칙으로 후보키와 함수 종속을 어떻게 정하나요?"},{"id":"normal-forms-partial-transitive","prompt":"수강 테이블의 복합키에서 부분·이행 종속을 제거하는 분해를 어떻게 작성하나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags: ["정규화","중복","갱신 이상","무결성"]
@@ -43,6 +43,6 @@ related: ["functional-dependency-keys"]
 
 ## 더 파고들 거리
 
-- 다대다 수강 스키마와 후보키·외래키를 설계해 보세요.
+- [학생과 강좌의 다대다 수강 관계를 설계합니다. 관계의 속성·중복 신청·삭제 정책은 어디에 두나요?](/tech-interview/questions/many-to-many-enrollment-constraints/)
 - 정규화 조회의 실행 계획과 반환 행 폭증을 분석해 보세요.
 - 요약 테이블의 대조·재구축 절차를 만들어 보세요.

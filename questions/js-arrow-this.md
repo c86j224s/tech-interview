@@ -2,7 +2,7 @@
 id: js-arrow-this
 title: "객체 메서드 안에서 만든 화살표 함수와 일반 함수의 this가 서로 다른 값을 가리키는 이유는 무엇인가요?"
 answerMinutes: 5
-followups: [{"id":"js-this-binding","prompt":"화살표 콜백 대신 일반 메서드를 이벤트에 넘기면 this 보존과 제거 함수 참조를 어떻게 설계할까요?"},{"id":"js-closure-loop","prompt":"화살표 콜백이 this와 반복 변수 바인딩을 함께 캡처할 때 객체 수명은 어떻게 늘어날까요?"},{"id":"js-object-copy","prompt":"화살표 메서드가 캡처한 객체와 spread 복사본이 서로 다른 상태를 볼 때 어떤 참조가 공유되나요?"}]
+followups: [{"id":"js-arrow-field-prototype-memory","prompt":"클래스의 화살표 함수 필드와 prototype 메서드는 함수 공유·this·메모리에서 어떻게 다른가요?"},{"id":"js-arrow-arguments-rest","prompt":"화살표 함수에서 arguments를 읽었더니 바깥 함수 인자가 나옵니다. rest parameter는 어떤 대안인가요?"},{"id":"js-this-binding","prompt":"화살표 콜백 대신 일반 메서드를 이벤트에 넘기면 this 보존과 제거 함수 참조를 어떻게 설계할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags: ["JavaScript","화살표 함수","this","lexical this"]
@@ -60,6 +60,6 @@ console.log(pair.normal(), pair.arrow()); // 20 10
 
 ## 더 파고들 거리
 
-- 클래스 인스턴스의 화살표 필드와 prototype 메서드는 메모리·this에서 어떻게 다를까요?
-- 화살표의 `arguments`가 필요할 때 rest parameter가 어떤 대안이 되나요?
+- [클래스의 화살표 함수 필드와 prototype 메서드는 함수 공유·this·메모리에서 어떻게 다른가요?](/tech-interview/questions/js-arrow-field-prototype-memory/)
+- [화살표 함수에서 arguments를 읽었더니 바깥 함수 인자가 나옵니다. rest parameter는 어떤 대안인가요?](/tech-interview/questions/js-arrow-arguments-rest/)
 - 콜백이 캡처한 객체를 abort와 리스너 제거로 언제 해제할까요?

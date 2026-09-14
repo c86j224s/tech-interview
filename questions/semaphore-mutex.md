@@ -2,7 +2,7 @@
 id: semaphore-mutex
 title: "동시에 최대 10개 작업만 허용하려 합니다. 뮤텍스와 세마포어는 어떻게 다르게 쓰이나요?"
 answerMinutes: 5
-followups: [{"id":"bounded-queue-backpressure","prompt":"세마포어 허가를 얻기 전 대기하는 요청을 무한히 쌓지 않으려면 어떤 큐·timeout 정책이 필요할까요?"},{"id":"monitor-synchronization","prompt":"세마포어로 작업 수를 제한하면서 공유 큐의 조건 대기는 어떤 모니터가 맡아야 할까요?"},{"id":"priority-queue-starvation","prompt":"허가가 부족한 상황에서 우선순위 높은 작업이 낮은 작업을 영구히 밀어내지 않게 하려면 어떻게 할까요?"}]
+followups: [{"id":"semaphore-acquire-cancel-race","prompt":"허가를 얻기 전과 얻은 직후 취소가 발생합니다. 허가를 누수하거나 두 번 반환하지 않게 어떻게 구분하나요?"},{"id":"bounded-queue-backpressure","prompt":"세마포어 허가를 얻기 전 대기하는 요청을 무한히 쌓지 않으려면 어떤 큐·timeout 정책이 필요할까요?"},{"id":"monitor-synchronization","prompt":"세마포어로 작업 수를 제한하면서 공유 큐의 조건 대기는 어떤 모니터가 맡아야 할까요?"}]
 difficulty: 하
 category: 동시성
 tags: ["세마포어","뮤텍스","동시성 제한"]
@@ -45,6 +45,6 @@ related: ["bounded-queue-backpressure"]
 
 ## 더 파고들 거리
 
-- acquire 전 취소와 acquire 후 취소를 코드에서 어떻게 구분할까요?
+- [허가를 얻기 전과 얻은 직후 취소가 발생합니다. 허가를 누수하거나 두 번 반환하지 않게 어떻게 구분하나요?](/tech-interview/questions/semaphore-acquire-cancel-race/)
 - FIFO가 아닌 허가 분배에서 낮은 우선순위 작업의 기아를 어떻게 막을까요?
 - 비용이 다른 작업에 가중 허가를 줄 때 허가 누수와 공정성을 어떻게 검증할까요?

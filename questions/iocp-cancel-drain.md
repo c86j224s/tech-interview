@@ -2,7 +2,7 @@
 id: iocp-cancel-drain
 title: "연결 종료를 위해 CancelIoEx를 호출했고 성공했습니다. 해당 OVERLAPPED와 수신 버퍼를 바로 풀에 반환해도 되나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-worker-shutdown","prompt":"서버 전체 종료에서 여러 연결의 취소와 완료가 동시에 일어난다면, 워커·포트·작업 카운터를 어떤 순서로 drain하겠습니까?"},{"id":"iocp-completion-key-overlapped","prompt":"연결 컨텍스트가 논리적으로 닫힌 뒤 도착한 완료를 completion key와 OVERLAPPED로 어떻게 식별하고 무시하겠습니까?"},{"id":"deadline-cancellation-propagation","prompt":"상위 deadline이 만료됐지만 Winsock I/O 취소 완료가 늦다면 응답 종료와 버퍼 해제를 어떻게 분리하겠습니까?"}]
+followups: [{"id":"iocp-operation-counter-invariants","prompt":"I/O 제출과 취소·완료가 겹칩니다. 작업별·연결별 참조 카운터를 어떤 순서로 증감해야 하나요?"},{"id":"iocp-generation-not-memory-safety","prompt":"OVERLAPPED 주소를 풀에서 재사용합니다. 세대 번호가 막는 논리 오류와 막지 못하는 해제 후 접근은 무엇인가요?"},{"id":"iocp-worker-shutdown","prompt":"서버 전체 종료에서 여러 연결의 취소와 완료가 동시에 일어난다면, 워커·포트·작업 카운터를 어떤 순서로 drain하겠습니까?"}]
 difficulty: 중하
 category: 네트워크
 tags: ["IOCP","CancelIoEx","버퍼 수명"]
@@ -48,6 +48,6 @@ related: ["deadline-cancellation-propagation","io-readiness-vs-completion"]
 
 ## 더 파고들 거리
 
-- 작업별·연결별 참조 카운터와 종료 상태 전이를 어떤 원자적 순서로 갱신할까요?
-- 세대 번호나 작업 ID가 컨텍스트 주소 재사용을 어떻게 방지할까요?
+- [I/O 제출과 취소·완료가 겹칩니다. 작업별·연결별 참조 카운터를 어떤 순서로 증감해야 하나요?](/tech-interview/questions/iocp-operation-counter-invariants/)
+- [OVERLAPPED 주소를 풀에서 재사용합니다. 세대 번호가 막는 논리 오류와 막지 못하는 해제 후 접근은 무엇인가요?](/tech-interview/questions/iocp-generation-not-memory-safety/)
 - 완료가 오지 않는 것처럼 보일 때 제출 누락과 큐 소비 중단을 어떻게 구분할까요?

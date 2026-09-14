@@ -2,7 +2,7 @@
 id: fixed-timestep-catchup
 title: "고정 간격으로 진행하는 게임 서버가 잠깐 멈췄습니다. 밀린 틱을 모두 실행하면 따라잡을 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"game-server-tick-budget","prompt":"틱 예산을 넘기는 작업을 찾았다면 어떤 작업을 다음 틱으로 미루고 어떤 작업은 분산 처리하겠습니까?"},{"id":"authoritative-server-input","prompt":"따라잡기 중 입력이 지연·중복으로 쌓일 때 입력 번호와 서버 확정 틱을 어떻게 연결하겠습니까?"},{"id":"continuous-collision","prompt":"밀린 틱을 일부 생략하면 투사체가 벽을 통과하지 않도록 충돌 작업을 어떤 최소 보장으로 남기겠습니까?"}]
+followups: [{"id":"cross-server-tick-event-order","prompt":"게임 서버끼리 시뮬레이션 틱이 어긋납니다. 교차 이벤트를 어떤 기준 틱과 순번에 귀속하나요?"},{"id":"ai-update-frequency-combat-fairness","prompt":"과부하에서 NPC AI 평가 주기를 낮춥니다. 공격·회피의 공정성을 바꾸지 않으려면 어떤 규칙을 분리하나요?"},{"id":"game-server-tick-budget","prompt":"틱 예산을 넘기는 작업을 찾았다면 어떤 작업을 다음 틱으로 미루고 어떤 작업은 분산 처리하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["고정 틱","시뮬레이션","과부하"]
@@ -41,6 +41,6 @@ related: ["game-server-tick-budget"]
 
 ## 더 파고들 거리
 
-- 서버 간 틱이 어긋날 때 이벤트를 어느 틱에 귀속해야 결정성이 유지되나요?
-- 과부하에서 AI 갱신 빈도를 낮춰도 공격·회피 반응의 공정성을 유지하려면 어떤 규칙을 고정하나요?
+- [게임 서버끼리 시뮬레이션 틱이 어긋납니다. 교차 이벤트를 어떤 기준 틱과 순번에 귀속하나요?](/tech-interview/questions/cross-server-tick-event-order/)
+- [과부하에서 NPC AI 평가 주기를 낮춥니다. 공격·회피의 공정성을 바꾸지 않으려면 어떤 규칙을 분리하나요?](/tech-interview/questions/ai-update-frequency-combat-fairness/)
 - 따라잡기 상한을 초과한 방을 정지·축소·이관할 때 사용자에게 어떤 상태를 공개하나요?

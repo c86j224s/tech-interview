@@ -2,7 +2,7 @@
 id: iocp-batch-fairness
 title: "IOCP 완료를 한 번에 많이 꺼내니 처리량은 늘었지만 짧은 요청이 늦어집니다. 배치 크기와 실행 예산을 어떻게 정하나요?"
 answerMinutes: 5
-followups: [{"id":"iocp-concurrency-workers","prompt":"IOCP concurrency 값과 실제 워커 수를 함께 바꿀 때 배치 공정성에 어떤 상호작용이 생길까요?"},{"id":"priority-queue-starvation","prompt":"무거운 완료를 별도 큐로 보낼 때 짧은 작업과 낮은 우선순위 작업의 기아를 어떻게 막을까요?"},{"id":"iocp-completion-key-overlapped","prompt":"배치로 여러 완료를 꺼낸 뒤 각 항목의 연결·송수신 방향·버퍼 수명을 어떻게 안전하게 구분할까요?"}]
+followups: [{"id":"iocp-offload-connection-order","prompt":"무거운 IOCP 완료 처리를 다른 풀로 옮깁니다. 연결별 적용 순서와 버퍼 수명을 어떻게 보존하나요?"},{"id":"iocp-short-long-connection-fairness","prompt":"긴 연결의 완료가 계속 들어옵니다. 짧은 연결의 응답과 연결별 실행 예산을 어떻게 보장하나요?"},{"id":"iocp-concurrency-workers","prompt":"IOCP concurrency 값과 실제 워커 수를 함께 바꿀 때 배치 공정성에 어떤 상호작용이 생길까요?"}]
 difficulty: 중하
 category: 성능
 tags: ["IOCP","배치","공정성"]
@@ -43,6 +43,6 @@ IOCP에서 한 번에 100개 완료를 dequeue했다면 그 100개는 이미 포
 
 ## 더 파고들 거리
 
-- 무거운 완료를 다른 실행기로 옮길 때 연결별 순서는 어떻게 보장할까요?
-- 짧은 연결과 긴 연결의 공정성을 어떤 지표로 비교할까요?
+- [무거운 IOCP 완료 처리를 다른 풀로 옮깁니다. 연결별 적용 순서와 버퍼 수명을 어떻게 보존하나요?](/tech-interview/questions/iocp-offload-connection-order/)
+- [긴 연결의 완료가 계속 들어옵니다. 짧은 연결의 응답과 연결별 실행 예산을 어떻게 보장하나요?](/tech-interview/questions/iocp-short-long-connection-fairness/)
 - 완료 수집 시간과 사용자 콜백 시간을 어떤 trace span으로 나눌까요?

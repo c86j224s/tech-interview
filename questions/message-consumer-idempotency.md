@@ -2,7 +2,7 @@
 id: message-consumer-idempotency
 title: "메시지에 따라 포인트를 지급한 뒤 ACK 전에 소비자가 죽었습니다. 같은 메시지를 다시 받아도 포인트가 한 번만 지급되도록 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id": "request-timeout-idempotency", "prompt": "포인트 저장소가 같은 DB가 아니라 외부 API라면, inbox 커밋만으로 중복 지급을 막을 수 있을까요?"}, {"id": "message-ordering-scope", "prompt": "같은 이벤트의 중복은 막았지만 서로 다른 지급·회수 이벤트가 역순으로 오면 어떤 검사가 더 필요할까요?"}, {"id": "transaction-and-lost-update", "prompt": "서로 다른 정상 지급 이벤트 두 개가 같은 계정 잔액을 동시에 바꾼다면, 고유한 이벤트 ID만으로 충분할까요?"}]
+followups: [{"id":"event-versus-business-dedup-key","prompt":"중복 방지 키로 event ID 대신 주문 ID를 씁니다. 같은 주문의 서로 다른 정상 이벤트를 합치지 않으려면 어떻게 하나요?"},{"id":"duplicate-event-payload-conflict","prompt":"동일 event ID가 다른 payload로 재전달됐습니다. 기존 성공 반환·거절·경보 중 어떤 정책을 적용하나요?"},{"id":"request-timeout-idempotency","prompt":"포인트 저장소가 같은 DB가 아니라 외부 API라면, inbox 커밋만으로 중복 지급을 막을 수 있을까요?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -52,6 +52,6 @@ related: ["transactional-outbox"]
 
 ## 더 파고들 거리
 
-- 이벤트 ID 대신 주문 ID 같은 논리적 처리의 고유 키를 써도 되는 조건과 위험은 무엇인가요?
-- 같은 event ID가 다른 payload로 재전달될 때 어떤 상태와 경보를 남길까요?
+- [중복 방지 키로 event ID 대신 주문 ID를 씁니다. 같은 주문의 서로 다른 정상 이벤트를 합치지 않으려면 어떻게 하나요?](/tech-interview/questions/event-versus-business-dedup-key/)
+- [동일 event ID가 다른 payload로 재전달됐습니다. 기존 성공 반환·거절·경보 중 어떤 정책을 적용하나요?](/tech-interview/questions/duplicate-event-payload-conflict/)
 - 이벤트 버전이 건너뛰거나 역전될 때 멱등성과 별도로 어떤 순서 검사가 필요한가요?

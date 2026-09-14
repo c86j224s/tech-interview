@@ -2,7 +2,7 @@
 id: process-state-suspended
 title: "프로세스가 실행되지 않는데 하나는 Ready, 다른 하나는 Blocked 상태입니다. 각각 무엇을 기다리며 CPU를 더 배정하면 둘 다 바로 실행할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"profiling-cpu-offcpu","prompt":"Ready 큐 대기와 DB·락 대기를 off-CPU 프로파일에서 어떤 신호로 나누어 볼까요?"},{"id":"context-switch-overhead","prompt":"Blocked가 많은 시스템에서 컨텍스트 스위치 증가가 정상 I/O인지 경쟁인지 어떻게 검증할까요?"},{"id":"graceful-shutdown","prompt":"종료 신호가 왔을 때 Ready·Blocked 작업을 새 유입 차단과 기존 작업 정리 순서에 어떻게 반영할까요?"}]
+followups: [{"id":"io-complete-ready-queue-delay","prompt":"I/O는 끝났는데 요청이 늦게 재개됩니다. Ready 큐 대기와 이전 I/O 대기를 어떻게 분리하나요?"},{"id":"profiling-cpu-offcpu","prompt":"Ready 큐 대기와 DB·락 대기를 off-CPU 프로파일에서 어떤 신호로 나누어 볼까요?"},{"id":"context-switch-overhead","prompt":"Blocked가 많은 시스템에서 컨텍스트 스위치 증가가 정상 I/O인지 경쟁인지 어떻게 검증할까요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["프로세스 상태","스케줄러","대기"]
@@ -42,6 +42,6 @@ Ready·Blocked는 프로세스가 아니라 스레드별 상태일 수 있습니
 
 ## 더 파고들 거리
 
-- I/O 완료 후 Ready 큐에서 오래 기다리는 이유는 무엇인가요?
+- [I/O는 끝났는데 요청이 늦게 재개됩니다. Ready 큐 대기와 이전 I/O 대기를 어떻게 분리하나요?](/tech-interview/questions/io-complete-ready-queue-delay/)
 - 중단 불가 대기가 종료 요청을 지연시키는 조건은 무엇인가요?
 - 실행 큐 지연·락 대기·I/O 대기를 trace로 어떻게 분리하나요?

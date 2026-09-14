@@ -2,7 +2,7 @@
 id: keda-scale-zero
 title: "KEDA로 consumer Deployment를 0 replica까지 줄였다가 첫 메시지를 처리할 때 지연은 어디에서 생기나요?"
 answerMinutes: 5
-followups: [{"id":"karpenter-node-provisioning","prompt":"scale-to-zero 상태에서 Pod를 깨우려면 새 노드도 필요할 때 NodeClaim부터 첫 ACK까지 어떤 상태와 시간을 계측하겠습니까?"},{"id":"k8s-probe-contract","prompt":"consumer 프로세스는 실행됐지만 broker assignment가 끝나지 않았다면 startup과 readiness의 성공 조건을 어떻게 나누겠습니까?"},{"id":"keda-hpa-role","prompt":"대기 lag와 처리 중 메시지를 구분할 수 있다면 KEDA의 활성화·scale-down 조건을 어떤 방식으로 바꾸겠습니까?"}]
+followups: [{"id":"queue-visible-inflight-scale-down","prompt":"대기 메시지는 없지만 worker가 아직 처리 중입니다. visible·in-flight 지표를 scale-down과 종료에 어떻게 사용하나요?"},{"id":"warm-pod-versus-warm-node","prompt":"첫 작업 지연을 줄이려 warm Pod나 warm node를 유지합니다. 이미지·시작·준비·비용을 어떻게 비교하나요?"},{"id":"karpenter-node-provisioning","prompt":"scale-to-zero 상태에서 Pod를 깨우려면 새 노드도 필요할 때 NodeClaim부터 첫 ACK까지 어떤 상태와 시간을 계측하겠습니까?"}]
 difficulty: 중하
 category: 인프라
 tags: ["KEDA","scale to zero","콜드 스타트"]
@@ -43,6 +43,6 @@ lag가 0이 됐다는 것만 보고 즉시 0으로 줄이면 아직 처리 중�
 
 ## 더 파고들 거리
 
-- 대기 메시지와 처리 중 메시지를 분리한 지표가 scale-down과 종료 유예를 어떻게 바꾸는지 설명해 보세요.
-- 노드 공급이 느릴 때 warm Pod와 warm node 중 무엇을 유지할지 비용·지연으로 비교해 보세요.
+- [대기 메시지는 없지만 worker가 아직 처리 중입니다. visible·in-flight 지표를 scale-down과 종료에 어떻게 사용하나요?](/tech-interview/questions/queue-visible-inflight-scale-down/)
+- [첫 작업 지연을 줄이려 warm Pod나 warm node를 유지합니다. 이미지·시작·준비·비용을 어떻게 비교하나요?](/tech-interview/questions/warm-pod-versus-warm-node/)
 - ScaledJob의 단위 작업 수명과 Deployment consumer의 장수 연결을 종료·재처리 기준으로 비교해 보세요.

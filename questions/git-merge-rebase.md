@@ -2,7 +2,7 @@
 id: git-merge-rebase
 title: "두 브랜치의 변경을 합칠 때 merge와 rebase는 이력을 어떻게 다르게 만들며, 공유 브랜치에서는 무엇을 조심해야 하나요?"
 answerMinutes: 5
-followups: [{"id": "api-backward-compatibility", "prompt": "공유 브랜치의 커밋을 재작성하지 못하는 상황에서 API 호환 변경을 어떤 통합 순서로 검증할까요?"}, {"id": "tdd-red-green-refactor", "prompt": "충돌 해결과 rebase 뒤에도 테스트의 실패·통과·구조 개선 증거를 어떤 순서로 다시 확인할까요?"}, {"id": "strangler-migration", "prompt": "점진 전환 코드가 여러 브랜치에 걸쳐 있을 때 통합 방식이 롤백 추적에 어떤 차이를 만들까요?"}]
+followups: [{"id":"git-reflog-rebase-recovery","prompt":"rebase 뒤 원래 커밋이 안 보입니다. reflog와 백업 참조로 무엇을 복구하고 어떤 검증을 해야 하나요?"},{"id":"git-conflict-resolution-verification","prompt":"merge 충돌을 해결했습니다. 원래 양쪽 변경의 의도가 모두 남았는지 어떤 diff와 테스트로 확인하나요?"},{"id":"api-backward-compatibility","prompt":"공유 브랜치의 커밋을 재작성하지 못하는 상황에서 API 호환 변경을 어떤 통합 순서로 검증할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["Git","merge","rebase","이력"]
@@ -47,6 +47,6 @@ main이 A-B로 진행되고 기능 브랜치가 A-C-D라면 merge는 B와 D를 �
 
 ## 더 파고들 거리
 
-- rebase로 커밋 ID와 부모가 바뀌는 과정과 reflog를 이용한 복구는 어떻게 연결되나요?
-- merge conflict를 해결한 뒤 원래 변경과 상대 변경이 모두 보존됐는지 어떤 diff로 검증할까요?
+- [rebase 뒤 원래 커밋이 안 보입니다. reflog와 백업 참조로 무엇을 복구하고 어떤 검증을 해야 하나요?](/tech-interview/questions/git-reflog-rebase-recovery/)
+- [merge 충돌을 해결했습니다. 원래 양쪽 변경의 의도가 모두 남았는지 어떤 diff와 테스트로 확인하나요?](/tech-interview/questions/git-conflict-resolution-verification/)
 - 공유 브랜치에서 선형 이력을 강제하고 싶을 때 squash merge와 보호 규칙은 어떤 비용을 만드나요?

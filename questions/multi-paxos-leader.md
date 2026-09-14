@@ -2,7 +2,7 @@
 id: multi-paxos-leader
 title: "Paxos로 명령 로그를 계속 기록하려고 합니다. Multi-Paxos는 반복 비용을 어떻게 줄이며 리더가 바뀌면 무엇을 이어받나요?"
 answerMinutes: 5
-followups: [{"id":"paxos-prepare-accept","prompt":"새 proposer가 가장 높은 기존 수락값을 잇지 않으면 어떤 안전성 위반이 생기나요?"},{"id":"raft-log-commit-apply","prompt":"Paxos chosen·learned·apply를 Raft 복제·commit·apply와 어떻게 비교하나요?"},{"id":"consensus-vs-replication","prompt":"안정 리더만으로 합의 안전성과 외부 멱등성이 완성되지 않는 이유는 무엇인가요?"}]
+followups: [{"id":"multi-paxos-noop-gap","prompt":"Multi-Paxos 로그의 중간 슬롯이 비었습니다. 언제 no-op을 제안하고 이전 수락값은 어떻게 보존하나요?"},{"id":"paxos-chosen-apply-prefix","prompt":"Paxos 슬롯 12가 11보다 먼저 선택됐습니다. chosen·learned·순차 apply는 어떻게 나누나요?"},{"id":"paxos-prepare-accept","prompt":"새 proposer가 가장 높은 기존 수락값을 잇지 않으면 어떤 안전성 위반이 생기나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Paxos","Multi-Paxos","리더"]
@@ -50,6 +50,6 @@ related: ["paxos-prepare-accept"]
 
 ## 더 파고들 거리
 
-- no-op
-- pipeline 적용 순서
+- [Multi-Paxos 로그의 중간 슬롯이 비었습니다. 언제 no-op을 제안하고 이전 수락값은 어떻게 보존하나요?](/tech-interview/questions/multi-paxos-noop-gap/)
+- [Paxos 슬롯 12가 11보다 먼저 선택됐습니다. chosen·learned·순차 apply는 어떻게 나누나요?](/tech-interview/questions/paxos-chosen-apply-prefix/)
 - Raft 비교

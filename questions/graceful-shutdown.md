@@ -2,7 +2,7 @@
 id: graceful-shutdown
 title: "요청과 메시지 처리가 진행 중인 서버에 종료 신호가 왔습니다. 새 유입, 기존 작업, DB 풀을 어떤 순서로 정리해야 하나요?"
 answerMinutes: 5
-followups: [{"id": "load-balancer-health-draining", "prompt": "readiness 전파 중 기존 요청을 끝내지 못하면 앱·로드밸런서·클라이언트의 기한을 어떻게 조정할까요?"}, {"id": "deadline-cancellation-propagation", "prompt": "종료 deadline을 하위 API와 DB 작업에 전파할 때 응답 반환과 실제 작업 종료를 어떻게 구분할까요?"}, {"id": "k8s-probe-contract", "prompt": "오케스트레이터의 종료 유예 시간과 앱 내부 드레이닝 기한이 충돌하지 않게 어떤 순서를 정할까요?"}]
+followups: [{"id":"streaming-request-drain-contract","prompt":"장기 스트림과 짧은 요청을 같은 서버에서 처리합니다. 종료 기한과 재개 위치를 어떻게 다르게 정하나요?"},{"id":"shutdown-child-admission-race","prompt":"종료가 시작된 뒤 진행 중 요청이 새 자식 작업을 만듭니다. 작업 카운터와 신규 수락 차단을 어떻게 동기화하나요?"},{"id":"load-balancer-health-draining","prompt":"readiness 전파 중 기존 요청을 끝내지 못하면 앱·로드밸런서·클라이언트의 기한을 어떻게 조정할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ HTTP는 readiness를 먼저 내리고 새 연결 수락을 멈추며, keep-alive
 
 ## 더 파고들 거리
 
-- 스트리밍 요청과 짧은 요청의 종료 기한은 어떻게 다르게 둘까요?
-- 종료 중 새 자식 작업이 생성되지 않게 어떤 소유권 규칙이 필요할까요?
+- [장기 스트림과 짧은 요청을 같은 서버에서 처리합니다. 종료 기한과 재개 위치를 어떻게 다르게 정하나요?](/tech-interview/questions/streaming-request-drain-contract/)
+- [종료가 시작된 뒤 진행 중 요청이 새 자식 작업을 만듭니다. 작업 카운터와 신규 수락 차단을 어떻게 동기화하나요?](/tech-interview/questions/shutdown-child-admission-race/)
 - 오케스트레이터의 종료 유예 시간과 앱의 내부 데드라인을 어떻게 맞출까요?

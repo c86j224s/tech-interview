@@ -2,7 +2,7 @@
 id: deadline-cancellation-propagation
 title: "사용자 요청이 타임아웃됐는데 하위 API 호출과 DB 작업은 계속 실행됩니다. 응답 대기 종료와 작업 취소를 어떻게 구분하고 어디까지 전파하나요?"
 answerMinutes: 5
-followups: [{"id": "request-timeout-idempotency", "prompt": "취소를 보냈지만 서버가 먼저 커밋했을 수 있습니다. 결과를 모르는 요청을 어떻게 다시 시도할까요?"}, {"id": "structured-concurrency-fanout", "prompt": "하위 호출이 하나가 아니라 여러 개라면, 부모가 끝날 때 모든 자식의 종료를 어떻게 확인할까요?"}, {"id": "transactional-outbox", "prompt": "사용자가 연결을 끊어도 주문 완료 알림은 반드시 발행해야 한다면, 요청 수명에서 어떻게 분리할까요?"}]
+followups: [{"id":"request-independent-durable-job","prompt":"요청 연결이 끝나도 반드시 완료할 작업을 접수합니다. 내구성·소유권·결과 조회를 어떻게 분리하나요?"},{"id":"cancellation-completion-single-result","prompt":"취소와 정상 완료가 동시에 도착합니다. 사용자에게 결과를 한 번만 전달하면서 실제 늦은 효과는 어떻게 기록하나요?"},{"id":"request-timeout-idempotency","prompt":"취소를 보냈지만 서버가 먼저 커밋했을 수 있습니다. 결과를 모르는 요청을 어떻게 다시 시도할까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -52,6 +52,6 @@ related: ["request-timeout-idempotency","goroutine-lifecycle-and-leaks"]
 
 ## 더 파고들 거리
 
-- 부모 요청과 무관하게 완료할 작업에는 어떤 내구성과 소유권이 필요할까요?
-- 취소와 정상 완료가 경합할 때 결과를 한 번만 전달하려면 어떻게 할까요?
+- [요청 연결이 끝나도 반드시 완료할 작업을 접수합니다. 내구성·소유권·결과 조회를 어떻게 분리하나요?](/tech-interview/questions/request-independent-durable-job/)
+- [취소와 정상 완료가 동시에 도착합니다. 사용자에게 결과를 한 번만 전달하면서 실제 늦은 효과는 어떻게 기록하나요?](/tech-interview/questions/cancellation-completion-single-result/)
 - 하위 서비스가 데드라인을 지원하지 않으면 자원 고갈을 어떻게 제한할까요?

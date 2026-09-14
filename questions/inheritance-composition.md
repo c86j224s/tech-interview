@@ -2,7 +2,7 @@
 id: inheritance-composition
 title: "알림 채널마다 로깅·재시도 기능을 조합하다 보니 하위 클래스가 계속 늘어납니다. 어떤 책임을 분리하고 상속과 조합 중 무엇을 선택하나요?"
 answerMinutes: 5
-followups: [{"id": "solid-liskov", "prompt": "알림 채널 하위 타입이 부모의 재시도·성공 계약을 더 엄격하게 만들면 치환 원칙을 어떻게 위반할까요?"}, {"id": "service-boundary-design", "prompt": "채널별 외부 API를 별도 서비스로 나눌 때 조합 경계와 데이터·장애 소유권을 어떻게 결정할까요?"}, {"id": "dependency-injection-boundaries", "prompt": "조합된 Channel과 RetryPolicy를 테스트에서 통제하되 실제 전송 계약은 어떻게 검증할까요?"}]
+followups: [{"id":"constructor-virtual-dispatch-hazard","prompt":"부모 생성자에서 재정의 가능한 메서드를 호출합니다. 자식 초기화 순서와 언어별 dispatch 때문에 어떤 문제가 생기나요?"},{"id":"composition-root-resource-lifetime","prompt":"협력 객체가 많아져 생성·종료 순서가 복잡합니다. composition root는 어떤 의존성과 수명을 소유하나요?"},{"id":"solid-liskov","prompt":"알림 채널 하위 타입이 부모의 재시도·성공 계약을 더 엄격하게 만들면 치환 원칙을 어떻게 위반할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["상속","조합","위임","다형성"]
@@ -47,6 +47,6 @@ related: ["service-boundary-design"]
 
 ## 더 파고들 거리
 
-- 상속 계층이 깊어질 때 생성자 호출과 메서드 재정의 순서가 어떤 위험을 만들까요?
-- 조합된 객체의 생성과 생명주기를 관리하는 방법이 많아질 때 어디에 조립 책임을 둘까요?
+- [부모 생성자에서 재정의 가능한 메서드를 호출합니다. 자식 초기화 순서와 언어별 dispatch 때문에 어떤 문제가 생기나요?](/tech-interview/questions/constructor-virtual-dispatch-hazard/)
+- [협력 객체가 많아져 생성·종료 순서가 복잡합니다. composition root는 어떤 의존성과 수명을 소유하나요?](/tech-interview/questions/composition-root-resource-lifetime/)
 - 상속을 유지하면서도 부모 구현에 대한 의존을 줄이는 템플릿 메서드 또는 위임 방식은 어떻게 비교할까요?

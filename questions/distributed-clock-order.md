@@ -2,7 +2,7 @@
 id: distributed-clock-order
 title: "두 서버의 이벤트를 timestamp로 정렬했더니 나중에 일어난 변경이 먼저 보입니다. 서버 시각만으로 변경 적용 순서를 정해도 되나요?"
 answerMinutes: 5
-followups: [{"id":"lamport-vector-clock","prompt":"두 지역 수정이 동시인지 Lamport와 벡터 시계로 어떻게 판단하겠습니까?"},{"id":"message-ordering-scope","prompt":"전달 순서와 적용 순서를 맞추려면 어떤 partition·워커 조건이 필요할까요?"},{"id":"raft-term-election","prompt":"Raft term이 timestamp가 아닌 논리 세대여야 하는 이유는 무엇인가요?"}]
+followups: [{"id":"hybrid-logical-clock-boundaries","prompt":"물리 시각에 가까운 값과 논리 증가를 함께 쓰는 HLC는 어떤 순서를 표현하며 동시성·최신성을 어디까지 보장하나요?"},{"id":"lease-audit-clock-jump","prompt":"서버 시계가 갑자기 움직였습니다. lease 경과 계산과 감사 로그 시각을 어떻게 따로 처리하나요?"},{"id":"lamport-vector-clock","prompt":"두 지역 수정이 동시인지 Lamport와 벡터 시계로 어떻게 판단하겠습니까?"}]
 difficulty: 하
 category: 분산 시스템
 tags:
@@ -54,5 +54,5 @@ lease 제공자가 10초 소유권을 줬더라도 작업자가 오래 멈춘 �
 ## 더 파고들 거리
 
 - Lamport와 벡터
-- HLC
-- lease·감사 로그의 시계 점프
+- [물리 시각에 가까운 값과 논리 증가를 함께 쓰는 HLC는 어떤 순서를 표현하며 동시성·최신성을 어디까지 보장하나요?](/tech-interview/questions/hybrid-logical-clock-boundaries/)
+- [서버 시계가 갑자기 움직였습니다. lease 경과 계산과 감사 로그 시각을 어떻게 따로 처리하나요?](/tech-interview/questions/lease-audit-clock-jump/)

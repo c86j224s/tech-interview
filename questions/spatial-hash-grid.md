@@ -2,7 +2,7 @@
 id: spatial-hash-grid
 title: "게임 서버의 공간 해시에서 조회 반경·객체 크기·분포를 바탕으로 셀 크기와 중복 처리를 어떻게 정하나요?"
 answerMinutes: 5
-followups: [{"id":"aoi-interest-management","prompt":"공간 해시 후보가 나왔을 때 거리·시야·팀 권한을 적용해 실제 공개 수신자를 어떻게 확정하겠습니까?"},{"id":"collision-broad-narrow-phase","prompt":"같은 공간 해시를 충돌 broad phase에 사용할 때 후보 누락을 막기 위한 이동 경계와 최종 검사 분리는 어떻게 하겠습니까?"},{"id":"voxel-sparse-storage","prompt":"월드의 빈 공간이 매우 많고 청크 로딩도 필요하다면 공간 해시 셀과 희소 청크 인덱스를 어떤 계층으로 결합하겠습니까?"}]
+followups: [{"id":"hierarchical-grid-promotion-dedup","prompt":"객체 크기가 다양해 다단계 격자를 씁니다. 승격·강등·여러 레벨 조회에서 후보 중복과 누락을 어떻게 막나요?"},{"id":"aoi-interest-management","prompt":"공간 해시 후보가 나왔을 때 거리·시야·팀 권한을 적용해 실제 공개 수신자를 어떻게 확정하겠습니까?"},{"id":"collision-broad-narrow-phase","prompt":"같은 공간 해시를 충돌 broad phase에 사용할 때 후보 누락을 막기 위한 이동 경계와 최종 검사 분리는 어떻게 하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["공간 해시","격자","AOI"]
@@ -43,6 +43,6 @@ related: ["collision-broad-narrow-phase"]
 
 ## 더 파고들 거리
 
-- 조회 반경과 객체 크기 분포가 여러 규모일 때 다단계 격자의 승격·중복 검사를 어떻게 설계하나요?
+- [객체 크기가 다양해 다단계 격자를 씁니다. 승격·강등·여러 레벨 조회에서 후보 중복과 누락을 어떻게 막나요?](/tech-interview/questions/hierarchical-grid-promotion-dedup/)
 - 쓰기 중인 인덱스를 읽을 때 락, 틱 스냅샷, 버전 참조 중 무엇을 선택하나요?
 - AOI와 정밀 충돌이 같은 인덱스를 공유해도 되는 조건과 분리해야 하는 조건은 무엇인가요?

@@ -2,7 +2,7 @@
 id: java-equals-hashcode
 title: "객체의 필드를 바꾼 뒤 HashSet에서 그 객체를 찾지 못합니다. equals와 hashCode의 계약과 가변 키의 문제를 설명해 보세요."
 answerMinutes: 5
-followups: [{"id":"java-final-immutability","prompt":"키를 불변 객체로 만들기 위해 final 필드와 방어적 복사 중 무엇을 함께 적용해야 할까요?"},{"id":"java-boxing-null","prompt":"equals 구현에서 null 필드를 비교할 때 직접 호출 대신 어떤 null 안전 비교를 사용할까요?"},{"id":"java-generics-erasure","prompt":"제네릭 키의 타입 소거와 해시 컬렉션의 런타임 동등성 검사가 어떤 층에서 일어나나요?"}]
+followups: [{"id":"java-equals-inheritance-symmetry","prompt":"상속한 값 객체에 필드를 추가하자 equals의 대칭성·추이성이 깨집니다. 어떤 동등성 경계를 선택하나요?"},{"id":"hashmap-key-value-mutation","prompt":"HashMap에서 value 필드 변경과 key의 비교 필드 변경은 조회에 왜 다른 영향을 주나요?"},{"id":"java-final-immutability","prompt":"키를 불변 객체로 만들기 위해 final 필드와 방어적 복사 중 무엇을 함께 적용해야 할까요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Java","equals","hashCode","HashSet","가변 키"]
@@ -66,6 +66,6 @@ equals가 성립하는 두 객체는 같은 hashCode를 가져야 하지만, 서
 
 ## 더 파고들 거리
 
-- 상속 기반 equals에서 대칭성과 추이성이 깨지는 예를 어떻게 피할까요?
-- HashMap에서 값 변경과 키 변경의 조회 결과는 왜 다를까요?
+- [상속한 값 객체에 필드를 추가하자 equals의 대칭성·추이성이 깨집니다. 어떤 동등성 경계를 선택하나요?](/tech-interview/questions/java-equals-inheritance-symmetry/)
+- [HashMap에서 value 필드 변경과 key의 비교 필드 변경은 조회에 왜 다른 영향을 주나요?](/tech-interview/questions/hashmap-key-value-mutation/)
 - 레코드와 방어적 복사가 키의 안정성을 어떻게 높이나요?

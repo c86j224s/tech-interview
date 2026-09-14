@@ -2,7 +2,7 @@
 id: api-backward-compatibility
 title: "서버의 JSON 응답에 필드나 상태 값을 추가하려 합니다. 업데이트하지 않은 모바일 앱이 왜 실패할 수 있으며 어떻게 검증하나요?"
 answerMinutes: 5
-followups: [{"id": "db-online-schema-migration", "prompt": "구버전 서버가 계속 쓰는 동안 새 응답 필드를 저장 컬럼으로 옮긴다면 읽기·쓰기 단계를 어떤 순서로 나눌까요?"}, {"id": "grpc-rest-contracts", "prompt": "protobuf로 바꾸어도 enum과 필드 의미 변경의 호환성 문제가 남는 이유는 무엇일까요?"}, {"id": "refresh-token-rotation", "prompt": "구버전 모바일 앱이 새 토큰 응답 필드를 모를 때 인증 계약을 깨지 않고 회전 정책을 적용하려면 어떻게 할까요?"}]
+followups: [{"id":"api-null-omission-patch","prompt":"프로필 수정 API에서 필드 생략과 null을 다르게 쓰려 합니다. 값 유지·삭제·기본값을 어떻게 명시하나요?"},{"id":"protobuf-field-number-reservation","prompt":"protobuf 필드를 삭제한 뒤 같은 번호를 다른 의미로 재사용하면 과거 메시지와 어떤 충돌이 생기나요?"},{"id":"db-online-schema-migration","prompt":"구버전 서버가 계속 쓰는 동안 새 응답 필드를 저장 컬럼으로 옮긴다면 읽기·쓰기 단계를 어떤 순서로 나눌까요?"}]
 difficulty: 하
 category: 설계
 tags:
@@ -58,6 +58,6 @@ related: ["db-online-schema-migration"]
 
 ## 더 파고들 거리
 
-- null과 생략을 다르게 해석하는 API를 어떻게 문서화할까요?
-- 프로토콜 버퍼 필드 번호 재사용은 왜 위험할까요?
+- [프로필 수정 API에서 필드 생략과 null을 다르게 쓰려 합니다. 값 유지·삭제·기본값을 어떻게 명시하나요?](/tech-interview/questions/api-null-omission-patch/)
+- [protobuf 필드를 삭제한 뒤 같은 번호를 다른 의미로 재사용하면 과거 메시지와 어떤 충돌이 생기나요?](/tech-interview/questions/protobuf-field-number-reservation/)
 - 드문 배치 소비자를 어떤 관측으로 찾을까요?

@@ -8,7 +8,7 @@ function memoryStorage() {
 }
 
 test('a shuffled cycle visits every other question once, including across reloads', () => {
-  const ids = Array.from({ length: 500 }, (_, i) => `q${i}`);
+  const ids = Array.from({ length: 1000 }, (_, i) => `q${i}`);
   const storage = memoryStorage();
   let current = ids[0];
   const seen = new Set([current]);
@@ -20,7 +20,7 @@ test('a shuffled cycle visits every other question once, including across reload
     seen.add(next);
     current = next;
   }
-  assert.equal(seen.size, 500);
+  assert.equal(seen.size, ids.length);
   assert.notEqual(createQuestionDeck(ids, storage).next(current), current);
 });
 
@@ -53,7 +53,7 @@ test('empty and singleton catalogs never select the current question', () => {
 
 test('random range validation and samples stay within bounds', () => {
   assert.throws(() => randomIndex(0), RangeError);
-  for (const size of [1, 2, 500, 0x100000000]) {
+  for (const size of [1, 2, 500, 1000, 0x100000000]) {
     for (let i = 0; i < 100; i++) {
       const value = randomIndex(size);
       assert.ok(Number.isInteger(value) && value >= 0 && value < size);

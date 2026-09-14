@@ -2,7 +2,7 @@
 id: monitor-synchronization
 title: "여러 스레드가 공유 큐에 넣고 꺼내며 큐가 비었을 때 기다립니다. 모니터는 공유 상태·상호 배제·조건 대기를 어떻게 묶어 관리하나요?"
 answerMinutes: 5
-followups: [{"id":"condition-variable-predicate","prompt":"조건 변수 wait에서 깨어난 뒤 predicate를 while로 재검사하지 않으면 어떤 실행 순서가 깨질까요?"},{"id":"semaphore-mutex","prompt":"공유 큐 보호와 동시 작업 수 제한을 모니터·뮤텍스·세마포어로 어떻게 분리할까요?"},{"id":"deadlock-prevention","prompt":"모니터 내부 callback이 다른 락을 잡을 때 락 순서와 재진입 교착을 어떻게 예방할까요?"}]
+followups: [{"id":"hoare-mesa-monitor-signal","prompt":"조건을 알린 뒤 실행권이 즉시 대기자에게 넘어가는 모니터와 나중에 경쟁하는 모니터는 무엇이 다른가요?"},{"id":"java-wait-notify-monitor-owner","prompt":"Java wait·notify를 호출할 때 어떤 객체의 monitor를 소유해야 하며 wait는 어떤 락을 풀어 주나요?"},{"id":"condition-variable-predicate","prompt":"조건 변수 wait에서 깨어난 뒤 predicate를 while로 재검사하지 않으면 어떤 실행 순서가 깨질까요?"}]
 difficulty: 하
 category: 동시성
 tags: ["모니터","조건 변수","상호 배제"]
@@ -45,6 +45,6 @@ related: ["condition-variable-predicate"]
 
 ## 더 파고들 거리
 
-- Hoare식과 Mesa식 모니터의 signal 후 실행 순서를 비교해 보세요.
-- Java wait/notify에서 모니터 소유 조건은 무엇인가요?
+- [조건을 알린 뒤 실행권이 즉시 대기자에게 넘어가는 모니터와 나중에 경쟁하는 모니터는 무엇이 다른가요?](/tech-interview/questions/hoare-mesa-monitor-signal/)
+- [Java wait·notify를 호출할 때 어떤 객체의 monitor를 소유해야 하며 wait는 어떤 락을 풀어 주나요?](/tech-interview/questions/java-wait-notify-monitor-owner/)
 - 모니터 내부 callback이 재진입할 때 어떤 상태 불변식이 깨질 수 있나요?

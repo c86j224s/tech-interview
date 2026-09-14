@@ -2,7 +2,7 @@
 id: messaging-tool-choice
 title: "서비스 간 메시징을 도입하려는데 실시간 알림, 과거 이벤트 재생, 작업 재시도의 요구가 다릅니다. 어떤 보장과 운영 조건을 기준으로 NATS·Kafka·SQS를 선택하나요?"
 answerMinutes: 5
-followups: [{"id": "nats-core-jetstream", "prompt": "Core NATS에서 JetStream으로 바꿀 때 저장·ACK·재전달이 소비자 코드에 어떤 상태를 추가할까요?"}, {"id": "kafka-partition-offset", "prompt": "Kafka offset을 처리 완료로 오해하지 않으려면 외부 DB 변경과 커밋 순서를 어떻게 설계할까요?"}, {"id": "sqs-visibility-timeout", "prompt": "작업이 visibility timeout을 넘길 때 중복 전달과 멱등 처리의 책임을 어떻게 나눌까요?"}]
+followups: [{"id":"rpc-event-log-team-ownership","prompt":"즉시 RPC와 장기 이벤트 재생을 분리합니다. 스키마·보관·재처리·SLO의 운영 책임은 어떻게 나누나요?"},{"id":"managed-queue-full-cost","prompt":"관리형 큐 비용을 추정합니다. API 요청 수 외에 보관·재전달·데이터 이동·중복 처리 비용은 어떻게 포함하나요?"},{"id":"nats-core-jetstream","prompt":"Core NATS에서 JetStream으로 바꿀 때 저장·ACK·재전달이 소비자 코드에 어떤 상태를 추가할까요?"}]
 difficulty: 하
 category: 설계
 tags: ["NATS","Kafka","SQS","메시징"]
@@ -47,6 +47,6 @@ ACK·offset·메시지 삭제는 외부 DB 변경이 완료됐다는 사실과 �
 
 ## 더 파고들 거리
 
-- 장기 재생 로그와 즉시 RPC를 분리할 때 팀별 운영 책임은 어떻게 나눌까요?
-- 관리형 큐 비용을 요청 수 외에 보관·데이터 이동·재전달까지 어떻게 계산할까요?
+- [즉시 RPC와 장기 이벤트 재생을 분리합니다. 스키마·보관·재처리·SLO의 운영 책임은 어떻게 나누나요?](/tech-interview/questions/rpc-event-log-team-ownership/)
+- [관리형 큐 비용을 추정합니다. API 요청 수 외에 보관·재전달·데이터 이동·중복 처리 비용은 어떻게 포함하나요?](/tech-interview/questions/managed-queue-full-cost/)
 - broker 전환 기간에 이중 소비·중복·순서를 어떤 cutover로 통제할까요?

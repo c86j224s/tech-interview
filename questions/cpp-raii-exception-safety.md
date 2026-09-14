@@ -2,7 +2,7 @@
 id: cpp-raii-exception-safety
 title: "C++에서 락과 파일을 RAII 객체로 관리합니다. 상태를 일부 바꾼 뒤 예외가 나면 자원 해제와 변경 전 상태로의 복구가 모두 보장되나요?"
 answerMinutes: 5
-followups: [{"id":"cpp-move-semantics","prompt":"강한 예외 보장을 위해 임시 상태를 이동 교체할 때 noexcept 조건이 왜 중요할까요?"},{"id":"transaction-and-lost-update","prompt":"외부 DB의 부분 변경까지 포함해 예외 시 상태를 보정해야 한다면 어떤 조건부 갱신을 둘까요?"},{"id":"deadlock-prevention","prompt":"RAII 락의 획득 순서가 두 객체에서 다르면 예외와 무관하게 어떤 교착이 생길까요?"}]
+followups: [{"id":"cpp-transactional-swap-publication","prompt":"여러 필드의 새 상태를 준비한 뒤 swap으로 게시하려 합니다. 강한 예외 보장을 위해 무엇을 임시 상태에 묶나요?"},{"id":"cpp-explicit-commit-destructor-error","prompt":"소멸자에서 파일 저장 실패를 호출자에게 전달하기 어렵습니다. 명시적인 commit과 소멸자 정리는 어떻게 나누나요?"},{"id":"cpp-move-semantics","prompt":"강한 예외 보장을 위해 임시 상태를 이동 교체할 때 noexcept 조건이 왜 중요할까요?"}]
 difficulty: 하
 category: 언어·런타임
 tags:
@@ -50,6 +50,6 @@ RAII는 자원을 객체의 생성·소멸에 묶는 관용구입니다. 예를 
 
 ## 더 파고들 거리
 
-- 여러 객체의 불변식을 한 번의 `swap`으로 게시하려면 임시 상태를 어떻게 구성할까요?
-- 소멸자에서 오류를 반환할 수 없을 때 명시적 `commit`의 실패를 어디에 전달할까요?
+- [여러 필드의 새 상태를 준비한 뒤 swap으로 게시하려 합니다. 강한 예외 보장을 위해 무엇을 임시 상태에 묶나요?](/tech-interview/questions/cpp-transactional-swap-publication/)
+- [소멸자에서 파일 저장 실패를 호출자에게 전달하기 어렵습니다. 명시적인 commit과 소멸자 정리는 어떻게 나누나요?](/tech-interview/questions/cpp-explicit-commit-destructor-error/)
 - 임시 파일과 `rename`을 사용해 외부 저장의 원자성을 높일 때 남는 장애는 무엇인가요?

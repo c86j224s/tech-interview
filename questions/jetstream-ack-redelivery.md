@@ -2,7 +2,7 @@
 id: jetstream-ack-redelivery
 title: "JetStream 메시지 처리 중 AckWait가 지났거나 ACK가 유실돼 같은 메시지가 다시 왔습니다. 원래 작업과 중복 반영은 어떻게 처리하나요?"
 answerMinutes: 5
-followups: [{"id":"message-consumer-idempotency","prompt":"ACK 전에 소비자가 죽어 재전달되면 처리 기록과 포인트 변경을 어떤 transaction으로 묶나요?"},{"id":"jetstream-durable-consumer","prompt":"consumer가 장기간 내려갔다 돌아올 때 retention과 재전달 상태를 어떻게 확인하나요?"},{"id":"nats-core-jetstream","prompt":"JetStream 저장·재전달이 있어도 외부 DB 멱등성이 필요한 이유는 무엇인가요?"}]
+followups: [{"id":"jetstream-backoff-nak-policy","prompt":"JetStream에서 BackOff·AckWait·NAK 지연을 설정합니다. timeout 재전달과 명시적 실패 신호는 어떻게 다른가요?"},{"id":"jetstream-event-id-retention","prompt":"JetStream 메시지를 오래 뒤 재생합니다. 처리 ID 보존 기간이 짧으면 어떤 중복 효과가 다시 생기나요?"},{"id":"message-consumer-idempotency","prompt":"ACK 전에 소비자가 죽어 재전달되면 처리 기록과 포인트 변경을 어떤 transaction으로 묶나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["NATS","JetStream","ACK"]
@@ -50,6 +50,6 @@ MaxAckPending은 소비자에 미확인된 전달 수를 제한합니다. 이미
 
 ## 더 파고들 거리
 
-- BackOff와 AckWait
-- 이벤트 ID 보존
+- [JetStream에서 BackOff·AckWait·NAK 지연을 설정합니다. timeout 재전달과 명시적 실패 신호는 어떻게 다른가요?](/tech-interview/questions/jetstream-backoff-nak-policy/)
+- [JetStream 메시지를 오래 뒤 재생합니다. 처리 ID 보존 기간이 짧으면 어떤 중복 효과가 다시 생기나요?](/tech-interview/questions/jetstream-event-id-retention/)
 - 긴 작업 신호와 멱등 효과

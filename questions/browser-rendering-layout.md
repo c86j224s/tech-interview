@@ -2,7 +2,7 @@
 id: browser-rendering-layout
 title: "DOM을 여러 번 바꾸는 화면에서 layout이 반복되어 느려집니다. 브라우저 렌더링 단계와 레이아웃 스래싱을 설명해 보세요."
 answerMinutes: 5
-followups: [{"id":"browser-url-navigation","prompt":"HTML과 CSS 리소스가 순차적으로 도착할 때 네트워크 완료와 첫 화면 표시 사이의 렌더링 비용을 어떻게 나눠 측정하나요?"},{"id":"ssr-csr-hydration","prompt":"서버 HTML이 표시된 뒤 hydration이 DOM을 바꾸면 layout과 상호작용 지연이 어떤 방식으로 추가될 수 있나요?"},{"id":"js-event-loop-microtasks","prompt":"마이크로태스크에서 DOM을 대량 변경하면 브라우저의 입력·렌더링 기회가 어떻게 지연될 수 있나요?"}]
+followups: [{"id":"css-containment-content-visibility","prompt":"긴 화면에서 화면 밖 영역의 렌더링 비용을 줄이려 합니다. contain과 content-visibility는 레이아웃·접근성에 어떤 영향을 주나요?"},{"id":"web-layout-shift-reserved-space","prompt":"폰트와 이미지가 늦게 로딩되어 화면이 움직입니다. 공간 예약과 CLS 측정으로 무엇을 개선하나요?"},{"id":"browser-url-navigation","prompt":"HTML과 CSS 리소스가 순차적으로 도착할 때 네트워크 완료와 첫 화면 표시 사이의 렌더링 비용을 어떻게 나눠 측정하나요?"}]
 difficulty: 중하
 category: 웹
 tags: ["브라우저 렌더링","DOM","CSSOM","layout","성능"]
@@ -47,6 +47,6 @@ related: ["browser-url-navigation"]
 
 ## 더 파고들 거리
 
-- contain과 content-visibility가 영향 범위와 초기 표시를 어떻게 바꾸는지 비교해 보세요.
-- 폰트·이미지 로딩과 누적 레이아웃 이동을 어떤 지표로 연결할까요?
+- [긴 화면에서 화면 밖 영역의 렌더링 비용을 줄이려 합니다. contain과 content-visibility는 레이아웃·접근성에 어떤 영향을 주나요?](/tech-interview/questions/css-containment-content-visibility/)
+- [폰트와 이미지가 늦게 로딩되어 화면이 움직입니다. 공간 예약과 CLS 측정으로 무엇을 개선하나요?](/tech-interview/questions/web-layout-shift-reserved-space/)
 - 긴 JavaScript 작업과 강제 layout의 인과 순서를 Performance에서 어떻게 확인할까요?

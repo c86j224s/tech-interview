@@ -2,7 +2,7 @@
 id: bcnf-lossless-decomposition
 title: "3NF를 만족하는 테이블에도 중복이 남아 BCNF로 더 나누려 합니다. 원래 데이터를 복원할 수 있는지와 기존 제약을 계속 검사할 수 있는지는 어떻게 확인하나요?"
 answerMinutes: 5
-followups: [{"id":"functional-dependency-keys","prompt":"함수 종속의 결정자가 기간이나 테넌트에 따라 달라진다면 후보키와 분해를 어떻게 다시 정하나요?"},{"id":"normal-forms-partial-transitive","prompt":"BCNF 분해 전에 2NF·3NF에서 발견한 부분·이행 종속을 어떤 순서로 제거하나요?"},{"id":"normalization-anomalies","prompt":"종속성 보존을 잃은 설계에서 삽입·수정 시 전역 제약을 어떤 방식으로 검사하나요?"}]
+followups: [{"id":"fd-closure-lossless-example","prompt":"함수 종속이 주어진 관계를 둘로 나눴습니다. 속성 폐포와 공통 속성으로 무손실 분해를 어떻게 판정하나요?"},{"id":"bcnf-global-constraint-race","prompt":"BCNF 분해 뒤 제약 검사가 두 테이블의 조인을 요구합니다. 동시 삽입에서 그 제약을 어떻게 보호하나요?"},{"id":"functional-dependency-keys","prompt":"함수 종속의 결정자가 기간이나 테넌트에 따라 달라진다면 후보키와 분해를 어떻게 다시 정하나요?"}]
 difficulty: 중하
 category: 데이터베이스
 tags: ["3NF","BCNF","무손실 조인","종속성 보존"]
@@ -45,6 +45,6 @@ BCNF는 3NF보다 강한 정규형입니다. 릴레이션에 성립하는 모든
 
 ## 더 파고들 거리
 
-- 함수 종속 집합의 폐포와 무손실 분해 추적표를 직접 계산해 보세요.
-- 종속성 보존이 없는 BCNF에서 동시 삽입 검사를 설계해 보세요.
+- [함수 종속이 주어진 관계를 둘로 나눴습니다. 속성 폐포와 공통 속성으로 무손실 분해를 어떻게 판정하나요?](/tech-interview/questions/fd-closure-lossless-example/)
+- [BCNF 분해 뒤 제약 검사가 두 테이블의 조인을 요구합니다. 동시 삽입에서 그 제약을 어떻게 보호하나요?](/tech-interview/questions/bcnf-global-constraint-race/)
 - 3NF 합성과 BCNF 분해의 결과·조인 수·제약 비용을 비교해 보세요.

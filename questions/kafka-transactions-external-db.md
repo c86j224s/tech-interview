@@ -2,7 +2,7 @@
 id: kafka-transactions-external-db
 title: "Kafka 메시지를 읽어 외부 DB를 갱신하고 결과를 다른 topic에 발행합니다. Kafka transaction만으로 DB 변경과 offset·결과 발행을 모두 원자적으로 묶을 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"transactional-outbox","prompt":"DB 상태와 완료 이벤트를 같은 transaction에 넣어 발행 유실을 어떻게 줄이나요?"},{"id":"message-consumer-idempotency","prompt":"Kafka 밖 DB 재처리의 중복 효과를 inbox로 어떻게 막나요?"},{"id":"kafka-idempotent-producer","prompt":"idempotence와 transaction이 producer·consumer 중복을 각각 어떻게 줄이나요?"}]
+followups: [{"id":"kafka-open-transaction-lso-delay","prompt":"Kafka transaction이 오래 열려 read_committed 소비가 멈춘 것처럼 보입니다. LSO와 처리 지연은 어떻게 연결되나요?"},{"id":"transactional-outbox","prompt":"DB 상태와 완료 이벤트를 같은 transaction에 넣어 발행 유실을 어떻게 줄이나요?"},{"id":"message-consumer-idempotency","prompt":"Kafka 밖 DB 재처리의 중복 효과를 inbox로 어떻게 막나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","트랜잭션","외부 DB"]
@@ -50,6 +50,6 @@ DB를 먼저 commit한 뒤 Kafka transaction 전에 죽으면 DB 효과는 남�
 
 ## 더 파고들 거리
 
-- 오래 열린 transaction
+- [Kafka transaction이 오래 열려 read_committed 소비가 멈춘 것처럼 보입니다. LSO와 처리 지연은 어떻게 연결되나요?](/tech-interview/questions/kafka-open-transaction-lso-delay/)
 - DB와 offset 재처리
 - fencing 종료

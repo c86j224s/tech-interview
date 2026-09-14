@@ -2,7 +2,7 @@
 id: binary-search-boundary
 title: "정렬된 배열에서 target 이상인 첫 위치를 찾습니다. 이진 탐색의 경계 오류를 어떻게 피하나요?"
 answerMinutes: 5
-followups: [{"id":"db-keyset-pagination","prompt":"정렬된 주문 목록에서 마지막 `(시각, ID)`보다 뒤의 첫 행을 찾아야 한다면, 단일 값 lower bound를 복합 키 경계로 어떻게 확장하겠습니까?"},{"id":"composite-index-column-order","prompt":"고객 ID로 범위를 먼저 제한한 뒤 주문 시각의 경계를 찾는 쿼리라면, 인덱스 열 순서와 이진 탐색 구간을 어떻게 맞추겠습니까?"},{"id":"ranking-top-k","prompt":"랭킹 페이지에서 동점자를 보조 키로 정렬한다면, 페이지 경계가 갱신 중에도 흔들리지 않도록 어떤 비교 규칙을 사용하겠습니까?"}]
+followups: [{"id":"upper-bound-duplicate-range","prompt":"정렬 배열에서 target과 같은 값이 여러 개입니다. upper_bound로 동등 구간과 부재를 어떻게 구분하나요?"},{"id":"binary-search-midpoint-overflow","prompt":"정수 범위 끝에서 이진 탐색 중간값 계산이 넘칠 수 있습니다. 안전한 식도 어떤 구간 전제를 요구하나요?"},{"id":"db-keyset-pagination","prompt":"정렬된 주문 목록에서 마지막 `(시각, ID)`보다 뒤의 첫 행을 찾아야 한다면, 단일 값 lower bound를 복합 키 경계로 어떻게 확장하겠습니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["이진 탐색","경계","불변식"]
@@ -63,6 +63,6 @@ def lower_bound(a, target):
 
 ## 더 파고들 거리
 
-- target보다 큰 첫 위치를 찾을 때 비교식과 반환 후 검사를 어떻게 바꿀지 설명해 보세요.
-- 정수 오버플로가 가능한 언어에서 중간값 계산을 안전하게 하는 이유를 말해 보세요.
+- [정렬 배열에서 target과 같은 값이 여러 개입니다. upper_bound로 동등 구간과 부재를 어떻게 구분하나요?](/tech-interview/questions/upper-bound-duplicate-range/)
+- [정수 범위 끝에서 이진 탐색 중간값 계산이 넘칠 수 있습니다. 안전한 식도 어떤 구간 전제를 요구하나요?](/tech-interview/questions/binary-search-midpoint-overflow/)
 - 실수 경계 탐색에서 반복 횟수·허용 오차·무한 루프 조건을 정해 보세요.

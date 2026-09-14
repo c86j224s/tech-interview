@@ -2,7 +2,7 @@
 id: bst-balance
 title: "정렬된 키를 이진 탐색 트리에 차례대로 넣으면 왜 검색이 느려질 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"red-black-tree-invariants","prompt":"정렬·삭제가 반복돼 높이를 제한해야 한다면, Red-Black Tree가 어떤 불변식을 복구해 사슬을 막는지 설명해 보세요."},{"id":"array-linked-list-choice","prompt":"데이터가 거의 정적으로 유지되고 조회가 대부분이라면, 균형 BST 대신 정렬 배열을 택할 조건과 갱신 비용은 무엇입니까?"},{"id":"btree-hash-index","prompt":"키가 메모리보다 큰 DB 인덱스라면, 이진 탐색 트리의 노드 구조를 B+tree나 해시 인덱스로 바꿀 기준은 무엇입니까?"}]
+followups: [{"id":"bst-rotation-inorder-proof","prompt":"검색 트리를 회전해 높이를 바꿉니다. 키의 중위 순서는 왜 유지되며 어떤 포인터를 함께 갱신하나요?"},{"id":"avl-red-black-update-tradeoff","prompt":"검색과 갱신이 섞인 트리에서 AVL과 Red-Black Tree를 비교합니다. 균형의 엄격함과 회전 비용을 어떻게 측정하나요?"},{"id":"red-black-tree-invariants","prompt":"정렬·삭제가 반복돼 높이를 제한해야 한다면, Red-Black Tree가 어떤 불변식을 복구해 사슬을 막는지 설명해 보세요."}]
 difficulty: 하
 category: 자료구조
 tags: ["BST","균형 트리","검색"]
@@ -47,6 +47,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 회전이 중위 순서를 유지하면서 높이를 바꾸는 과정을 작은 트리로 설명해 보세요.
-- AVL과 Red-Black Tree의 균형 엄격도와 갱신 비용을 비교해 보세요.
+- [검색 트리를 회전해 높이를 바꿉니다. 키의 중위 순서는 왜 유지되며 어떤 포인터를 함께 갱신하나요?](/tech-interview/questions/bst-rotation-inorder-proof/)
+- [검색과 갱신이 섞인 트리에서 AVL과 Red-Black Tree를 비교합니다. 균형의 엄격함과 회전 비용을 어떻게 측정하나요?](/tech-interview/questions/avl-red-black-update-tradeoff/)
 - 정적 정렬 배열과 동적 균형 트리의 캐시·갱신·참조 무효화 차이를 말해 보세요.

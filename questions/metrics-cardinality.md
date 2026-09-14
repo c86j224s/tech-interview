@@ -2,7 +2,7 @@
 id: metrics-cardinality
 title: "사용자별 지연을 보고 싶어 메트릭 라벨에 사용자 ID를 넣었습니다. 어떤 문제가 생기고 개별 요청은 어떻게 분석하나요?"
 answerMinutes: 5
-followups: [{"id":"distributed-tracing-boundaries","prompt":"사용자별 원인을 trace로 이어갈 때 서비스·큐·DB 경계를 어떤 span으로 남길까요?"},{"id":"logging-performance-safety","prompt":"개별 요청을 로그로 분석할 때 개인정보와 로그 폭주를 동시에 줄이는 필드는 무엇일까요?"},{"id":"load-test-realism","prompt":"부하 테스트에서 label series 증가 자체가 대상 시스템을 왜곡하는지 어떻게 확인할까요?"}]
+followups: [{"id":"metric-exemplar-trace-selection","prompt":"지연 메트릭에 exemplar로 trace를 연결합니다. 모든 요청을 넣지 않고 어떤 표본과 보존 범위를 선택하나요?"},{"id":"tenant-slo-cardinality-budget","prompt":"테넌트별 SLO를 제공해야 합니다. 라벨 수를 제한하면서 작은 테넌트의 오류를 어떻게 관측하나요?"},{"id":"distributed-tracing-boundaries","prompt":"사용자별 원인을 trace로 이어갈 때 서비스·큐·DB 경계를 어떤 span으로 남길까요?"}]
 difficulty: 하
 category: 성능
 tags:
@@ -46,6 +46,6 @@ route는 `/users/{id}/orders`처럼 정규화하되, 서로 다른 동작을 하
 
 ## 더 파고들 거리
 
-- exemplar를 모든 요청이 아니라 일부 요청에만 연결해야 하는 기준은 무엇인가요?
-- 테넌트별 SLO를 제한된 집계로 제공할 때 어떤 상한을 둘까요?
+- [지연 메트릭에 exemplar로 trace를 연결합니다. 모든 요청을 넣지 않고 어떤 표본과 보존 범위를 선택하나요?](/tech-interview/questions/metric-exemplar-trace-selection/)
+- [테넌트별 SLO를 제공해야 합니다. 라벨 수를 제한하면서 작은 테넌트의 오류를 어떻게 관측하나요?](/tech-interview/questions/tenant-slo-cardinality-budget/)
 - histogram bucket과 label 조합이 저장 비용에 곱해지는 과정을 계산해 보세요.

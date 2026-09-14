@@ -2,7 +2,7 @@
 id: load-test-realism
 title: "부하 테스트의 TPS와 지연 결과가 운영 성능을 예측하려면 요청·데이터·캐시·부하 생성 조건을 무엇까지 맞춰야 하나요?"
 answerMinutes: 5
-followups: [{"id":"throughput-vs-latency","prompt":"처리량이 늘었지만 p99가 악화된 부하 결과에서 어느 지점을 용량 한도로 선택할까요?"},{"id":"cache-stampede-singleflight","prompt":"cold cache나 만료 순간에 중복 DB 조회가 생기는 조건을 부하 시나리오에 어떻게 넣을까요?"},{"id":"metrics-cardinality","prompt":"부하 테스트의 개별 요청 원인을 추적하면서 메트릭 label 폭증을 어떻게 피할까요?"}]
+followups: [{"id":"production-replay-data-redaction","prompt":"운영 트래픽을 부하 테스트에 재생합니다. 개인정보·자격·외부 쓰기 효과를 어떤 대체 데이터와 endpoint로 격리하나요?"},{"id":"soak-leak-versus-warmup","prompt":"장시간 부하에서 메모리가 늘어납니다. 정상 예열·캐시·allocator 보유와 누수를 어떤 추세로 구분하나요?"},{"id":"weighted-throughput-workload-mix","prompt":"작은 조회와 큰 집계를 하나의 TPS로 보고합니다. 요청 혼합과 가중 처리량은 어떻게 정의해야 비교가 공정한가요?"}]
 difficulty: 하
 category: 성능
 tags:
@@ -48,6 +48,6 @@ closed-loop는 응답이 느려지면 발송률도 떨어져 적체를 숨길 �
 
 ## 더 파고들 거리
 
-- 운영 트래픽 재생에서 개인정보와 쓰기 효과를 어떤 방식으로 치환할까요?
-- soak test에서 누수와 단순 warm-up을 어떤 추세로 구분할까요?
-- 비용이 다른 요청을 하나의 TPS로 집계할 때 가중 처리율을 어떻게 정의할까요?
+- [운영 트래픽을 부하 테스트에 재생합니다. 개인정보·자격·외부 쓰기 효과를 어떤 대체 데이터와 endpoint로 격리하나요?](/tech-interview/questions/production-replay-data-redaction/)
+- [장시간 부하에서 메모리가 늘어납니다. 정상 예열·캐시·allocator 보유와 누수를 어떤 추세로 구분하나요?](/tech-interview/questions/soak-leak-versus-warmup/)
+- [작은 조회와 큰 집계를 하나의 TPS로 보고합니다. 요청 혼합과 가중 처리량은 어떻게 정의해야 비교가 공정한가요?](/tech-interview/questions/weighted-throughput-workload-mix/)

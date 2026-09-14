@@ -2,7 +2,7 @@
 id: consensus-vs-replication
 title: "같은 데이터를 여러 서버에 복제했는데 장애 후 두 서버가 자신을 리더라고 주장합니다. 복제만으로 해결되지 않는 문제는 무엇이며 합의가 필요한 부분은 어디인가요?"
 answerMinutes: 5
-followups: [{"id":"raft-log-commit-apply","prompt":"합의 로그의 commit·apply와 외부 효과를 어떤 경계로 나누겠습니까?"},{"id":"consistency-linearizability","prompt":"복제본이 잠시 다른 값을 읽는 것과 확정 결정을 뒤집는 것은 어떻게 다릅니까?"},{"id":"paxos-prepare-accept","prompt":"새 proposer가 과거 수락값을 이어받아야 하는 이유를 쿼럼 교집합으로 설명해 보세요."}]
+followups: [{"id":"replicated-state-machine-outbox","prompt":"합의 로그를 각 노드가 적용할 때 메일·결제를 직접 호출하면 왜 중복되며 실행 의도는 어디에 저장하나요?"},{"id":"consensus-crash-byzantine-model","prompt":"중단·복구를 견디는 합의와 거짓 메시지를 보내는 노드까지 견디는 합의는 어떤 장애 가정이 다른가요?"},{"id":"raft-log-commit-apply","prompt":"합의 로그의 commit·apply와 외부 효과를 어떤 경계로 나누겠습니까?"}]
 difficulty: 하
 category: 분산 시스템
 tags: ["합의","복제","Raft","Paxos"]
@@ -51,5 +51,5 @@ related: ["consistency-linearizability"]
 ## 더 파고들 거리
 
 - 리더 선출과 로그 복구
-- 합의 로그와 outbox
-- 장애 모델 비교
+- [합의 로그를 각 노드가 적용할 때 메일·결제를 직접 호출하면 왜 중복되며 실행 의도는 어디에 저장하나요?](/tech-interview/questions/replicated-state-machine-outbox/)
+- [중단·복구를 견디는 합의와 거짓 메시지를 보내는 노드까지 견디는 합의는 어떤 장애 가정이 다른가요?](/tech-interview/questions/consensus-crash-byzantine-model/)

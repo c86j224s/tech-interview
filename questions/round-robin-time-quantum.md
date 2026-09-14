@@ -2,7 +2,7 @@
 id: round-robin-time-quantum
 title: "긴 계산과 짧은 대화형 작업을 함께 실행합니다. Round Robin의 time quantum을 줄이면 응답성과 문맥 교환 비용이 어떻게 달라지나요?"
 answerMinutes: 5
-followups: [{"id":"cpu-scheduling-policies","prompt":"Round Robin을 FCFS·SJF와 비교할 때 평균 완료 시간 외에 어떤 반응성과 공정성 지표를 봐야 할까요?"},{"id":"context-switch-overhead","prompt":"quantum을 줄인 뒤 전환 수가 늘었을 때 그 비용이 실제 계산을 얼마나 잠식했는지 어떻게 측정할까요?"},{"id":"priority-queue-starvation","prompt":"우선순위가 다른 작업에 시간 할당을 다르게 줄 때 낮은 우선순위 작업의 기아를 어떻게 제한할까요?"}]
+followups: [{"id":"round-robin-cycle-wait-bound","prompt":"Round Robin의 runnable 작업 수가 늘었습니다. 한 바퀴 대기와 quantum이 응답 지연에 어떤 영향을 주나요?"},{"id":"cpu-scheduling-policies","prompt":"Round Robin을 FCFS·SJF와 비교할 때 평균 완료 시간 외에 어떤 반응성과 공정성 지표를 봐야 할까요?"},{"id":"context-switch-overhead","prompt":"quantum을 줄인 뒤 전환 수가 늘었을 때 그 비용이 실제 계산을 얼마나 잠식했는지 어떻게 측정할까요?"}]
 difficulty: 하
 category: 운영체제
 tags: ["Round Robin","time quantum","컨텍스트 스위칭"]
@@ -43,6 +43,6 @@ runnable 작업이 4개이고 quantum이 5ms라면 한 작업은 최악의 경�
 
 ## 더 파고들 거리
 
-- 작업 수가 늘 때 한 바퀴 대기가 p99에 미치는 영향을 어떻게 계산할까요?
+- [Round Robin의 runnable 작업 수가 늘었습니다. 한 바퀴 대기와 quantum이 응답 지연에 어떤 영향을 주나요?](/tech-interview/questions/round-robin-cycle-wait-bound/)
 - 우선순위 큐마다 다른 quantum을 둘 때 어떤 역효과가 생길까요?
 - 캐시 miss와 전환 비용을 trace에서 어떻게 연결할까요?

@@ -2,7 +2,7 @@
 id: voxel-chunk-boundaries
 title: "복셀 월드를 청크로 스트리밍할 때 충돌·경로·시야가 청크 경계에서 틀어지지 않게 하려면 무엇을 관리해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"voxel-derived-data-update","prompt":"경계 청크의 원본은 최신인데 이웃의 충돌·경로 파생 데이터가 이전 버전이면 어느 요청을 보류하거나 보수적으로 처리하겠습니까?"},{"id":"voxel-raycast-dda","prompt":"DDA ray가 청크 경계를 넘을 때 이웃 미로딩과 경계 셀 포함 규칙을 어떤 순서로 처리하겠습니까?"},{"id":"voxel-sparse-storage","prompt":"대부분 빈 월드의 청크를 해시로 찾을 때 미존재 청크·명시적 빈 청크·미로딩 청크를 어떻게 구분하겠습니까?"}]
+followups: [{"id":"voxel-halo-version-consistency","prompt":"청크 경계에 ghost cell을 복사합니다. 원본과 halo가 다른 버전일 때 어떤 검사를 보류해야 하나요?"},{"id":"voxel-derived-data-update","prompt":"경계 청크의 원본은 최신인데 이웃의 충돌·경로 파생 데이터가 이전 버전이면 어느 요청을 보류하거나 보수적으로 처리하겠습니까?"},{"id":"voxel-raycast-dda","prompt":"DDA ray가 청크 경계를 넘을 때 이웃 미로딩과 경계 셀 포함 규칙을 어떤 순서로 처리하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["복셀","청크","경계"]
@@ -39,6 +39,6 @@ related: ["voxel-occupancy-representation"]
 
 ## 더 파고들 거리
 
-- ghost cell을 둘 때 원본 청크와 halo의 버전 불일치를 어떻게 감지하나요?
+- [청크 경계에 ghost cell을 복사합니다. 원본과 halo가 다른 버전일 때 어떤 검사를 보류해야 하나요?](/tech-interview/questions/voxel-halo-version-consistency/)
 - 청크 버전이 서로 다를 때 경로 결과를 잠정으로 저장할지 거절할지 어떤 기준으로 정하나요?
 - 청크 크기를 키워 로딩 횟수를 줄일 때 경계 재생성 폭과 캐시 지역성은 어떻게 측정하나요?

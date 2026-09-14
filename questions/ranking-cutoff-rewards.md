@@ -2,7 +2,7 @@
 id: ranking-cutoff-rewards
 title: "게임 랭킹 마감 뒤 늦게 도착한 점수와 보상 지급을 어떤 기준 버전으로 확정하고 재처리하나요?"
 answerMinutes: 5
-followups: [{"id":"ranking-top-k","prompt":"확정판의 상위 K명과 임의 사용자의 순위를 계산할 때 동점·정렬 기준을 어떤 버전으로 고정하겠습니까?"},{"id":"message-consumer-idempotency","prompt":"보상 이벤트가 ACK 전에 재전달되면 권리 원장과 실제 지급을 어떤 순서로 멱등 처리하겠습니까?"},{"id":"distributed-clock-order","prompt":"서버 시각이 서로 어긋날 때 이벤트 발생 순서와 마감 포함 여부를 어떤 논리적 순서로 판단하겠습니까?"}]
+followups: [{"id":"ranking-reward-adjustment-ledger","prompt":"부정 점수 정정으로 지급한 보상이 바뀝니다. 원래 권리와 회수·차액 지급을 어떤 별도 원장으로 관리하나요?"},{"id":"ranking-top-k","prompt":"확정판의 상위 K명과 임의 사용자의 순위를 계산할 때 동점·정렬 기준을 어떤 버전으로 고정하겠습니까?"},{"id":"message-consumer-idempotency","prompt":"보상 이벤트가 ACK 전에 재전달되면 권리 원장과 실제 지급을 어떤 순서로 멱등 처리하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["랭킹","보상","마감"]
@@ -41,6 +41,6 @@ related: ["ranking-top-k","message-consumer-idempotency"]
 
 ## 더 파고들 거리
 
-- 부정 점수 정정으로 이미 지급한 보상이 바뀔 때 회수·차액·다음 시즌 반영을 어떻게 감사하나요?
+- [부정 점수 정정으로 지급한 보상이 바뀝니다. 원래 권리와 회수·차액 지급을 어떤 별도 원장으로 관리하나요?](/tech-interview/questions/ranking-reward-adjustment-ledger/)
 - 모든 샤드가 같은 집계판을 처리했다는 사실을 어떤 watermark와 재현 로그로 확정하나요?
 - 잠정·확정 순위를 사용자에게 구분해 보여 주면서도 마감 정책을 악용하지 않게 어떻게 공개하나요?

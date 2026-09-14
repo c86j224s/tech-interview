@@ -2,7 +2,7 @@
 id: jps-plus-preprocessing
 title: "격자 맵의 길찾기를 JPS+로 가속하려 합니다. 무엇을 미리 계산하며, 게임 중 문이 열리고 닫히면 어떤 정보가 낡아지나요?"
 answerMinutes: 5
-followups: [{"id":"jps-symmetry-pruning","prompt":"균일 비용과 대각 이동 전제가 깨지는 지형에서 JPS의 강제 이웃 가지치기를 어떤 기준으로 중단하겠습니까?"},{"id":"dynamic-path-revalidation","prompt":"전처리 결과가 발급된 뒤 문이 닫혔다면 경로의 어느 구간을 현재 맵 버전으로 다시 확인하겠습니까?"},{"id":"voxel-derived-data-update","prompt":"충돌·경로·시야 파생 데이터 중 하나만 먼저 재생성될 때 서로 다른 버전을 서비스하지 않게 어떤 교체 단계를 두겠습니까?"}]
+followups: [{"id":"jps-plus-update-dependency-index","prompt":"격자 셀 하나를 바꿨습니다. 그 셀을 통과하는 방향별 점프 전처리의 영향 범위를 어떻게 추적하나요?"},{"id":"jps-plus-table-compression","prompt":"JPS+ 점프 표를 압축하려 합니다. 도달 불가·미계산 상태와 조회 분기 비용을 어떻게 보존하나요?"},{"id":"jps-symmetry-pruning","prompt":"균일 비용과 대각 이동 전제가 깨지는 지형에서 JPS의 강제 이웃 가지치기를 어떤 기준으로 중단하겠습니까?"}]
 difficulty: 중하
 category: 게임 서버
 tags: ["JPS+","경로 탐색","전처리"]
@@ -41,6 +41,6 @@ JPS는 균일하거나 증명된 비용 규칙에서 대칭적인 중간 경로�
 
 ## 더 파고들 거리
 
-- 셀 하나의 변경으로 영향을 받는 방향별 점프 정보를 안전하게 계산하려면 어떤 인덱스가 필요한가요?
-- 점프 정보를 압축할 때 조회 분기와 저장량을 어떤 맵 분포에서 비교하나요?
+- [격자 셀 하나를 바꿨습니다. 그 셀을 통과하는 방향별 점프 전처리의 영향 범위를 어떻게 추적하나요?](/tech-interview/questions/jps-plus-update-dependency-index/)
+- [JPS+ 점프 표를 압축하려 합니다. 도달 불가·미계산 상태와 조회 분기 비용을 어떻게 보존하나요?](/tech-interview/questions/jps-plus-table-compression/)
 - 정적 전처리와 동적 점유 검사를 결합했을 때 최단 경로 보장을 유지하는 조건은 무엇인가요?

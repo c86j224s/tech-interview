@@ -2,7 +2,7 @@
 id: quicksort-worst-case
 title: "퀵 정렬로 무작위 데이터는 빠르게 처리했지만 정렬된 입력에서는 급격히 느려집니다. 피벗과 분할이 어떤 영향을 주며 최악의 경우를 어떻게 줄이나요?"
 answerMinutes: 5
-followups: [{"id":"sorting-stability","prompt":"동점 레코드의 입력 순서까지 보존해야 한다면, 퀵 정렬의 일반적인 분할과 안정 정렬 요구는 어떻게 충돌합니까?"},{"id":"counting-radix-sort","prompt":"키가 정수이고 값 범위가 제한돼 있다면, 피벗 선택을 튜닝하는 대신 비비교 정렬을 고를 조건은 무엇입니까?"},{"id":"merge-sort-external","prompt":"데이터가 메모리에 들어오지 않는다면 퀵 정렬의 재귀 분할 대신 외부 병합 정렬을 선택하는 이유는 무엇입니까?"}]
+followups: [{"id":"introsort-depth-fallback","prompt":"introsort가 재귀 깊이 한도에서 heapsort로 전환합니다. 최악 시간과 stack 상한은 어떻게 연결되나요?"},{"id":"sorting-stability","prompt":"동점 레코드의 입력 순서까지 보존해야 한다면, 퀵 정렬의 일반적인 분할과 안정 정렬 요구는 어떻게 충돌합니까?"},{"id":"counting-radix-sort","prompt":"키가 정수이고 값 범위가 제한돼 있다면, 피벗 선택을 튜닝하는 대신 비비교 정렬을 고를 조건은 무엇입니까?"}]
 difficulty: 하
 category: 알고리즘
 tags: ["퀵 정렬","피벗","최악 복잡도"]
@@ -45,6 +45,6 @@ related: ["sorting-stability"]
 
 ## 더 파고들 거리
 
-- introsort가 재귀 깊이를 기준으로 힙 정렬로 바꾸는 이유를 설명해 보세요.
+- [introsort가 재귀 깊이 한도에서 heapsort로 전환합니다. 최악 시간과 stack 상한은 어떻게 연결되나요?](/tech-interview/questions/introsort-depth-fallback/)
 - 작은 구간에서 삽입 정렬이 분할을 계속하는 것보다 유리한 조건을 말해 보세요.
 - 피벗을 정하는 추가 비교 비용과 분할 품질 향상의 손익을 측정해 보세요.

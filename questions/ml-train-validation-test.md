@@ -2,7 +2,7 @@
 id: ml-train-validation-test
 title: "모델의 하이퍼파라미터를 여러 번 바꿔 가장 좋은 결과를 골랐습니다. 훈련·검증·테스트 데이터를 어떻게 분리해야 성능을 공정하게 추정할 수 있나요?"
 answerMinutes: 5
-followups: [{"id":"ml-overfitting-generalization","prompt":"검증 세트에 맞춰 조기 종료와 증강을 반복 선택한 뒤 과적합이 의심된다면 독립 평가와 곡선을 어떻게 다시 구성하겠습니까?"},{"id":"ml-classification-metrics","prompt":"불균형 분류의 임계값과 확률 보정까지 선택해야 할 때 train·validation·test 각각에서 무엇을 fit하고 무엇을 고정하겠습니까?"},{"id":"ml-gradient-learning-rate","prompt":"학습률 후보를 비교하면서 배치 크기와 전처리 통계도 함께 바꿨다면 공정한 실험과 누수 여부를 어떤 기록으로 확인하겠습니까?"}]
+followups: [{"id":"rolling-validation-future-holdout","prompt":"시간 순서가 있는 데이터에서 rolling validation과 미래 holdout을 어떤 누출·변화·계산 비용으로 비교하나요?"},{"id":"cross-validation-fold-correlation","prompt":"교차 검증 점수의 평균과 분산을 봅니다. 겹치는 학습 자료와 그룹 의존성은 불확실성 해석에 어떤 영향을 주나요?"},{"id":"ml-overfitting-generalization","prompt":"검증 세트에 맞춰 조기 종료와 증강을 반복 선택한 뒤 과적합이 의심된다면 독립 평가와 곡선을 어떻게 다시 구성하겠습니까?"}]
 difficulty: 하
 category: 머신러닝
 tags: ["머신러닝","훈련 데이터","검증 데이터","테스트 데이터","정보 유출"]
@@ -43,6 +43,6 @@ related: []
 
 ## 더 파고들 거리
 
-- 시계열 rolling validation과 단일 미래 holdout을 운영 변화와 계산 비용 기준으로 비교해 보세요.
-- 교차 검증 평균·분산·접기 간 상관을 최종 모델 선택의 불확실성과 연결해 보세요.
+- [시간 순서가 있는 데이터에서 rolling validation과 미래 holdout을 어떤 누출·변화·계산 비용으로 비교하나요?](/tech-interview/questions/rolling-validation-future-holdout/)
+- [교차 검증 점수의 평균과 분산을 봅니다. 겹치는 학습 자료와 그룹 의존성은 불확실성 해석에 어떤 영향을 주나요?](/tech-interview/questions/cross-validation-fold-correlation/)
 - 실험 추적에 데이터 버전·분할 ID·전처리 fit 범위·선택 횟수·최종 test 사용 여부를 남겨 보세요.

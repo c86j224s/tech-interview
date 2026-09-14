@@ -2,7 +2,7 @@
 id: db-keyset-pagination
 title: "주문 목록에서 OFFSET으로 뒤 페이지를 열수록 느려집니다. 마지막 주문의 시각과 ID를 커서로 쓰면 어떻게 달라지나요?"
 answerMinutes: 5
-followups: [{"id":"composite-index-column-order","prompt":"키셋 조건과 ORDER BY를 적은 읽기로 처리하려면 복합 인덱스 컬럼 순서를 어떻게 맞추나요?"},{"id":"db-read-replica-consistency","prompt":"다음 페이지를 읽는 요청이 서로 다른 복제본으로 라우팅되면 어떤 최신성 문제가 생기나요?"},{"id":"db-query-plan-regression","prompt":"키셋 쿼리가 어느 날 넓은 범위를 스캔하기 시작했다면 계획과 통계를 어떻게 비교하나요?"}]
+followups: [{"id":"keyset-mixed-sort-directions","prompt":"시각은 내림차순, ID는 오름차순인 목록을 키셋으로 읽습니다. 다음 페이지의 비교 조건은 어떻게 만드나요?"},{"id":"pagination-signed-cursor-scope","prompt":"페이지 커서에 필터·정렬·테넌트 정보를 넣습니다. 서명·만료·인가 검사는 어떤 역할이 다른가요?"},{"id":"composite-index-column-order","prompt":"키셋 조건과 ORDER BY를 적은 읽기로 처리하려면 복합 인덱스 컬럼 순서를 어떻게 맞추나요?"}]
 difficulty: 하
 category: 데이터베이스
 tags:
@@ -56,6 +56,6 @@ PostgreSQL의 행 비교와 MVCC, SQL Server의 격리 수준, MySQL/InnoDB의 �
 
 ## 더 파고들 거리
 
-- 오름차순·내림차순이 섞인 복합 키 조건을 검증해 보세요.
-- 서명된 커서에 필터·정렬·테넌트 범위를 포함할지 결정해 보세요.
+- [시각은 내림차순, ID는 오름차순인 목록을 키셋으로 읽습니다. 다음 페이지의 비교 조건은 어떻게 만드나요?](/tech-interview/questions/keyset-mixed-sort-directions/)
+- [페이지 커서에 필터·정렬·테넌트 정보를 넣습니다. 서명·만료·인가 검사는 어떤 역할이 다른가요?](/tech-interview/questions/pagination-signed-cursor-scope/)
 - 전체 건수 없이 페이지 규모와 종료 여부를 안내하는 방법을 비교해 보세요.

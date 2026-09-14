@@ -2,7 +2,7 @@
 id: k8s-rolling-update-capacity
 title: "Pod 4개를 운영하는 Deployment에서 maxSurge=1, maxUnavailable=1로 업데이트하면 실행 중인 Pod 수와 가용성은 어떻게 달라지나요?"
 answerMinutes: 5
-followups: [{"id":"k8s-probe-contract","prompt":"새 Pod가 프로세스는 실행 중이지만 DB migration을 기다리는 동안 readiness를 어떻게 설계해야 rollout이 잘못 진행되지 않을까요?"},{"id":"argocd-sync-waves-hooks","prompt":"구버전 Pod가 남아 있는 동안 DB 스키마를 바꿔야 한다면 Deployment rollout과 migration hook의 순서를 어떻게 조합하겠습니까?"},{"id":"k8s-pdb-eviction","prompt":"롤링 업데이트의 maxUnavailable과 별도로 노드 drain이 시작되면 PDB가 실제 중단 가능성을 어떻게 바꿀까요?"}]
+followups: [{"id":"deployment-surge-unavailable-rounding","prompt":"replica가 적을 때 maxSurge·maxUnavailable의 백분율은 어떻게 올림·내림되어 실제 용량을 바꾸나요?"},{"id":"single-replica-zero-downtime-rollout","prompt":"replica가 하나인 API를 무중단 교체하려 합니다. 추가 용량·readiness·연결·데이터 호환에는 어떤 전제가 필요한가요?"},{"id":"k8s-probe-contract","prompt":"새 Pod가 프로세스는 실행 중이지만 DB migration을 기다리는 동안 readiness를 어떻게 설계해야 rollout이 잘못 진행되지 않을까요?"}]
 difficulty: 하
 category: 인프라
 tags: ["Kubernetes","Deployment","롤링 업데이트"]
@@ -43,6 +43,6 @@ replica가 4에서 5로 보이는 순간에도 새 Pod가 이미지 다운로드
 
 ## 더 파고들 거리
 
-- 작은 replica에서 maxSurge와 maxUnavailable 백분율의 올림·내림이 어떤 차이를 만드는지 계산해 보세요.
-- replica가 하나인 서비스에서 무중단 교체를 하려면 자원·readiness·호환성에 어떤 전제가 필요한가요.
+- [replica가 적을 때 maxSurge·maxUnavailable의 백분율은 어떻게 올림·내림되어 실제 용량을 바꾸나요?](/tech-interview/questions/deployment-surge-unavailable-rounding/)
+- [replica가 하나인 API를 무중단 교체하려 합니다. 추가 용량·readiness·연결·데이터 호환에는 어떤 전제가 필요한가요?](/tech-interview/questions/single-replica-zero-downtime-rollout/)
 - readiness 지연과 progress deadline을 실제 이벤트·지연·오류 지표로 어떻게 함께 판단할까요.

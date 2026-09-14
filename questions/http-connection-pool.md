@@ -2,7 +2,7 @@
 id: http-connection-pool
 title: "외부 HTTP 호출에서 연결 풀 대기가 늘었습니다. 연결 수를 늘려도 되는 경우와 오히려 줄여야 하는 경우는 어떻게 구분하나요?"
 answerMinutes: 5
-followups: [{"id":"dns-cache-failover","prompt":"DNS가 새 주소를 반환한 뒤에도 풀의 유휴 연결이 이전 서버를 가리킨다면, 어떤 만료와 드레이닝 정책을 추가하겠습니까?"},{"id":"bounded-queue-backpressure","prompt":"연결 풀 상한을 줄였더니 대기 요청이 늘어난다면, 풀·요청 큐·하위 서비스 사이의 각 상한을 어떻게 조정하겠습니까?"},{"id":"bulkhead-isolation","prompt":"추천 API의 느린 연결이 로그인 호출의 풀 슬롯까지 차지한다면, 풀과 워커를 어떤 단위로 격리하겠습니까?"}]
+followups: [{"id":"http-pool-acquire-deadline","prompt":"HTTP 연결을 기다리다가 사용자 deadline을 넘깁니다. 풀 획득·연결·응답 기한을 어떻게 합치나요?"},{"id":"http2-stream-pool-budget","prompt":"HTTP/2 연결 수는 적지만 스트림이 많습니다. 연결 풀과 스트림 동시성을 하위 용량에 어떻게 맞추나요?"},{"id":"stale-keepalive-write-retry","prompt":"중간 장치가 닫은 유휴 연결을 재사용하다 변경 요청이 실패했습니다. 재시도 전에 무엇을 확인하나요?"}]
 difficulty: 하
 category: 네트워크
 tags:
@@ -49,6 +49,6 @@ HTTP/1.1에서는 대체로 연결 하나의 동시 요청 수와 풀 슬롯이 
 
 ## 더 파고들 거리
 
-- 연결 획득 timeout을 전체 요청 deadline과 어떤 우선순위로 결합할까요?
-- HTTP/2 최대 스트림과 연결 풀 상한을 하위 서비스의 CPU·메모리와 어떻게 맞출까요?
-- 유휴 연결이 중간 장치에서 끊긴 뒤 멱등하지 않은 요청을 어떻게 보호할까요?
+- [HTTP 연결을 기다리다가 사용자 deadline을 넘깁니다. 풀 획득·연결·응답 기한을 어떻게 합치나요?](/tech-interview/questions/http-pool-acquire-deadline/)
+- [HTTP/2 연결 수는 적지만 스트림이 많습니다. 연결 풀과 스트림 동시성을 하위 용량에 어떻게 맞추나요?](/tech-interview/questions/http2-stream-pool-budget/)
+- [중간 장치가 닫은 유휴 연결을 재사용하다 변경 요청이 실패했습니다. 재시도 전에 무엇을 확인하나요?](/tech-interview/questions/stale-keepalive-write-retry/)

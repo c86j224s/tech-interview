@@ -2,7 +2,7 @@
 id: kafka-rebalance-processing
 title: "Kafka 소비자가 메시지를 처리하는 동안 리밸런싱으로 파티션을 잃으면, 작업과 offset을 어떤 순서로 정리해야 하나요?"
 answerMinutes: 5
-followups: [{"id":"kafka-consumer-group","prompt":"consumer 확장 뒤 partition 병렬성과 키 편중을 어떻게 진단하나요?"},{"id":"kafka-partition-offset","prompt":"읽은 위치와 외부 완료 위치가 다르면 어디까지만 commit할 수 있나요?"},{"id":"message-consumer-idempotency","prompt":"옛 consumer의 늦은 DB 쓰기가 새 결과를 덮지 않게 어떤 버전 정책을 쓰나요?"}]
+followups: [{"id":"kafka-cooperative-rebalance-scope","prompt":"cooperative rebalance를 켰습니다. 반납 범위가 줄어도 실행 중 외부 작업의 안전성은 왜 따로 필요한가요?"},{"id":"kafka-worker-queue-revocation","prompt":"partition 소유권을 잃을 때 메모리 worker 큐를 버립니다. 어떤 커밋 위치와 내구 기록이 있어야 누락 없이 재처리하나요?"},{"id":"kafka-consumer-group","prompt":"consumer 확장 뒤 partition 병렬성과 키 편중을 어떻게 진단하나요?"}]
 difficulty: 중하
 category: 분산 시스템
 tags: ["Kafka","리밸런싱","offset"]
@@ -51,5 +51,5 @@ cooperative rebalance는 모든 partition을 한 번에 반납하는 범위를 �
 ## 더 파고들 거리
 
 - 완료 watermark
-- cooperative 범위
-- 워커 큐 폐기 내구화
+- [cooperative rebalance를 켰습니다. 반납 범위가 줄어도 실행 중 외부 작업의 안전성은 왜 따로 필요한가요?](/tech-interview/questions/kafka-cooperative-rebalance-scope/)
+- [partition 소유권을 잃을 때 메모리 worker 큐를 버립니다. 어떤 커밋 위치와 내구 기록이 있어야 누락 없이 재처리하나요?](/tech-interview/questions/kafka-worker-queue-revocation/)

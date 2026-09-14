@@ -2,7 +2,7 @@
 id: stack-queue-traversal
 title: "되돌리기 기능과 먼저 들어온 작업 처리는 왜 각각 스택과 큐에 어울리나요?"
 answerMinutes: 5
-followups: [{"id":"bounded-queue-backpressure","prompt":"작업이 계속 들어와 큐가 무한히 커질 수 있다면, 용량 상한과 생산자 대기를 어떤 정책으로 연결하겠습니까?"},{"id":"mutex-vs-serial-execution","prompt":"같은 계정 작업의 순서를 보장해야 한다면, 공유 큐 뒤 여러 워커와 계정별 순차 실행 중 무엇을 선택하겠습니까?"},{"id":"dynamic-array-amortized","prompt":"원형 버퍼가 가득 차 확장될 때 head·tail 순서와 기존 원소를 어떻게 재배치하고 지연을 검증하겠습니까?"}]
+followups: [{"id":"undo-redo-branch-history","prompt":"undo 뒤 새 작업을 실행했습니다. undo·redo 두 스택과 외부 효과의 보정은 어떻게 바뀌나요?"},{"id":"bounded-queue-backpressure","prompt":"작업이 계속 들어와 큐가 무한히 커질 수 있다면, 용량 상한과 생산자 대기를 어떤 정책으로 연결하겠습니까?"},{"id":"mutex-vs-serial-execution","prompt":"같은 계정 작업의 순서를 보장해야 한다면, 공유 큐 뒤 여러 워커와 계정별 순차 실행 중 무엇을 선택하겠습니까?"}]
 difficulty: 하
 category: 자료구조
 tags: ["스택","큐","순서"]
@@ -47,6 +47,6 @@ related: ["mutex-vs-serial-execution"]
 
 ## 더 파고들 거리
 
-- redo를 추가할 때 실행·undo·새 분기에서 두 스택을 갱신하는 규칙을 설명해 보세요.
+- [undo 뒤 새 작업을 실행했습니다. undo·redo 두 스택과 외부 효과의 보정은 어떻게 바뀌나요?](/tech-interview/questions/undo-redo-branch-history/)
 - 원형 버퍼에서 비어 있음과 가득 참을 head·tail로 구분하는 방법을 비교해 보세요.
 - 중간 취소가 많은 큐에서 무효화 표식과 힙 기반 삭제를 어떻게 선택할지 말해 보세요.

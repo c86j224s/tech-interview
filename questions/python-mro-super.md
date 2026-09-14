@@ -2,7 +2,7 @@
 id: python-mro-super
 title: "Python 다중 상속에서 super()를 호출했더니 예상한 부모와 다른 클래스의 메서드가 실행됩니다. 호출 순서는 어떻게 정해지며 협력적으로 초기화하려면 무엇을 맞춰야 하나요?"
 answerMinutes: 5
-followups: [{"id":"oop-encapsulation","prompt":"다중 상속 mixin이 private 상태를 초기화할 때 super 계약과 캡슐화 경계를 어떻게 맞출까요?"},{"id":"inheritance-composition","prompt":"협력하지 않는 클래스를 억지로 MRO에 넣는 대신 조합으로 바꾸는 판단 기준은 무엇인가요?"},{"id":"python-duck-typing","prompt":"MRO 기반 상속과 Protocol 기반 행동 조합은 구현 재사용과 결합도에서 어떻게 다를까요?"}]
+followups: [{"id":"python-c3-linearization-example","prompt":"다이아몬드 상속의 C3 MRO를 계산합니다. 후보 head를 tail과 비교하는 규칙은 왜 필요한가요?"},{"id":"oop-encapsulation","prompt":"다중 상속 mixin이 private 상태를 초기화할 때 super 계약과 캡슐화 경계를 어떻게 맞출까요?"},{"id":"inheritance-composition","prompt":"협력하지 않는 클래스를 억지로 MRO에 넣는 대신 조합으로 바꾸는 판단 기준은 무엇인가요?"}]
 difficulty: 중하
 category: 언어·런타임
 tags: ["Python","다중 상속","MRO","C3","super"]
@@ -59,6 +59,6 @@ C3는 부모 목록의 순서뿐 아니라 이미 정한 상위 클래스의 순
 
 ## 더 파고들 거리
 
-- C3 선형화의 후보 head와 tail을 손으로 어떻게 계산할까요?
+- [다이아몬드 상속의 C3 MRO를 계산합니다. 후보 head를 tail과 비교하는 규칙은 왜 필요한가요?](/tech-interview/questions/python-c3-linearization-example/)
 - `__init__`에서 kwargs를 협력적으로 전달할 때 남은 인자를 어떻게 검증할까요?
 - 모순된 상속 그래프가 TypeError가 되는 이유를 어떤 최소 예로 설명할까요?
