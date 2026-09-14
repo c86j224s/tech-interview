@@ -3,7 +3,7 @@ id: kafka-partition-order
 title: Kafka 키 순서와 파티션 증설의 경계
 topic: 분산 시스템
 summary: 같은 키의 레코드가 파티션(partition)과 offset에서 어떤 순서로 보이는지 추적하고, 파티션 증설 뒤 순서 보장을 다시 설계하는 방법을 설명합니다.
-questionIds: [kafka-partition-offset, kafka-partition-expansion, kafka-cross-language-partitioner, kafka-null-key-partitioning]
+questionIds: [kafka-partition-expansion, kafka-cross-language-partitioner, kafka-null-key-partitioning, kafka-new-topic-cutover]
 ---
 
 # Kafka 키 순서와 파티션 증설의 경계
@@ -54,6 +54,14 @@ Kafka 운영 문서는 새 파티션을 consumer가 발견하기 전 `auto.offse
 `draincheck`가 확인해야 하는 것은 단순한 consumer position이 아닙니다. `position`은 읽기 위치이고, group committed offset은 다음에 읽을 위치이며, 실제 DB·외부 시스템의 완료 상태는 별도입니다. 따라서 옛 파티션의 마지막 offset까지 poll했다는 것만으로 switch할 수 없습니다. 반대로 모든 옛 이벤트의 외부 효과가 성공했지만 offset commit 응답이 유실된 경우에는 재처리 ID로 중복을 흡수한 뒤 commit을 재시도할 수 있습니다.
 
 이 절차는 무중단 전환보다 가용성을 덜 보장하지만, “옛 세대가 완전히 끝났는가?”라는 질문에 파티션별 입력과 예상 결과를 붙일 수 있습니다. 무중단 전환에서 필요한 key별 `entitySequence`, generation handoff, gap 보류, 원자 상태 갱신은 별도 설계 주제이므로 여기서는 구현 의사코드로 제시하지 않습니다. 파티션 증설만으로 순서 문제가 자동 해결되지 않는다는 경계를 정확히 확인하는 것이 이 노트의 목적입니다.
+
+### 새 Topic 전환은 두 로그의 위치를 별도로 기록합니다
+
+새 topic으로 옮기면 schema·partition 수·retention·consumer group의 시작 위치를 함께 정할 수 있지만 old offset 100과 new offset 100이 같은 사건을 뜻하지는 않습니다. old의 마지막 입력·실제 효과 완료 위치, new의 첫 입력·생산 세대를 기록하고 같은 논리 event ID를 보존합니다. dual publish가 한쪽만 성공하면 재시도·outbox·대사로 나머지 전달을 복구해야 하며 두 topic의 중복 소비도 처리 ID로 흡수합니다.
+
+중단 없는 전환을 선택한다면 key별 논리 sequence·세대와 bounded gap buffer 또는 snapshot 재동기화가 필요합니다. 전체 상태 이벤트의 낮은 version은 버릴 수 있는 계약이 있지만 +10 같은 delta를 version만 보고 버리면 필요한 효과가 사라집니다. old topic을 늦게 읽는 worker가 new 상태를 덮지 않게 실제 저장 경계의 전이를 검증합니다.
+
+new topic에서 정상 쓰기를 시작한 뒤 old로 돌아가면 new에서만 생긴 변경을 잃을 수 있습니다. 역동기화·전환 장벽·복구 창을 정하고 old 삭제는 보관·재생·consumer 상태 확인 뒤 별도 승인으로 수행합니다. 다국어 producer의 golden vector에는 ASCII뿐 아니라 Unicode 정규화·숫자 문자열·빈 key·null key·명시 partition과 증설 전후 목적지를 포함합니다. key 없는 레코드는 key별 최신 상태 compaction의 기준이 없고, non-null key에 null value를 쓰는 tombstone과 다릅니다. compacted topic의 null key 거절과 client 오류 처리는 실제 버전에서 확인합니다.
 
 ## 직접 따라 볼 입력과 예상 결과
 

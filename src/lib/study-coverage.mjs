@@ -20,10 +20,14 @@ export function validateCoverageReviews(reviews, catalog, studyNotes) {
 const reviews = validateCoverageReviews(JSON.parse(fs.readFileSync(`${process.cwd()}/docs/study-coverage-reviews.json`, 'utf8')), questions, notes);
 const byQuestion = new Map(reviews.map((review) => [review.questionId, review]));
 export const coverageLabels = { covered: '본문 검토 완료', partial: '추가 설명 필요', unreviewed: '연결만 있음 · 검토 대기', missing: '노트 연결 없음' };
+export function coverageStatus(review, linked) {
+  return review?.status || (linked.length ? 'unreviewed' : 'missing');
+}
+
 export const studyCoverage = questions.map((question) => {
   const linked = notesForQuestion(question);
   const review = byQuestion.get(question.id);
-  return { question, linked, review, status: review?.status || (linked.length ? 'unreviewed' : 'missing') };
+  return { question, linked, review, status: coverageStatus(review, linked) };
 });
 export const coverageCounts = Object.fromEntries(Object.keys(coverageLabels).map((status) => [status, studyCoverage.filter((entry) => entry.status === status).length]));
 // Source families are navigation aids, not a claim that every family needs its own note.

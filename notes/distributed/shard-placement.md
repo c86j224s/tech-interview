@@ -1,0 +1,55 @@
+---
+id: shard-placement
+title: 해시 배치·가상 노드·Rendezvous와 안전한 이동
+topic: 분산 시스템
+summary: 키 수·바이트·hot key를 나누고 ring·HRW 이동 성질·가중 배치·snapshot/log 장벽·라우팅 세대·escrow 의미를 설명합니다.
+questionIds: [hash-sharding-and-resharding, consistent-hash-virtual-nodes, rendezvous-hashing, hot-key-semantic-sharding, shard-snapshot-log-handoff-point]
+---
+
+# 해시 배치·가상 노드·Rendezvous와 안전한 이동
+
+## 키 개수가 균등해도 요청 비용은 균등하지 않습니다
+
+각 shard에 계정 100만 개씩 있어도 한 인기 계정이 대부분의 쓰기를 만들면 CPU·lock은 한 shard에 몰립니다. 값 크기·요청률·연산 비용·상위 key 비중을 각각 봅니다. 많은 키가 몰린 hot shard와 한 key 자체가 뜨거운 hot key는 해법이 다릅니다.
+
+`hash(key) mod N`에서 N이 바뀌면 많은 key의 목적지가 바뀔 수 있습니다. consistent hashing·논리 bucket·rendezvous는 이동 범위를 줄일 수 있지만 실제 데이터 복사와 쓰기 권위 전환을 없애지는 않습니다.
+
+## Ring의 가상 노드는 작은 범위를 여러 곳에 배정합니다
+
+물리 노드 하나를 ring 한 위치에만 두면 우연히 긴 해시 구간을 맡을 수 있습니다. 여러 가상 위치로 나누면 작은 범위들이 평균화되어 키 분포를 개선하고 이동 단위를 줄일 수 있습니다. 용량이 큰 노드에 더 많은 범위를 줄 수도 있습니다.
+
+가상 노드 수를 늘려도 한 key의 요청이 여러 권위 노드로 자동 분할되는 것은 아닙니다. metadata·rebalance 관리·복제 위치·데이터 이동 비용도 늘 수 있습니다. 균등 해시의 통계적 기대와 실제 workload 바이트·CPU 분포를 구분합니다.
+
+## Rendezvous는 Key와 각 Node의 점수 중 최대를 선택합니다
+
+안정된 인코딩으로 H(key,nodeID)를 계산하고 가장 큰 점수의 노드를 선택합니다. 같은 점수는 안정 node ID 등 결정적 tie-breaker로 정합니다. 단순 구현의 조회 비용은 후보 N개에 O(N)이며 노드가 많으면 논리 bucket·캐시·계층화 비용을 비교합니다.
+
+| 변경 | 유지되는 배정 | 움직이는 배정 |
+| --- | --- | --- |
+| node D 추가 | D보다 기존 최고 점수가 큰 key | D가 새 최고인 key |
+| node B 제거 | 원래 다른 node를 선택한 key | B를 선택했던 key가 다음 후보로 |
+| node ID 변경 | 다른 모든 입력이 같은 범위 | 사실상 제거+추가 영향 |
+
+균일한 무가중 hash라면 새 node가 받을 기대 비율을 계산할 수 있지만 실제 값 분포·용량 가중치는 별도입니다. 단순 점수×가중치가 원하는 비율을 준다고 가정하지 말고 검증된 weighted HRW를 사용합니다. 여러 상위 후보를 replica로 골라도 복제 commit·읽기 일관성은 다른 프로토콜입니다.
+
+```diagram
+{"title":"배치 선택과 데이터 권위 전환은 다른 단계입니다","caption":"화살표는 증설의 순서입니다. 해시 알고리즘이 새 목적지를 정해도 그 목적지에 최신 데이터와 쓰기 권한이 준비되어야 합니다.","rows":[[{"id":"placement","label":"새 노드 집합·배치 계산"}],[{"id":"copy","label":"snapshot·변경 로그 이동"}],[{"id":"barrier","label":"최종 적용 장벽 검증"}],[{"id":"owner","label":"라우팅·쓰기 세대 전환"}]],"edges":[{"from":"placement","to":"copy","label":"이동 범위 선택"},{"from":"copy","to":"barrier","label":"동시 쓰기·삭제 포함"},{"from":"barrier","to":"owner","label":"현재 권위 게시"}]}
+```
+
+## Snapshot과 증분 시작점을 같은 기준에 묶습니다
+
+일관된 source snapshot과 그 이후 변경을 재생할 위치를 함께 확보합니다. snapshot 복사 동안 write·delete·재삽입이 생겨도 로그가 보존되어 대상에 이어져야 합니다. 증분 version=12를 먼저 적용했는데 늦은 snapshot version=10이 덮지 않도록 적용 순서 또는 원자 version 조건을 둡니다.
+
+건수만 아니라 값·삭제·참조·원본 version·논리 효과를 대조합니다. 대상이 최종 barrier까지 실제 적용했는지 확인한 뒤 writer·router generation을 전환합니다. 옛 router cache·진행 transaction·재시도는 남을 수 있어 옛 shard가 stale generation 쓰기를 거절하거나 검증된 경로로 안내해야 합니다. 토큰을 라우터에서만 검사하고 저장소는 무조건 쓰면 보호가 약합니다.
+
+## Hot Key 분할은 데이터 의미가 허용해야 합니다
+
+독립 통계는 부분 counter·중복 제거·병합으로 나눌 수 있지만 잔액 10을 두 shard가 각각 보고 8씩 차감하면 전역 하한을 깨뜨립니다. 권리를 미리 나눈 escrow·예약 또는 단일 권위 직렬화가 필요할 수 있습니다. 읽기 cache·replica로 hot read를 분산하는 것과 조건부 write 원자성은 다릅니다.
+
+복사·재구축 트래픽이 정상 사용자 I/O를 침범하지 않게 속도·동시성·메모리 상한을 둡니다. key 직렬화·Unicode·숫자 표현·hash·node ID·membership version이 모든 client에서 같아야 배정이 일치합니다. 언어의 프로세스별 임의 hash를 영구 라우팅 함수로 쓰지 않습니다.
+
+## 새 쓰기 뒤 Rollback은 역전환 프로토콜입니다
+
+대상에서 새 정상 변경을 받은 뒤 옛 원본으로 즉시 돌아가면 그 변경을 잃습니다. 역동기화·새 barrier·현재 권위 전환 또는 전진 복구를 정합니다. 원본 삭제는 옛 독자·backfill·복구 보관·개인정보 정책을 확인한 뒤 수행합니다.
+
+시험은 node 추가·삭제의 이동 집합, hot key·값 편중, snapshot 중 변경·삭제, 옛 routing·pause worker·rollback을 포함합니다. 본문은 배치와 이동 설계이며 실제 sharded DB를 이전한 결과는 아닙니다.

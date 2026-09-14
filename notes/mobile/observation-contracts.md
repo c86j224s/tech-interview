@@ -1,0 +1,71 @@
+---
+id: observation-contracts
+title: iOS 콜백·방송과 현재 상태 구독
+topic: 모바일
+summary: delegate·완료 클로저·Notification의 관계를 나누고 구독 수명·재진입·등록과 snapshot 사이의 사건 누락을 설명합니다.
+questionIds: [ios-delegate-closure-notification, ios-multicast-observer-lifecycle, ios-state-snapshot-event-subscription]
+---
+
+# iOS 콜백·방송과 현재 상태 구독
+
+## 한 작업의 답과 여러 화면의 상태 변화는 다릅니다
+
+다운로드 한 번의 결과를 요청자에게 돌려주는 것과 로그인 변화에 여러 화면이 반응하는 것은 같은 통신이 아닙니다. 완료 클로저는 호출 맥락의 단발 결과에, delegate는 특정 협력자의 다단계 계약에, Notification은 발신자가 구독자를 직접 몰라도 되는 사건 방송에 잘 맞을 수 있습니다.
+
+구독자 수만으로 선택하지 않습니다. 응답이 필요한지, 과거 사건을 재생해야 하는지, 누가 결과를 보존하고 언제 구독을 끝내는지도 판단해야 합니다.
+
+## 세 방식의 계약을 표로 나눕니다
+
+| 방식 | 적합한 관계 | 별도 관리 |
+| --- | --- | --- |
+| delegate | 진행·질의·완료를 주고받는 명시적 협력자 | 참조 수명·호출 executor·필수 메서드 |
+| 완료 클로저 | 시작한 작업의 성공·실패·취소 결과 | 한 번 전달·캡처·늦은 완료 |
+| Notification | 독립 소비자에게 사건 방송 | 구독 토큰·순서·재진입·놓친 사건 |
+
+서비스와 화면이 서로 소유하면 delegate를 약하게 두거나 관찰 클로저의 캡처를 조정할 수 있습니다. 그러나 화면이 없어도 남겨야 하는 다운로드 결과는 서비스나 저장소가 소유해야 합니다. 메모리 순환을 끊었다고 작업 보존 문제가 해결되는 것은 아닙니다.
+
+## 알림은 현재 상태를 보관하지 않습니다
+
+화면이 로그인 알림 등록 전에 사용자가 로그인하면 새 화면은 그 사건을 받지 못할 수 있습니다. Notification을 세션 원본으로 삼지 말고 조회 가능한 상태 저장소를 둡니다. 하지만 “상태 조회 후 구독”도 사이에 변경이 생기면 놓칠 수 있습니다.
+
+```diagram
+{"title":"등록과 현재값을 한 경계에서 제공합니다","caption":"화살표는 구독 시작 흐름입니다. 상태 저장소가 등록·snapshot을 한 직렬 경계에서 제공하고, 이후 이벤트에는 증가 버전을 붙입니다.","rows":[[{"id":"screen","label":"새 화면","detail":["현재 로그인 상태 필요"]}],[{"id":"store","label":"세션 상태 저장소","detail":["현재값 · 버전 · 구독자"]}],[{"id":"snapshot","label":"초기 snapshot v10"},{"id":"events","label":"후속 이벤트 v11…"}]],"edges":[{"from":"screen","to":"store","label":"구독 시작"},{"from":"store","to":"snapshot","label":"현재 상태 반환"},{"from":"store","to":"events","label":"이후 변경 전달"}]}
+```
+
+## snapshot과 이벤트가 역순으로 도착해도 버전을 봅니다
+
+```text
+subscribeWithSnapshot(observer):
+    within_store_serial_execution:
+        token = register(observer)
+        initial = (currentVersion, currentState)
+        return token, initial
+
+onState(version, snapshot):
+    within_UI_serial_execution:
+        if version <= displayedVersion: return
+        displayedVersion = version
+        render(snapshot)
+```
+
+이 모형은 이벤트가 **전체 상태 snapshot**을 담는다고 가정합니다. v11이 초기 v10보다 먼저 UI에 도착해도 뒤의 v10을 무시할 수 있습니다. 이벤트가 “포인트 +10” 같은 증분이면 단순 최신 버전만 남기면 중간 효과를 잃을 수 있습니다. 기대 다음 순번과 누락 재생, 또는 원본 전체 재조회가 필요합니다.
+
+등록·snapshot이 원자적이지 않은 API에서는 먼저 구독하며 이벤트를 버퍼링하고 snapshot 버전 이후만 적용하는 등 별도 절차를 둡니다. “일단 알림을 붙였다”는 사실만으로 race가 사라지지 않습니다.
+
+## 구독 중 등록·해제를 허용하면 재진입 규칙이 필요합니다
+
+멀티캐스트 delegate 집합을 순회하는 동안 콜백이 다른 구독자를 제거하거나 새 구독자를 추가할 수 있습니다. 호출할 목록의 snapshot을 만들지, 직렬 실행기에서 변경을 예약할지 정합니다. 약한 참조가 사라지면 건너뛰되 호출 동안 필요한 수명은 확보합니다.
+
+구독자 순서가 결과에 영향을 준다면 순서를 명시한 직접 협력 구조가 더 적합할 수 있습니다. Notification이 모든 수신자의 실패를 격리하거나 모든 API에서 같은 비동기 순서를 보장한다고 가정하지 않습니다. 실제 사용하는 observer API의 queue·동기 전달·토큰 수명 규칙을 확인해야 합니다.
+
+## UI와 필수 효과의 책임을 분리합니다
+
+UI는 적절한 MainActor 경계에서 바꾸고, 느린 파일 처리·네트워크를 동기 알림 콜백에 넣어 발신자를 막지 않도록 합니다. 동시에 큐로 넘기면 실행 완료 순서가 달라질 수 있으므로 버전과 도메인 조건을 유지합니다.
+
+알림 payload에는 필요한 ID·버전만 넣고 비밀번호·원문 자격 등 불필요한 민감값을 방송하지 않습니다. 토큰 해제와 화면 종료를 연결하되, 필수 감사 기록·작업 완료를 UI 구독자 존재에 의존시키지 않습니다.
+
+## 등록 직전과 직후의 변경을 재현합니다
+
+현재값 조회 직후 로그인 변경, 등록 직후 로그아웃, v11 이벤트가 v10 snapshot보다 먼저 도착, 콜백 중 자기 해제, 중복 등록을 시험합니다. 최종 UI가 최신 상태와 맞고 같은 행동이 두 번 실행되지 않아야 합니다.
+
+delegate·클로저·Notification 중 어떤 문법을 골랐는지보다 결과 수명·관찰 순서·복구 원본이 분명한지가 좋은 설계의 기준입니다. 플랫폼별 API 실험과 메모리 검사는 실제 iOS 환경에서 별도로 수행해야 합니다.

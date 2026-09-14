@@ -1,0 +1,49 @@
+---
+id: configmap-application
+title: ConfigMap 전달과 앱 설정의 원자적 적용
+topic: 인프라
+summary: API 객체·환경 변수·파일·앱 캐시의 다른 버전을 추적하고 subPath·재시작·전체 묶음 검증·마지막 정상값·drift 관측을 설명합니다.
+questionIds: [k8s-configmap-reload]
+---
+
+# ConfigMap 전달과 앱 설정의 원자적 적용
+
+## 저장된 값과 실행 중인 값은 다른 상태입니다
+
+ConfigMap의 pool_size를 20에서 40으로 바꿨지만 앱은 계속 20개 연결만 만든다고 합시다. API 객체 수정 성공은 앱 내부 설정 변경의 완료가 아닙니다. 전달 방식·앱의 재읽기·이미 생성한 client pool의 교체 여부를 각각 확인해야 합니다.
+
+환경 변수는 보통 프로세스 시작 시 값이므로 기존 컨테이너 환경이 자동 변경되지 않습니다. 볼륨 파일은 플랫폼이 갱신할 수 있지만 앱이 캐시한 문자열이나 열린 옛 파일 핸들을 계속 쓰면 동작은 바뀌지 않습니다. ConfigMap은 비밀 저장소도 아니므로 자격 원문은 적절한 Secret 관리 경계로 분리합니다.
+
+## 전달 방식별 적용 지점을 정합니다
+
+| 방식 | 새 값이 앱에 들어오는 경계 | 한계 |
+| --- | --- | --- |
+| env·envFrom | 새 프로세스 시작 | 객체 수정만으로 기존 env 갱신 안 됨 |
+| 일반 volume mount | kubelet 전파 후 파일 갱신 | 앱 재읽기·전파 지연 필요 |
+| subPath mount | 일반 자동 갱신과 다른 제약 | 객체 수정 즉시 반영 기대 금지 |
+| 앱의 API watch | 이벤트·재연결 후 처리 | RBAC·watch 유실·재동기화 |
+| 버전별 ConfigMap | 새 Pod template rollout | 준비·혼합 버전·보관 정리 |
+
+파일의 원자 교체·symlink 변경에서는 기존 열린 핸들이 이전 파일을 볼 수 있습니다. watcher가 어떤 경로를 감시하는지 확인하고 전체를 다시 열어 읽는 정책을 정합니다. versioned ConfigMap이나 template checksum을 쓰면 재시작을 유도할 수 있지만 바뀐 checksum이 실제 올바른 설정을 뜻하는 것은 아닙니다.
+
+```diagram
+{"title":"실제 사용 버전까지 추적해야 갱신 완료입니다","caption":"화살표는 설정 적용 경로입니다. 각 Pod는 서로 다른 시간에 갱신할 수 있으며 잘못된 묶음은 실행 상태로 게시하지 않습니다.","rows":[[{"id":"api","label":"ConfigMap 버전 저장"}],[{"id":"deliver","label":"env 재시작·파일·watch 전달"}],[{"id":"validate","label":"앱의 전체 묶음 검증"}],[{"id":"publish","label":"설정 snapshot·client 교체"}],[{"id":"observe","label":"실제 적용 버전 관측"}]],"edges":[{"from":"api","to":"deliver","label":"플랫폼 반영"},{"from":"deliver","to":"validate","label":"새 입력 읽기"},{"from":"validate","to":"publish","label":"호환·범위 통과"},{"from":"publish","to":"observe","label":"실제 호출 확인"}]}
+```
+
+## 값 하나씩 적용하면 잠깐 잘못된 조합이 될 수 있습니다
+
+timeout을 새 1초로 바꾸고 retry는 옛 10회 상태인 순간이 생기면 전체 기한 계약이 달라질 수 있습니다. 새 설정을 임시 객체로 완전히 읽고 타입·범위·필드 간 제약·지원 버전을 확인한 뒤 하나의 불변 snapshot으로 게시합니다. 독자는 한 snapshot을 잡고 관련 값을 읽습니다.
+
+바인딩 포트·저장소 형식처럼 재시작이 필요한 설정과 동적 변경 가능한 값을 명시합니다. 새 pool을 만든 뒤 요청을 옮기고 옛 pool의 진행 중 작업을 drain할지, 즉시 교체가 허용되는지 수명을 정합니다. 설정 참조만 바꿨다고 기존 장기 연결이 새 값으로 동작하는 것은 아닙니다.
+
+## 실패 때 무엇을 유지할지 명시합니다
+
+잘못된 값은 적용을 거절하고 마지막 정상 snapshot을 유지하며 경고할 수 있습니다. 그러나 보안 회수·강제 중단 설정처럼 옛 값을 유지하면 안 되는 정책은 별도입니다. 처음 시작한 앱에 정상값이 없으면 임의 기본값으로 Ready가 되지 않도록 합니다.
+
+상태 endpoint에 원문 비밀 대신 observed config version·applied version·마지막 성공 시각·실패 사유를 노출합니다. Pod마다 다른 버전이 얼마나 오래 남았는지 확인하고 단일 인스턴스의 성공으로 전체 완료를 판정하지 않습니다. GitOps diff에서 제외한 필드는 별도 감사가 필요할 수 있습니다.
+
+## 객체·파일·앱·호출의 네 시각을 비교합니다
+
+테스트 클러스터에서 env·일반 mount·subPath·watch를 나눠 수정하고 실제 앱의 적용 버전과 호출 동작을 확인합니다. 잘못된 묶음·읽기 중 교체·Pod 재시작·watch 단절·옛 pool drain을 시험합니다.
+
+현재 작업에서는 ConfigMap을 배포하거나 수정하지 않았습니다. 이 노트는 설정 전달과 적용의 설계 설명이며 실제 전파 시간을 측정한 보고서는 아닙니다.

@@ -242,6 +242,7 @@ test('질문에서 학습 노트의 원리·슈도코드를 읽고 연습으로 
 });
 
 test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크를 제공한다', async ({ browser, baseURL }) => {
+  test.setTimeout(Math.max(30_000, noteCount * 1_000));
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 375, height: 812 } });
   try {
     const page = await context.newPage();
@@ -271,6 +272,7 @@ test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크
 });
 
 test('학습 그림은 테마에 맞춰 읽히고 글자 영역이 잘리지 않는다', async ({ page }) => {
+  test.setTimeout(Math.max(30_000, noteCount * 1_000));
   for (const theme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme: theme as 'light' | 'dark' });
     for (const note of noteContent.filter((note) => note.content.includes('```diagram'))) {

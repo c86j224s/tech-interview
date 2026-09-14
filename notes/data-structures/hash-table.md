@@ -3,7 +3,7 @@ id: hash-table
 title: 해시 테이블의 충돌과 확장
 topic: 자료구조
 summary: 해시와 키 비교, chaining·open addressing, tombstone과 점진 재해시를 정리합니다.
-questionIds: [hash-collision-resolution, hash-table-resize, go-map-concurrent-access, java-equals-hashcode, python-hash-randomization-order]
+questionIds: [hash-collision-resolution, hash-table-resize, hash-flooding-random-seed-boundary, hash-load-factor-latency-memory, linear-probing-primary-clustering, incremental-rehash-delete-race, go-map-concurrent-access, java-equals-hashcode, python-hash-randomization-order]
 ---
 
 # 해시 테이블의 충돌과 확장
@@ -70,6 +70,16 @@ find(key):
 4. 읽기만 계속되어도 이동이 끝나는가.
 
 버킷 하나에 충돌 키가 매우 많으면 ‘요청마다 한 버킷 이동’도 지연 상한이 아닙니다. 이동 원소 수·시간 예산을 별도로 제한할 수 있습니다.
+
+### 삭제와 이동이 겹칠 때의 한 가지 안전한 규칙
+
+두 세대를 같은 잠금으로 보호하는 단순 모형을 생각해 보겠습니다. 새 테이블을 우선 조회하고, 없으면 옛 테이블을 조회합니다. 갱신은 새 테이블에 쓰고 옛 테이블의 같은 키를 제거합니다. 삭제는 양쪽에서 지웁니다. 이동은 그 잠금 안에서 옛 항목을 읽어 새 테이블에 없을 때만 옮긴 뒤 옛 항목을 제거합니다. 이 전 과정이 원자적이면 삭제 뒤 옛값이 다시 나타나는 경합을 막을 수 있습니다.
+
+반대로 이동자가 잠금 밖에서 옛 값 v1을 복사한 뒤, 삭제자가 양쪽을 지우고, 이동자가 새 테이블에 v1을 넣으면 값이 되살아납니다. 잠금 밖 복사를 허용하려면 현재 버전·삭제 tombstone과 비교하는 별도 규칙이 필요합니다. 단순 set-if-absent도 삭제로 빈 상태가 된 것과 아직 옮기지 않은 상태를 구분하지 못합니다. 옛 테이블 회수는 이동 완료뿐 아니라 그 테이블을 읽는 독자 종료까지 기다려야 합니다.
+
+### 부하율과 군집을 구분합니다
+
+선형 탐사에서는 긴 연속 점유 구간에 새 충돌 키가 붙어 구간이 더 길어지는 1차 군집이 생길 수 있습니다. 다른 시작 버킷의 키도 같은 점유 구간에 들어오면 탐사 길이가 함께 늘어납니다. 부하율을 낮추면 보통 빈칸을 빨리 찾지만 메모리·캐시 footprint·재해시 피크가 증가합니다. 같은 부하율이어도 해시 분포와 삭제 표식 비율에 따라 최대 탐사는 다르므로 평균만 비교하지 않습니다.
 
 ## 동시성과 보안
 

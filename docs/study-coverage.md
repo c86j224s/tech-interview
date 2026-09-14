@@ -4,7 +4,7 @@
 
 1,000개 질문에 노트 1,000개를 만드는 작업이 아니다. 하나의 학습 주제가 여러 질문을 설명할 수 있다. 반대로 질문에 노트 링크가 있어도 그 질문의 구체적인 동작·실패 조건까지 설명되지 않았다면 완료가 아니다.
 
-`/notes/coverage/`는 질문 1,000개를 기존 원문과 승격 심화 문항의 500개 묶음으로 빠짐없이 보여 준다. 이 묶음은 탐색용 출처 관계이지 최종 주제 분류도, 필요한 노트 개수도 아니다. 여러 묶음을 같은 주제로 통합하거나 한 묶음의 별도 심화 주제를 나누는 판단은 본문 작성 시 수행한다. 현재 단계에서 전체 주제 분류·본문 작성이 끝났다고 보고하지 않는다.
+`/notes/coverage/`는 질문 1,000개를 기존 원문과 승격 심화 문항의 500개 묶음으로 빠짐없이 보여 준다. 이 묶음은 탐색용 출처 관계이지 최종 주제 분류도, 필요한 노트 개수도 아니다. 여러 묶음을 같은 주제로 통합하거나 한 묶음의 별도 심화 주제를 나누는 판단은 본문 작성 시 수행한다. 2026-09-15 현재 질문 집합 1,000개는 308개 주제 노트에서 직접 본문 검토를 마쳤다. 이는 현재 질문의 학습 범위 완료이며 모든 가능한 기술 주제나 제품 실행 검증의 완료를 뜻하지 않는다.
 
 ## 상태
 
@@ -46,7 +46,49 @@ Fenwick tree의 점 갱신 200회마다 36개 구간을 기준 배열과 비교�
 
 검산은 `python3 scripts/verify-algorithm-study.py`로 재실행할 수 있다. 단조 스택·덱은 작은 배열 1,093개를 기준 구현과 비교하고, 셔플 24개 선택 경로·reservoir 12개 경로를 전수 열거했다. 무작위 작은 MST 200개를 모든 신장 트리 조합과 비교하고, 지연 전파 구간 합 8,200개와 대입·덧셈 태그 합성, 위상 정렬·복구 DSU·병합·수치 예를 확인했다. 이 스크립트는 설명을 검산하는 별도 구현이며, 운영용 알고리즘 구현이나 모든 입력의 정형 증명을 대신하지 않는다.
 
-## 남은 작성의 묶음
+## 2026-09-15 연속 작성 중간 검증
+
+사용자의 전체 범위 완성 요청에 따라 45개에서 162개 노트로 확장했다. 질문별 본문 검토 완료는 472개, 부분 설명 2개, 연결만 있는 검토 대기 73개, 연결 없음 453개다. **이 시점에도 528개 질문의 범위가 남아 있으며 전체 완료가 아니다.**
+
+알고리즘·자료구조·머신러닝·웹·모바일·네트워크·운영체제·동시성·보안·언어·런타임 카테고리의 현재 질문은 각각 직접 본문 검토를 연결했다. 상위 질문의 링크 상속만으로 완료 처리하지 않았다. 카테고리 완료는 현재 질문 집합의 설명 범위이며 모든 가능한 심화 주제를 망라했다는 뜻은 아니다.
+
+검증과 실행 한계는 다음과 같다.
+
+- 콘텐츠 테스트 32개, 1,000문항·162개 노트 검증, Astro 빌드 통과.
+- 전체 노트의 no-JS 본문·목차·그림·연습 링크와 모바일 폭·테마별 SVG 글자 영역을 포함한 Playwright 16개 통과. 모든 노트를 계속 순회하며 노트 수에 비례해 테스트 기한만 늘렸다.
+- `scripts/verify-remaining-structures.py`: 동전 651개, 배낭 200개, 안정 counting·8비트 signed 정렬, 소수 구간 5,151개, 0-1 BFS 1,200개, sharded top-K 200개 검산.
+- `tests/web-study-examples.spec.ts`: CSS layer·명시도·상속과 이벤트 위임의 span·중첩 루트 사례를 데스크톱·모바일에서 확인.
+- `tests/language-study-examples.test.mjs`: JavaScript 바인딩·this·프로퍼티·복사·transfer·큰 정수·Promise·cold ESM 순환을 Node v26.8.2에서 확인. CJS 최상위는 sync→tick→promise, ESM은 sync→promise→tick으로 관찰했다.
+- `scripts/verify-cpp-study.cpp`: Apple Clang 21.0.0, C++20, ASan·UBSan으로 값 범주·vector 정상 무효화 계약·바이트 디코딩·weak 소유 수명을 확인. noexcept 재할당은 복사 0·이동 2를 관찰했다. 현재 Apple 표준 라이브러리의 atomic shared_ptr 미지원으로 최초 컴파일이 실패했고, 기능 매크로 검사 뒤 해당 실행을 명시적으로 SKIP했다. 코루틴·allocator 실패·동시 snapshot 증명으로 확대하지 않는다.
+- `scripts/verify-go-study.go`: Go 1.27.1, race detector로 slice·typed nil·defer·생산자 취소 후 close·잠금 map 예제를 확인했다. errgroup·GC 프로파일·실서비스 장애 실험은 하지 않았다.
+- `scripts/verify-python-study.py`: CPython 3.9.6에서 기본값·deepcopy·generator·MRO·with·순환·정렬·ContextVar 사례 통과. TaskGroup은 3.11+가 필요해 실행하지 않았고 gather로 대체 검증했다고 보고하지 않는다.
+- 기본 PATH의 javac는 JDK를 찾지 못해 실패했지만, 이후 `/opt/homebrew/opt/openjdk@21`의 OpenJDK 21.0.12.1을 발견했다. `scripts/VerifyJavaStudy.java`로 boxing·dispatch·bridge·repeatable·copyOf·ThreadLocal·monitor·가상 스레드의 작은 작업·suppressed 정리 오류를 확인했다. JFR·JMH·class loader 누수·메모리 모델 증명·실제 I/O 취소 검증은 아니다.
+- 이후 `/opt/homebrew/opt/python@3.14/bin/python3.14`의 CPython 3.14.7에서도 Python 예제를 실행하고 실제 TaskGroup 형제 취소·cleanup·집계 오류를 확인했다. 3.9.6에서의 SKIP 이력과 구분한다.
+- Homebrew Clang 23.1.1에서도 기본 예제는 통과했지만 선택된 libc++가 atomic shared_ptr feature 매크로를 제공하지 않아 해당 부분은 계속 SKIP했다.
+- Windows IOCP·iOS·Kubernetes·인증 공급자·Celery·PyPy 등 실제 제품 실행은 수행하지 않았다. IOCP의 주요 API는 Microsoft 공식 문서의 반환·완료·버퍼 수명 계약을 확인했고 제품 실행과 구분했다.
+
+기본 Playwright webServer의 Astro agent 자동 background와 `--ignore-lock` 조합이 충돌해 한 번 시작 실패했다. 이후 `TEST_BASE_URL`로 기존 4322 preview에 연결해 통과했다. 정적 preview는 빌드된 dist를 제공하므로 소스 수정 후에는 다시 빌드해야 한다.
+
+이후 남은 카테고리는 설계·AI 에이전트·게임 서버·인프라·데이터베이스·성능·분산 시스템이다. 아래 목록은 최초 탐색 계획의 기록이며 최신 미완료 범위는 `/notes/coverage/`와 검토 JSON을 기준으로 한다.
+
+## 2026-09-15 전체 질문 범위 완료와 최종 검증
+
+45개에서 308개 주제 노트로 확장했고 현재 1,000개 질문 모두 직접 본문 검토와 근거 섹션을 연결했다. `covered=1000`, `partial=0`, `unreviewed=0`, `missing=0`이다. 질문별 노트를 기계적으로 만든 것이 아니라 여러 질문의 공통 원리와 별도 실패 조건을 주제별로 묶었다.
+
+- `npm run validate`: 1,000문항·308개 노트의 메타데이터·본문·직접 연결·근거 앵커 통과.
+- `npm run test:content`: 37개 통과. 모든 질문이 완료돼도 링크만 있는 새 질문을 자동 완료로 승격하지 않는 규칙은 합성 입력으로 별도 검사한다.
+- `npm run build`: 정적 페이지 1,313개 생성.
+- 전체 Playwright: 데스크톱·모바일 46개 통과. 1,000개 문항 주소와 연관 링크, 308개 노트의 no-JS 본문·목차·연습 링크, light/dark 그림 글자 영역과 페이지 폭을 검사했다.
+- 첫 전체 실행은 세션 중단으로 완결되지 않았다. 재실행에서는 43개 통과·전체 노트 순회 3개 시간 초과가 발생했다. 검사 범위와 assertion은 유지하고 노트당 실행 기한을 350ms에서 1,000ms로 조정한 뒤 전체 46개가 통과했다.
+- Playwright preview 환경에 `ASTRO_PREVIEW_BACKGROUND=1`을 설정해 Astro의 agent 자동 분리 실행을 방지했다. 기존 preview URL에 의존하지 않는 기본 webServer 경로로 전체 검사를 완료했다.
+- `scripts/verify-game-design-study.py`: A* 재오픈 반례와 무작위 작은 방향 그래프 2,100개 출발점의 A*/Weighted A* 비용을 Floyd–Warshall 기준과 비교했다. 2D/3D 모서리·면 접촉의 닫힌 셀 집합, 음수 청크 좌표, Unicode, New York의 23시간 달력 하루, Euler step 차이, 가중 shortcut, 부분 순서/중복 이벤트도 검산했다. 완전한 JPS·DDA·물리 엔진 구현 시험은 아니다.
+- `tests/agent-performance-examples.test.mjs`: histogram/lag 산술·반복 성공 확률·안정 논리 키·승인 버전·늦은 cache refill의 작은 모델 5개 통과. 실제 LLM·broker·결제 API 실험은 아니다.
+- SQLite의 관계·두 연결 snapshot 예제는 별도 실행 스크립트로 확인했다. PostgreSQL·MySQL·SQL Server·Redis·Kafka·NATS·Kubernetes 등의 제품별 장애 실험으로 확대하지 않는다.
+- MCP 2026-07-28의 변경 이력·인가·Tasks 공식 안내와 A2A 1.0.0 표시의 명세를 2026-09-15 다시 확인했다. 문서 확인과 실제 상호운용 시험은 구분한다.
+
+본문 학습 범위 완료는 모든 제품·운영 환경에서의 실행 검증 완료나 모든 가능한 심화 주제의 완성을 뜻하지 않는다. 각 노트의 실행 한계를 유지한다. 아래는 완료 전 최초 탐색 계획의 기록이다.
+
+## 최초 탐색 계획의 묶음
 
 전체 제목 1,000개를 확인했으며, 아래는 다음 작성·통합의 탐색 순서다. 항목 하나를 노트 하나로 강제하지 않는다.
 

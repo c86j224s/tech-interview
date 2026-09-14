@@ -15,6 +15,7 @@ export default defineConfig({
   ],
   webServer: process.env.TEST_BASE_URL ? undefined : {
     command: 'npm run preview -- --port 4321 --ignore-lock',
+    env: { ASTRO_PREVIEW_BACKGROUND: '1' },
     url: 'http://127.0.0.1:4321/tech-interview/',
     reuseExistingServer: !process.env.CI,
   },

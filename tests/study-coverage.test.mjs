@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { studyCoverage, studyFamilies, coverageCounts, validateCoverageReviews } from '../src/lib/study-coverage.mjs';
+import { studyCoverage, studyFamilies, coverageCounts, validateCoverageReviews, coverageStatus } from '../src/lib/study-coverage.mjs';
 import { questions } from '../src/lib/questions.mjs';
 
 test('coverage inventory contains every question exactly once across source families', () => {
@@ -11,11 +11,20 @@ test('coverage inventory contains every question exactly once across source fami
 });
 
 test('a note link is never implicitly promoted to reviewed coverage', () => {
-  const entry = studyCoverage.find(({ question }) => question.id === 'introsort-depth-fallback');
-  assert.ok(entry.linked.length > 0);
-  assert.equal(entry.status, 'unreviewed');
+  assert.equal(coverageStatus(undefined, []), 'missing');
+  assert.equal(coverageStatus(undefined, [{ id: 'linked-only' }]), 'unreviewed');
+  assert.equal(coverageStatus({ status: 'partial' }, [{ id: 'n' }]), 'partial');
+  assert.equal(coverageStatus({ status: 'covered' }, [{ id: 'n' }]), 'covered');
+  for (const entry of studyCoverage.filter((entry) => !entry.review)) {
+    assert.equal(entry.status, entry.linked.length ? 'unreviewed' : 'missing');
+  }
+  for (const entry of studyCoverage.filter((entry) => entry.status === 'covered')) {
+    assert.equal(entry.review?.status, 'covered');
+  }
   assert.equal(studyCoverage.find(({ question }) => question.id === 'condition-variable-predicate').status, 'covered');
-  assert.equal(studyCoverage.find(({ question }) => question.id === 'weighted-concurrency-permits').status, 'partial');
+  const weighted = studyCoverage.find(({ question }) => question.id === 'weighted-concurrency-permits');
+  assert.equal(weighted.status, 'covered');
+  assert.ok(weighted.review.sections.includes('section-5'));
 });
 
 test('coverage review requires a direct target, real section and explicit remaining scope', () => {

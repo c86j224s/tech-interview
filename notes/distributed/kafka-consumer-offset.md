@@ -3,7 +3,7 @@ id: kafka-consumer-offset
 title: Kafka 소비 offset과 완료 경계
 topic: 분산 시스템
 summary: poll로 받은 위치, 애플리케이션 처리 완료, 소비자 그룹 offset commit을 분리하고 병렬 처리와 rebalance에서 안전한 완료 경계를 계산합니다.
-questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-processing, kafka-parallel-completion-watermark, kafka-worker-queue-revocation, kafka-pause-versus-leave-group]
+questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-processing, kafka-parallel-completion-watermark, kafka-worker-queue-revocation, kafka-pause-versus-leave-group, kafka-offset-gaps-compaction, kafka-cooperative-rebalance-scope]
 ---
 
 # Kafka 소비 offset과 완료 경계
@@ -117,6 +117,14 @@ commitCompleted():
 정상적인 `onPartitionsRevoked`에서는 해당 파티션에 새 작업을 넣지 않고, 진행 중 작업을 정해진 시간 안에 끝내거나 재시도 가능한 상태로 돌린 다음 완료된 연속 구간만 commit하는 경계를 둘 수 있습니다. Kafka 공식 `ConsumerRebalanceListener` Javadoc은 이 callback이 파티션을 넘기기 전에 호출되며, 이때 offset과 파티션별 상태를 저장할 수 있다고 설명합니다.
 
 반면 `onPartitionsLost`는 session 만료나 치명적인 group 오류처럼 이미 소유권을 잃은 뒤 호출됩니다. 다른 consumer가 벌써 그 파티션을 소유할 수 있으므로 이 callback을 마지막 commit 기회로 취급하면 안 됩니다. 이때는 worker 취소, 임시 자원 반환, 늦은 완료 표시 차단 같은 정리를 하고, 새 소유자는 자신의 assignment를 받은 뒤 원본 log에서 다시 읽게 됩니다. lost callback이 새 consumer에게 파티션을 넘기는 화살표나 handoff를 뜻하지 않는 이유가 여기에 있습니다. `onPartitionsAssigned`에서는 외부에 별도로 보관한 처리 상태가 있다면 새 소유자의 시작 위치와 대조할 수 있습니다.
+
+### Group과 cooperative 이동의 범위를 나눕니다
+
+partition 3개에 같은 group의 consumer 5개라면 일반 할당에서는 최대 3개만 partition을 맡고 나머지는 유휴일 수 있습니다. Pod당 consumer 수가 몇 개인지도 확인합니다. 다른 group은 같은 로그를 자기 offset으로 독립 소비하므로 분석·알림이 각각 모든 레코드를 받아야 하면 group을 분리합니다. group 이름 변경은 새 시작 위치·재생·중복 효과의 변경입니다.
+
+cooperative rebalance는 일부 partition만 단계적으로 넘겨 전체 반납 중단을 줄일 수 있습니다. 반납 대상의 큐·완료·세대만 정리하고 계속 소유한 partition과 혼동하지 않습니다. client·assignor·group protocol별 callback 계약을 확인합니다. 이 기능이나 static membership은 외부 DB의 옛 쓰기를 취소하거나 consumer effect를 정확히 한 번으로 만들지 않습니다.
+
+메모리 큐를 폐기할 때는 원본 보관 범위와 성공 commit이 미완료 작업보다 앞서지 않는지 확인합니다. log start보다 오래된 재개 위치라면 조용히 latest로 보내지 말고 snapshot·재생의 복구 계약으로 처리합니다. topic을 같은 이름으로 재생성하거나 다른 cluster로 옮기면 topic·partition·offset도 영구 업무 ID가 아니므로 이벤트 ID·원본 세대를 유지합니다.
 
 ## poll 주기와 큐 상한도 완료 계약의 일부입니다
 

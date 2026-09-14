@@ -3,7 +3,7 @@ id: condition-variables
 title: 조건 변수로 공유 큐를 기다리는 방법
 topic: 동시성
 summary: 알림을 받고도 큐가 비는 실행 순서에서 출발해 조건식·잠금·대기 진입·종료 수명을 하나의 규칙으로 연결합니다.
-questionIds: [condition-variable-predicate, condition-notify-lock-lifetime, queue-shutdown-drain-discard, monitor-synchronization, hoare-mesa-monitor-signal]
+questionIds: [condition-variable-predicate, condition-notify-lock-lifetime, queue-shutdown-drain-discard, monitor-synchronization, hoare-mesa-monitor-signal, java-wait-notify-monitor-owner]
 ---
 
 # 조건 변수로 공유 큐를 기다리는 방법
@@ -76,6 +76,12 @@ closeAndDrain():
 이 코드는 기한과 작업 도착이 동시에 관찰되면 이미 큐에 있는 작업을 반환하는 정책입니다. 절대 기한 이후에는 어떤 작업도 시작하면 안 되는 API라면 `pop` 직전에도 기한을 검사해야 합니다. 어느 쪽이든 매번 깰 때마다 새로 5초를 주면 전체 대기가 무한히 늘 수 있으므로 처음 정한 기한을 유지합니다.
 
 예외를 허용하는 실제 언어에서는 잠금 해제를 RAII·`finally` 등으로 보장하고, 삽입 실패 뒤 성공 알림을 보내지 않습니다. 이 노트는 대기 정확성에 집중하며 큐 용량 제한은 별도입니다. 무한 큐 대신 상한이 필요하면 생산자 측에도 공간 조건과 거절 정책을 추가해야 합니다.
+
+### Java 객체 monitor의 대기
+
+Java의 `obj.wait()`·`obj.notify()`·`obj.notifyAll()`은 해당 obj의 monitor를 소유한 상태에서 호출해야 합니다. `synchronized(other)` 안에 있다는 이유로 obj의 소유 조건을 만족하지 않습니다. wait는 obj monitor를 놓고 대기한 뒤 다시 획득해 반환하지만, 같은 스레드가 가진 다른 객체의 잠금까지 모두 놓지는 않습니다. 다른 잠금을 가진 채 기다리면 생산자가 그 잠금을 필요로 하는 대기 고리가 생길 수 있습니다.
+
+조건은 같은 monitor 아래 while로 재검사하고 interrupt·timeout·종료를 명시적으로 처리합니다. notify가 어느 대기자를 선택할지에 특정 작업 배정을 의존하지 않습니다. 모니터가 내부 상태를 보호해도 그 컬렉션의 가변 참조를 외부로 반환하면 잠금 밖 수정이 가능하므로 snapshot이나 제어된 연산 API로 접근을 제한해야 합니다.
 
 ## notify 위치와 객체 수명을 함께 봅니다
 

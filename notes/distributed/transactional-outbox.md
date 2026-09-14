@@ -3,7 +3,7 @@ id: transactional-outbox
 title: Transactional Outbox로 이중 쓰기 실패 다루기
 topic: 분산 시스템
 summary: 주문 상태 변경과 이벤트 발행 의도를 같은 DB 트랜잭션에 기록해 이중 쓰기 사이의 유실을 없애고, Relay 재발행은 별도 중복으로 다룹니다.
-questionIds: [transactional-outbox]
+questionIds: [transactional-outbox, db-outbox-polling-cdc, outbox-claim-lease-recovery]
 ---
 
 # Transactional Outbox로 이중 쓰기 실패 다루기
@@ -297,6 +297,16 @@ Relay.quarantine(claimed, error):
 Relay가 복구되지 않거나 브로커가 오래 장애를 일으키면 `PENDING` 행이 주문 DB의 디스크와 인덱스를 차지합니다. 그래서 `created_at` 기준 가장 오래된 미전달 event의 나이, 미전달 개수, 재시도 횟수, DB 여유 공간을 관찰해야 합니다. 보낸 행을 바로 삭제하면 재생과 장애 조사가 어려워질 수 있으므로, consumer 재생 기간과 감사 요구를 먼저 정하고 보관·삭제합니다.
 
 Outbox가 있다고 해서 모든 확정이 영원히 전달되는 것은 아닙니다. 주문 DB의 내구성, outbox 행의 보존, Relay의 재기동, 브로커의 ACK 확인이 모두 이어져야 합니다. 반대로 브로커의 exactly-once 기능이 있어도 애플리케이션의 `SENT` 표시와 완전히 같은 원자 경계가 된다고 가정하지 않는 편이 안전합니다.
+
+### Polling과 CDC는 전달 위치와 운영 비용이 다릅니다
+
+위 Relay는 outbox의 due 행을 polling합니다. 적절한 status·next_attempt_at 인덱스, 제한된 batch, 빈 polling 주기, claim 세대가 필요합니다. 구성은 직접적이지만 테이블 조회·상태 갱신·잠금·정리 비용을 냅니다. 여러 Relay가 aggregate의 이벤트를 다른 속도로 보내면 created_at 정렬만으로 키별 최종 적용 순서가 보장되지는 않습니다.
+
+CDC는 커밋된 outbox 삽입을 DB 변경 로그에서 읽어 broker로 전달할 수 있습니다. 미전달 행을 계속 검색하는 비용을 줄일 수 있지만 connector의 로그 위치·초기 snapshot·스키마 변화·WAL 보존·재시작 상태를 관리해야 합니다. sink 기록과 connector offset의 확정 경계에 따라 재전달이 생길 수 있으며 특정 connector의 exactly-once 범위를 외부 소비자 DB 효과까지 확대하지 않습니다.
+
+두 방식 모두 당시 payload와 안정 event ID·aggregate version을 유지합니다. DB commit과 발행 위치, broker 수락과 consumer 적용을 하나의 완료 상태로 뭉뚱그리지 않습니다. polling의 ACK 뒤 표시 전 중단과 CDC의 sink 수락 뒤 offset 저장 전 중단을 각각 시험하고, 중복 소비의 원장 경계를 유지합니다. CDC 중단으로 원본 로그가 쌓이면 공간·재개 가능 위치·최대 보존 기간을 확인합니다. 로그를 잃은 connector는 새 snapshot과 증분 연결이 필요할 수 있습니다.
+
+선택은 평균 발행 지연·DB 읽기·운영 connector·복구 위치·스키마 대응 비용을 같은 workload에서 비교합니다. 이 노트는 polling·CDC의 설계 설명이며 실제 connector와 broker를 실행한 결과는 아닙니다.
 
 ## 직접 확인할 입력과 예상 결과
 

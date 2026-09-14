@@ -76,4 +76,36 @@ A와 B가 같은 행을 동시에 바꾸면 쓰기 잠금 대기나 충돌 검�
 
 테스트 DB의 두 연결로 위 시간표를 재현합니다. A 첫 읽기 뒤 장벽, B 커밋 확인, A 두 번째 읽기 순으로 진행하고 결과와 격리 설정을 기록합니다. 다음에는 A가 직접 갱신한 행의 재조회와 잠금 읽기를 별도 시험합니다.
 
-마지막으로 A의 스냅샷을 유지한 채 B에서 반복 갱신하고, 오래된 거래의 나이와 엔진별 버전 저장·정리 지표를 관찰합니다. A를 끝냈을 때 재사용 공간이 늘어나는지와 OS 파일 크기가 줄어드는지는 따로 확인합니다. 이 절은 실행 지침이며 특정 DB에서 실험한 결과를 보고하는 것은 아닙니다.
+마지막으로 A의 스냅샷을 유지한 채 B에서 반복 갱신하고, 오래된 거래의 나이와 엔진별 버전 저장·정리 지표를 관찰합니다. A를 끝냈을 때 재사용 공간이 늘어나는지와 OS 파일 크기가 줄어드는지는 따로 확인합니다. 아래 PostgreSQL·SQL Server 예상값과 실제 SQLite 실행을 서로 다른 근거로 구분합니다.
+
+### PostgreSQL 두 연결의 명시적 실행 순서
+
+격리된 테스트 DB에 `mvcc_demo(id integer primary key, value integer)`를 만들고 `(1,100)`을 넣었다고 가정합니다. 운영 DB에서 실행하는 절차가 아닙니다.
+
+```sql
+-- A: 첫 실행은 READ COMMITTED
+BEGIN ISOLATION LEVEL READ COMMITTED;
+SELECT value FROM mvcc_demo WHERE id = 1;
+-- 첫 결과 100을 확인하고 A를 멈춥니다.
+```
+
+```sql
+-- B: A의 첫 결과 확인 뒤 실행
+BEGIN;
+UPDATE mvcc_demo SET value = 120 WHERE id = 1;
+COMMIT;
+```
+
+```sql
+-- A: B COMMIT 성공을 확인한 뒤 실행
+SELECT value FROM mvcc_demo WHERE id = 1;
+ROLLBACK;
+```
+
+PostgreSQL READ COMMITTED의 두 번째 일반 SELECT는 120을 기대합니다. 두 거래가 모두 끝난 뒤 값을 100으로 초기화하고 A의 BEGIN을 `BEGIN ISOLATION LEVEL REPEATABLE READ`로 바꾸어 같은 순서를 수행하면 두 번째 읽기는 100을 기대합니다. 초기화 전에 열린 snapshot을 남기지 않습니다. 이 절의 PostgreSQL SQL은 실행 순서와 기대 결과이며 현재 환경에서 PostgreSQL을 실행한 결과는 아닙니다.
+
+A 자신의 UPDATE 후 읽기는 자기 변경을 보는 별도 시험으로 분리합니다. B가 같은 행을 바꾼 뒤 A의 REPEATABLE READ에서 그 행을 UPDATE하면 serialization failure가 생길 수 있으므로 새 transaction에서 읽기·판단부터 재시도합니다. 일반 SELECT의 snapshot과 `SELECT ... FOR UPDATE`의 잠금·동시 갱신 동작을 같은 것으로 보지 않습니다. SQL Server의 RCSI·SNAPSHOT·UPDLOCK은 별도 노트의 T-SQL 순서로 비교합니다.
+
+### 실제 실행 범위를 좁혀 기록합니다
+
+`scripts/verify-isolation-study.py`는 임시 SQLite 파일의 WAL 모드에서 실제 두 연결을 사용합니다. A 첫 읽기→B UPDATE·COMMIT→A 두 번째 읽기를 동기 호출 완료 순서로 통제하며 sleep에 의존하지 않습니다. 명시 read transaction의 snapshot 유지, autocommit의 문장별 새 읽기, 자기 쓰기 관찰과 stale snapshot의 write 실패를 각각 검사합니다. 이는 SQLite 계약의 실행 확인이고 PostgreSQL·InnoDB·SQL Server를 대신 검증한 결과는 아닙니다. 제품별 예상 SQL과 실제 실행 근거를 이렇게 분리해야 비슷한 격리 이름을 혼동하지 않습니다.

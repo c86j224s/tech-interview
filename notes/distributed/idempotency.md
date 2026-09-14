@@ -3,7 +3,7 @@ id: idempotency
 title: 멱등성 키로 중복 요청 다루기
 topic: 분산 시스템
 summary: 응답을 받지 못한 주문 요청을 같은 논리 작업으로 다시 처리하기 위해 키의 범위, 요청 fingerprint, DB 트랜잭션, 결과 재현, 만료를 하나의 저장 규칙으로 연결합니다.
-questionIds: [request-timeout-idempotency]
+questionIds: [request-timeout-idempotency, idempotency-record-expiry-contract]
 ---
 
 # 멱등성 키로 중복 요청 다루기
