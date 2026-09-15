@@ -37,7 +37,9 @@ offset 숫자에 공백이 있다고 해서 공백을 처리할 때까지 멈추
 
 ## 병렬 worker의 완료 watermark를 별도로 둡니다
 
-poll 스레드와 worker를 분리하면 네트워크 수신과 느린 DB 호출을 격리할 수 있습니다. 대신 파티션마다 제한된 대기열과 완료 상태가 필요합니다. 다음 그림의 핵심은 `position=13`인 consumer가 `watermark=10`인 상태로도 정상일 수 있다는 점입니다. watermark는 다음 commit 후보인 위치를 뜻하며, 여기서는 10이 아직 미완료이므로 그대로입니다. 다만 이 watermark는 **앞선 offset이 완료될 때까지 commit을 늦추는 경계**일 뿐입니다. 11·12의 외부 효과가 10보다 먼저 실행되는 것 자체를 되돌리거나 막아 주지는 않습니다. 순서가 의미인 상태 전이라면 같은 파티션 또는 같은 key의 작업을 직렬화하거나, 도메인 저장소가 기대하는 다음 순번을 조건으로 거부·보류해야 합니다.
+poll 스레드와 worker를 분리하면 네트워크 수신과 느린 DB 호출을 격리할 수 있습니다. 대신 파티션마다 제한된 대기열과 완료 상태가 필요합니다. 다음 그림의 핵심은 `position=13`인 consumer가 `watermark=10`인 상태로도 정상일 수 있다는 점입니다. watermark는 다음 commit 후보인 위치를 뜻하며, 여기서는 10이 아직 미완료이므로 그대로입니다.
+
+다만 이 watermark는 **앞선 offset이 완료될 때까지 commit을 늦추는 경계**일 뿐입니다. 11·12의 외부 효과가 10보다 먼저 실행되는 것 자체를 되돌리거나 막아 주지는 않습니다. 순서가 의미인 상태 전이라면 같은 파티션 또는 같은 key의 작업을 직렬화하거나, 도메인 저장소가 기대하는 다음 순번을 조건으로 거부·보류해야 합니다.
 
 ```diagram
 {"title":"수신 위치와 완료 경계","caption":"화살표는 레코드와 완료 정보의 흐름입니다. position은 poll이 만든 수신 위치이고, watermark만 처리 성공을 반영해 group coordinator에 commit됩니다.","rows":[[{"id":"poller","label":"Consumer poll","detail":["position=13","10·11·12 전달"]},{"id":"queue","label":"Partition 큐","detail":["bounded","순서 목록 유지"]}],[{"id":"worker","label":"Worker","detail":["외부 효과 수행","성공·실패 반환"]},{"id":"watermark","label":"완료 watermark","detail":["앞의 연속 성공","다음 commit 위치"]}],[{"id":"coordinator","label":"Group coordinator","detail":["committed offset","소유권 세대 검사"]}]],"edges":[{"from":"poller","to":"queue","label":"레코드 전달"},{"from":"queue","to":"worker","label":"작업 투입"},{"from":"worker","to":"watermark","label":"완료 표시"},{"from":"watermark","to":"coordinator","label":"offset commit"},{"from":"coordinator","to":"poller","label":"할당·재할당"}]}
@@ -94,7 +96,15 @@ commitCompleted():
             retain_external_effect_id_for_dedup(p, candidate)
 ```
 
-`finished + 1`은 Kafka가 그 offset 이후 위치부터 다시 탐색하도록 하는 표현입니다. 중간 숫자에 레코드가 없어도 broker가 실제 다음 레코드로 건너뛸 수 있으므로, 존재하지 않는 offset을 완료 집합에 억지로 넣지 않습니다. `deliveredOffsets.front`를 읽기 전 deque가 비어 있는지 확인해야 하며, worker 큐에 제출하지 못한 레코드도 **전달 순서 목록에는 미완료로 남겨야** 합니다. 10의 제출은 실패했는데 11·12만 목록에 넣으면, 둘이 끝났을 때 경계가 13으로 넘어가 10을 잃습니다. 위 코드는 작업의 세대와 모든 전달 offset을 먼저 등록하고, 제출되지 않은 본문을 제한된 대기 큐에 보관합니다. 큐에 자리가 생기면 소유 스레드가 `submitWaiting`을 다시 호출합니다. 실행 실패 항목도 같은 세대에서 재시도하거나 명시적인 격리 정책을 완료하기 전에는 성공으로 표시하지 않습니다. 보관 자체가 실패하면 해당 파티션의 commit 전진을 막고 소비자를 종료해 기존 commit 위치부터 재전달받는 등, 입력을 버리지 않는 복구 경로가 필요합니다. 한 번의 poll 배치를 모두 처리한 경우에는 client가 제공하는 파티션별 다음 위치 계산을 사용할 수도 있지만, 그 계산 결과가 실제 외부 효과 완료보다 앞서지 않는지 확인해야 합니다. 실패한 레코드를 건너뛸지, 재시도할지, 명시적인 격리 큐로 보낼지는 서비스의 데이터 손실 정책으로 정해야 합니다.
+`finished + 1`은 Kafka가 그 offset 이후 위치부터 다시 탐색하도록 하는 표현입니다. 중간 숫자에 레코드가 없어도 broker가 실제 다음 레코드로 건너뛸 수 있으므로, 존재하지 않는 offset을 완료 집합에 억지로 넣지 않습니다.
+
+`deliveredOffsets.front`를 읽기 전 deque가 비어 있는지 확인해야 하며, worker 큐에 제출하지 못한 레코드도 **전달 순서 목록에는 미완료로 남겨야** 합니다. 10의 제출은 실패했는데 11·12만 목록에 넣으면, 둘이 끝났을 때 경계가 13으로 넘어가 10을 잃습니다.
+
+위 코드는 작업의 세대와 모든 전달 offset을 먼저 등록하고, 제출되지 않은 본문을 제한된 대기 큐에 보관합니다. 큐에 자리가 생기면 소유 스레드가 `submitWaiting`을 다시 호출합니다. 실행 실패 항목도 같은 세대에서 재시도하거나 명시적인 격리 정책을 완료하기 전에는 성공으로 표시하지 않습니다.
+
+보관 자체가 실패하면 해당 파티션의 commit 전진을 막고 소비자를 종료해 기존 commit 위치부터 재전달받는 등, 입력을 버리지 않는 복구 경로가 필요합니다. 한 번의 poll 배치를 모두 처리한 경우에는 client가 제공하는 파티션별 다음 위치 계산을 사용할 수도 있지만, 그 계산 결과가 실제 외부 효과 완료보다 앞서지 않는지 확인해야 합니다.
+
+실패한 레코드를 건너뛸지, 재시도할지, 명시적인 격리 큐로 보낼지는 서비스의 데이터 손실 정책으로 정해야 합니다.
 
 `lastSuccessfulCommit`은 클라이언트가 성공 응답을 확인한 위치입니다. 응답 유실이나 timeout이면 서버에는 commit이 반영됐을 수도 있으므로 실제 group 위치를 10이라고 단정할 수 없습니다. 위 예의 `CommitFailedException`처럼 소유권 관련 오류와 일시적 timeout을 구별하고, 이미 잃은 할당에는 다시 commit하지 않습니다. 새 할당의 세대 값은 이전 할당과 재사용하지 않고, `nextCommit`은 실제 재개 위치로 초기화합니다.
 
@@ -108,7 +118,9 @@ commitCompleted():
 
 ## rebalance는 작업을 취소해 주지 않습니다
 
-소비자 그룹에서 파티션은 한 시점에 한 consumer에게만 할당됩니다. 하지만 그 consumer가 이미 worker에 넘긴 DB 호출이 rebalance와 동시에 자동 취소되는 것은 아닙니다. 새 consumer가 같은 파티션을 받기 전에 옛 worker가 늦게 완료할 수 있으므로, event ID 중복 방지와 도메인 version 조건을 함께 둬야 합니다. 각 작업에 assignment generation을 붙이고 완료 이벤트를 소유 스레드가 확인하게 하면, 현재 generation과 다른 늦은 완료를 외부 상태에 반영하지 않을 수 있습니다. 이것은 이미 발행된 DB 호출을 소급해 취소한다는 뜻이 아니며, 저장소의 조건부 version 검사와 함께 써야 합니다.
+소비자 그룹에서 파티션은 한 시점에 한 consumer에게만 할당됩니다. 하지만 그 consumer가 이미 worker에 넘긴 DB 호출이 rebalance와 동시에 자동 취소되는 것은 아닙니다. 새 consumer가 같은 파티션을 받기 전에 옛 worker가 늦게 완료할 수 있으므로, event ID 중복 방지와 도메인 version 조건을 함께 둬야 합니다.
+
+각 작업에 assignment generation을 붙이고 완료 이벤트를 소유 스레드가 확인하게 하면, 현재 generation과 다른 늦은 완료를 외부 상태에 반영하지 않을 수 있습니다. 이것은 이미 발행된 DB 호출을 소급해 취소한다는 뜻이 아니며, 저장소의 조건부 version 검사와 함께 써야 합니다.
 
 ```diagram
 {"title":"반납과 소유권 상실의 차이","caption":"화살표는 partition 소유권과 commit 가능 범위를 나타냅니다. revoke는 아직 소유자인 동안 정리할 기회이고, lost는 이미 소유권이 끝난 뒤의 정리 통지입니다. lost 뒤에는 다른 consumer가 이미 소유 중일 수 있어 인과 화살표를 그리지 않습니다.","rows":[[{"id":"old","label":"기존 consumer","detail":["worker 실행 중","partition 소유"]}],[{"id":"revoke","label":"onPartitionsRevoked","detail":["새 투입 중지","완료 경계 commit"]},{"id":"lost","label":"onPartitionsLost","detail":["소유권 이미 종료","commit하지 않음"]}],[{"id":"new","label":"새 consumer","detail":["assignment 수신","로그에서 재처리"]}]],"edges":[{"from":"old","to":"revoke","label":"정상 반납 통지"},{"from":"revoke","to":"new","label":"commit 후 handoff"},{"from":"old","to":"lost","label":"세션 만료·치명 오류"}]}
@@ -116,7 +128,11 @@ commitCompleted():
 
 정상적인 `onPartitionsRevoked`에서는 해당 파티션에 새 작업을 넣지 않고, 진행 중 작업을 정해진 시간 안에 끝내거나 재시도 가능한 상태로 돌린 다음 완료된 연속 구간만 commit하는 경계를 둘 수 있습니다. Kafka 공식 `ConsumerRebalanceListener` Javadoc은 이 callback이 파티션을 넘기기 전에 호출되며, 이때 offset과 파티션별 상태를 저장할 수 있다고 설명합니다.
 
-반면 `onPartitionsLost`는 session 만료나 치명적인 group 오류처럼 이미 소유권을 잃은 뒤 호출됩니다. 다른 consumer가 벌써 그 파티션을 소유할 수 있으므로 이 callback을 마지막 commit 기회로 취급하면 안 됩니다. 이때는 worker 취소, 임시 자원 반환, 늦은 완료 표시 차단 같은 정리를 하고, 새 소유자는 자신의 assignment를 받은 뒤 원본 log에서 다시 읽게 됩니다. lost callback이 새 consumer에게 파티션을 넘기는 화살표나 handoff를 뜻하지 않는 이유가 여기에 있습니다. `onPartitionsAssigned`에서는 외부에 별도로 보관한 처리 상태가 있다면 새 소유자의 시작 위치와 대조할 수 있습니다.
+반면 `onPartitionsLost`는 session 만료나 치명적인 group 오류처럼 이미 소유권을 잃은 뒤 호출됩니다. 다른 consumer가 벌써 그 파티션을 소유할 수 있으므로 이 callback을 마지막 commit 기회로 취급하면 안 됩니다.
+
+이때는 worker 취소, 임시 자원 반환, 늦은 완료 표시 차단 같은 정리를 하고, 새 소유자는 자신의 assignment를 받은 뒤 원본 log에서 다시 읽게 됩니다. lost callback이 새 consumer에게 파티션을 넘기는 화살표나 handoff를 뜻하지 않는 이유가 여기에 있습니다.
+
+`onPartitionsAssigned`에서는 외부에 별도로 보관한 처리 상태가 있다면 새 소유자의 시작 위치와 대조할 수 있습니다.
 
 ### Group과 cooperative 이동의 범위를 나눕니다
 
@@ -128,15 +144,25 @@ cooperative rebalance는 일부 partition만 단계적으로 넘겨 전체 반�
 
 ## poll 주기와 큐 상한도 완료 계약의 일부입니다
 
-느린 DB 호출을 poll callback 안에서 모두 기다리면 다음 poll 사이가 길어집니다. Kafka 4.3 consumer 설정에서 확인한 `max.poll.interval.ms` 기본값은 300,000ms이며, group-managed consumer가 이 간격을 넘기면 실패한 member로 간주되어 rebalance가 일어날 수 있습니다. `group.instance.id`를 쓰는 static member는 소유권 이동이 session timeout까지 늦어질 수 있지만, 이것이 실행 중 외부 작업의 원자 취소나 완료를 보장하지는 않습니다.
+느린 DB 호출을 poll callback 안에서 모두 기다리면 다음 poll 사이가 길어집니다. Kafka 4.3 consumer 설정에서 확인한 `max.poll.interval.ms` 기본값은 300,000ms이며, group-managed consumer가 이 간격을 넘기면 실패한 member로 간주되어 rebalance가 일어날 수 있습니다.
 
-`KafkaConsumer`는 thread-safe하지 않으므로 poll·commit·pause를 여러 thread가 각각 호출하는 구조를 그대로 쓰면 안 됩니다. 권장 경계는 consumer를 소유한 한 thread가 `poll()`을 호출하고, worker의 완료 이벤트를 thread-safe한 내부 queue로 받아 같은 소유 thread에서 완료 watermark 반영, `pause`/`resume`, 명시적인 `commitSync(offsetMap)`을 순서대로 수행하는 방식입니다. worker는 KafkaConsumer를 직접 만지지 않고 결과만 돌려줍니다. 이렇게 해야 rebalance callback과 완료 이벤트가 서로 다른 thread에서 같은 assignment state를 덮어쓰지 않습니다. 앞의 의사코드의 `onWorkerFinished`도 worker thread가 KafkaConsumer를 호출한다는 뜻이 아니라, 소유 thread가 내부 완료 queue에서 꺼낸 결과를 처리하는 단계입니다.
+`group.instance.id`를 쓰는 static member는 소유권 이동이 session timeout까지 늦어질 수 있지만, 이것이 실행 중 외부 작업의 원자 취소나 완료를 보장하지는 않습니다.
+
+`KafkaConsumer`는 thread-safe하지 않으므로 poll·commit·pause를 여러 thread가 각각 호출하는 구조를 그대로 쓰면 안 됩니다.
+
+권장 경계는 consumer를 소유한 한 thread가 `poll()`을 호출하고, worker의 완료 이벤트를 thread-safe한 내부 queue로 받아 같은 소유 thread에서 완료 watermark 반영, `pause`/`resume`, 명시적인 `commitSync(offsetMap)`을 순서대로 수행하는 방식입니다.
+
+worker는 KafkaConsumer를 직접 만지지 않고 결과만 돌려줍니다. 이렇게 해야 rebalance callback과 완료 이벤트가 서로 다른 thread에서 같은 assignment state를 덮어쓰지 않습니다.
+
+앞의 의사코드의 `onWorkerFinished`도 worker thread가 KafkaConsumer를 호출한다는 뜻이 아니라, 소유 thread가 내부 완료 queue에서 꺼낸 결과를 처리하는 단계입니다.
 
 poll과 worker를 분리하더라도 무제한 queue는 해결책이 아닙니다. queue가 가득 차면 해당 파티션을 `pause`해 새 레코드 반환을 줄이고, poll 자체와 client의 heartbeat 계약은 계속 지키는 구조가 필요합니다. `pause`는 파티션의 전달을 조절할 뿐 group 탈퇴나 소유권 포기가 아닙니다. 멈춘 작업의 실제 나이가 계속 늘어나는지와 queue 내 가장 오래된 offset을 관측해야 합니다.
 
 ## 순서가 필요한 효과는 watermark만으로 부족합니다
 
-완료 watermark가 10에 멈춰 있다는 사실은 10 미만의 commit 경계를 안전하게 지켜 주지만, worker가 11·12의 외부 효과를 이미 먼저 실행했다는 사실을 없애지 않습니다. 예를 들어 10이 잔액을 확인하는 차감이고 11이 환불이라면, 11의 완료를 watermark 뒤에 숨겨도 데이터베이스에는 환불이 먼저 반영될 수 있습니다. 같은 파티션의 기록 순서 자체가 외부 상태 전이 순서여야 한다면 해당 key 작업을 직렬화하거나, 저장소 transaction에서 `expectedSequence`를 검사해 42를 기다리는 43을 보류해야 합니다. watermark는 **offset commit의 누락을 막는 장치**이지, 병렬 worker의 효과 순서를 재배열하는 장치가 아닙니다.
+완료 watermark가 10에 멈춰 있다는 사실은 10 미만의 commit 경계를 안전하게 지켜 주지만, worker가 11·12의 외부 효과를 이미 먼저 실행했다는 사실을 없애지 않습니다. 예를 들어 10이 잔액을 확인하는 차감이고 11이 환불이라면, 11의 완료를 watermark 뒤에 숨겨도 데이터베이스에는 환불이 먼저 반영될 수 있습니다.
+
+같은 파티션의 기록 순서 자체가 외부 상태 전이 순서여야 한다면 해당 key 작업을 직렬화하거나, 저장소 transaction에서 `expectedSequence`를 검사해 42를 기다리는 43을 보류해야 합니다. watermark는 **offset commit의 누락을 막는 장치**이지, 병렬 worker의 효과 순서를 재배열하는 장치가 아닙니다.
 
 ## 직접 확인할 입력과 예상 결과
 

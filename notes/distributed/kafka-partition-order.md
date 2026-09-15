@@ -61,7 +61,11 @@ Kafka 운영 문서는 새 파티션을 consumer가 발견하기 전 `auto.offse
 
 중단 없는 전환을 선택한다면 key별 논리 sequence·세대와 bounded gap buffer 또는 snapshot 재동기화가 필요합니다. 전체 상태 이벤트의 낮은 version은 버릴 수 있는 계약이 있지만 +10 같은 delta를 version만 보고 버리면 필요한 효과가 사라집니다. old topic을 늦게 읽는 worker가 new 상태를 덮지 않게 실제 저장 경계의 전이를 검증합니다.
 
-new topic에서 정상 쓰기를 시작한 뒤 old로 돌아가면 new에서만 생긴 변경을 잃을 수 있습니다. 역동기화·전환 장벽·복구 창을 정하고 old 삭제는 보관·재생·consumer 상태 확인 뒤 별도 승인으로 수행합니다. 다국어 producer의 golden vector에는 ASCII뿐 아니라 Unicode 정규화·숫자 문자열·빈 key·null key·명시 partition과 증설 전후 목적지를 포함합니다. key 없는 레코드는 key별 최신 상태 compaction의 기준이 없고, non-null key에 null value를 쓰는 tombstone과 다릅니다. compacted topic의 null key 거절과 client 오류 처리는 실제 버전에서 확인합니다.
+new topic에서 정상 쓰기를 시작한 뒤 old로 돌아가면 new에서만 생긴 변경을 잃을 수 있습니다. 역동기화·전환 장벽·복구 창을 정하고 old 삭제는 보관·재생·consumer 상태 확인 뒤 별도 승인으로 수행합니다.
+
+다국어 producer의 golden vector에는 ASCII뿐 아니라 Unicode 정규화·숫자 문자열·빈 key·null key·명시 partition과 증설 전후 목적지를 포함합니다. key 없는 레코드는 key별 최신 상태 compaction의 기준이 없고, non-null key에 null value를 쓰는 tombstone과 다릅니다.
+
+compacted topic의 null key 거절과 client 오류 처리는 실제 버전에서 확인합니다.
 
 ## 직접 따라 볼 입력과 예상 결과
 
@@ -74,7 +78,9 @@ new topic에서 정상 쓰기를 시작한 뒤 old로 돌아가면 new에서만 
 | C | 6 | 같은 key의 `E3` | `4 mod 6 = 4` → P4 offset 0 | P4의 `E3`가 P1의 `E2`보다 먼저 적용될 수 있습니다. |
 | D | 6 | P1과 P4를 동시에 읽는 consumer | 두 파티션의 position을 별도로 추적 | offset 101과 0을 비교해 전역 순서를 만들 수 없습니다. |
 
-직접 확인할 때는 먼저 동일한 key bytes를 모든 producer에서 보내고, 파티션 수를 바꾼 뒤 실제 목적지와 metadata 갱신 시점을 기록해 보시면 됩니다. P1 소비를 일부러 늦춘 상태에서 P4의 신규 이벤트를 처리하면 순서 역전 가능성을 관찰할 수 있습니다. 실제 전환 검증은 producer 발행 게이트를 닫고, P1·P2 등 옛 파티션의 마지막 위치와 외부 효과 완료를 각각 확인한 뒤 새 라우팅을 켜는 stop-drain-switch 순서로 진행합니다. 단일 핫키의 처리율이 파티션 수 증가에 따라 늘지 않는지도 별도로 측정해야 합니다. 아직 이 시험을 실행했다고 말할 수는 없으며, 위 표는 예상 결과를 정리한 입력 계약입니다.
+직접 확인할 때는 먼저 동일한 key bytes를 모든 producer에서 보내고, 파티션 수를 바꾼 뒤 실제 목적지와 metadata 갱신 시점을 기록해 보시면 됩니다. P1 소비를 일부러 늦춘 상태에서 P4의 신규 이벤트를 처리하면 순서 역전 가능성을 관찰할 수 있습니다.
+
+실제 전환 검증은 producer 발행 게이트를 닫고, P1·P2 등 옛 파티션의 마지막 위치와 외부 효과 완료를 각각 확인한 뒤 새 라우팅을 켜는 stop-drain-switch 순서로 진행합니다. 단일 핫키의 처리율이 파티션 수 증가에 따라 늘지 않는지도 별도로 측정해야 합니다. 아직 이 시험을 실행했다고 말할 수는 없으며, 위 표는 예상 결과를 정리한 입력 계약입니다.
 
 ## 확인한 공식 문서
 

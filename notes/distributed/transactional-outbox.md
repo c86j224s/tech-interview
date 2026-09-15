@@ -20,7 +20,9 @@ questionIds: [transactional-outbox, db-outbox-polling-cdc, outbox-claim-lease-re
 
 따라서 `orders`의 상태를 바꾸는 UPDATE와 `outbox_events` INSERT는 같은 DB 연결과 같은 트랜잭션을 사용해야 합니다. UPDATE 결과가 0행이면 전이가 일어나지 않은 것이므로 outbox event도 만들지 않습니다. 이미 완료된 주문을 다시 완료하는 명령을 no-op으로 볼지 충돌로 볼지는 서비스 계약의 문제지만, 새 완료 전이를 만들지 않는다는 점은 같습니다.
 
-상태 전이 뒤 event를 만들 때는 명령에 들어 있던 값이나 애플리케이션이 추정한 버전을 사용하지 않습니다. `UPDATE ... RETURNING`처럼 DB가 실제로 확정한 새 `version`, `state`, 금액 등 event에 필요한 열을 돌려주는 방식으로 전이 결과를 받아야 합니다. RETURNING을 지원하지 않는 DB라면 영향받은 행이 1개인지 확인한 뒤 같은 트랜잭션 안에서 갱신된 행을 읽어야 합니다. 그래야 동시에 다른 요청이 바꾼 값을 명령 payload로 덮어쓰거나, DB가 반환하지 않은 추정 버전으로 event를 만드는 일이 없습니다.
+상태 전이 뒤 event를 만들 때는 명령에 들어 있던 값이나 애플리케이션이 추정한 버전을 사용하지 않습니다. `UPDATE ... RETURNING`처럼 DB가 실제로 확정한 새 `version`, `state`, 금액 등 event에 필요한 열을 돌려주는 방식으로 전이 결과를 받아야 합니다.
+
+RETURNING을 지원하지 않는 DB라면 영향받은 행이 1개인지 확인한 뒤 같은 트랜잭션 안에서 갱신된 행을 읽어야 합니다. 그래야 동시에 다른 요청이 바꾼 값을 명령 payload로 덮어쓰거나, DB가 반환하지 않은 추정 버전으로 event를 만드는 일이 없습니다.
 
 Outbox 행에는 Relay가 최신 주문을 다시 읽지 않아도 당시 사실을 전달할 수 있도록 다음 정보를 고정해 둡니다.
 
@@ -137,7 +139,9 @@ OrderService.completeOrder(command):
         raise
 ```
 
-`transition`에는 DB가 실제로 갱신한 `version=5`, `state=DONE`, `total`, `currency`가 들어 있으므로 `transition.version` 외의 추정 버전이나 요청 본문의 금액을 사용할 필요가 없습니다. `transition == null`일 때는 반드시 확정 전 읽기로 돌아가 `current == null`인 주문 없음, 이미 `DONE`인 재요청, 그 밖의 버전·상태 충돌을 나눕니다. `current`가 없는데 `current.state`를 읽지 않는 것이 이 경로의 중요한 조건입니다.
+`transition`에는 DB가 실제로 갱신한 `version=5`, `state=DONE`, `total`, `currency`가 들어 있으므로 `transition.version` 외의 추정 버전이나 요청 본문의 금액을 사용할 필요가 없습니다.
+
+`transition == null`일 때는 반드시 확정 전 읽기로 돌아가 `current == null`인 주문 없음, 이미 `DONE`인 재요청, 그 밖의 버전·상태 충돌을 나눕니다. `current`가 없는데 `current.state`를 읽지 않는 것이 이 경로의 중요한 조건입니다.
 
 위 코드는 인증·자원별 권한 검사를 통과한 명령과 적절한 DB 격리를 전제로 한 슈도코드입니다. SQL의 바인딩 값은 드라이버로 전달하고, `RETURNING`은 갱신 결과이지 아직 커밋 성공 확인은 아닙니다. 잠금·직렬화 충돌 오류는 엔진 계약에 맞게 트랜잭션 전체를 재시도하거나 보고해야 합니다. 커밋 응답을 잃었다면 같은 상태·버전 조건으로 결과를 확인하며, 이미 끝난 트랜잭션에 무조건 rollback을 호출해 원래 오류를 가리지 않습니다.
 
@@ -275,7 +279,9 @@ Relay.quarantine(claimed, error):
         raise
 ```
 
-각 갱신의 영향받은 행이 0이면 이미 lease가 다른 Relay로 넘어갔거나 다른 경로가 처리한 것입니다. 이 경우 옛 Relay가 성공으로 단정해 상태를 덮어쓰지 않고, 다음 조회에서 최신 상태를 확인해야 합니다. 브로커가 `ACK_CONFIRMED`를 준 뒤 `markSent` 전에 Relay가 죽으면 같은 event가 다시 발행될 수 있습니다. 따라서 Relay의 안전한 기본값은 안정적인 `event_id`를 가진 최소 한 번 전달이며, consumer는 그 ID를 처리 기록과 실제 효과에 함께 사용해야 합니다. 그 consumer 트랜잭션의 상세 설계는 이 노트의 범위가 아닙니다.
+각 갱신의 영향받은 행이 0이면 이미 lease가 다른 Relay로 넘어갔거나 다른 경로가 처리한 것입니다. 이 경우 옛 Relay가 성공으로 단정해 상태를 덮어쓰지 않고, 다음 조회에서 최신 상태를 확인해야 합니다. 브로커가 `ACK_CONFIRMED`를 준 뒤 `markSent` 전에 Relay가 죽으면 같은 event가 다시 발행될 수 있습니다.
+
+따라서 Relay의 안전한 기본값은 안정적인 `event_id`를 가진 최소 한 번 전달이며, consumer는 그 ID를 처리 기록과 실제 효과에 함께 사용해야 합니다. 그 consumer 트랜잭션의 상세 설계는 이 노트의 범위가 아닙니다.
 
 ## 중단 지점별 실패 표
 
@@ -304,7 +310,9 @@ Outbox가 있다고 해서 모든 확정이 영원히 전달되는 것은 아닙
 
 CDC는 커밋된 outbox 삽입을 DB 변경 로그에서 읽어 broker로 전달할 수 있습니다. 미전달 행을 계속 검색하는 비용을 줄일 수 있지만 connector의 로그 위치·초기 snapshot·스키마 변화·WAL 보존·재시작 상태를 관리해야 합니다. sink 기록과 connector offset의 확정 경계에 따라 재전달이 생길 수 있으며 특정 connector의 exactly-once 범위를 외부 소비자 DB 효과까지 확대하지 않습니다.
 
-두 방식 모두 당시 payload와 안정 event ID·aggregate version을 유지합니다. DB commit과 발행 위치, broker 수락과 consumer 적용을 하나의 완료 상태로 뭉뚱그리지 않습니다. polling의 ACK 뒤 표시 전 중단과 CDC의 sink 수락 뒤 offset 저장 전 중단을 각각 시험하고, 중복 소비의 원장 경계를 유지합니다. CDC 중단으로 원본 로그가 쌓이면 공간·재개 가능 위치·최대 보존 기간을 확인합니다. 로그를 잃은 connector는 새 snapshot과 증분 연결이 필요할 수 있습니다.
+두 방식 모두 당시 payload와 안정 event ID·aggregate version을 유지합니다. DB commit과 발행 위치, broker 수락과 consumer 적용을 하나의 완료 상태로 뭉뚱그리지 않습니다. polling의 ACK 뒤 표시 전 중단과 CDC의 sink 수락 뒤 offset 저장 전 중단을 각각 시험하고, 중복 소비의 원장 경계를 유지합니다.
+
+CDC 중단으로 원본 로그가 쌓이면 공간·재개 가능 위치·최대 보존 기간을 확인합니다. 로그를 잃은 connector는 새 snapshot과 증분 연결이 필요할 수 있습니다.
 
 선택은 평균 발행 지연·DB 읽기·운영 connector·복구 위치·스키마 대응 비용을 같은 workload에서 비교합니다. 이 노트는 polling·CDC의 설계 설명이며 실제 connector와 broker를 실행한 결과는 아닙니다.
 

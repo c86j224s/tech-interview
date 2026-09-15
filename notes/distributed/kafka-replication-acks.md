@@ -35,7 +35,9 @@ Kafka 4.3 topic 설정 문서에서 `min.insync.replicas`는 leader를 포함한
 {"title":"복제 ACK가 만들어지는 경로","caption":"화살표는 producer 요청과 leader에서 follower로 이어지는 복제 흐름입니다. topic 설정인 min.insync.replicas=2는 ACK 노드가 아니라 현재 ISR의 최소 크기이며, follower의 진행 확인은 leader가 반영합니다.","rows":[[{"id":"producer","label":"Producer","detail":["acks=all","broker 응답 대기"]}],[{"id":"leader","label":"Leader L","detail":["파티션 append","현재 쓰기 기준"]},{"id":"settings","label":"Topic 설정","detail":["min ISR=2","RF=3"]}],[{"id":"f1","label":"Follower F1","detail":["leader log fetch","ISR이면 현재 후보"]},{"id":"f2","label":"Follower F2","detail":["leader log fetch","lag 시 ISR 탈락"]}]],"edges":[{"from":"producer","to":"leader","label":"쓰기 요청"},{"from":"settings","to":"leader","label":"성공 하한 적용"},{"from":"leader","to":"f1","label":"복제 진행"},{"from":"leader","to":"f2","label":"복제 진행"}]}
 ```
 
-그림에서 follower의 복제 진행 화살표는 producer가 follower와 직접 대화한다는 뜻이 아니라, follower가 leader의 log를 따라잡고 그 진행을 leader가 반영하는 흐름입니다. `min.insync.replicas`는 producer 옆에 붙이는 ACK 수가 아니라 topic 설정으로서 현재 ISR의 최소 크기를 제한합니다. Kafka 4.3 공식 복제 설계 문서는 현재 ISR 전체가 기록을 받아야 파티션 write가 committed가 되고, consumer에는 committed message만 제공된다고 설명합니다.
+그림에서 follower의 복제 진행 화살표는 producer가 follower와 직접 대화한다는 뜻이 아니라, follower가 leader의 log를 따라잡고 그 진행을 leader가 반영하는 흐름입니다. `min.insync.replicas`는 producer 옆에 붙이는 ACK 수가 아니라 topic 설정으로서 현재 ISR의 최소 크기를 제한합니다.
+
+Kafka 4.3 공식 복제 설계 문서는 현재 ISR 전체가 기록을 받아야 파티션 write가 committed가 되고, consumer에는 committed message만 제공된다고 설명합니다.
 
 ## 다섯 가지 상태를 숫자로 따라가 보겠습니다
 
@@ -49,29 +51,47 @@ Kafka 4.3 topic 설정 문서에서 `min.insync.replicas`는 leader를 포함한
 | D | `{L,F1}` 후 L 장애 | `all` / 2로 앞서 성공한 기록 | F1을 새 leader로 선출할 수 있음 | F1이 받은 committed 기록은 이어질 수 있습니다. 미복제 tail은 별도입니다. |
 | E | ELR 비활성, 모든 ISR 장애, F2만 뒤처짐 | unclean false/true 비교 | false는 가용성 대기, true는 쓰기 재개 가능 | true이면 F2에 없는 기록이 사라질 수 있습니다. ELR 모델은 별도 판단이 필요합니다. |
 
-A에서 min ISR이 2라는 이유로 F2를 무시하고 L과 F1만 기다리는 것이 아닙니다. F2가 아직 ISR이면 세 replica가 모두 확인해야 성공합니다. B처럼 F2가 ISR에서 제거된 뒤에야 현재 집합이 두 개가 됩니다. 또한 ISR이 줄어드는 시점과 append가 진행되는 시점이 겹치면 오류가 `NotEnoughReplicas`인지 `NotEnoughReplicasAfterAppend`인지에 따라 producer가 본 경계가 달라질 수 있으므로, 오류 응답만으로 레코드가 절대 log에 들어가지 않았다고 단정하지 않아야 합니다.
+A에서 min ISR이 2라는 이유로 F2를 무시하고 L과 F1만 기다리는 것이 아닙니다. F2가 아직 ISR이면 세 replica가 모두 확인해야 성공합니다. B처럼 F2가 ISR에서 제거된 뒤에야 현재 집합이 두 개가 됩니다.
+
+또한 ISR이 줄어드는 시점과 append가 진행되는 시점이 겹치면 오류가 `NotEnoughReplicas`인지 `NotEnoughReplicasAfterAppend`인지에 따라 producer가 본 경계가 달라질 수 있으므로, 오류 응답만으로 레코드가 절대 log에 들어가지 않았다고 단정하지 않아야 합니다.
 
 ## acks 값은 서로 다른 기록 확인을 선택합니다
 
-`acks=0`은 broker가 받은 뒤의 확인을 기다리지 않습니다. socket buffer에 넘긴 뒤 성공처럼 진행할 수 있지만 receipt나 offset을 확인할 수 없습니다. `acks=1`은 leader가 자기 log에 append한 뒤 응답하고 follower를 기다리지 않으므로, 그 뒤 leader가 장애 나면 아직 복제되지 않은 기록을 잃을 수 있습니다. `acks=all` 또는 `-1`은 현재 ISR 전체의 확인을 기다려 이 선택지 중 가장 높은 Kafka 내부 복제 내구성을 제공합니다. 어느 값도 매 레코드마다 물리 디스크에 `fsync`했다는 확인과 같지는 않습니다. Kafka 공식 설계 문서는 filesystem append가 OS page cache에 머물 수 있고, 성능 때문에 매 write마다 `fsync`를 요구하지 않는다고 설명합니다.
+`acks=0`은 broker가 받은 뒤의 확인을 기다리지 않습니다. socket buffer에 넘긴 뒤 성공처럼 진행할 수 있지만 receipt나 offset을 확인할 수 없습니다. `acks=1`은 leader가 자기 log에 append한 뒤 응답하고 follower를 기다리지 않으므로, 그 뒤 leader가 장애 나면 아직 복제되지 않은 기록을 잃을 수 있습니다.
 
-`min.insync.replicas`는 `acks=all`과 결합할 때 특히 의미가 있습니다. `acks=all`만 두고 min ISR을 1로 두면 ISR이 leader 하나로 줄어도 producer 성공이 가능할 수 있습니다. RF를 3으로 설정했다는 사실만으로 성공한 모든 레코드가 항상 세 곳에 존재한다고 말할 수 없는 이유입니다. 반대로 min ISR을 3으로 올리면 ISR 하나라도 빠지는 순간 쓰기 가용성을 포기하고 복제 여유를 보전하는 방향이 됩니다. 아래의 consumer 가시성 설명은 Kafka 4.3 topic 설정 문서가 제시한 규칙이며, ELR 비활성 단순 ISR 모델로만 읽지 않습니다. ELR을 사용하는 환경에서는 high watermark와 eligible leader 후보를 함께 확인해야 합니다.
+`acks=all` 또는 `-1`은 현재 ISR 전체의 확인을 기다려 이 선택지 중 가장 높은 Kafka 내부 복제 내구성을 제공합니다. 어느 값도 매 레코드마다 물리 디스크에 `fsync`했다는 확인과 같지는 않습니다.
+
+Kafka 공식 설계 문서는 filesystem append가 OS page cache에 머물 수 있고, 성능 때문에 매 write마다 `fsync`를 요구하지 않는다고 설명합니다.
+
+`min.insync.replicas`는 `acks=all`과 결합할 때 특히 의미가 있습니다. `acks=all`만 두고 min ISR을 1로 두면 ISR이 leader 하나로 줄어도 producer 성공이 가능할 수 있습니다. RF를 3으로 설정했다는 사실만으로 성공한 모든 레코드가 항상 세 곳에 존재한다고 말할 수 없는 이유입니다.
+
+반대로 min ISR을 3으로 올리면 ISR 하나라도 빠지는 순간 쓰기 가용성을 포기하고 복제 여유를 보전하는 방향이 됩니다. 아래의 consumer 가시성 설명은 Kafka 4.3 topic 설정 문서가 제시한 규칙이며, ELR 비활성 단순 ISR 모델로만 읽지 않습니다. ELR을 사용하는 환경에서는 high watermark와 eligible leader 후보를 함께 확인해야 합니다.
 
 topic 설정 문서는 producer의 `acks` 값과 무관하게 consumer가 record를 보기 전에 현재 ISR 전체 복제와 min ISR 조건이 충족되어야 한다고 설명합니다. 따라서 producer가 `acks=1` 응답을 받았다는 것, consumer가 곧 읽을 수 있다는 것, follower가 장애 후에도 그 record를 보존하고 있다는 것은 서로 다른 주장입니다.
 
 ## leader 장애 때 보존되는 것은 ‘committed’ 경계까지입니다
 
-leader L이 고장 났을 때 controller는 보통 ISR 안의 replica를 새 leader로 선택합니다. L과 F1이 ISR이었고 성공한 record가 두 곳에 모두 append되어 committed라면, F1이 새 leader가 되어 그 record를 이어갈 수 있습니다. Kafka 4.3 복제 설계 문서가 말하는 핵심 전제는 적어도 하나의 in-sync replica가 계속 살아 있는 동안 committed record를 보호할 수 있다는 것입니다. RF `f+1`은 그런 전제 아래 `f`개의 장애를 견디는 사본 수로 설명됩니다.
+leader L이 고장 났을 때 controller는 보통 ISR 안의 replica를 새 leader로 선택합니다. L과 F1이 ISR이었고 성공한 record가 두 곳에 모두 append되어 committed라면, F1이 새 leader가 되어 그 record를 이어갈 수 있습니다.
+
+Kafka 4.3 복제 설계 문서가 말하는 핵심 전제는 적어도 하나의 in-sync replica가 계속 살아 있는 동안 committed record를 보호할 수 있다는 것입니다. RF `f+1`은 그런 전제 아래 `f`개의 장애를 견디는 사본 수로 설명됩니다.
 
 이 절의 기본 표와 다음 사례는 **ELR을 비활성화한 단순 ISR 모델**입니다. 이 모델에서 모든 ISR replica가 사라지면 Kafka는 일관된 ISR replica가 돌아올 때까지 파티션을 사용할 수 없게 두거나, `unclean.leader.election.enable=true`일 때 뒤처진 replica를 leader로 올려 가용성을 회복할 수 있습니다. 그 replica에 없는 최신 기록, 심지어 앞서 committed였던 기록도 사라질 위험이 있습니다.
 
-다만 Kafka 4.3의 [Eligible Leader Replicas 문서](https://kafka.apache.org/43/operations/eligible-leader-replicas/)는 ELR이라는 별도 모델을 설명합니다. ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터 자동 활성화되며, `eligible.leader.replicas.version=0`이면 비활성화됩니다. ELR이 활성화된 경우 ISR 밖이어도 controller가 추적하는 안전한 ELR 후보가 있을 수 있습니다. 또한 min ISR보다 ISR 크기가 작을 때 high watermark가 전진하지 않도록 하여 후보의 안전성을 다루고, leader 선출도 ISR → unfenced ELR → 조건을 만족하는 이전 leader 순서로 판단합니다. 그러므로 “모든 ISR 장애 뒤에는 stale replica를 unclean election으로 올리는 경우만 있다”는 말은 이 노트처럼 ELR이 꺼져 있고 해당 replica가 ELR에도 없는 경우에만 적용됩니다.
+다만 Kafka 4.3의 [Eligible Leader Replicas 문서](https://kafka.apache.org/43/operations/eligible-leader-replicas/)는 ELR이라는 별도 모델을 설명합니다.
+
+ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터 자동 활성화되며, `eligible.leader.replicas.version=0`이면 비활성화됩니다. ELR이 활성화된 경우 ISR 밖이어도 controller가 추적하는 안전한 ELR 후보가 있을 수 있습니다.
+
+또한 min ISR보다 ISR 크기가 작을 때 high watermark가 전진하지 않도록 하여 후보의 안전성을 다루고, leader 선출도 ISR → unfenced ELR → 조건을 만족하는 이전 leader 순서로 판단합니다.
+
+그러므로 “모든 ISR 장애 뒤에는 stale replica를 unclean election으로 올리는 경우만 있다”는 말은 이 노트처럼 ELR이 꺼져 있고 해당 replica가 ELR에도 없는 경우에만 적용됩니다.
 
 이 선택은 “장애 중에도 쓰기를 재개할 것인가”와 “성공했다고 응답한 기록을 잃지 않을 것인가” 사이의 정책입니다. 재생성 가능한 알림 로그라면 가용성을 우선할 여지가 있지만, 금액·재고·권리 원장이라면 unclean election을 쉽게 허용해서는 안 됩니다. 어느 경우든 새 leader의 log와 producer가 성공 응답받았거나 응답을 잃은 record ID를 대조할 복구 절차가 필요합니다.
 
 ## 성공 조건은 표로 확인하고 구현 세부는 섞지 않습니다
 
-이 노트에서는 producer의 `send`와 broker의 leader append를 하나의 의사코드로 합치지 않습니다. producer가 요청을 보내는 경계, leader가 append하는 경계, follower가 복제 진행을 알리는 경계, broker가 ACK를 반환하는 경계를 실제 client·broker 버전에 맞춰 따로 확인해야 합니다. 또한 `min.insync.replicas` 부족을 append 전에 판단하는 경우와 append 뒤 `NotEnoughReplicasAfterAppend`를 반환하는 경우를 같은 결과로 뭉뚱그리지 않습니다. 오류 이름만으로 record가 절대 log에 없었다고 단정하지 않는 것이 안전합니다.
+이 노트에서는 producer의 `send`와 broker의 leader append를 하나의 의사코드로 합치지 않습니다. producer가 요청을 보내는 경계, leader가 append하는 경계, follower가 복제 진행을 알리는 경계, broker가 ACK를 반환하는 경계를 실제 client·broker 버전에 맞춰 따로 확인해야 합니다.
+
+또한 `min.insync.replicas` 부족을 append 전에 판단하는 경우와 append 뒤 `NotEnoughReplicasAfterAppend`를 반환하는 경우를 같은 결과로 뭉뚱그리지 않습니다. 오류 이름만으로 record가 절대 log에 없었다고 단정하지 않는 것이 안전합니다.
 
 | 관찰 단계 | 확인할 상태 | 이 예에서의 판단 |
 |---|---|---|

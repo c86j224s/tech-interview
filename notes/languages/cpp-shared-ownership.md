@@ -22,7 +22,9 @@ questionIds: [cpp-shared-pointer-lifetime, cpp-weak-pointer-cycle, weak-lock-log
 | 루트 포인터 변수 | 같은 변수의 동시 읽기·교체 | mutex 또는 C++20 atomic shared_ptr |
 | 대상 객체 | 복합 필드 불변식·변경 순서 | mutex·직렬 소유·깊은 불변 snapshot |
 
-소유자가 하나라면 unique_ptr가 더 명확할 수 있습니다. 실제로 여러 비동기 작업이 함께 수명을 유지해야 할 때 shared_ptr를 선택합니다. raw pointer 하나에서 shared_ptr 두 개를 각각 새로 만들면 서로 다른 제어 블록이 같은 객체를 삭제할 수 있습니다. 이미 공유 소유된 this를 또 `shared_ptr(this)`로 감싸지 않고 enable_shared_from_this의 준비된 소유 계약을 따릅니다. 생성자에서 공유 소유가 아직 형성되기 전 shared_from_this를 호출하는 것도 일반적인 안전 패턴이 아닙니다.
+소유자가 하나라면 unique_ptr가 더 명확할 수 있습니다. 실제로 여러 비동기 작업이 함께 수명을 유지해야 할 때 shared_ptr를 선택합니다. raw pointer 하나에서 shared_ptr 두 개를 각각 새로 만들면 서로 다른 제어 블록이 같은 객체를 삭제할 수 있습니다.
+
+이미 공유 소유된 this를 또 `shared_ptr(this)`로 감싸지 않고 enable_shared_from_this의 준비된 소유 계약을 따릅니다. 생성자에서 공유 소유가 아직 형성되기 전 shared_from_this를 호출하는 것도 일반적인 안전 패턴이 아닙니다.
 
 ## Weak reference는 소유하지 않는 관찰입니다
 
