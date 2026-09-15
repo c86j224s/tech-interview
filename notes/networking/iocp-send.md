@@ -59,6 +59,41 @@ WSASend 성공 완료는 transport가 버퍼를 소비한 경계이며 상대가
 
 연결이 끊기면 아직 미제출인 프레임, 일부 전송 또는 결과 불확정인 프레임, 상대 적용은 됐지만 응답을 잃은 프레임을 구분합니다. 새 연결에서 무조건 모든 프레임을 새 ID로 재전송하면 중복 효과가 생깁니다.
 
+## WSASend에 넘길 범위를 코드로 만듭니다
+
+수신한 프레임에 응답한다고 생각해 보겠습니다. 길이 헤더와 본문을 완성한 뒤 연결별 송신 큐에 넣습니다. 처음 구현에서는 큐 맨 앞 프레임만 진행시키면, 다음 프레임이 앞 프레임의 잔량 사이에 끼어드는 일을 막기 쉽습니다.
+
+```cpp
+// frame은 이 송신 완료까지 변경·재할당되지 않는 소유 버퍼입니다.
+// offset과 길이는 연결의 직렬 실행 경로에서만 변경합니다.
+std::size_t remaining = frame.size() - offset;
+ULONG chunk = static_cast<ULONG>(
+    std::min(remaining, static_cast<std::size_t>(ULONG_MAX)));
+operation->buffer.buf = frame.data() + offset;
+operation->buffer.len = chunk;
+
+int rc = WSASend(socket, &operation->buffer, 1, nullptr, 0,
+                 &operation->overlapped, nullptr);
+int error = rc == SOCKET_ERROR ? WSAGetLastError() : 0;
+if (rc == SOCKET_ERROR && error != WSA_IO_PENDING) {
+    finishSendSubmissionFailure(operation, error);
+}
+```
+
+이 발췌 앞에는 열린 연결 확인·작업 등록·제출자/완료 참조 확보가 필요합니다. 빈 프레임 처리, `offset <= frame.size()` 검증, API 호출과 소켓 close의 직렬화도 포함해야 합니다. `size_t`를 무조건 `ULONG`으로 잘라 넘기지 않도록 한 요청 크기를 제한했습니다. 기본 모드에서 즉시 0을 반환해도 여기서 프레임을 pop하지 않습니다.
+
+### 완료한 범위를 넘겨서 보내지 않습니다
+
+송신 상태에는 전체 길이, 이번 제출 길이, 현재 offset을 둡니다. 성공 완료에서 반환 bytes가 이번 제출 길이보다 크면 내부 계약 오류입니다. 성공한 진행량만 offset에 더하고, 잔량이 있으면 **새 작업 또는 재사용 가능한 상태로 정리된 작업**에 다음 범위를 설정합니다. 앞 프레임 전체가 끝나야 뒤 프레임을 시작합니다.
+
+가령 전체 6바이트 `ABCDEF` 중 완료로 확인한 범위가 4바이트인 어댑터 경로라면 다음 범위는 `EF`입니다. `ABCDEF` 전체를 다시 보내면 `ABCDABCDEF`가 됩니다. 이 예는 부분 진행을 처리하는 상태 계산이며, 특정 Winsock provider에서 성공한 overlapped 송신이 반드시 이런 크기로 나뉜다는 측정 결과는 아닙니다. 실제 provider·모드의 계약도 확인해야 합니다.
+
+오류 완료는 이 성공 경로와 다릅니다. 오류가 나면 bytes 숫자만 믿고 같은 연결에서 무조건 이어 보내지 않고, 연결 상태와 오류 의미를 먼저 판단합니다. 새 연결에서 재시도할 때는 상대가 이미 처리했는지 모를 수 있어 애플리케이션 요청 ID·ACK·결과 조회가 필요합니다. 비어 있지 않은 송신의 0바이트 진행을 무한히 재제출하는 루프도 두지 않습니다.
+
+### 버퍼를 Pool에 돌리는 시점
+
+송신 완료를 꺼낸 뒤 transport가 더 이상 payload를 사용하지 않는 경계를 확인했다고 해도, 감사 기록이나 재시도용 원본을 다른 작업이 참조하면 그 참조는 남습니다. 반대로 실제 송신이 진행 중인데 큐에서 pop했다는 이유로 vector를 재사용하면 transport가 변경된 메모리를 읽을 수 있습니다. 송신 큐의 논리 항목 수와 실제 버퍼 소유권을 따로 추적합니다.
+
 ## 느린 상대는 큐 메모리를 점유합니다
 
 연결별 큐 바이트·항목 수·최대 나이·in-flight 수를 제한합니다. 최신 상태는 합칠 수 있어도 거래 명령은 임의 폐기하면 안 됩니다. 생산자 대기·빠른 거절·연결 종료 후 내구 재생 등 메시지 의미에 맞는 정책을 둡니다.

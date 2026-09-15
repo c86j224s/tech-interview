@@ -68,6 +68,71 @@ listen backlog는 커널의 연결 대기와 관련되고 AcceptEx 슬롯 수는
 
 초기 수신을 포함한 슬롯을 침묵 클라이언트가 오래 보유하지 않도록 첫 데이터 기한과 인증 전 연결 수를 제한합니다. 완료 보충률, 수락 지연·FD·메모리·거절률을 함께 봅니다. 서버 종료 후 완료에서 새 AcceptEx를 보충하지 않도록 제출 게이트를 공유합니다.
 
+## 접속 하나를 실제 API로 받아 봅니다
+
+앞의 수신 예제에 새 연결을 공급하려면 듣기 소켓부터 포트에 연결합니다. 그다음 해당 소켓의 provider에서 확장 함수 포인터를 얻습니다. 헤더에 선언이 보인다는 사실만으로 초기화가 끝난 것은 아닙니다.
+
+```cpp
+LPFN_ACCEPTEX acceptEx = nullptr;
+GUID extensionId = WSAID_ACCEPTEX;
+DWORD returned = 0;
+int rc = WSAIoctl(listenSocket, SIO_GET_EXTENSION_FUNCTION_POINTER,
+                 &extensionId, sizeof(extensionId),
+                 &acceptEx, sizeof(acceptEx),
+                 &returned, nullptr, nullptr);
+if (rc == SOCKET_ERROR) {
+    int error = WSAGetLastError();
+    // 아직 AcceptEx 작업은 제출하지 않았습니다.
+    reportListenerSetupFailure(error);
+    return;
+}
+```
+
+이후 미리 만든 **bound도 connected도 아닌** 수락 소켓을 넘깁니다. 여기서는 첫 데이터 수신을 분리하려고 수신 길이를 0으로 정했습니다. 출력 버퍼는 그래도 주소를 받을 공간이 필요합니다.
+
+```cpp
+constexpr DWORD AddressBytes = sizeof(sockaddr_storage) + 16;
+struct AcceptOperation {
+    OVERLAPPED overlapped{};
+    SOCKET accepted = INVALID_SOCKET;
+    char addresses[AddressBytes * 2]{};
+};
+
+// op와 듣기 소켓의 수명 및 제출/완료 참조를 먼저 확보한 뒤 호출합니다.
+DWORD immediateBytes = 0;
+BOOL ok = acceptEx(listenSocket, op->accepted, op->addresses,
+                   0, AddressBytes, AddressBytes,
+                   &immediateBytes, &op->overlapped);
+int error = ok ? 0 : WSAGetLastError();
+if (!ok && error != ERROR_IO_PENDING) {
+    finishAcceptSubmissionFailure(op, error);
+}
+// 기본 IOCP 모드: TRUE와 pending 모두 완료 워커가 처리합니다.
+// 제출자 참조는 API 반환 뒤 별도로 놓습니다.
+```
+
+이 코드는 제출 경계의 발췌입니다. `op->accepted` 생성 실패 처리와 참조 관리 함수는 서버 구현에 필요합니다. 완료 key는 듣기 소켓에 연결한 값이고, `OVERLAPPED*`로 어떤 수락 작업인지 찾습니다. Receive 작업과 Accept 작업을 무조건 같은 구조체로 캐스팅하지 말고 공통 태그/레이아웃 또는 key별 분기 규약을 정합니다.
+
+성공 완료 뒤에는 다음 호출로 수락 소켓의 context를 갱신합니다.
+
+```cpp
+if (setsockopt(op->accepted, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
+               reinterpret_cast<const char*>(&listenSocket),
+               sizeof(listenSocket)) == SOCKET_ERROR) {
+    int error = WSAGetLastError();
+    closeRejectedConnection(op, error);
+    return;
+}
+```
+
+주소는 `GetAcceptExSockaddrs`에 **제출 때의 수신 길이와 두 주소 길이 그대로** 넘겨 추출합니다. 반환 포인터는 출력 버퍼 내부를 가리키므로 주소를 연결 객체에 보관하려면 유효 길이를 확인해 복사합니다. 이후 새 소켓을 연결 key로 포트에 연결하고 첫 WSARecv를 제출합니다. 어느 단계든 실패하면 수락 슬롯의 소켓을 정리하되, 이미 제출한 다른 I/O의 완료 수명까지 즉시 끝났다고 해석하지 않습니다.
+
+초기 수신 길이가 0이므로 Accept 완료의 bytes가 0인 것은 정상입니다. 이를 TCP 수신의 EOF와 혼동하면 접속하자마자 모든 연결을 끊게 됩니다. `kind=Accept`인지 `kind=Receive`인지 먼저 보고 바이트 수를 해석해야 하는 이유입니다.
+
+### 먼저 말을 거는 서버라면 초기 수신을 기다리지 않습니다
+
+서버가 먼저 환영 메시지나 프로토콜 안내를 보내야 하는데 AcceptEx에 초기 수신을 요구하면, client도 server의 첫 메시지를 기다려 양쪽이 멈출 수 있습니다. 0으로 수락을 끝낸 뒤 인증 전 연결에 별도 첫 메시지 기한을 두는 구성이 이해하기 쉽습니다. 초기 수신을 묶는 최적화를 선택했다면 `SO_CONNECT_TIME`으로 연결됐지만 아직 데이터가 없는 수락 슬롯을 관찰하는 방법도 있습니다. 기한 초과로 수락 소켓을 닫아도 작업 컨텍스트는 실패 완료 회수까지 유지합니다.
+
 ## 공식 계약과 실제 실험을 분리합니다
 
 [Microsoft AcceptEx 문서](https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nf-mswsock-acceptex)에서 초기 수신 0의 의미, 주소 공간, 반환값과 context 설정을 확인했습니다. 해당 페이지의 예제 조각을 모든 오류·pending 경로가 완성된 운영 서버로 간주하지 않습니다.
