@@ -1,12 +1,18 @@
 ---
 id: acceptex
-title: AcceptEx의 수락·초기 데이터·주소 수명
+title: AcceptEx로 새 연결 받기
 topic: 네트워크
-summary: 미리 준비한 소켓·버퍼의 역할과 초기 수신 길이를 구분하고 완료 후 context·주소 추출·실패 소켓·수락 용량을 설명합니다.
+summary: 수락 소켓과 주소 버퍼를 준비한 뒤, 새 연결을 받아 첫 수신으로 이어가는 과정을 설명합니다.
 questionIds: [iocp-acceptex, acceptex-failed-socket-reuse, acceptex-pool-listen-backlog]
 ---
 
-# AcceptEx의 수락·초기 데이터·주소 수명
+# AcceptEx로 새 연결 받기
+
+**IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
+
+수신 코드를 만들었다면 이제 그 코드에 새 연결을 공급할 차례입니다. 일반적인 accept와 달리 AcceptEx는 새 연결을 받을 소켓을 서버가 미리 준비합니다. 연결이 들어오면 완료 워커가 그 소켓을 넘겨받아 통신을 시작합니다.
+
+처음에는 **접속 수락과 첫 데이터 수신을 분리**해서 읽어 보세요. 두 일을 한 번에 처리하는 옵션은 기본 흐름을 이해한 뒤 살펴보겠습니다.
 
 ## TCP가 연결됐어도 수락 작업은 기다릴 수 있습니다
 
@@ -62,7 +68,7 @@ AcceptEx가 실패했다고 같은 소켓·OVERLAPPED를 곧바로 다시 사용
 
 특정 TransmitFile의 disconnect·reuse flags처럼 문서가 정한 재사용 상태 전환은 별도 계약입니다. 그 기능이 모든 실패 소켓에 적용된다고 일반화하지 않습니다. 작업 메모리 풀 재사용과 소켓 재사용도 서로 다른 수명입니다.
 
-## Backlog와 미리 제출한 개수는 다른 큐입니다
+## listen backlog와 수락 슬롯은 무엇이 다른가
 
 listen backlog는 커널의 연결 대기와 관련되고 AcceptEx 슬롯 수는 앱이 준비한 수락 소켓·작업·버퍼 수입니다. 슬롯을 늘리면 순간 연결을 받아 처리할 여유는 늘 수 있지만 인증·실제 작업 처리량이 자동 증가하지 않습니다.
 
@@ -133,7 +139,7 @@ if (setsockopt(op->accepted, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
 
 서버가 먼저 환영 메시지나 프로토콜 안내를 보내야 하는데 AcceptEx에 초기 수신을 요구하면, client도 server의 첫 메시지를 기다려 양쪽이 멈출 수 있습니다. 0으로 수락을 끝낸 뒤 인증 전 연결에 별도 첫 메시지 기한을 두는 구성이 이해하기 쉽습니다. 초기 수신을 묶는 최적화를 선택했다면 `SO_CONNECT_TIME`으로 연결됐지만 아직 데이터가 없는 수락 슬롯을 관찰하는 방법도 있습니다. 기한 초과로 수락 소켓을 닫아도 작업 컨텍스트는 실패 완료 회수까지 유지합니다.
 
-## 공식 계약과 실제 실험을 분리합니다
+## 참고 문서와 직접 확인할 상황
 
 [Microsoft AcceptEx 문서](https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nf-mswsock-acceptex)에서 초기 수신 0의 의미, 주소 공간, 반환값과 context 설정을 확인했습니다. 해당 페이지의 예제 조각을 모든 오류·pending 경로가 완성된 운영 서버로 간주하지 않습니다.
 

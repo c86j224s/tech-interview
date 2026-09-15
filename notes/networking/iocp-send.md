@@ -1,12 +1,18 @@
 ---
 id: iocp-send
-title: WSASend의 프레임 순서와 버퍼 수명
+title: WSASend로 메시지를 순서대로 보내기
 topic: 네트워크
-summary: 생성·제출·완료의 세 순서를 나누고 단일 송신 소유자, WSABUF descriptor와 payload·OVERLAPPED의 다른 수명을 설명합니다.
+summary: 여러 곳에서 만든 응답을 연결별 큐에 모아 보내고, 송신 완료 뒤 버퍼를 정리하는 과정을 따라갑니다.
 questionIds: [iocp-send-order, wsabuf-descriptor-payload-lifetime, send-completion-versus-business-ack]
 ---
 
-# WSASend의 프레임 순서와 버퍼 수명
+# WSASend로 메시지를 순서대로 보내기
+
+**IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
+
+채팅 메시지와 알림이 동시에 만들어졌다고 해 보겠습니다. 두 스레드가 같은 소켓으로 각각 보내기 시작하면, 메시지의 헤더와 본문이 의도한 순서대로 나간다고 장담하기 어렵습니다.
+
+여기서는 **메시지를 만드는 일은 여러 곳에서 하되, 소켓에 보내는 일은 연결마다 한곳에서 맡기는 구성**으로 시작합니다. 이 구조를 잡으면 송신 순서뿐 아니라 남은 데이터와 버퍼 수명도 따라가기 쉬워집니다.
 
 ## TCP는 잘못 섞어 제출한 바이트도 그 순서대로 보냅니다
 
@@ -22,7 +28,7 @@ Winsock 문서도 같은 stream socket에 여러 스레드가 WSASend를 동시�
 
 처음에는 한 연결에 송신 한 개만 in-flight로 두면 다음 프레임 제출과 잔량 처리의 책임이 단순합니다. 여러 중첩 송신을 허용하려면 실제 호출 순서·완료 역순·실패 범위를 별도 상태로 관리해야 합니다. 완료를 기다린다는 사실이 상대 앱 처리를 기다린다는 뜻은 아닙니다.
 
-## Descriptor와 실제 데이터는 같은 수명이 아닙니다
+## WSABUF 설명자와 실제 버퍼는 언제까지 필요한가
 
 | 대상 | 역할 | 수명 |
 | --- | --- | --- |

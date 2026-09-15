@@ -1,12 +1,14 @@
 ---
 id: iocp-completion
-title: IOCP 완료 식별과 제출 전 참조 예약
+title: IOCP로 수신 요청을 보내고 완료를 처리하기
 topic: 네트워크
-summary: completion key·OVERLAPPED·GQCS 결과를 나누고 즉시 성공·pending·통지 생략·반환 전 완료에서 단일 정리 책임을 설명합니다.
+summary: 소켓을 완료 포트에 연결하고 WSARecv의 반환값과 완료 패킷을 처리하는 과정을 C++ 코드로 따라갑니다.
 questionIds: [iocp-completion-key-overlapped, iocp-gqcs-error-contract, gqcs-ex-per-entry-error, iocp-immediate-completion, windows-skip-success-completion, iocp-completion-before-submit-return, iocp-operation-counter-invariants, iocp-generation-not-memory-safety, iocp-user-packet-tagging]
 ---
 
-# IOCP 완료 식별과 제출 전 참조 예약
+# IOCP로 수신 요청을 보내고 완료를 처리하기
+
+**IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 
 채팅 서버에 클라이언트 하나가 접속했다고 생각해 보겠습니다. 서버는 소켓에 수신 버퍼를 맡긴 뒤 다른 일을 합니다. 데이터가 들어오면 Windows가 완료 포트에 결과를 넣고, 대기 중인 워커가 그 결과를 꺼냅니다. IOCP를 구현할 때 가장 먼저 익혀야 하는 흐름은 **소켓 연결 → 수신 제출 → 완료 수집 → 다음 수신 제출**입니다.
 
@@ -14,7 +16,11 @@ questionIds: [iocp-completion-key-overlapped, iocp-gqcs-error-contract, gqcs-ex-
 
 ## 연결 하나에도 여러 작업이 있습니다
 
-소켓 A에서 수신 17과 송신 28을 동시에 제출하면 같은 핸들에서 나온 완료라도 작업 종류와 버퍼는 다릅니다. completion key는 보통 핸들·연결의 맥락이고, OVERLAPPED 포인터는 개별 중첩 I/O의 맥락입니다. 포인터를 key에 넣었다고 자동으로 참조를 잡아 주지는 않습니다.
+소켓 하나에서 수신과 송신을 동시에 진행할 수 있습니다. 그러면 완료 워커는 두 가지를 알아야 합니다. **어느 연결의 결과인지**, 그리고 **그 연결에서 어떤 작업이 끝났는지**입니다.
+
+첫 번째 질문에는 소켓을 포트에 연결할 때 지정한 `completion key`를 사용합니다. 두 번째 질문에는 I/O를 제출할 때 넘긴 `OVERLAPPED`의 주소를 사용합니다. 보통 key로 연결 객체를 찾고, `OVERLAPPED`로 수신 버퍼나 송신 진행량을 가진 작업 객체를 찾습니다.
+
+다만 Windows는 우리가 넣은 포인터 값을 돌려줄 뿐입니다. 그 객체를 대신 보관하거나 삭제 시점을 관리하지 않으므로, 미완료 작업이 있는 동안 연결 객체가 살아 있도록 애플리케이션에서 참조를 유지해야 합니다.
 
 미완료 작업마다 독립 OVERLAPPED를 두고 작업 컨텍스트에 종류·버퍼·연결 참조·세대를 저장합니다. 포인터 크기를 보존하는 ULONG_PTR 등의 API 타입을 사용하고 임의 메모리를 잘못된 포함 객체로 캐스팅하지 않습니다.
 
@@ -47,9 +53,9 @@ PostQueuedCompletionStatus는 애플리케이션 값을 게시하므로 non-null
 
 기본 모드는 완료 포트 연결과 통지 억제 설정이 없다는 전제입니다. OVERLAPPED hEvent의 낮은 비트 등으로 포트 통지를 억제하는 기능까지 섞으면 표의 계약이 달라집니다. 처음에는 경로를 단순화하고 최적화는 측정 뒤 적용하는 편이 검증하기 쉽습니다.
 
-## 제출 함수가 돌아오기 전에 완료 worker가 실행될 수 있습니다
+## 제출 함수가 돌아오기 전에 완료 워커가 실행될 수 있습니다
 
-작업 참조를 호출 뒤 증가시키면 worker가 먼저 감소·해제할 수 있습니다. 또한 완료용 참조 하나만 잡아 두면 worker가 그것을 놓은 뒤 제출자가 반환 상태를 기록하려다 해제된 객체를 읽을 수 있습니다. **제출자 참조와 완료 참조를 별도로** 준비합니다.
+작업 참조를 호출 뒤 증가시키면 워커가 먼저 감소·해제할 수 있습니다. 또한 완료용 참조 하나만 잡아 두면 워커가 그것을 놓은 뒤 제출자가 반환 상태를 기록하려다 해제된 객체를 읽을 수 있습니다. **제출자 참조와 완료 참조를 별도로** 준비합니다.
 
 ```text
 submit(connection, operation):
@@ -76,7 +82,7 @@ finish는 실제 결과 처리·후속 버퍼 참조 이전·pending 등록 제�
 
 공식 문서상 설정한 모드는 핸들에서 제거할 수 없고, 소켓의 경우 IFS 핸들을 반환하는 provider 지원 조건이 있습니다. 기본·skip 모드를 실행 중 추측하거나 파일 API·Winsock의 반환 규칙을 혼용하지 않습니다. 즉시 성공·pending 성공·pending 실패·즉시 오류를 모두 확인해야 합니다.
 
-## 배치 완료와 세대의 한계
+## 여러 완료를 한 번에 읽을 때 주의할 점
 
 GetQueuedCompletionStatusEx의 함수 성공은 여러 항목을 수집했다는 뜻이지 모든 I/O가 성공했다는 뜻이 아닙니다. 항목별 상태와 바이트·컨텍스트를 API의 결과 해석 규칙에 따라 처리합니다. GetLastError 하나를 모든 항목의 오류로 복사하지 않습니다. 내부 상태 값과 Win32·Winsock 오류 표현을 무조건 같은 숫자로 해석하지도 않습니다.
 
