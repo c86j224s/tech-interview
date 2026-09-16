@@ -18,7 +18,7 @@ questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-proc
 - `processed`: 외부 효과와 애플리케이션의 완료 기록이 성공한 위치입니다. Kafka가 자동으로 아는 값이 아니라 서비스가 관리해야 합니다.
 - `committed`: 소비자 그룹에 저장한 다음 읽을 위치입니다. offset 13을 commit한다는 것은 **offset 13 미만의 필요한 처리가 끝났다고 선언**하고, 재시작 뒤 13부터 재개하겠다는 의미입니다. offset 13 자체를 처리했다는 뜻은 아닙니다.
 
-Kafka `KafkaConsumer` 공식 Javadoc도 committed offset은 마지막으로 처리한 숫자가 아니라 다음에 처리할 위치를 저장한다고 설명합니다. 따라서 레코드 10만 처리했다면 10이 아니라 11을 commit합니다. 반대로 12를 먼저 처리했다는 이유로 13을 commit하면 10·11이 끝나지 않았는데 재시작 시 건너뛸 수 있습니다.
+Kafka `KafkaConsumer` 공식 Javadoc이 설명하듯, `committed offset`은 마지막으로 처리한 레코드 번호가 아니라 재시작 뒤 다음에 읽을 위치입니다. 그래서 10만 처리했다면 11을 저장하지만, 12를 먼저 끝냈다는 이유로 13을 저장하면 아직 끝나지 않은 10·11을 재시작 뒤 건너뛸 수 있습니다. 따라서 commit 후보는 앞에서부터 끊기지 않고 성공한 구간의 다음 위치여야 합니다.
 
 ## 한 번의 poll을 상태표로 펼쳐 보겠습니다
 
@@ -98,7 +98,7 @@ commitCompleted():
 
 `finished + 1`은 Kafka가 그 offset 이후 위치부터 다시 탐색하도록 하는 표현입니다. 중간 숫자에 레코드가 없어도 broker가 실제 다음 레코드로 건너뛸 수 있으므로, 존재하지 않는 offset을 완료 집합에 억지로 넣지 않습니다.
 
-`deliveredOffsets.front`를 읽기 전 deque가 비어 있는지 확인해야 하며, worker 큐에 제출하지 못한 레코드도 **전달 순서 목록에는 미완료로 남겨야** 합니다. 10의 제출은 실패했는데 11·12만 목록에 넣으면, 둘이 끝났을 때 경계가 13으로 넘어가 10을 잃습니다.
+완료 watermark를 계산하기 전에 `deliveredOffsets` deque가 비어 있지 않은지 확인하고, worker 큐에 아직 제출하지 못한 레코드도 전달 순서 목록에 미완료로 남겨야 합니다. 예를 들어 10의 제출이 실패했는데 11·12만 목록에 넣으면, 11과 12가 끝나는 순간 경계가 13으로 잘못 이동해 10을 건너뜁니다. 전달 순서 목록에는 미완료 상태를 남기고, 제출되지 않은 task 본문은 제한된 큐에 따로 보관해야 합니다.
 
 위 코드는 작업의 세대와 모든 전달 offset을 먼저 등록하고, 제출되지 않은 본문을 제한된 대기 큐에 보관합니다. 큐에 자리가 생기면 소유 스레드가 `submitWaiting`을 다시 호출합니다. 실행 실패 항목도 같은 세대에서 재시도하거나 명시적인 격리 정책을 완료하기 전에는 성공으로 표시하지 않습니다.
 
@@ -156,7 +156,7 @@ worker는 KafkaConsumer를 직접 만지지 않고 결과만 돌려줍니다. �
 
 앞의 의사코드의 `onWorkerFinished`도 worker thread가 KafkaConsumer를 호출한다는 뜻이 아니라, 소유 thread가 내부 완료 queue에서 꺼낸 결과를 처리하는 단계입니다.
 
-poll과 worker를 분리하더라도 무제한 queue는 해결책이 아닙니다. queue가 가득 차면 해당 파티션을 `pause`해 새 레코드 반환을 줄이고, poll 자체와 client의 heartbeat 계약은 계속 지키는 구조가 필요합니다. `pause`는 파티션의 전달을 조절할 뿐 group 탈퇴나 소유권 포기가 아닙니다. 멈춘 작업의 실제 나이가 계속 늘어나는지와 queue 내 가장 오래된 offset을 관측해야 합니다.
+poll과 worker를 나눠도 내부 queue를 무한히 키우면 메모리에 미완료 작업이 쌓일 뿐입니다. queue가 가득 차면 해당 파티션을 `pause`해 새 레코드를 덜 받되, consumer thread는 `poll`을 계속 호출해 client의 heartbeat 계약을 지켜야 합니다. `pause`는 해당 파티션의 전달만 조절하며 group에서 나가거나 소유권을 포기하는 동작이 아닙니다. 그래서 멈춘 작업의 실제 나이와 queue에서 가장 오래된 offset을 함께 관측합니다.
 
 ## 순서가 필요한 효과는 watermark만으로 부족합니다
 

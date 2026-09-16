@@ -1,0 +1,2010 @@
+{
+  "date": "2026-09-16",
+  "scope": "개별 문서 가독성 검토 및 필요한 문단 편집. 전면 재작성이나 제품 실행 검증을 뜻하지 않음.",
+  "reviewer": "Luna proposals and verification; host acceptance and corrections",
+  "counts": {
+    "reviewed": 308,
+    "edited": 288,
+    "retained": 20
+  },
+  "files": [
+    {
+      "path": "notes/agents/a2a-lifecycle.md",
+      "status": "edited",
+      "reviewBasis": "P25와 P29만 다듬는 것이 좋습니다. P25는 명세 버전, 상태 종류, terminal task의 재개 불가, direct message 예외를 한 문단에 담고 있지만 상태를 나열한 뒤 재개 판단으로 넘어가는 연결이 압축되어 있습니다. P29는 UI 표시·응답 연결·중복 실행 방지·동의 경계를 순서로 드러내면 outstanding request가 필요한 이유가 더 분명해집니다.",
+      "sha256": "4ff4635afc38e61fb8f12b312e690b6bc61679aaff5173f29de28a2b959edabd"
+    },
+    {
+      "path": "notes/agents/coding-browser.md",
+      "status": "retained",
+      "reviewBasis": "변경하지 않습니다. 구체적 상황에서 호출 경계를 추적하는 방법이 notes/agents/coding-browser.md:12의 9회 재시도 예와 정확한 확인 순서인 ‘입력·기대 결과에서 진입점·호출자·공통 middleware·설정·오류/취소 해석·저장 경계를 따라 읽습니다’로 설명되어 있습니다. 또한 :24는 task ID만 받은 접수 상태에서 상태 조회와 문서 ID·버전·경로 확인으로 넘어가고, :39는 승인안 대조→rerender 중단→서버 저장·결과 ID 확인을 연결하므로 상황·중간 단계·작동 이유가 이미 충분합니다.",
+      "sha256": "aa8368f5bf05b64d635a052bcddc8e4316d4ebb86166ab4e5e94e1756895c949"
+    },
+    {
+      "path": "notes/agents/context-handoff.md",
+      "status": "retained",
+      "reviewBasis": "변경하지 않습니다. notes/agents/context-handoff.md:12는 전체 저장소를 넣어도 취소 계약을 놓칠 수 있다는 상황에서 필요한 입력을 고르는 컨텍스트 엔지니어링을 정의하고, :14는 비용 절감과 검색 누락의 맞교환을 설명합니다. :29의 ‘배포 처리함’과 ‘run 17 시작, 성공 여부 미확인’ 대비, :33의 현재 파일·작업 원장·배포 상태 재조회, :41의 초기 세션→후속 세션→작은 구현→검증 순서는 압축과 재개 메커니즘을 구체적으로 설명합니다.",
+      "sha256": "3e92bda61d4e9e05d69a163071f9427001e8d62cc42a751a47d4f146c6707b98"
+    },
+    {
+      "path": "notes/agents/delegation-integration.md",
+      "status": "retained",
+      "reviewBasis": "변경하지 않습니다. notes/agents/delegation-integration.md:12는 역할을 늘려도 증거가 늘지 않는 상황과 독립성·통합 기준을 함께 제시하고, :27은 ‘테스트 통과’에 명령·환경·결과가 필요하다는 중간 증거와 ‘n=0에서 X:42 인덱스 오류’라는 재현 형식을 제시합니다. :39의 H1→H2 재조회·정확한 patch·의도 병합, :45의 완료 알림을 commit·산출물 version·요구·실행 결과와 대조하는 절차까지 있어 변경 없이도 충분히 읽힙니다.",
+      "sha256": "2d4b34d9d3eae8002fcaae264c19b5ab05c9d34620b602f0ffba851d005b20fa"
+    },
+    {
+      "path": "notes/agents/durable-effects.md",
+      "status": "edited",
+      "reviewBasis": "P42를 다듬는 것이 좋습니다. 나머지 문단은 예약 성공 후 checkpoint 유실(:12), 논리 키와 물리 호출 ID(:18), 고정 승인안(:32), 취소 뒤 늦은 외부 성공(:48)을 각각 상황과 대사·인가·보상 단계로 설명하지만, P42에서는 replay·재추론·버전 변경·lease 세대·fencing 한계가 한 번에 압축되어 재개 판단의 순서가 덜 드러납니다.",
+      "sha256": "3c573158e7cb743d2db7eceb7335c9dade7d2e189186dccd6142952490f4c7f7"
+    },
+    {
+      "path": "notes/agents/evaluation-outcomes.md",
+      "status": "retained",
+      "reviewBasis": "변경하지 않습니다. notes/agents/evaluation-outcomes.md:12는 과제·trial·trace·outcome을 정의한 직후 실제 저장소의 사용자·날짜·인원·중복 여부를 확인하는 상황을 제시하고, :25는 LLM judge의 편향→비교 순서 변경·블라인드·앵커라는 대응 메커니즘을 설명합니다. :29는 채점기 버전 변화와 사람 표본 검토를 연결하고, :39는 오염된 개발 세트와 보류 최종 평가를 분리하므로 정의와 중간 설명이 충분합니다.",
+      "sha256": "ef0fa06ab9a522c0bd3eb91a29f4f2ae9333817e4c54c17492fd01a3c0516513"
+    },
+    {
+      "path": "notes/agents/execution-loop.md",
+      "status": "retained",
+      "reviewBasis": "변경하지 않습니다. notes/agents/execution-loop.md:12는 규칙 계산과 장애 조사라는 두 상황을 대비해 다음 행동을 정하는 주체를 정의하고, :18은 모델 제안→실행기 schema·인가·대상·예산 검사→ID 기반 결과 연결을 주문 ID와 재고 ID 예로 설명합니다. :24는 task ID만 받는 접수와 실제 문서 완료를 구분하고, :41은 부모 budget 100과 자식 60 세 개의 합계 초과를 통해 공유 예산 메커니즘을 보여 주므로 추가 교체가 필요하지 않습니다.",
+      "sha256": "3168c811b239979be511108df6777cd2520f8e8ded79b486a26176dfdf196771"
+    },
+    {
+      "path": "notes/agents/mcp-authority.md",
+      "status": "edited",
+      "reviewBasis": "P16과 P28을 다듬는 것이 좋습니다. P16은 적용 transport, resource metadata, authorization server, issuer, canonical URI를 모두 한 흐름에 담고 있고 P28은 iss 존재·metadata 광고·호환 경로·정규화 금지를 연속으로 제시하므로 각 조건의 검사 순서와 역할을 분리하면 읽기 쉽습니다. 나머지 문단은 로그인과 tool scope(:12), audience와 token passthrough(:18), HTTP와 STDIO 경계(:44)를 구체적으로 연결하고 있어 유지합니다.",
+      "sha256": "50d08d7c8d561313dfa122a5e9154c2b283ea84ef9224c4581efbd4bdc0ae4e1"
+    },
+    {
+      "path": "notes/agents/mcp-contract.md",
+      "status": "edited",
+      "reviewBasis": "역할 경계는 원문의 “host는 사용자·모델·정책·문맥을 관리하는 앱, client는 host 안에서 server와 프로토콜을 주고받는 역할, server는 도구·자료·템플릿을 제공하는 역할입니다.”에서 이미 정의되어 있고, 재연결과 외부 효과의 분리는 “transport가 요청을 잃었다는 사실은 server의 효과가 없었다는 뜻이 아닙니다.”에서 실제 원리까지 설명합니다. 다만 server 사이의 전송 권한, tool·resource·template 선택, 추가 입력과 내구 task 조회는 한 문단에 조건이 몰려 있어 독자가 실행 순서를 따라가기 어렵습니다. 아래 4개 문단만 상황→실행→이유 순서로 풀고, H2·표·diagram/code fence·2026-07-28 등 버전 수치·상태명·필드명은 유지합니다.",
+      "sha256": "a9960ad8b7b030667b66b3b0a57a5f1999034dfffb206211fa705d806d0faabe"
+    },
+    {
+      "path": "notes/agents/memory-lineage.md",
+      "status": "edited",
+      "reviewBasis": "직접 진술·관찰·추론·외부 문서를 분리하라는 원칙은 “직접 진술·검증된 관찰·잠정 추론·외부 문서 내용을 구분하고 반복 작업에 유효한 사실만 장기 기억에 둡니다.”로 분명하고, 계보 보존도 “원본→요약→파생 기억의 관계를 유지하고 순환 재저장으로 출처가 지워지지 않게 합니다.”로 작동 이유까지 설명합니다. 반면 필드 목록과 staging→production 정정·삭제 후 재수집 처리는 명사와 정책을 연속해서 읽어야 하므로 3개 문단을 상황→중간 처리→검색 결과의 순서로 교체합니다. 표·diagram·H2·원문의 보안 조건은 수정하지 않습니다.",
+      "sha256": "3e6025f8586cfd97e9c6126c7fc1b9abe180552e030773f82b5d3a3073197f75"
+    },
+    {
+      "path": "notes/agents/progressive-tools.md",
+      "status": "edited",
+      "reviewBasis": "Skills의 범위는 “파일 기반 Agent Skills는 `SKILL.md`의 이름·설명·절차와 필요하면 scripts·references·assets를 묶는 재사용 패키지입니다.”로 정의되고, schema를 추측하지 말라는 실행 경계도 “발견된 이름만 보고 인자를 추측해 실행하지 않습니다.”로 명확합니다. 다만 `recall`의 뜻과 검색 실패 시 선택하지 말아야 할 행동, 10000행 집계와 페이지 일부 실패의 처리 순서는 압축되어 있어 3개 문단을 교체합니다. 페이지·cursor·통화·부분 오류·idempotency·deadline 같은 원문 조건과 표·diagram·H2는 유지합니다.",
+      "sha256": "81059890ea1385ab930d09c4ff649fdeb1c17fbe075a9039569f6d943058e5de"
+    },
+    {
+      "path": "notes/agents/research-evidence.md",
+      "status": "edited",
+      "reviewBasis": "검색 방향은 “첫 검색으로 장애 시각을 알면 해당 배포를 찾고, 후보가 생기면 다른 원인을 대조합니다.”로 관찰에 따라 질문을 바꾸는 원리를 보여 주고, 원문 조건 대조도 “주요 주장을 쪼개어 정확한 원문 구간과 필수/선택·적용 version·전제를 대조합니다.”로 제시합니다. 그러나 RAG가 정의되지 않은 채 반복 검색과 섞이고, 공식 링크의 반례와 계산값의 입력·단위·공식 구분은 한 번 더 풀어야 실제 검증 방법이 보입니다. 그래서 3개 문단만 교체하며 표·diagram·H2·분모/버전/접근 불가 조건은 유지합니다.",
+      "sha256": "67fd0c71df42a4dc972191537ce72348b1e269f5594763341e7341b1f3058055"
+    },
+    {
+      "path": "notes/agents/retrieval-boundary.md",
+      "status": "edited",
+      "reviewBasis": "검색 권한과 관련성을 분리하는 핵심은 “유사도는 관련성이지 권한이 아닙니다.”에서 정확히 드러나고, 전역 top-10 중 9개를 사후 제거하는 수치 예시는 결과가 1개로 줄어드는 중간 계산을 이미 잘 보여 주므로 유지합니다. 다만 vector top-K·외부 전송·SSRF 경계는 용어와 검사 시점이 한꺼번에 나와 처음 읽는 사람이 흐름을 놓칠 수 있어 3개 문단을 교체합니다. 표·diagram·H2와 ACL 지연 시 원문 권위를 유지하는 조건은 수정하지 않습니다.",
+      "sha256": "cccca91de6fd6099a777fe1dbb2e1399eb6ab66890fb4f9b9bc11d38bb9279ea"
+    },
+    {
+      "path": "notes/agents/routing-cost.md",
+      "status": "edited",
+      "reviewBasis": "전체 경로 비용은 “입력·출력·추론 사용량·cache write/read·검색·sandbox·하위 에이전트·실패 재시도·사람 검토를 합산하고 검증된 성공 건수로 나눕니다.”로 계산 범위가 명확하고, 지연도 “가장 느린 branch와 통합이 critical path가 됩니다.”로 원인이 설명됩니다. 따라서 이미 충분한 fallback·critical path 설명은 유지하고, 성공당 비용과 prompt/response cache의 차이를 실제 계산·입력 예시로 읽히게 하는 2개 문단만 교체합니다. 표·diagram·H2·cache 계약 및 p99 조건은 수정하지 않습니다.",
+      "sha256": "52a9f1b79e85469ed59455e1926b1f364ed4701f97bac7d68a42bc4a399da28c"
+    },
+    {
+      "path": "notes/agents/sandbox-supply.md",
+      "status": "edited",
+      "reviewBasis": "격리의 대상은 “작업 컨테이너에 host home·SSH key·cloud credential·container 관리 socket을 mount하면 격리의 가치가 크게 줄어듭니다.”처럼 구체적이고, 외부 효과에 대한 한계도 “이미 외부 효과가 발생했다면 차단이 롤백을 의미하지 않습니다.”로 분명합니다. 다만 read-only 비밀의 반출, trial 간 오염, 설명·schema 공급망, 오래된 cache 회수는 실제 처리 순서가 압축되어 있어 4개 문단을 교체합니다. 표·diagram·H2·자원 한도·버전/hash·실제 sandbox 시험을 하지 않았다는 범위는 유지합니다.",
+      "sha256": "62a8180102b0a8c4939da14100a239f88b72bd7df305050f1dbd69765fcf0e78"
+    },
+    {
+      "path": "notes/agents/tool-contract.md",
+      "status": "edited",
+      "reviewBasis": "도구 의도를 나누는 이유는 “`update_item`에 조회·환불·삭제를 모두 숨기면 모델이 이름만 보고 효과를 추측해야 합니다.”에서 반례까지 제시되고, 단계별 검사는 “schema가 표현할 수 있는 관계는 표현하되 API의 지원 부분집합을 확인하고 나머지는 코드로 검증합니다.”로 범위가 구분됩니다. 따라서 표와 효과 검증 설명은 유지하고, ID·금액·null 입력 계약과 timeout·부분 성공 뒤 복구 경로만 2개 문단을 실제 입력과 기록 순서로 교체합니다. H2·표·diagram·코드와 부분 성공 수치 10개 중 7개는 수정하지 않습니다.",
+      "sha256": "0e087c5c8c4c9edab57b631f5ec948195aa73f69864438d8814f2b4a467436f9"
+    },
+    {
+      "path": "notes/agents/trial-compute.md",
+      "status": "edited",
+      "reviewBasis": "파일 전체 49행을 처음부터 끝까지 읽었습니다. frontmatter, H2의 순서와 개수, 표(20~26행), diagram 코드 펜스(34~36행)는 앵커와 구현 보존을 위해 건드리지 않습니다. 핵심 교체는 첫 H2의 확률 계산과 유한 표본 추정(12~14행), 과제별 집계 순서(18행), 모델 합의의 실제 판정 방법(32행)으로 한정했습니다. 유지 판정의 근거는 표의 ‘pass@k | k개 중 성공 후보가 있는가 | 실제로 찾을 선택기 필요’가 후보 존재와 선택을 이미 구분하고, 비평 문단의 ‘“선택 기능을 필수로 바꿨다”, “분모가 전체가 아니라 성공 요청이다”처럼 원문·조건·수정 지점을 반환합니다’가 수정 지점을 구체 예로 보여 주며, ‘예산을 단계적으로 늘려 유형별 성공·안전·지연·성공당 비용 곡선을 비교합니다’가 추가 계산의 비교 절차와 중단 기준을 직접 제시하기 때문입니다. 모델 합의의 원인과 독립 탐색의 조건은 30행의 ‘같은 오래된 문서를 읽으면 모델·역할 이름이 달라도 모두 틀릴 수 있습니다’와 ‘규범 원문·SDK·실제 재현처럼 증거 방법을 나눕니다’가 이미 상황→원인→대응 순서로 설명하므로 유지합니다.",
+      "sha256": "81ec871863644e8ec105b5b7e9964b947b17d0e46ed57cfbf600076bd344c3fe"
+    },
+    {
+      "path": "notes/ai/agent-runtime.md",
+      "status": "edited",
+      "reviewBasis": "파일 전체 110행을 읽었습니다. 모델의 제안과 실제 실행을 구분하는 첫 설명의 ‘실행기가 인자를 검사해 프로세스를 시작하고, 종료 결과를 수집해야 비로소 어떤 테스트가 통과했는지 알 수 있습니다.’, 상태 표 뒤의 ‘실행 식별자만 반환하는 비동기 도구는 접수 상태이고, 완료 알림이나 결과 조회가 올 때까지 성공 여부를 알 수 없습니다.’, 실행 이력의 `run-17`과 ‘접수됨·진행 중·완료·불확정’은 개념과 중간 작동을 충분히 보여 주므로 유지합니다. 표와 슈도코드, 다이어그램은 유용한 구조와 실행 한계를 담고 있어 건드리지 않았습니다. 가장 어려운 구간인 실행 전 정책 검사(16–24행 및 89행)와 재시작 후 부작용 추적(91–97행)을 실제 입력→검사·조회→상태 판정 순서로 검토했고, 선언만 있고 실제 방법이 압축된 네 문단만 교체 제안합니다. H2 순서·개수, frontmatter, diagram/code fence, 원문 수치·상태·예산·병렬 실행의 한계는 유지합니다.",
+      "sha256": "38eaef8496f0ab08d572a9b6fc1b31912161fcf68ab87d407da01e7014fcd3ed"
+    },
+    {
+      "path": "notes/algorithms/astar.md",
+      "status": "edited",
+      "reviewBasis": "도입에서 Dijkstra와 A*의 선택 기준을 대비하고, 고정된 그래프와 휴리스틱을 제시한 뒤 허용성·일관성 계산, OPEN/CLOSED 상태표, 재오픈 슈도코드, 불변식과 종료 조건, 복잡도 순서로 전개합니다. 수치가 실제 실행 표와 연결되어 있어 논리 순서는 좋습니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: A*의 허용성·일관성과 올바른 종료` → `title: A*가 최단 경로를 확정하는 순간`, `# A*의 허용성·일관성과 올바른 종료` → `# A*가 최단 경로를 확정하는 순간`. 마지막 종료 문단에서 발견·현재 비용·최소 유효 f의 관계만 한 번 더 실행 순서로 풀면 독자가 표를 다시 찾아보지 않아도 핵심을 이해할 수 있습니다.",
+      "sha256": "1f043591da567018faeac26902012d5cc29f7d15b3cbe466fc62f112b126e0f1"
+    },
+    {
+      "path": "notes/algorithms/binary-search.md",
+      "status": "edited",
+      "reviewBasis": "값을 찾는 문제를 첫 참 위치 문제로 바꾸는 도입이 분명하고, 반열린 구간 불변식→중복값 표와 실제 반복→수치 범위→응용→실패 사례 순서가 자연스럽습니다. upper_bound까지 포함한 일반 경계를 다루므로 제목은 현재 표현을 유지하는 편이 낫습니다. upper_bound의 갱신 방향을 말로만 치환하지 않고 실제 r값처럼 계산해 주면 독립 학습성이 더 높아집니다.",
+      "sha256": "99385f2c13d56180645bf38ebffa060dab35e1d013dd4591221198a5421351dc"
+    },
+    {
+      "path": "notes/algorithms/dijkstra.md",
+      "status": "edited",
+      "reviewBasis": "통행 비용이라는 상황에서 시작해 비음수 전제, 예제 그래프, 지연 삭제 힙 상태, 전체 결과와 target 결과의 반환 계약, 음수 반례와 복잡도까지 이어집니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: Dijkstra의 비음수 간선과 거리 확정` → `title: 다익스트라가 거리를 확정하는 순간`, `# Dijkstra의 비음수 간선과 거리 확정` → `# 다익스트라가 거리를 확정하는 순간`. 정확성 증명의 핵심은 이미 맞지만, 아직 확정되지 않은 첫 정점이 힙에 남아 있어야 한다는 중간 상태를 예제의 A와 연결하면 증명이 덜 압축됩니다.",
+      "sha256": "fba52fc28e75711ccf402fab4d0bd4d2cd506f2a34e0dd3f1529ae0dac3d62a1"
+    },
+    {
+      "path": "notes/algorithms/dynamic-programming.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집을 포함해 1·3·4 동전 반례와 마지막 선택, 상태 병합의 조건, 0-1 배낭의 역순 갱신을 구체적인 계산으로 설명합니다. 이후 저장 방식·복잡도와 검산으로 넘어가는 H2 순서도 안정적이며, 호스트의 미커밋 도입·배낭 문단은 그대로 보존해야 합니다. 제목은 동전·배낭·상태 논의를 모두 포괄하므로 유지하는 편이 좋습니다. 남은 개선 지점은 의사 다항 시간이 실제 표 크기와 어떻게 연결되는지 한 수치로 보여 주는 부분입니다.",
+      "sha256": "06a8ee900405906994b066ec6e4580ad034c0397bee8d27b32c353d7caf411f6"
+    },
+    {
+      "path": "notes/algorithms/external-sort.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 세 run의 후보 이동과 fan-in별 100→10→1 계산을 풀어 썼고, run 생성→힙 병합→버퍼 예산→자연 run·간접 정렬→완료 파일 공개 순서가 실제 처리 흐름과 맞습니다. 제목은 버퍼와 복구 경계를 정확히 가리키므로 유지합니다. 마지막 중단 처리 문단은 중요한 정보가 한꺼번에 이어져 있어, 부분 출력 파일을 최종 결과로 공개하지 않는 실행 순서를 더 선명하게 만들 수 있습니다.",
+      "sha256": "2a5c39dd178d9abf283cec0816c4677927ae6f86a7fcb089445f3567144a7411"
+    },
+    {
+      "path": "notes/algorithms/fenwick-tree.md",
+      "status": "edited",
+      "reviewBasis": "판매량 합계라는 상황에서 시작해 lowbit가 맡는 구간, prefix(7) 조회 경로, 점 갱신 경로, 슈도코드, 지원 가능한 연산의 경계로 진행합니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: Fenwick tree의 구간 합과 점 갱신` → `title: Fenwick tree로 점 갱신과 구간 합 구하기`, `# Fenwick tree의 구간 합과 점 갱신` → `# Fenwick tree로 점 갱신과 구간 합 구하기`. 표는 정확하지만 lowbit가 조회 때는 왼쪽으로 떼고 갱신 때는 포함 구간으로 올라간다는 두 방향을 한 문단에 함께 묶으면 구조를 처음 접하는 독자가 덜 외우고 이해할 수 있습니다.",
+      "sha256": "d008da0e58a4cf2b226f2c9f22429fb0e62bd055f1ff33f3161ccfaa95969548"
+    },
+    {
+      "path": "notes/algorithms/fisher-yates.md",
+      "status": "edited",
+      "reviewBasis": "매번 독립 추첨과 한 주기 중복 없는 노출을 분리한 도입이 좋고, 뒤쪽 자리 확정→균등 순열 확률→덱 상태 저장→주기 경계 정책→전수 검사의 흐름도 자연스럽습니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: Fisher–Yates 셔플과 중복 없는 덱` → `title: Fisher–Yates로 주기 중복 없이 뽑기`, `# Fisher–Yates 셔플과 중복 없는 덱` → `# Fisher–Yates로 주기 중복 없이 뽑기`. 주기 경계 부분은 조건부 균등성과 UX상 즉시 반복 감소가 이미 구분되어 있으므로, 재섞기 시도 자체의 실행 흐름을 직전 질문 사례로 더 구체화하면 좋습니다.",
+      "sha256": "14a9264e5c4175e275f5fbdb6ab72b8e0e341ce62649bf146affe8616794f355"
+    },
+    {
+      "path": "notes/algorithms/graph-search.md",
+      "status": "edited",
+      "reviewBasis": "단위 비용이라는 최단의 의미를 먼저 고정하고, 예제 층 구조→큐 상태→슈도코드와 불변식→DFS·가중치 반례→다중 시작점→복잡도로 이어집니다. 제목은 BFS의 실제 범위와 잘 맞아 유지하는 편이 좋습니다. 다중 시작점 문단은 시설까지의 거리와 정점에서 시설까지의 거리 방향이 뒤집힐 수 있다는 핵심을 담고 있으므로, 큐 초기화와 부모 복원의 관계를 조금 더 실행 순서로 드러내면 좋습니다.",
+      "sha256": "831daec1669ec02427d1c19f2f11e20df3bce6b751a240802b1818d8be77b833"
+    },
+    {
+      "path": "notes/algorithms/lazy-segment-tree.md",
+      "status": "edited",
+      "reviewBasis": "구간 전체 갱신에서 현재 합은 즉시 바꾸고 자식 전파만 미루는 핵심을 먼저 잡은 뒤, 반열린 구간 예제→부분 조회→덧셈 전용 코드→대입·덧셈 태그 순서→복잡도와 대조 테스트로 이어집니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: 지연 전파 세그먼트 트리의 갱신 불변식` → `title: 지연 전파 세그먼트 트리로 구간 합 다루기`, `# 지연 전파 세그먼트 트리의 갱신 불변식` → `# 지연 전파 세그먼트 트리로 구간 합 다루기`. 태그 합성 표는 정확하므로, set과 add가 도착하는 순서를 노드 상태로 한 번 계산해 주는 교체가 가장 효과적입니다.",
+      "sha256": "24f74f3ce51a5dfbb1e3d9ae8dc9e4a441bcb7bb09bc4d369dd353d8eda37293"
+    },
+    {
+      "path": "notes/algorithms/minimum-spanning-tree.md",
+      "status": "edited",
+      "reviewBasis": "설치 비용과 이동 비용을 분리한 도입 이후 같은 그래프에서 Kruskal과 Prim을 비교하고, 컷 교환 논증→Kruskal 코드→동점·유일성→간선 변경→장애 요구로 확장합니다. 제목은 안전한 선택이라는 핵심을 잘 담아 유지합니다. 간선 추가·삭제 문단은 이미 맞는 경계를 제시하므로, 사이클과 컷을 실제 예제의 AD=2와 연결해 한 번 더 순서대로 보여 주는 것이 가장 필요한 본문 개선입니다.",
+      "sha256": "d5736edcf1f722f08860cd9ad176a26885dd075b71b9dbf0b9145ae6b18e72f3"
+    },
+    {
+      "path": "notes/algorithms/monotonic-stack.md",
+      "status": "edited",
+      "reviewBasis": "첫 큰 값의 의미를 먼저 잡고 미해결 인덱스와 스택 값의 단조성을 표와 그림으로 추적한 뒤, pop의 정당성·동점 정책·상환 분석·적용 범위로 확장합니다. 제목은 문제를 바로 드러내므로 유지합니다. “첫 번째”라는 말의 근거가 이미 있지만, 새 값 4가 실제로 위치 2와 0을 차례로 해결하는 표를 증명 문단에서 다시 연결하면 기억이 더 오래갑니다.",
+      "sha256": "081d059c794fee07d22ef01dc471b79deb8e99636ca620739f1c9d3475cefbbe"
+    },
+    {
+      "path": "notes/algorithms/prime-sieve.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 5의 배수를 25부터 처리하는 계산과 √N 근거, 구간 체의 두 시작점 역할을 충분히 풀어 썼습니다. 전체 체→구간 체→전처리 비용→기준 판정 비교의 H2 흐름도 좋습니다. 제목 개선안(앞의 frontmatter title과 H1을 함께 변경): `title: 소수 체의 제곱 시작점과 구간 분할` → `title: 에라토스테네스 체와 구간 소수 판정`, `# 소수 체의 제곱 시작점과 구간 분할` → `# 에라토스테네스 체와 구간 소수 판정`. 마지막 검산 문단에 작은 구간의 기대 결과를 직접 적으면 시작 배수와 L 오프셋을 독자가 실행할 수 있습니다.",
+      "sha256": "3f307e250091a2853792636a62aea8dd6726cec0cc893b81fb44f0f78d9cfd2e"
+    },
+    {
+      "path": "notes/algorithms/quicksort.md",
+      "status": "edited",
+      "reviewBasis": "현재 제목과 도입은 Lomuto partition의 전제와 최악 분할을 정확히 잡고, 불변식→슈도코드→손 추적→복잡도→보완 전략→속성별 검사로 이어집니다. 제목은 유지하는 편이 좋습니다. 다만 마지막 H2의 인용문은 면접용 압축 답변이라 독립 학습 글이라는 목표와 결이 다르므로, H2 anchor는 보존하되 그 아래를 다시 확인할 학습 문단으로 바꾸는 제안이 가장 필요합니다.",
+      "sha256": "ede861403143bf88871fc17f03256b28d349d9ffb06502b6951e702d05421261"
+    },
+    {
+      "path": "notes/algorithms/radix-sort.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 안정 계수 분배의 뒤에서 채우기와 LSD의 앞선 순서 보존을 단계별로 설명하고, signed 정수·문자열 종료 기호·비교 정렬 대조로 범위를 넓힙니다. 제목은 계수 정렬과 기수 정렬의 관계를 정확히 표시하므로 유지합니다. 부호 비트 부분은 표가 이미 정답을 보여 주므로, 표의 값이 왜 signed 순서를 unsigned 버킷 순서로 바꾸는지 한 번 더 계산하는 문단이 가장 효과적입니다.",
+      "sha256": "0fc780354c0ec63428bd5584af7f20410eddd988c8895bf9a0f8590dc5767dce"
+    },
+    {
+      "path": "notes/algorithms/reservoir-sampling.md",
+      "status": "edited",
+      "reviewBasis": "앞 K개 편향의 상황에서 시작해 K=1 확률 계산, Algorithm R 슈도코드, 포함 확률 증명, 발생 항목과 고유 값의 차이, 재현·샤드 경계, 전수 계산으로 이어집니다. 제목은 스트림 길이를 모르는 상황과 균등 표본을 함께 드러내므로 유지합니다. 재현과 분산 병합 문단은 중요한 전제가 압축되어 있어, 중단 시 저장해야 할 상태를 A·B 예로 한 번 펼치면 실제 사용자가 놓치기 어렵습니다.",
+      "sha256": "d68d4af8a076cf16af02363843b4088f0db830cfca0cc8256737ab55d2abb311"
+    },
+    {
+      "path": "notes/algorithms/sliding-window-maximum.md",
+      "status": "edited",
+      "reviewBasis": "오래된 후보의 만료와 새 값에 의한 지배를 서로 다른 덱 끝에서 처리하는 도입이 명확하고, 예제 표→경계 코드→동점 정책→상환 분석→event-time 한계로 이어집니다. 제목은 알고리즘과 결과를 바로 말하므로 유지합니다. 덱에서 빠진 값도 원래 창에 남을 수 있다는 핵심이 짧게 지나가므로, 예제의 2가 왜 없어져도 되는지 한 문장 더 계산하는 편이 좋습니다.",
+      "sha256": "f08aef27d42248f8bb4de63ffb6c05dba05cf26a6a48575c817b41544ffc529a"
+    },
+    {
+      "path": "notes/algorithms/sort-stability.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 안정성의 좁은 정의와 제자리 여부를 분리하고, 원본 순번 대안→introsort 깊이 예산→시간·스택·안정성 독립 검사로 연결합니다. 제목은 두 보장을 함께 다루는 범위를 정확히 나타내므로 유지합니다. introsort 전환이 안정성을 만들지 않는다는 문단은 이미 맞지만, 같은 점수 A·C가 partition/heapsort를 거치는 장면을 직접 상상하게 하면 세 속성의 분리가 더 선명해집니다.",
+      "sha256": "96bd51c550faf319660396439d63d41817b1aa238a01136a2efd791f11c98718"
+    },
+    {
+      "path": "notes/algorithms/topological-sort.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 배포 의존성 D를 기준으로 진입 차수와 준비 큐의 변화가 구체화되어 있고, Kahn 코드→중복 간선 정책→순환의 원인과 차단 노드→실제 실행 성공의 분리→검사 순서로 이어집니다. 제목은 정렬과 순환 진단을 모두 담아 유지합니다. 남은 순환 문단은 이미 정확하지만 DFS 색 상태가 실제로 A→B→A를 잡는 순간을 적으면 “남은 노드”와 “원인 SCC”의 차이가 더 잘 전달됩니다.",
+      "sha256": "caf924baacff850ec50c5fd401c7482eb10084315507d903bdec418b280a57ca"
+    },
+    {
+      "path": "notes/algorithms/uniform-random.md",
+      "status": "edited",
+      "reviewBasis": "8개 원천 값과 3개 후보의 나머지 편향을 표로 보여 준 뒤 거절 추출, 범위·산술 전제, 500개 후보 계산, 실패·보안·정책 경계, 전수 검사로 이어집니다. 제목은 결과를 정확히 설명하므로 유지합니다. 일반식이 이미 맞지만, 수락 구간 [0,limit)의 각 나머지가 어떻게 같은 개수가 되는지 M=8 사례를 한 문장 연결하면 식과 반례 사이의 간극이 줄어듭니다.",
+      "sha256": "d73cbbeb4c12e67c9ad8895533ad3fbacc0d5ca6522d3e0816634404f29f07fb"
+    },
+    {
+      "path": "notes/algorithms/weighted-sampling.md",
+      "status": "edited",
+      "reviewBasis": "A·B·C 가중치를 구간 길이로 바꾸는 상황에서 시작해 누적 끝점과 이진 탐색, 가중치 변경 비용, 비복원·최근 제외 정책, 전수 경계 대조로 전개됩니다. 제목은 복원 추출의 핵심을 잘 드러내며 유지합니다. 누적 끝점의 경계는 이미 정확하므로 r=1을 실제 이진 탐색이 어떻게 B로 보내는지 한 번 더 실행하는 교체가 가장 유용합니다.",
+      "sha256": "bf427f548c4e36a79dc9ed8b834e501ff8cd050eba5f8954bec80644a34e1bcd"
+    },
+    {
+      "path": "notes/algorithms/zero-one-bfs.md",
+      "status": "edited",
+      "reviewBasis": "현재 미커밋 편집에서 일반 BFS의 반례와 덱 앞·뒤 삽입 이유를 풀어 썼고, 거리 snapshot·settled·비음수 논리·복잡도·0 비용 사이클 검사로 이어집니다. 제목은 덱 순서와 거리 갱신을 정확히 가리키므로 유지합니다. 마지막 불변식 문단은 핵심이지만, d와 d+1 층이 어떻게 유지되는지 S→B·A 표와 연결하면 덱을 쓰는 이유가 더 선명해집니다.",
+      "sha256": "b6a275c421e7fb5eb4ff7a2c5bc2285c4708f4f4e7bda7f98f323a0ca56e44a8"
+    },
+    {
+      "path": "notes/concurrency/admission-control.md",
+      "status": "edited",
+      "reviewBasis": "제목은 실행 수와 대기열을 함께 제한한다는 설계 목표를 잘 드러냅니다. 처리량 포화 예제→대기·실행 위치→시간표와 리틀의 법칙→원자적 dispatcher→가중 공정 선택→인스턴스·재시도→회복 측정 순서가 실제 시스템 흐름과 맞고, 표와 슈도코드는 유지할 만합니다. `submit` 중 동기 완료 콜백과 제출 실패의 소유권은 중요한 경계이므로, 카운터가 어느 순서로 바뀌어야 하는지 한 번 더 실행으로 보여 주는 제안만 남깁니다.",
+      "sha256": "2c5be081b9717d5663f37d1e7e2755b52efac9e237764162531c1a080b550e66"
+    },
+    {
+      "path": "notes/concurrency/async-execution.md",
+      "status": "edited",
+      "reviewBasis": "제목은 비동기 대기와 계정별 직렬 실행이라는 두 축을 정확히 담습니다. future·코루틴·Go 대기의 점유 자원 표에서 출발해 직렬 실행기의 논리 경쟁, mutex와 큐, 두 계정 이체의 넓은 원자 경계, 대기 장소 측정으로 이어지는 순서가 자연스럽습니다. 첫 도입은 이미 올바르지만 future의 동기 `get()`이 이벤트 루프와 같은 풀을 어떻게 막는지 한 번 더 구체화하면 “비동기”와 “논블로킹”의 차이를 혼동하기 어렵습니다.",
+      "sha256": "2bb79d6abc4fa1ab19927123f256d5ba212dc5a9dcd2bb0cf651bcd2e34b31dc"
+    },
+    {
+      "path": "notes/concurrency/atomic-publication.md",
+      "status": "edited",
+      "reviewBasis": "제목과 첫 예제가 원자 플래그 자체와 본문 공개의 차이를 정확히 시작점으로 삼습니다. release/acquire 코드→C++20 release sequence→복합 snapshot→refcount→세대 재사용→검증 순서는 난도가 올라가는 방향으로 잘 배치되어 있고, 표와 코드의 기술 전제도 유지해야 합니다. `ready=false`·relaxed·다른 atomic을 읽는 경우를 실제 재시도 경로와 연결하면 단순히 “acquire면 안전”이라는 오해를 더 잘 막을 수 있습니다.",
+      "sha256": "839f92b3483fb3548b75b5562dd351edb23c462a02f331d57bbd2f20e744dd38"
+    },
+    {
+      "path": "notes/concurrency/cancellation.md",
+      "status": "edited",
+      "reviewBasis": "제목은 작업 수명과 취소의 핵심을 정확히 가리킵니다. 도입에서 응답 종료·취소 요청·실제 종료를 목록으로 먼저 고정한 뒤 부모·자식·허가 표, 완료 경쟁, 자원 수명, 종료 순서로 내려가는 흐름이 좋고 기존 H2와 불릿은 유지하는 편이 낫습니다. 허가를 너무 일찍 돌려주는 결과가 표와 본문에 나와 있지만, 사용자 timeout 직후 실제 동시 실행 수가 어떻게 3개로 늘어나는지를 한 번 더 사건 순서로 풀면 독립 학습성이 높아집니다.",
+      "sha256": "181f073e711cedb9286b398ae3869ce95841fad4b2cb66d5f15d15076082a202"
+    },
+    {
+      "path": "notes/concurrency/condition-variables.md",
+      "status": "edited",
+      "reviewBasis": "제목과 도입의 A·B 경쟁 사례가 notify와 작업 인도의 차이를 즉시 보여 줍니다. 공유 큐의 조건식→경쟁 표→종료 포함 슈도코드→Java monitor→수명·drain 정책→검사 순서가 좋고, 조건 대기 관련 불릿과 표는 그대로 두는 편이 가독성에 유리합니다. `closeAndDrain`이라는 이름이 실제로는 닫힘을 표시하고 소비자가 drain하도록 깨우는 함수라는 점만 본문에서 분명히 하면 코드와 정책의 관계가 더 정확해집니다.",
+      "sha256": "90fbe6fb61c247d0c468e49680435ec1b714b90d28f591935894efda462cd2d4"
+    },
+    {
+      "path": "notes/concurrency/deadlock.md",
+      "status": "edited",
+      "reviewBasis": "제목과 도입의 두 계정 잠금 예제가 대기 그래프라는 관점을 바로 보여 줍니다. 잠금 순서 통일→실행기 고갈→timeout·livelock·기아 구분→재현 절차로 이어지는 논리 순서가 안정적이며, Coffman 조건과 표는 목록으로 남겨야 합니다. 실행기 고갈 부분은 부모와 자식이 각각 어떤 자리를 점유한 채 멈추는지 한 번 더 풀어 쓰면 잠금이 없어도 교착이 생기는 이유가 더 선명해집니다.",
+      "sha256": "c8a6b6ca0da07a8be49fa831161509e9db6d6cafe0754421c2413750842ee19d"
+    },
+    {
+      "path": "notes/concurrency/safe-reclamation.md",
+      "status": "edited",
+      "reviewBasis": "제목은 ABA와 메모리 회수를 한 덩어리로 오해하지 않게 잘 잡았습니다. 주소 재사용→retired 단계→hazard 재검사→epoch 지연→진행성과 메모리 상한→정지 재현 순서가 기술적으로 조심스럽고, 교육용 pseudo-code와 경고 문구도 유지해야 합니다. retired 목록에 넣은 순간 독자가 끝났다고 볼 수 없다는 중간 상태를 한 번 더 풀면 unlink와 free의 차이가 처음 읽는 사람에게 더 잘 전달됩니다.",
+      "sha256": "d82391a4c11cb1e7bc37634d7d4286501eb90bcb4ffb4cb64b6a31d209092cc5"
+    },
+    {
+      "path": "notes/concurrency/semaphore.md",
+      "status": "edited",
+      "reviewBasis": "제목과 도입은 세마포어의 동시 실행 제한과 mutex의 상호 배제를 정확히 대비합니다. 허가 소유 표→permit 객체 슈도코드→대기자 큐→가중 비용→검사 순서가 실제 수명 경계를 따라가며, 표와 코드 모두 유지할 가치가 있습니다. acquire와 취소가 동시에 끝나는 경우의 허가 소유권을 두 결과로 나누어 쓰면 double release와 누수를 독자가 직접 추적하기 쉬워집니다.",
+      "sha256": "6363cfc82931eb48d31c99993b200f8182242c54e5f7b610f5218455223b50a5"
+    },
+    {
+      "path": "notes/data-structures/balanced-search-tree.md",
+      "status": "edited",
+      "reviewBasis": "편향 BST의 긴 사슬에서 시작해 회전의 중위 순서 보존→AVL·Red-Black 높이 조건→Red-Black 높이 근거→삽입·삭제 복구표→불변식 검사로 이어집니다. 제목과 H2 순서는 회전과 색 균형 복구라는 범위를 정확히 보여 주므로 유지합니다. 삽입과 삭제의 상태 변화가 한 문단에 압축되어 있어, 빨강 삽입은 검정 높이를 늘리지 않고 검정 삭제는 부족을 만든다는 서로 다른 출발점을 실행 순서로 나누는 교체가 가장 필요합니다.",
+      "sha256": "67a6b79814ad662a55e2d2f345fadc1bc039660634268e67fe2aad9eaef635f8"
+    },
+    {
+      "path": "notes/data-structures/bloom-filter.md",
+      "status": "edited",
+      "reviewBasis": "도입에서 DB 조회를 줄이는 상황과 블룸 필터의 음성·양성 의미를 먼저 고정하고, 작은 충돌 예시→삽입·조회 코드→삭제 한계→용량 계산→원본과의 반영 지연→재구축→오류율 검사로 이어집니다. 제목과 H2 순서는 부재 판단과 운영 갱신 경계를 모두 드러내므로 유지하는 편이 좋습니다. 다만 DB 커밋과 필터 갱신 실패가 실제 요청에서 어떻게 잘못된 부재 응답으로 이어지는지 한 번 더 순서대로 풀면 알고리즘 보장과 서비스 일관성의 차이가 더 분명해집니다.",
+      "sha256": "670278b81629dc4884f245770bf0ebdd880e16f2df86019b16fb885aa2c9b60b"
+    },
+    {
+      "path": "notes/data-structures/cache-policy.md",
+      "status": "edited",
+      "reviewBasis": "LRU가 일회성 스캔으로 오염되는 상황에서 시작해 실제 LRU 순서표→입장과 퇴거 분리→LFU 감쇠→TTL·크기·재생성 비용→샤드 편중→부하별 평가로 이어집니다. 제목과 H2 순서는 정책의 종류를 잘 구분하고 있어 유지합니다. 입장 정책 슈도코드 앞의 설명을 X·Y·Z 스캔과 연결해, 캐시에 넣지 않는 결정과 victim을 고르는 결정을 실제 순서로 분리하면 더 읽기 쉬워집니다.",
+      "sha256": "17425bd07c68d4d4513ea23879c2200186a13fba4a92d926ff8f0f7b1d7086f7"
+    },
+    {
+      "path": "notes/data-structures/dynamic-array.md",
+      "status": "edited",
+      "reviewBasis": "size와 capacity를 구분하는 도입에서 시작해 두 배 확장의 실제 이동표→성장률과 메모리 피크→예외·이동 전제→축소 진동과 히스테리시스→주소 안정성→전체 이동과 개별 지연 측정으로 흐릅니다. 제목과 H2 순서는 상환 비용과 확장 지연을 정확히 가리키므로 유지합니다. 축소 경계 문단은 이미 수치를 갖고 있지만, size 4↔5가 왜 매번 재할당을 일으키고 size 2 경계가 이를 어떻게 막는지 실행을 조금 더 자연스럽게 연결할 수 있습니다.",
+      "sha256": "c5ca83dbaf9bbc0216bf2f40084f9acd4a0b3bed4168efdda2ce64e5c31495ac"
+    },
+    {
+      "path": "notes/data-structures/graph-storage.md",
+      "status": "edited",
+      "reviewBasis": "희소·밀집 그래프의 요구 차이에서 시작해 같은 그래프를 인접 리스트·행렬·CSR로 표현하고, 순회·존재 조회·CSR 갱신·역방향 인덱스·snapshot 공개 순서로 확장합니다. 제목과 H2 순서는 저장 표현과 역인덱스 비용을 정확히 담고 있으며 CSR 수치도 충분해 유지합니다. 두 인덱스 중 하나만 갱신되는 실패 상태를 0→1 간선으로 구체화하면 snapshot 공개의 이유가 더 쉽게 이해됩니다.",
+      "sha256": "7a33ec8754778bff35388b6ffec433a28df58c5f960c906df0f0c4f7552780a3"
+    },
+    {
+      "path": "notes/data-structures/hash-table.md",
+      "status": "edited",
+      "reviewBasis": "해시가 후보 위치를 고를 뿐 동등성 비교를 대신하지 않는다는 도입에서 시작해 충돌 방식→선형 탐사와 tombstone→점진 재해시 경합→군집·부하율→동시성과 보안→측정으로 흐릅니다. 제목과 H2 순서는 충돌과 확장의 핵심을 잘 드러내므로 유지합니다. 점진 재해시의 네 가지 운영 조건은 내용은 정확하지만 목록으로 압축되어 있어, 두 세대 조회와 이동·삭제·독자 종료를 한 실행 흐름으로 풀어 쓰는 것이 가장 필요한 개선입니다.",
+      "sha256": "7505c2d6e281dff44d2728b3eea09bbe1f58dc72c4cc5688fcec24c5b14ae5a6"
+    },
+    {
+      "path": "notes/data-structures/heap.md",
+      "status": "edited",
+      "reviewBasis": "힙이 전체 정렬이 아니라 부분 순서라는 도입에서 시작해 배열 인덱스 규칙→push·pop 이동→작은 배열 추적→heapify의 선형 비용→우선순위 변경·취소→상위 K와 타이머 응용으로 이어집니다. 제목과 H2 순서는 적절하고, [1,4,2,8,5,3]과 [5,4,3,2,1] 예제가 코드와 맞물려 충분한 편입니다. 우선순위 변경 절의 목록을 실제 위치 맵과 지연 삭제의 서로 다른 실행으로 문장화하면 독자가 두 계약을 덜 암기하게 됩니다.",
+      "sha256": "c40f47149af18ccd4e8e4e13ee4f35645cda733c30496da9d3f80f2f6baa92fe"
+    },
+    {
+      "path": "notes/data-structures/sequence-containers.md",
+      "status": "edited",
+      "reviewBasis": "배열과 연결 리스트의 중간 삽입을 위치 찾기와 변경으로 나누는 도입에서 시작해 큰 객체 대신 포인터를 옮기는 비용→deque의 인터페이스와 구현→순서 통계 트리→참조 수명·실패 안전성→부하별 측정으로 이어집니다. 제목과 H2 순서는 위치 탐색과 변경 비용을 모두 담아 유지하는 편이 좋습니다. 참조 수명 문단은 맞는 내용을 담고 있지만 배열 재할당과 이중 리스트 링크의 실제 실패 순서를 함께 보여 주면 주소·인덱스·객체 정체성의 차이가 더 분명해집니다.",
+      "sha256": "d50ab526a808437ab82f9099d5e0adc43d3d07ff1e325724fc7d92547b07f602"
+    },
+    {
+      "path": "notes/data-structures/stack-queue.md",
+      "status": "edited",
+      "reviewBasis": "undo의 LIFO와 작업 배정의 FIFO를 외부 완료 순서와 분리한 도입에서 시작해 두 스택 분기→상태·이력의 원자 공개→외부 효과의 한계→원형 큐 head·tail·count→포화·취소·병렬 실행으로 이어집니다. 제목과 H2 순서는 실행 순서의 경계를 잘 드러내고, 원형 큐의 값·인덱스 추적도 충분해 유지합니다. 상태와 undo 이력을 한쪽만 먼저 바꿀 때의 실패를 구체화하면 `atomically_publish`가 필요한 이유가 더 선명해집니다.",
+      "sha256": "4635d9d0abfd13ff1a80780e3bdf5e576a9303fd8c7cac20deb5d5c4889150b3"
+    },
+    {
+      "path": "notes/data-structures/timing-wheel.md",
+      "status": "edited",
+      "reviewBasis": "최소 힙과 타이밍 휠의 비용을 대비한 뒤 tick·slot·회전 수를 25ms·75ms·105ms 예제로 추적하고, 단일 소유 처리 모형→계층형 cascade→취소→만료 집중과 실행 예산으로 이어집니다. 제목과 H2 순서는 슬롯과 실행 한계를 정확히 담고 있어 유지합니다. 처리 모형 뒤의 설명에 25ms가 tick 3으로 올라가 30ms에 처리되는 실제 상태를 넣으면 올림과 절대 기한 검사의 의미가 더 직관적입니다.",
+      "sha256": "0cbdff28352d59916aab5627c7943c06629c291abe95f1ff3819aa4a1c3815d6"
+    },
+    {
+      "path": "notes/data-structures/top-k-ranking.md",
+      "status": "edited",
+      "reviewBasis": "한 번의 상위 K 계산과 전역 순위·보상 확정을 분리한 도입에서 시작해 크기 K 힙→샤드별 후보의 전역 병합 조건→동점·중복→Redis sorted set의 비교·정밀도→마감 snapshot과 원장으로 이어집니다. 제목과 H2 순서는 세 상태의 차이를 잘 보여 주고, 샤드 전제와 공식 문서 확인도 충분해 유지합니다. Redis score의 정밀도 문단에 2^53 경계를 실제 두 정수로 연결하면 왜 보조 키를 한 숫자에 밀어 넣으면 안 되는지 더 쉽게 이해할 수 있습니다.",
+      "sha256": "49e376033e1b0b8bb2ad69aef2a1285e5113f39ef1834491e0dbcc650a33ae69"
+    },
+    {
+      "path": "notes/data-structures/trie.md",
+      "status": "edited",
+      "reviewBasis": "접두 검색 상황에서 시작해 경로 존재와 terminal을 분리하고, 기본 검색·삽입→자식 표현의 메모리 비용→문자열 단위와 정규화→결과 수·순위 비용으로 전개합니다. 제목과 H2 순서는 Trie의 핵심 계약을 잘 담고 있으며 car·cart·cat 예제가 충분해 유지합니다. 마지막 결과·순위 문단을 접두 노드 탐색 비용과 자손 열거·정렬 비용으로 나누어 쓰면 “접두를 빨리 찾는다”와 “결과를 싸게 반환한다”의 차이가 더 선명해집니다.",
+      "sha256": "b2a4c5a6bd72955c89f0080a5c2b5c2c1fe72fe2004efceadd89a094b7183a37"
+    },
+    {
+      "path": "notes/data-structures/union-find.md",
+      "status": "edited",
+      "reviewBasis": "무방향 연결성 질의에서 출발해 크기 기반 병합과 경로 압축을 부모 배열로 추적하고, rollback·삭제·방향 도달성의 별도 계약까지 확장합니다. 제목과 H2 순서는 대표자와 rollback의 핵심을 잘 담고 있으며, 표와 슈도코드도 충분해 유지합니다. rollback 절에서 find가 만든 숨은 부모 변경을 체크포인트 전후의 실제 상태로 한 번 더 보여 주면 일반 Union-Find와 rollback 변형의 차이가 더 선명해집니다.",
+      "sha256": "e6bafc01b6329b565d27d959e8e4197dc75ca8e04e4e30ff65160ebc4d9ec355"
+    },
+    {
+      "path": "notes/databases/connection-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "제목은 DB 연결의 대기·보유·취소·세션 초기화를 한 수명 흐름으로 묶고, 외부 API를 transaction 안에서 기다리는 도입→상태별 자원 표→거래 밖 대기·streaming→timeout/cancel/reset→session state→단일 연결 오염 재현 순서가 좋습니다. 그러나 connection pool·span·expected version·논리 요청 ID, `search_path`·role·timezone·isolation·reset이 초보자에게 정의 없이 이어지고, transaction 밖으로 옮기는 이유와 session 오염의 실패 결과가 분리되어 있습니다. 아래 세 교체는 연결 pool의 실제 점유, 외부 대기 뒤 재검사, 물리 세션 상태의 누수를 각각 실행 순서로 설명합니다.",
+      "sha256": "ce44e8fa9bae9989c9ac8cc721c48cbe2d49f81700b37a0e0e5d8270e7823b13"
+    },
+    {
+      "path": "notes/databases/db-work-claim.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 claim→lease 만료→늦은 완료→외부 효과 순서를 검토했습니다. notes/databases/db-work-claim.md:36-39의 표는 `claim 후 실행 전 | running lease만 남음 | 만료·재시도 정책`과 `외부 효과 후 완료 기록 전 | 효과는 성공했을 수 있음 | 같은 effect key로 조회·중복 방지`로 중단 지점과 복구 동작을 정확히 나누고, notes/databases/db-work-claim.md:55의 `한 번의 빈 결과는 전체 큐가 비었다는 뜻이 아니라 모든 eligible 후보가 잠겨 있거나 지연 상태라는 뜻일 수 있습니다.`는 SKIP LOCKED의 빈 결과 의미를 설명하므로 유지합니다. 교체는 claim 상태의 커밋 경계, generation 조건부 완료, 외부 효과의 멱등·펜싱 경계를 실제 순서로 풀어 쓰는 세 곳만 제안합니다.",
+      "sha256": "33d5e9cb9507ca104c56a8d94e0397c64c74ea7e9aff5a3d08311f99d942ff84"
+    },
+    {
+      "path": "notes/databases/file-db-cutover.md",
+      "status": "edited",
+      "reviewBasis": "파일→DB cutover의 핵심인 일관 snapshot, 증분 경계, 최종 장벽, 역전환 손실을 처음부터 끝까지 검토했습니다. notes/databases/file-db-cutover.md:18-24의 표는 `중단 복구 | WAL·manifest·checksum·재생 | 엔진 로그·crash recovery`와 `백업 | 일관 snapshot·증분 보관 | 제품별 backup·로그 복원`으로 파일과 DBMS가 나눠 맡는 책임을 구체적으로 보여 주고, notes/databases/file-db-cutover.md:46의 `원본 파일을 보관한다는 사실만으로 무손실 rollback이 되는 것은 아닙니다.`는 역전환의 조건을 유지할 근거가 됩니다. 교체는 파일 교체의 내구 경계, snapshot 중 변경 추적, dual-write 복구 경계를 실제 순서로 보강합니다.",
+      "sha256": "8841cf35a8b435c0b7309c61cd3495b77e6b6f5d53d1cb7d8e9db30cd2c2faea"
+    },
+    {
+      "path": "notes/databases/functional-dependencies.md",
+      "status": "edited",
+      "reviewBasis": "제목은 함수 종속·후보키·기간별 식별이라는 범위를 정확히 드러내고, 이메일의 우연한 유일성에서 폐포·후보키, 기간 이력, collation·NULL·partial index, 동시성 검증으로 이어지는 H2 순서도 좋습니다. 다만 폐포 계산 문단은 결과를 한 번에 압축하고, collation·NULL·partial/filtered index 문단은 초보자에게 용어와 제품 전환이 연속해서 나타납니다. 아래 두 교체는 각각 계산의 중간 상태와 문자열·NULL·활성 행 제약의 차이를 원문 수치와 엔진별 조건 안에서 풀어 줍니다.",
+      "sha256": "e7bb8fd0b8ba7e35fce881eb6a6d97c1b596c0c1752db7a907cdbab554f60672"
+    },
+    {
+      "path": "notes/databases/index-predicates.md",
+      "status": "edited",
+      "reviewBasis": "표현식 인덱스, 부분 인덱스 predicate 함의, online build의 실패 상태를 핵심 구간으로 검토했습니다. notes/databases/index-predicates.md:12의 `created_at >= start AND created_at < next_start`는 원본 범위를 만드는 과정을 보여 주고, notes/databases/index-predicates.md:37의 `pending→done 변경은 부분 인덱스 제거 작업이고 done→pending은 삽입입니다.`은 상태 전환 때의 유지 비용을 설명하며, notes/databases/index-predicates.md:41의 `기존 데이터를 읽어 인덱스를 만들면서 동시 변경도 반영하고 최종 유효 구조로 전환해야 합니다.`은 구축 단계를 이미 잡고 있으므로 이 부분은 유지합니다. 교체는 expression 조건, generic plan의 실제 추론, 제품별 online build로 넘어가는 연결만 다룹니다.",
+      "sha256": "c55b7d9b6b169bacff6c45309616a7c7ffa4c1a209b28f713861ba210f1cda35"
+    },
+    {
+      "path": "notes/databases/index-row-layout.md",
+      "status": "edited",
+      "reviewBasis": "제목은 보조 인덱스의 locator·covering·쓰기 경합이라는 서로 다른 비용을 함께 담고, 원본 행 lookup→엔진별 locator→visibility와 Heap Fetches→키 폭→순차 키 latch로 이어지는 H2 순서도 좋습니다. 그러나 표의 `locator`, `heap`, `RID`, `forwarded record`, `tuple`이 정의 없이 한꺼번에 나오고, covering 문단은 PostgreSQL 설명과 다른 엔진의 경계를 빠르게 전환합니다. 아래 두 교체는 먼저 “보조 인덱스 후보에서 원본 행으로 이동하는 값”을 정의한 뒤, covering이 구조적 가능성과 실제 Heap Fetches로 어떻게 갈라지는지 실행 순서로 정리합니다.",
+      "sha256": "2435eac83726f2e42f34af10fbcb1eddc06b60691545adf11efebf18c25483a4"
+    },
+    {
+      "path": "notes/databases/indexes.md",
+      "status": "edited",
+      "reviewBasis": "복합 인덱스의 가장 어려운 부분인 prefix 범위, 정렬 순서, lookup 비용, 해시 충돌을 표와 예제까지 따라가며 검토했습니다. notes/databases/indexes.md:50의 `(a,b)` 예제에서 `a BETWEEN 1 AND 2이면 b는 10,100,1,20입니다.`라는 반례와 notes/databases/indexes.md:81의 `키 1·5·9·13은 같은 버킷에 모입니다.`라는 해시 계산은 중간 계산을 보존할 핵심 근거이고, notes/databases/indexes.md:89의 `읽은 행과 최종 반환 행, lookup·sort·spill을 확인합니다.`도 유용한 불릿이라 바꾸지 않습니다. 교체는 뒤 컬럼 조건, seek/scan 판단, covering 뒤 heap 접근을 실제 관측 순서로만 보강합니다.",
+      "sha256": "452ecebe49259e03c8f2a09c25ff27b0138ed41cd5903a0b7ac81425fa8edb5a"
+    },
+    {
+      "path": "notes/databases/keyset-pagination.md",
+      "status": "edited",
+      "reviewBasis": "OFFSET와 키셋의 접근 차이, 혼합 정렬의 경계 부등호, 변경 중 페이지 의미, 서명 cursor와 현재 인가를 핵심 구간으로 검토했습니다. notes/databases/keyset-pagination.md:18-26의 표는 `time DESC, id ASC`에서 같은 시각의 ID 방향을 `id>i`로 바꾸는 계산과 row comparison의 한계를 함께 보여 주고, notes/databases/keyset-pagination.md:52-56은 수정·삭제·삽입과 긴 DB transaction을 고정 snapshot으로 오해하지 않게 하므로 유지합니다. 교체는 혼합 방향 경계, 정렬 키 이동에 따른 중복·누락, 서명과 현재 권한의 분리를 실제 요청 순서로 보강합니다.",
+      "sha256": "abfaffc9c6871515cfbc3c16673206bc2156d8bfeab2c6d74b9c7649f85518df"
+    },
+    {
+      "path": "notes/databases/lock-pressure.md",
+      "status": "edited",
+      "reviewBasis": "잠금 범위·보유 시간·로그 압력·배치 원자성을 구분하는 핵심과 SQL Server·InnoDB·PostgreSQL 용어의 경계를 검토했습니다. notes/databases/lock-pressure.md:14의 `실행 CPU·I/O 시간과 잠금 대기·거래 보유 시간을 나눕니다.`는 측정 대상을 분리하고, notes/databases/lock-pressure.md:48-50의 checkpoint 흐름은 `persist completed range and conflict set consistently`를 요구하며, notes/databases/lock-pressure.md:42의 `checkpoint를 실제 반영보다 먼저 전진시키지 않습니다.`는 누락 방지 조건을 분명히 하므로 이 흐름은 유지합니다. SQL Server·InnoDB·PostgreSQL의 잠금 용어가 한 메커니즘처럼 읽히는 한 문단만 실제 상황과 관찰 단위가 이어지도록 교체합니다.",
+      "sha256": "ec95296cd8935e3c4e007246cef6f88c59646b45c1d3b2573dd052287e3630f3"
+    },
+    {
+      "path": "notes/databases/lossless-decomposition.md",
+      "status": "edited",
+      "reviewBasis": "제목은 BCNF의 무손실성과 종속성 보존을 정확히 분리하고, 가짜 조인 행→이항 폐포 판정→3NF와 BCNF→투영 종속성→동시 삽입으로 이어지는 H2 흐름도 좋습니다. 다만 이항 조건은 수식과 “폐포가 어느 쪽 전체를 포함”한다는 말로 압축되어 있고, BCNF 예의 로컬 키와 전역 제약은 초보자가 왜 서로 다른지 다시 계산해야 합니다. 아래 두 교체는 표의 AB·AC/AB·BC와 I1·I2 예를 그대로 사용해 무손실성·종속성 보존·동시 집행의 차이를 설명합니다.",
+      "sha256": "bd2840a0239c4bcb26ae8a18b3d4fff0e304e41d8abffd23cf381d70b1ca2a0d"
+    },
+    {
+      "path": "notes/databases/mvcc.md",
+      "status": "edited",
+      "reviewBasis": "MVCC의 핵심인 스냅샷 시점, 두 번 읽기 결과, 오래된 독자의 버전 보존, 실제 SQLite와 제품별 기대값의 경계를 모두 검토했습니다. notes/databases/mvcc.md:12의 `다른 방법은 옛 값을 잠시 남겨 두고 각 독자가 볼 수 있는 버전을 선택하게 하는 것입니다.`은 MVCC의 작동을 설명하고, notes/databases/mvcc.md:34의 `각 문장마다 스냅샷을 새로 얻는 정책이라면 A의 두 번째 조회는 120을 볼 수 있습니다. 같은 스냅샷을 유지하는 정책이라면 100을 봅니다.`은 결과 계산을 분리하며, notes/databases/mvcc.md:110은 SQLite 실행이 PostgreSQL·InnoDB·SQL Server를 대신 검증하지 않는 경계를 두므로 이 설명과 코드는 유지합니다. 교체는 스냅샷 생성 시점에서 제품별 격리 이름으로 넘어가는 연결과 실제 실행 단락의 문장 수·순서만 다듬습니다.",
+      "sha256": "1c50a9788045463e588a8da3da0d44ba8a79394028d1c0d316b5a0e968c89e71"
+    },
+    {
+      "path": "notes/databases/normalization.md",
+      "status": "edited",
+      "reviewBasis": "제목은 정규화를 사실 분리와 모든 후보키 검사로 좁혀 주며, 수강 이상→Student/Offering/Enrollment→주문 예의 1NF·2NF·이행 종속→3NF 후보키→역사 snapshot→FK 삭제 정책 순서가 자연스럽습니다. 현재 도입은 이상 현상의 이름을 빠르게 붙이고, 주문 예는 1NF·2NF·이행 종속을 한꺼번에 전환해 처음 읽는 사람에게 중간 상태가 부족합니다. FK 문단도 CASCADE·deferred·nullable을 목록처럼 지나가므로, 아래 세 교체에서 사례→규칙→분해 또는 삭제 결과의 순서를 복원합니다.",
+      "sha256": "3a3bc50f6ac533dccd41152924493bce6e3cdb9d82c2f46ecafb590fb0c0a8be"
+    },
+    {
+      "path": "notes/databases/partition-boundaries.md",
+      "status": "edited",
+      "reviewBasis": "partition pruning과 내부 index, local/global uniqueness, 보관 삭제를 핵심으로 검토했습니다. notes/databases/partition-boundaries.md:12의 `pruning은 읽지 않을 파티션을 고르는 최적화이고 남은 파티션의 접근 방식은 별도입니다.`은 두 단계의 비용을 분리하고, notes/databases/partition-boundaries.md:42의 `삭제는 단순 메타데이터 최적화가 아니라 데이터 보존 결정입니다.`은 detach/drop의 업무 의미를 보존하므로 diagram·표·보관 경고는 유지합니다. 교체는 날짜 경계와 runtime pruning의 실제 관찰, 파티션 안 UNIQUE와 외부 전역 ID의 차이를 계산 순서로만 보강합니다.",
+      "sha256": "10e9e7e10b6292e2ac583970576c7bb8ee966d69f5dfc9c346a7ce826cd91fb7"
+    },
+    {
+      "path": "notes/databases/postgres-retention.md",
+      "status": "edited",
+      "reviewBasis": "제목은 PostgreSQL VACUUM과 CDC의 보존 경계를 함께 다루되 tuple 정리와 WAL 보존을 분리합니다. 현재 도입은 MVCC·tuple·snapshot·VACUUM·bloat를 한 번에 사용하고, CDC 문단은 20MB 계산 뒤 slot·restart_lsn·checkpoint·connector로 빠르게 넘어갑니다. 아래 두 교체는 첫 번째로 행 버전과 파일 공간의 차이를 정의하고, 두 번째로 로그 바이트→slot 위치→재구축의 실행 흐름을 원래 수치로 연결합니다.",
+      "sha256": "a0e818c57cc161dc1ddbbfe5a71941b2ecd7fda365e4b9a5b79edb884cd0ea1f"
+    },
+    {
+      "path": "notes/databases/projection-maintenance.md",
+      "status": "edited",
+      "reviewBasis": "핵심 구조는 유지합니다. 12행의 `원본·현재 복사본·역사 snapshot을 같은 컬럼 의미로 섞지 않습니다.`가 원본과 파생값의 의미를 구분하고, 24행의 `전체 상태가 모든 이전 변경을 포함한다는 계약이 있어야 “더 큰 version만 적용”이 안전합니다.`가 snapshot과 delta의 적용 조건을 설명합니다. 34행의 `source version·계산 규칙 버전·현재 projection 세대를 비교해 게시하고, 갱신 중 새 이벤트를 놓치지 않게 snapshot 기준과 이후 로그 위치를 연결합니다.`와 44행의 `주기 5분인데 refresh 자체가 10분 걸리면 5분 신선도를 보장하지 못합니다.`가 rebuild·refresh의 실제 경계를 보여 주므로, 정의와 중간 작동이 충분한 문단은 유지합니다. 교체는 snapshot/delta 순서 계산, 중복 마커와 projection의 원자 경계, rebuild의 게시 조건, 재생 시험을 더 직접적으로 풀며 H2·frontmatter·diagram/code fence는 건드리지 않습니다.",
+      "sha256": "fe03882b3e49af71223476f7e7b0ecb27cc00d4016e8c8b9466136bc4a96e8a2"
+    },
+    {
+      "path": "notes/databases/query-plan-evidence.md",
+      "status": "edited",
+      "reviewBasis": "제목은 실행 계획 회귀를 추정·메모리·대기라는 증거로 나누며, seek/lookup 사례→추정과 실제의 첫 차이→상관 통계→spill·grant→plan 완화책→이력 보관 순서가 실제 진단 흐름과 맞습니다. 다만 `fingerprint`, `bind type`, `plan ID`, `cost`가 설명 없이 나열되고, 도시·우편번호 예 뒤에 확장 통계와 제품별 메모리 모델이 빠르게 전환됩니다. 아래 세 교체는 식별자와 추정 계산, 메모리 증상의 실제 실행을 각각 독립적인 중간 단계로 만듭니다.",
+      "sha256": "3b90dc76bdc040a4c17ef23f52f09400f2a38a04517591e1720fd04ba1872649"
+    },
+    {
+      "path": "notes/databases/redis-atomic-execution.md",
+      "status": "edited",
+      "reviewBasis": "`이 노트에서 원자 범위는 한 Redis 노드의 주 실행 경로에서 다른 클라이언트 명령이 끼어들 수 없는 구간을 뜻합니다.`(18행)으로 원자 범위를 정의하고, `이는 데이터베이스 transaction의 rollback과 같은 말이 아닙니다.`(18행)와 `두 요청 사이의 틈이 있습니다.`(22행)로 경쟁·rollback의 차이를 설명한 부분은 유지합니다. `A가 MULTI와 DECRBY를 보낸 뒤 EXEC를 호출하면 Redis는 감시 키가 바뀐 것을 보고 null 응답을 반환합니다.`(64행), Lua의 키·인자·정수 범위(70~75행), 오류별 결과 표(119~128행)도 실제 작동과 한계를 충분히 보여 줍니다. 교체는 RTT 정의와 요청 기록 키 생성의 실행 절차만 보완하며 H2·frontmatter·diagram/code fence는 건드리지 않습니다.",
+      "sha256": "1dd20fc44f0de00e1d58e2fb55eafb80cd680742373cf657e7e42c84c373ba81"
+    },
+    {
+      "path": "notes/databases/redis-layout-runtime.md",
+      "status": "edited",
+      "reviewBasis": "제목은 논리 자료형과 물리 encoding, 명령 실행 경로를 함께 보게 합니다. 현재 문서의 도입은 JSON·hash·set·sorted set의 연산 차이를 잘 잡고, encoding·field TTL·주 실행 경로·큰 작업 분할로 이어지는 순서도 안정적입니다. 다만 JSON 전체 저장이 필드 갱신을 덮는 중간 상태가 한 문장으로 지나가므로 그 부분만 구체화할 가치가 있습니다.",
+      "sha256": "3b84a20bacce8ca9c50a92942f41818f5e1a06d45c9bbe4936823867001040fc"
+    },
+    {
+      "path": "notes/databases/redis-loss-policy.md",
+      "status": "edited",
+      "reviewBasis": "`TTL은 그때까지 반드시 키가 살아 있다는 최소 보장이 아닙니다.`(12행)로 시간 만료와 보존을 구분하고, 표의 `후보가 부족하면 메모리 증가 쓰기 거절 가능`(21행), `lazyfree backlog·peak memory는 남습니다.`(36행), `keyspace notification은 설정·연결·Pub/Sub 유실·실제 만료 처리 시점의 영향을 받아 내구 완료 보장이 아닙니다.`(40행)이 손실·메모리·알림의 경계를 구체적으로 설명하므로 유지합니다. 교체는 volatile/noeviction의 쓰기·읽기 관찰 방법, LRU/LFU 용어, RSS와 maxmemory의 관계만 명료하게 하며 H2·frontmatter·diagram/code fence는 수정하지 않습니다.",
+      "sha256": "01fe7fe5b7529b4b3e7caf2d68bd22af89f1361f80fd6dee89fb8e9e98545f01"
+    },
+    {
+      "path": "notes/databases/redis-persistence.md",
+      "status": "edited",
+      "reviewBasis": "`RDB는 특정 순간의 데이터셋을 한 파일로 찍습니다. AOF는 변경 명령을 기록하고 재시작 때 다시 적용합니다.`(14행)에서 두 지속성 방식의 원리를 정의하고, `이때 파일의 기준은 자식이 작업을 끝낸 시간이 아니라 fork가 시작된 시점입니다.`(37행)에서 RDB의 핵심 시간 경계를 설명합니다. `rewrite는 현재 데이터셋을 만드는 더 짧은 표현을 백그라운드에서 만들고, 그동안 들어온 새 변경을 별도로 이어 붙인 뒤 전환합니다.`(63행)와 `replica도 primary의 DEL을 복제하므로 독립 백업으로 대체할 수 없습니다.`(80행)가 rewrite·백업의 작동 한계를 보여 주며 T1~T4 추적·복구 표·실험 계획도 유지합니다. 102행의 multipart AOF 백업 절차만 네 문장으로 재배열해 버전·rewrite·BACKUP 명령·복원 검사를 한 흐름으로 읽히게 했고, H2·frontmatter·diagram/code fence는 수정하지 않습니다.",
+      "sha256": "ce4720647837c36d212407c1f4c78dbe93a14c72550ec0fa03b0b58ab35f1c9d"
+    },
+    {
+      "path": "notes/databases/redis-replication-failover.md",
+      "status": "edited",
+      "reviewBasis": "`Redis의 기본 복제는 비동기입니다.`(14행)와 `반환값이 2이면 앞선 쓰기가 적어도 두 복제본에 전달되고 그 복제본들이 해당 복제 스트림 위치 이상을 처리했다고 주 노드에 알린 것입니다.`(28행)가 WAIT의 확인 범위를 설명합니다. 44행은 `WAITAOF 1 2 1000`의 반환값이 `[local_count, replica_count]`라고 고정하고, 55행의 버전·설정 조건과 59~74행의 quorum·majority·후보 선택 구분이 제품 동작을 단계별로 설명합니다. 87~94행의 P/A/B/C 출금 사례와 98~109행의 실패 표는 응답 유실·승격·멱등성의 실제 결과를 충분히 보여 주므로 유지합니다. 교체는 Sentinel 후보 순서와 불확정 결과에서 재시도하지 않는 이유를 더 선명하게 만들며 H2·frontmatter·diagram/code fence는 건드리지 않습니다.",
+      "sha256": "6d0fd6e8553c14eb0b0455ede14a38b80006ae42564c1b22f7333233ef54e771"
+    },
+    {
+      "path": "notes/databases/redis-slot-routing.md",
+      "status": "edited",
+      "reviewBasis": "`Sentinel은 한 데이터셋의 primary·replica를 감시하고 장애 판단·승격·새 primary 발견을 돕습니다. 키를 여러 primary에 나누는 샤딩은 하지 않습니다.`(12행)로 Sentinel과 Cluster를 구분하고, `같은 슬롯은 일반적인 다중 key 명령·transaction·Lua 실행의 배치 조건입니다.`(27행)으로 슬롯의 원자 범위를 설명합니다. 41행은 `MOVED는 슬롯의 소유 위치가 다른 곳임을 알려 slot cache를 갱신하게 할 수 있습니다. ASK는 이동 중 임시 목적지에서 해당 요청을 처리하도록 유도하며 ASKING 등 프로토콜 절차가 필요합니다.`라고 라우팅 동작을 나누고, 49행의 `hot slot은 CPU·메모리·네트워크·긴 script가 한 노드에 몰리는 문제입니다.`도 유지합니다. 교체는 hash tag 적용 확인과 서로 다른 슬롯 이체의 중간 상태·대안 선택을 실제 순서로 풀며 H2·frontmatter·diagram/code fence는 수정하지 않습니다.",
+      "sha256": "88a51401e22d763c2148d50e6ac8d9527a60f2a73ebd022d24ec8c8b4179c0bc"
+    },
+    {
+      "path": "notes/databases/relational-fetch.md",
+      "status": "edited",
+      "reviewBasis": "`주문 50개를 읽는 쿼리 하나 뒤 각 주문의 고객을 개별 조회하면 51번의 DB 호출이 생깁니다.`(12행)가 N+1 비용을 수치로 보여 주고, `주문 하나에 상품 10개와 쿠폰 3개가 있고 둘을 별도 조건 없이 동시에 결합하면 30개 결합 행이 생길 수 있습니다.`(18행)로 일대다 행 곱을 계산합니다. `DB의 IN 결과 순서는 입력 ID 순서와 같지 않을 수 있으므로 key→결과 맵을 만들고 원래 요청 순서로 반환합니다.`(57행), 부모 ID 선확정 SQL(33~47행), 요청 cache의 권한·신선도·상한(59~61행)이 핵심 작동을 설명하므로 유지합니다. 교체는 SQL dialect·20개 부모/확장된 결과 행·tenant 경계를 실제 쿼리 적용 순서로만 명료하게 하며 H2·frontmatter·diagram/code fence는 수정하지 않습니다.",
+      "sha256": "61605c7d3c00808bac5dff46a90543dd6aaad4b6fb2064013714c5fb36b9e57e"
+    },
+    {
+      "path": "notes/databases/replica-read-contract.md",
+      "status": "edited",
+      "reviewBasis": "`원본이 프로필 version=8을 커밋해 성공을 반환했지만 replica는 아직 version=7을 적용 중일 수 있습니다.`(12행)가 stale read의 구체 상황을 보여 주고, `쓰기 응답 토큰은 실제 커밋을 포함하는 최소 위치 또는 그것을 안전하게 상계한 검증된 지점이어야 합니다.`(24행)가 본인 쓰기 토큰의 적용 기준을 설명합니다. 40행의 `PostgreSQL standby는 설정에 따라 query를 취소하거나 replay를 기다릴 수 있고 hot_standby_feedback은 원본의 cleanup을 늦춰 bloat를 늘릴 수 있습니다.`와 48행의 dedupe·외부 효과 대사가 긴 조회와 승격 손실의 실제 경계를 보여 주므로 유지합니다. 교체는 승격 때 수신·내구·재생 위치를 확인하는 방법과 실제 복제 시험의 관찰 항목을 더 자연스러운 순서로 정리하며 H2·frontmatter·diagram/code fence는 건드리지 않습니다.",
+      "sha256": "908ef6202ce9340eadaf77142d94372dd12a25e38c8e263072fcf4b53225e1ae"
+    },
+    {
+      "path": "notes/databases/schema-cutover.md",
+      "status": "edited",
+      "reviewBasis": "핵심 흐름은 유지합니다. 원문의 ‘백필은 과거 데이터 복사이면서 현재 쓰기와 경쟁하는 writer입니다.’가 백필을 단순 배치가 아닌 경쟁 writer로 정의하고, ‘새 앱만 이중 쓰고 옛 앱은 status만 바꾸면 이미 채운 status_code가 다시 낡습니다.’가 구 writer 잔존의 실제 실패를 보여 줍니다. 표·diagram·SQL 예제는 전환 단계와 실행 앵커이므로 그대로 두고, 버전 처리와 checkpoint 진행 기록의 중간 작동만 풀어 쓰는 편이 적절합니다.",
+      "sha256": "71fb5972d601f252af99fe613886d17469b6f479e162d5e43bf7b8f030a36396"
+    },
+    {
+      "path": "notes/databases/search-mapping.md",
+      "status": "edited",
+      "reviewBasis": "제목은 Elasticsearch의 Mapping·역색인·Doc Values·Shard라는 학습 범위를 정확히 표시하고, 정확 값과 text→term/doc values→동적 필드·집계→shard fan-out·복구→mapping 변경 순서도 좋습니다. 다만 첫 문단은 mapping·analyzer·token·keyword·multi-field·`_id`를 정의 없이 연속해서 사용하고, 역색인과 doc values 문단도 조회 방향만 압축합니다. 아래 세 교체는 먼저 표현의 역할을 정의하고, 검색·정렬·집계가 실제로 어느 저장 표현을 따라가는지 분리합니다.",
+      "sha256": "630f7b7fea660a4292c53a5f42942a6e90cb61e950275152bd84c30f26ddd257"
+    },
+    {
+      "path": "notes/databases/search-publication.md",
+      "status": "edited",
+      "reviewBasis": "핵심 설명은 유지합니다. ‘문서 저장 ACK와 검색 reader가 새 segment를 보는 refresh 시점은 다를 수 있습니다.’가 저장 성공과 검색 가시성을 분리하고, ‘refresh는 검색 리더 공개이고 디스크 crash durability를 모두 보장하는 신호가 아닙니다.’가 refresh와 flush의 혼동을 막습니다. 표·diagram·실험 한계는 그대로 두고, ID GET·wait_for·reindex snapshot의 실제 관찰 순서만 보완합니다.",
+      "sha256": "cc1e86fef1f22cff561b65501707ae70ca4abcfd362831786cc9e2c645195cec"
+    },
+    {
+      "path": "notes/databases/sql-binding.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘파라미터 바인딩은 SQL 구조와 값을 분리해 드라이버가 올바른 데이터 타입·인코딩으로 전달하게 합니다.’가 값 바인딩의 핵심 원리를 설명하고, ‘바인딩이 wildcard 의미를 없애는 것은 아닙니다.’가 안전성과 질의 의미를 구분합니다. Python 코드·표·diagram은 구조와 값의 경계를 보여 주는 앵커라 유지하고, prepared 모드와 계획 재사용처럼 용어가 밀집된 두 문단만 실제 전송·실행 비교의 흐름으로 고칩니다.",
+      "sha256": "5f995a8774aa0178079aaeb44712f716ae152ecebd1efeff7a891e067b93700f"
+    },
+    {
+      "path": "notes/databases/sql-result-semantics.md",
+      "status": "edited",
+      "reviewBasis": "제목은 NULL의 삼값 논리, 존재 조회, Window 순위를 결과 의미로 묶습니다. `NOT IN` 반례에서 EXISTS·LEFT JOIN, ROW_NUMBER/RANK/DENSE_RANK 수치와 최종 ORDER BY, 제품별 NULL 정렬·spill로 이어지는 H2 순서가 좋습니다. 다만 NULL outer key와 LEFT JOIN 조건의 실행 결과가 한 문단에 압축되어 있어 그 부분만 구체화할 가치가 있습니다.",
+      "sha256": "c6c8a7553c0643a16ee2c24e8516cf90c932f743ce596268296749e848d852b3"
+    },
+    {
+      "path": "notes/databases/sqlserver-version-reads.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘RCSI는 READ_COMMITTED_SNAPSHOT 데이터베이스 옵션으로 READ COMMITTED의 일반 읽기에 행 버전을 사용하는 방식입니다.’가 RCSI를 설정과 읽기 경로로 정의하고, ‘A가 snapshot에서 100을 읽은 뒤 B가 120으로 바꾸고 commit한 상태에서 A가 같은 행을 UPDATE하면 SQL Server의 snapshot update conflict로 실패할 수 있습니다.’가 읽기 기준과 쓰기 승인의 차이를 실제 값으로 보여 줍니다. T-SQL 코드·비교 표·diagram은 실행 순서의 기준이므로 보존하고, SNAPSHOT 기준점과 UPDLOCK 관찰법만 쉽게 풀어 씁니다.",
+      "sha256": "d298a82304549ca4b9ffd2d67f6afba6348e890a137327b8b8387c8e13797a31"
+    },
+    {
+      "path": "notes/databases/transactions.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘두 요청이 같은 10을 읽으면 둘 다 9를 저장합니다.’가 갱신 유실의 중간 계산을 정확히 보여 주고, ‘충돌은 사라진 것이 아니라 조용한 덮어쓰기에서 관찰 가능한 실패로 바뀐 것입니다.’가 낙관적 버전 검사의 의미를 설명합니다. SQL·슈도코드·표·두 연결 실험은 그대로 두며, 반복 충돌 구간에서만 hot key·backoff·jitter의 의미와 재시도 예산을 보충합니다.",
+      "sha256": "baead0197dfee3a194a733c364efcdccebf84ee648663153e2e5014324df14a8"
+    },
+    {
+      "path": "notes/databases/unique-identity.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘사전 SELECT는 사용자에게 빠른 안내를 줄 수 있지만 최종 유일성 보장이 아닙니다.’가 사전 조회와 쓰기 제약의 역할을 나누고, ‘후자는 같은 이벤트를 두 번 받으면 두 번 증가하므로 별도 effect key가 필요합니다.’가 UPSERT의 문법 성공과 업무 효과의 차이를 보여 줍니다. 표·diagram·상태와 세대 조건은 유지하며, 계정 소유권 판별과 UPSERT 용어가 갑자기 압축되는 두 문단만 교체합니다.",
+      "sha256": "8fb23ae76b3651a8d39fcfaa2a557ac4bd70a3e5248695057df1e44c713e7ec2"
+    },
+    {
+      "path": "notes/databases/wal-recovery.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘WAL은 변경을 복구할 로그를 먼저 내구 기록하고 데이터 페이지는 나중에 반영할 수 있게 합니다.’가 write-ahead 순서를 실제 기록 순서로 설명하고, ‘응답을 못 받은 요청은 커밋되었거나 아닐 수 있으므로 논리 ID로 결과를 조회해 한 번의 효과로 수렴시켜야 합니다.’가 내구성과 클라이언트 불확실성을 연결합니다. 표·diagram·PITR 조건은 그대로 두고, redo/undo/MVCC·checkpoint·RPO/RTO처럼 정의 없이 이어지는 용어가 작동 순서를 드러내도록 세 문단만 다듬습니다.",
+      "sha256": "ff43ef7df5f09329b5d4c86ddb18c14d1e25fc928a965fff2f958ea00fca0d34"
+    },
+    {
+      "path": "notes/databases/write-skew.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘각 행은 정상적인 값이고 두 변경도 모두 남았지만, 여러 행을 함께 보아야 하는 규칙이 깨진 것입니다.’가 write skew와 갱신 유실을 구분하고, ‘초기 count=2에서 A가 감소시키면 1이 됩니다.’가 공통 count 조건의 중간 계산을 보여 줍니다. 코드·표·diagram·직렬화 재시도 예제는 핵심 실행 앵커라 유지하고, 중복 count를 운영할 때 모든 변경 경로와 읽기 시점을 어떻게 묶는지만 한 문단 보완합니다.",
+      "sha256": "131f4c42c5c91eba4105ff1609f6d5eb695b1082e6df48643cebebdea6d0c328"
+    },
+    {
+      "path": "notes/design/account-rights-merge.md",
+      "status": "edited",
+      "reviewBasis": "교차 병합, 내구 재개, 늦은 결제, 취소 보정이 이 글의 가장 어려운 실행 경계라서 네 문단을 교체합니다. 도입부와 표는 유지합니다. 원문의 ‘이메일 문자열이 같다는 사실만으로 소유 증명을 대신하지 않습니다.’가 소유권 경계를 직접 말하고, 표의 ‘포인트 | 원장·만료·사용 이력을 보존한 이전’이 항목별 규칙을 보여 주므로 이를 긴 설명으로 풀지 않습니다. ‘환불·취소도 동일한 안정 주문 ID에 연결합니다.’도 늦은 사건의 식별 원칙을 충분히 제시하므로 유지합니다.",
+      "sha256": "29ad02b1c756189ed533077ee1a333ee97d3d48e528bc910a6b96cec5efb1955"
+    },
+    {
+      "path": "notes/design/api-meaning.md",
+      "status": "edited",
+      "reviewBasis": "구앱의 unknown 상태 처리, patch presence, JSON Merge Patch의 배열 의미, Protobuf 번호 재사용이라는 네 핵심 문단을 교체합니다. 표의 ‘필드 없음 | 현재 값 유지 | presence 보존’과 ‘빈 배열 | 비어 있는 목록으로 교체 | 생략과 구분’은 입력별 결과를 이미 구체적으로 보여 주므로 표는 유지합니다. 소비자 절의 ‘구앱→신server와 신앱→구server를 모두 시험하고 버튼·오류 안내·retry·서명·cache·중복 효과를 확인합니다.’도 혼합 버전에서 실제로 볼 동작 범위를 제시하므로 유지합니다.",
+      "sha256": "ab5e98295cc34300483ddb288510123eb4d032d72a27cb92e02b9561502ab223"
+    },
+    {
+      "path": "notes/design/behavioral-subtyping.md",
+      "status": "edited",
+      "reviewBasis": "리스코프 계약, variance의 행동 한계, 조합과 재시도, Java/C++ 생성 중 dispatch를 네 문단에서 더 따라 하기 쉽게 제안합니다. 첫 절의 ‘부모 Rectangle이 두 크기를 독립적으로 바꿀 수 있다고 약속하면 `setWidth(5); setHeight(4)` 뒤 면적은 20이어야 합니다.’와 ‘Square가 각 setter에서 두 변을 같이 바꾸면 마지막에 4×4=16입니다.’는 핵심 반례와 중간 계산이 이미 충분하므로 유지합니다. 표의 부모 계약/치환 실패 대응과 마지막의 ‘client가 의존해도 되는 최소 보장으로 계약 test를 만들고 모든 구현에 적용합니다.’도 실제 적용 기준을 제시하므로 유지합니다.",
+      "sha256": "dbb8e2cf26f2c08fb8d7fa9b02cee5569019821c5b080818efac7e9ed54e695b"
+    },
+    {
+      "path": "notes/design/bulkhead-fairness.md",
+      "status": "edited",
+      "reviewBasis": "permit 차용의 실제 반환 시점, 비선점 queue, starvation/우선순위 역전 구분, 건수와 자원 비용의 차이를 네 문단에서 구체화합니다. 벌크헤드의 정의인 ‘기능/tenant가 점유할 실행·queue·connection·memory 예산을 나눠 장애 영향 범위를 제한합니다.’와 공용 자원 간섭을 설명하는 ‘worker를 나눠도 공용 HTTP pool·DB CPU·disk·host memory는 남습니다.’는 원리와 범위를 정확히 잡으므로 유지합니다. 전체 도착이 용량을 넘을 때의 ‘거절·만료·deadline·정직한 부분 결과’와 핵심 SLO 관측 문장도 무제한 성공을 약속하지 않는 실제 한계를 제시하므로 유지합니다.",
+      "sha256": "cb636e533c9c4dab1441b1af34822f5cf9605436075aceee03ceda885b5e3eb3"
+    },
+    {
+      "path": "notes/design/calendar-time.md",
+      "status": "edited",
+      "reviewBasis": "clock skew·monotonic 경과, DST gap/fold, 고정 offset과 tzdata, 월말·윤년·정지 중 누락을 네 문단에서 실행 순서로 풀어냅니다. New York 예시의 ‘2024-03-09 09:00은 UTC 14:00이고 DST 전환 뒤 2024-03-10 09:00은 UTC 13:00입니다.’와 ‘원래 instant에 24시간을 더하면 현지 10시가 됩니다.’는 23시간/24시간 차이를 실제 수치로 보여 주므로 유지합니다. 세 종류의 시간 표와 마지막의 ‘이 노트는 시간 의미 설명이며 모든 라이브러리와 timezone 구현을 시험한 결과는 아닙니다.’도 보장 범위를 정확히 제한하므로 유지합니다.",
+      "sha256": "ea84dad30cf814bf0d2b5e0c8988b5fd8a2be14edf30ca4303ff1cc63f7b3f73"
+    },
+    {
+      "path": "notes/design/config-bundle.md",
+      "status": "edited",
+      "reviewBasis": "동적 설정 실패 상태, immutable bundle과 root 전환, 요청 snapshot과 즉시 보안 철회, restart/drain을 네 문단에서 실제 적용 순서로 제안합니다. 인스턴스 수와 pool 상한의 ‘10개 instance의 pool 상한을 20→100으로 바꾸면 잠재 연결은 200→1000입니다.’는 총량 계산을 이미 보여 주고, 검사 표의 ‘전체 총량 | instance×pool+기타 연결 ≤ DB 예산’도 유용한 요약이므로 유지합니다. rollback 절의 ‘단순 설정 값 원복이 포화·남은 연결·늦은 retry를 즉시 없애지는 않습니다.’와 canary 지표 문장도 설정 저장과 실제 회복을 구분하므로 유지합니다.",
+      "sha256": "93202707899344318697998525fbecf55f13d82ed9a9b01cb256e8dba6ff0fbc"
+    },
+    {
+      "path": "notes/design/controlled-failure.md",
+      "status": "edited",
+      "reviewBasis": "결정적 race의 barrier, 가상 시간과 scheduler queue, 효과 경계의 실패 주입, fake와 real DB의 계약을 네 문단에서 실제 조작 순서로 제안합니다. 저장소 공통 계약 표의 ‘expected version mismatch | 변경 없음·명확한 충돌’과 ‘응답 유실 | 미실행으로 단정하지 않음’은 입력과 기대 결과를 직접 대응시키므로 표는 유지합니다. 종료·Pause·Partition 구분의 ‘process 종료는 메모리 상태·연결을 잃고, pause는 옛 권한·입력을 가진 채 나중에 깨어납니다.’도 실패 모델의 차이를 정확히 설명하므로 유지합니다.",
+      "sha256": "e1269794d234a5e0ac614517948b8b47ca6914cb8207bda8da946586177d72da"
+    },
+    {
+      "path": "notes/design/dependency-lock.md",
+      "status": "edited",
+      "reviewBasis": "Manifest 범위와 실제 dependency graph, npm의 잠금 설치 예, warm cache와 clean install의 차이를 세 문단에서 이어지게 제안합니다. OS·architecture, compiler·native library, postinstall, 환경 변수·시간·경로, registry·외부 URL, cache를 나눈 표는 lockfile만으로 고정되지 않는 입력을 빠르게 비교하게 하므로 유지합니다. ‘고정된 package도 악성 동작을 할 수 있어 integrity가 안전성 검토를 대체하지 않습니다.’와 ‘package rollback도 이미 발생한 DB migration이나 외부 효과를 되돌리지 않습니다.’도 설치 재현성과 보안·외부 효과의 경계를 정확히 제한하므로 유지합니다.",
+      "sha256": "0c6790ec7e3b5659de3b55e1d4219e6282e94a4091fae17ae44f8412179c1753"
+    },
+    {
+      "path": "notes/design/file-publication.md",
+      "status": "edited",
+      "reviewBasis": "원문의 `같은 filesystem의 적절한 임시 파일에 완성본을 쓰고 형식·길이·의미·권한을 검증한 뒤 이름을 교체합니다.`와 `임시 파일 write→파일 fsync→rename→부모 directory fsync`는 공개와 내구화의 순서를 실제 작업 단위로 보여 주므로 유지합니다. 다만 열린 handle, loader 재열기, 두 writer의 lost update, lock 범위를 한 문단에 연달아 배치한 부분은 독자가 경쟁 시점을 따라가기 어렵고, 여러 파일의 version 게시도 reader가 무엇을 한 번 결정하는지 더 분명히 할 여지가 있어 두 문단만 제안합니다.",
+      "sha256": "688a3ce8525622a277f99c5cdcf05f6851aae42e2f9531101a9754fa95858c38"
+    },
+    {
+      "path": "notes/design/flag-migration.md",
+      "status": "edited",
+      "reviewBasis": "`flag는 이후 경로를 선택할 뿐 데이터·event·메일·결제를 되돌리지 않습니다.`가 flag off와 rollback의 차이를 정확히 제한하고, `hash(실험 ID, 배정 ID)를 고정 구간에 배치해 비율 확대 때 기존 대상이 불필요하게 오가지 않게 합니다.`가 배정 동작을 설명하므로 유지합니다. Shadow 격리와 Strangler의 owner 전환은 중요한 원리지만 원문은 외부 효과 차단, 숨은 접근 조사, generation 전환이 목록처럼 이어져 실제 순서를 놓치기 쉬워 세 문단을 교체합니다.",
+      "sha256": "7c335cd08c2c9cd06febb352a06bdc93a4fa7890f1e0221a1df3457f6b8b659b"
+    },
+    {
+      "path": "notes/design/git-integration.md",
+      "status": "edited",
+      "reviewBasis": "`force-with-lease는 예상한 원격 ref가 바뀌었는지 검사하는 보호이지 재작성의 협업 비용이나 의미 충돌을 없애는 허가가 아닙니다.`와 `reflog 만료·GC 뒤에는 옛 객체를 찾지 못할 수 있습니다.`가 도구의 보호 범위와 복구 한계를 정확히 말하므로 유지합니다. 양 부모 diff와 range-diff는 명령이 이미 있지만, merge 결과에서 무엇을 비교하고 그 다음 어떤 실행 검사를 해야 하는지가 압축되어 있어 두 문단만 실제 순서로 풀어 씁니다.",
+      "sha256": "de195b02b983c421f675002b316e7626cac97306700506b03dd49aeadc708631"
+    },
+    {
+      "path": "notes/design/grpc-execution.md",
+      "status": "edited",
+      "reviewBasis": "`REST는 JSON이라는 형식 자체가 아니라 HTTP 자원 의미를 활용하는 설계`가 REST와 전송 형식을 혼동하지 않게 하고, 표의 `deadline 후 불확정 | 논리 key·결과 조회·대사`가 retry의 경계를 남기므로 유지합니다. 다만 구·신 schema 조합과 전송 Flow Control 문단은 용어를 한꺼번에 나열해 실제 테스트·처리 예산의 연결이 흐려져 두 문단을 교체합니다.",
+      "sha256": "c391e146a8bba0ff6e229ca787c832e36fa9294c9e3233e57393d700f354851b"
+    },
+    {
+      "path": "notes/design/health-feedback.md",
+      "status": "edited",
+      "reviewBasis": "`10개 중 3개를 제외하면 같은 유입이 7개에 몰립니다.`는 readiness 변경이 남은 instance의 부하를 바꾸는 중간 계산을 잘 보여 주고, `limit 감소 | 새 수락 차단·기존 실제 완료 대기`는 target과 실제 실행을 구분하므로 유지합니다. 적응형 한도의 100→200→10초 지연 사례와 in-flight 100/limit 50 사례는 핵심이지만 현재는 안전장치 목록이 연속되어 있어 두 문단을 더 실행 순서에 맞게 다듬습니다.",
+      "sha256": "f85aa847d427242c4c4eba1217045360b643f4ceadb5fb79024630b208c4f180"
+    },
+    {
+      "path": "notes/design/identity-representation.md",
+      "status": "edited",
+      "reviewBasis": "`NFC는 이런 canonical equivalence를 맞추지만 모든 시각적 유사 문자를 합치지는 않습니다.`가 정규화의 범위를 제한하고, `시간 성분은 생성 시각을 노출할 수 있고 집중된 마지막 index page는 쓰기 경합을 만들 수 있어 실제 엔진에서 측정합니다.`가 ID 선택의 trade-off를 과장하지 않으므로 유지합니다. 앱과 DB의 비교 불일치 및 UUID version 차이는 중요한 실제 실패 흐름인데, 현재는 규칙과 결과가 한 문단에 압축되어 두 문단을 교체합니다.",
+      "sha256": "a48b9f7d900e0c351812339252fbc2e39d895a810d56deeb11ff014378bcc385"
+    },
+    {
+      "path": "notes/design/invariant-boundaries.md",
+      "status": "edited",
+      "reviewBasis": "`실패 명령은 일부 필드만 바꾸지 않도록 새 상태를 계산·검증한 뒤 적용합니다.`가 불변식 보호의 실제 순서를 보여 주고, `A=100, B=50에서 30을 이체할 때 A=70 저장 후 B 증가가 실패하면 합계가 120으로 줄어듭니다.`가 aggregate 범위를 계산으로 설명하므로 유지합니다. 다만 안내 조회와 실제 cancel의 경쟁, 서로 다른 시스템의 보상·대사 선택은 현재도 정확하지만 원인→저장 경계→후속 정책 흐름을 더 선명하게 할 수 있어 두 문단을 교체합니다.",
+      "sha256": "4c33a41e278e9bbe8acf0c1cd56e7bf132276019132cf75806fd9c90b1becc6f"
+    },
+    {
+      "path": "notes/design/log-audit-budget.md",
+      "status": "edited",
+      "reviewBasis": "`debug(serializeHugeObject(x))`에서 debug가 꺼져 있어도 인자 평가가 먼저라면 CPU·allocation 비용은 이미 냅니다.`가 비활성 로그의 실제 비용을 코드로 보여 주고, `권한 변경과 감사 행을 같은 DB transaction에 기록하거나 outbox에 내구 기록한 뒤 비동기 전송합니다.`가 감사의 원자 경계를 구체화하므로 유지합니다. Sampling의 전체 오류 수와 표본 수, stack·직렬화·전송 비용은 핵심인데 현재 문장이 압축되어 두 문단만 교체하고 표와 diagram은 건드리지 않습니다.",
+      "sha256": "13bd6edf8f2392ef97999621d657360737f31ed6c7ad90c5f0a124939cdd9b28"
+    },
+    {
+      "path": "notes/design/messaging-ownership.md",
+      "status": "edited",
+      "reviewBasis": "표와 비교 축은 유지합니다. 특히 원문의 \"하나의 queue/consumer group을 공유하면 작업 분배가 될 수 있지만 각 service 독립 전달을 보장하지 않습니다.\"(12행)와 \"제품 이름만으로 전역 순서·정확히 한 번 효과를 약속하지 않습니다.\"(21행)가 작업 분배와 독립 구독, 제품 이름과 실제 보장을 구분하는 핵심 원리입니다. 가장 어려운 구간인 broker 진행 경계와 외부 효과(25행), 관리형 queue 총비용(39~41행)을 실제 순서와 비용 항목으로 풀고, 마지막 비교 시험 문단은 실제 benchmark가 아니라 선택 기준이라는 한계를 그대로 둡니다.",
+      "sha256": "28e719e645e8adc825de3a107d7dd3b71a437cbb336f6d76ec0cb64d1e41a04d"
+    },
+    {
+      "path": "notes/design/model-ownership.md",
+      "status": "edited",
+      "reviewBasis": "CQRS 표와 원본/파생 모델 diagram은 수정하지 않습니다. \"**CQRS**는 command와 query의 책임·model 분리이며 별도 DB·process·event sourcing을 강제하지 않습니다.\"(18행)는 흔한 오해를 정확히 막고, \"조회가 빠르다고 재고 확정의 권위가 되는 것은 아닙니다.\"(27행)와 snapshot 문단(37행)은 권위 상태·지연·replay의 작동을 이미 설명합니다. 가장 어려운 Event Sourcing 구간(35~37행)에서 event 의미, 당시 사실, schema upcaster와 snapshot 이후 replay의 연결을 한 흐름으로 만들고, 마지막의 실제 migration/replay가 아니라는 범위도 유지합니다.",
+      "sha256": "27e2245c472f8c246ada5cfd39a8a4358000eb39fc3ecfafd512f04c8222d66c"
+    },
+    {
+      "path": "notes/design/policy-ports.md",
+      "status": "edited",
+      "reviewBasis": "port 표와 diagram, fake/stub/mock 비교표는 유지합니다. 특히 \"`recordOnce(key, expectedVersion, result)`가 생성·이미 처리됨·충돌·실행 불확정을 반환하는 식으로 필요한 원자 의미를 표현합니다.\"(18행)는 CRUD 복사가 아닌 업무 보장이라는 핵심을 실제 반환 상태로 설명합니다. 생성 실패 뒤 pool 회수와 \"종료 때는 새 유입 차단→진행 작업 종료→pool close→남은 진단 flush\"(43행)도 자원 수명 핵심이 충분하므로, DI/DIP 혼동·외부 효과의 불확정성·요청 문맥만 다듬습니다.",
+      "sha256": "56c5b69a19373cfdeff4107c7440bf4c09233f655720f3e2d43d07185d55ac55"
+    },
+    {
+      "path": "notes/design/protocol-scenarios.md",
+      "status": "edited",
+      "reviewBasis": "상태 기반 client의 로그인→행동→보상→재접속 흐름과 표의 golden packet·상태 client·부하 test 구분은 유지합니다. 원문의 \"로그인→행동→보상→재접속 시나리오에서 응답 필드·세션 version·보상 event ID·원장을 검사합니다.\"(12행)와 고유 계정·room·event namespace(14행)가 최종 응답만 보는 것보다 실제 중복 효과를 찾는 방법을 이미 제시합니다. 가장 어려운 부분인 부분 순서(28~34행)는 `L<A`, `L<W` 조건과 두 유효 순서, 인증 전 행동 거절, 다중집합의 중복 검사를 한 실행 예로 묶고, packet replay의 token·개인정보·외부 효과 차단도 보존합니다.",
+      "sha256": "8eb50d5d41150054cae166a3b64f183d6eb55fc37a81aa5c3020ef8acd96d942"
+    },
+    {
+      "path": "notes/design/pure-state.md",
+      "status": "edited",
+      "reviewBasis": "순수 함수의 효과 경계와 계산/적용 분리 diagram은 유지합니다. \"`expiresIn(days)`가 내부에서 현재 시각·전역 정책을 읽으면 같은 인자도 결과가 바뀝니다.\"(12행)와 계산 후 기준 version을 조건부 갱신하는 문단(20행)이 순수성의 실제 경계를 설명합니다. 또한 RNG 예시의 \"`next=(5*state+1) mod 16`, 결과값을 next라고 둡니다. seed 1에서 6→15→12가 나옵니다.\"(36행)는 수치와 재현 조건이 충분하므로, 순수 함수 정의·key의 함정·전역 RNG 소비만 보강합니다.",
+      "sha256": "31974492e106bf2a60e1a137f510e9ff60cfb5684c4cfba2a58039fd8a6d83a2"
+    },
+    {
+      "path": "notes/design/rate-burst.md",
+      "status": "edited",
+      "reviewBasis": "token bucket의 수치 예시와 원자 갱신 code fence, 제한 종류 표, 큰 작업의 cost>B 불가 조건은 그대로 유지합니다. 원문의 \"r=10 token/s, B=20에서 가득 찬 상태라면 즉시 20개, 이후 1초의 추가 충전 10개를 사용할 수 있습니다.\"(14행)와 \"B=10인데 cost=20이면 기다려도 영원히 허용되지 않으므로\"(41행)가 burst와 큰 요청의 실제 한계를 충분히 보여 줍니다. 보강이 필요한 부분은 code fence 뒤의 동시 검사·시간·restart 설명(29행) 하나이며, 마지막 시험 항목과 분산 limiter 부하 시험 미실행 범위는 유지합니다.",
+      "sha256": "7e709150d58733167ff3c8e08f62b81e72029570a579c0f5154763aaa7dbadde"
+    },
+    {
+      "path": "notes/design/recovery-evidence.md",
+      "status": "edited",
+      "reviewBasis": "RPO/RTO 표와 복구 Cut diagram은 수정하지 않습니다. \"**RPO**는 허용 데이터 유실 범위, **RTO**는 정의된 시작점부터 서비스 재개까지 허용 시간입니다.\"(12행)로 두 용어를 정의하고, 복사 외 탐지·권한·환경·복원 검증·서비스 재개·후속 대사(18~27행)를 실제 시간에 포함합니다. 가장 어려운 서비스 간 Cut(31행)과 restore 격리(41행)는 timestamp만으로 인과를 맞출 수 없는 이유와 옛 outbox/자격/egress 차단 순서를 더 자연스럽게 쓰되, 외부 성공 조회·보정·수동 확인 구분과 실제 backup 무결성 검사의 한계는 유지합니다.",
+      "sha256": "01d339a23b30a7d54b1e983ab975ec2794305f3f39b069c4220b22f0920cf8d3"
+    },
+    {
+      "path": "notes/design/request-task-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "deadline 계산, 필수/선택 결과 표식, fan-out 수치와 구조화된 동시성 diagram은 유지합니다. 원문의 \"전체 요청 1초 중 인증 0.2초·조회 0.5초를 사용했다면 다음 호출에는 0.3초 이하만 남습니다.\"(12행)와 \"부모 100개×fan-out 20개면 2000개 물리 작업이 생기므로\"(20행)가 예산과 물리 작업 수를 실제로 계산합니다. 핵심인 단일 응답 CAS/lock(28행), callback 뒤 자원 수명(41행), 취소 불가능한 buffer/driver와 독립 durable job(49~51행)을 분리해 사용자 응답과 실제 실행 종료를 혼동하지 않도록 다듬습니다.",
+      "sha256": "879411893a55e578253fa958e0f5034164ca1b364f737f80ef9cd55e2f66faa4"
+    },
+    {
+      "path": "notes/design/shutdown-admission.md",
+      "status": "edited",
+      "reviewBasis": "핵심 작동이 이미 드러나는 문장은 유지하고, 상태 이름과 종료 경쟁을 실제 순서로 풀어 씁니다. 원문의 ‘상태 검사와 등록을 같은 lock/CAS protocol로 보호합니다.’는 admission race의 보호 지점을 정확히 말하고, ‘이미 전송한 bytes와 외부 변경은 취소되지 않습니다.’는 stream 재개가 취소와 같지 않다는 경계를 설명하므로 그대로 둡니다.",
+      "sha256": "4077125fcafdd5a569cb23e2c9788ff65342cd97d6f33e32d208ed8a45d5cddf"
+    },
+    {
+      "path": "notes/design/simulation-budget.md",
+      "status": "edited",
+      "reviewBasis": "수치와 한계의 근거는 이미 좋습니다. ‘정확 해는 x=0.005입니다.’는 적분 근사의 기준값을 제공하고, ‘모든 시간을 몰래 버리는 것도 규칙 변경입니다.’는 catch-up 정책의 게임 규칙 영향을 분명히 하므로 보존합니다. 다만 20Hz 예산, Euler 중간값, catch-up 시계, timer phase는 계산과 원인을 한 문장에 압축해 있어 실제 실행 순서로 나눕니다.",
+      "sha256": "a5eae89dbe009d6d6f25c58caafa1b9c53b3e668ad79d16128b3f9e02c92f33e"
+    },
+    {
+      "path": "notes/design/singleton-publication.md",
+      "status": "edited",
+      "reviewBasis": "원문은 ‘인스턴스가 하나라는 사실은 read-modify-write 원자성과 다릅니다.’와 ‘process singleton이 분산 시스템의 유일한 소유권을 만들지 않습니다.’처럼 singleton의 범위와 변경 원인을 정확히 구분합니다. 이 구분은 유지하고, read-modify-write·안전 공개·언어별 실패 캐시 같은 용어가 실제 접근 순서와 함께 읽히도록 바꿉니다.",
+      "sha256": "bc9879f7e200353611a71c77db2231529a40a6f904009084e4e7a3b8c7863352"
+    },
+    {
+      "path": "notes/design/slo-mitigation.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘instance별 percentile의 평균 대신 같은 good/bad 경계의 건수를 합칩니다.’와 ‘코드 전환이 데이터 rollback은 아닙니다.’는 측정 집계와 복구 범위를 실제 행동으로 설명하므로 유지합니다. SLI/SLO 정의, 오류 예산 산술, multi-window 조건, schema 복구 선택지는 독자가 수치를 따라가도록 중간 계산과 선택 순서를 보강합니다.",
+      "sha256": "6562ddc3d153f83e24599bf436b9042d65234479119f4d422dfbdc22c18c14c0"
+    },
+    {
+      "path": "notes/design/snapshot-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘읽기 전용 view는 그 view를 통한 변경을 막을 뿐 원본 owner의 변경을 막지 않습니다.’와 ‘상한에 도달하면 새 작업 수락이나 갱신을 제어해야지 사용 중 메모리를 일방 해제하지 않습니다.’는 snapshot의 불변성·회수 한계를 구체적으로 설명합니다. root 일관성, writer CAS, 경로 복사 비용, reader 회수 규칙만 중간 값과 보호 시점이 드러나도록 다듬습니다.",
+      "sha256": "7bd02c792d52f9c9022d8cb8e3c233c8bdf22765c3551fcc9848f2c0482bf4b9"
+    },
+    {
+      "path": "notes/design/state-correction.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘version은 신선도, 작업 ID는 같은 의도의 반복을 식별하므로 서로 대체하지 않습니다.’와 ‘운영자 도구도 직접 enum 수정으로 guard를 우회하지 않고 동일한 명령·인가·감사 경로를 사용합니다.’는 상태 식별과 운영자 경계를 충분히 설명합니다. enum/guard, 외부 성공 후 crash, lease 세대, 재현 시험은 실제 판단·저장 순서가 보이도록 제안하고 SQL·diagram은 건드리지 않습니다.",
+      "sha256": "b2a76bbda56dcd92e0f8c8dd2bd1e0a7514b2dbba124f37e391e50875a907dc3"
+    },
+    {
+      "path": "notes/design/test-detection.md",
+      "status": "edited",
+      "reviewBasis": "원문의 ‘집합만 같으면 중복 원소 누락을 놓칩니다.’와 ‘모든 순열이 유효하다고 균등한 것은 아닙니다.’는 property 설계에서 반례와 분포를 구분하는 실제 설명입니다. Red의 실패 원인, 독립 oracle, generator·shrinking 재현성, mutation survivor 분류는 용어만 나열되지 않도록 입력→실행→판단 순서로 풀어 씁니다.",
+      "sha256": "51b05f395646c11c10baa2984cae104c23ee9381ae62cf33fa6f47bd05baee42"
+    },
+    {
+      "path": "notes/distributed/broker-redelivery.md",
+      "status": "edited",
+      "reviewBasis": "핵심 경계는 유지합니다. ‘worker A가 40초 DB 작업을 하는데 메시지의 미확인 대기가 30초라면 B가 같은 메시지를 받아 실행할 수 있습니다.’와 ‘효과를 내구 반영한 뒤 ACK 또는 DeleteMessage를 하고, 그 사이 실패의 재전달을 같은 논리 event ID로 흡수해야 합니다.’가 재전달과 외부 효과의 순서를 정확히 설명합니다. 다만 첫 문단에서 broker의 시간 제한이 worker 실행을 중단하지 않는 중간 작동을 더 분명히 하고, JetStream 설정 문단의 ‘확인합니다’는 실제 관찰 순서로 바꾸는 편이 학습에 유용합니다.",
+      "sha256": "68a4804809c9d400e7a75f706e39514943e4bc51810dcf8d80e8bc5810150184"
+    },
+    {
+      "path": "notes/distributed/cache-refill.md",
+      "status": "edited",
+      "reviewBasis": "캐시 어사이드의 용어 정의와 원자 경계는 유지합니다. ‘이 구조가 **캐시 어사이드**(cache-aside)이며, 마지막 현상을 오래된 값의 지연 채우기(stale refill)라고 부릅니다.’와 ‘검사와 게시가 같은 원자 경계에 있어야 합니다.’가 현상과 해결 조건을 함께 설명합니다. 가장 어려운 장벽 퇴거·세대 복구 구간만 오래된 읽기가 어떤 순서로 다시 통과하는지와 세대 재사용이 왜 위험한지를 실행 흐름으로 풀어 씁니다.",
+      "sha256": "bfb7647daa9b1f967dd582bd9bd00b714e0d9999c2259281ef612f33eb94a3f7"
+    },
+    {
+      "path": "notes/distributed/consensus-membership.md",
+      "status": "edited",
+      "reviewBasis": "old/new 비중첩 반례와 공동 쿼럼 표는 유지합니다. ‘old={A,B,C}, new={C,D,E}로 바꾸려 합니다. A·B는 old의 과반이고 D·E는 new의 과반인데 서로 공유 노드가 없습니다.’가 구성 변경의 위험을 구체적으로 보여 주고, ‘joint consensus를 지원하는 모형은 전환 중 old 과반과 new 과반을 모두 요구합니다.’가 표의 계산 기준을 정의합니다. 다만 C가 공통 노드라는 사실과 공동 조건의 판정을 한 번 더 계산하는 문단은 실제 응답 집합을 세는 방식으로 다듬습니다.",
+      "sha256": "a47c9fefc6e8919eddafa9f76596d943dae81194bdd280018b5f6b7b1eaa1b38"
+    },
+    {
+      "path": "notes/distributed/consensus-quorum.md",
+      "status": "edited",
+      "reviewBasis": "과반의 수식과 교집합, 프로세스 생존과 쿼럼 참여의 차이는 유지합니다. ‘고정 N개 투표자의 과반은 floor(N/2)+1입니다. 두 과반은 적어도 한 노드를 공유합니다.’가 기본 계산을 정확히 제시하고, ‘프로세스가 살아 있다는 것과 쿼럼에 참여할 수 있다는 것은 다릅니다.’가 장애 판정의 기준을 분리합니다. 장애 영역 배치와 safety·progress 문단은 이미 핵심을 담고 있지만, 실제 손실 집합을 세고 두 성질을 정의하는 중간 계산을 보강합니다.",
+      "sha256": "037c5607ddbce59227f509cb47e9150531675342065b2fa544a6585ffd89b4ce"
+    },
+    {
+      "path": "notes/distributed/consistency-history.md",
+      "status": "edited",
+      "reviewBasis": "선형화 가능성의 정의, 겹친 연산의 배치, CAP의 분할 중 선택, 기능별 성공 계약은 유지합니다. ‘선형화 가능성은 각 연산이 호출과 응답 사이 한 시점에 실행된 것처럼 설명되며 비중첩 연산의 실시간 선후를 존중하는 성질입니다.’와 ‘최종 일관성은 변경이 멈추고 전달·복구가 진행되면 수렴한다는 조건부 약속이지 보편적인 몇 초 상한이 아닙니다.’가 핵심 용어와 보장 범위를 정확히 제한합니다. R+W>N 구간은 집합 교집합에서 곧바로 read-back·repair로 뛰므로, 고정 집합 계산과 부분 쓰기 반례를 분리해 제안합니다.",
+      "sha256": "e56fa3269ef85f42b7a9e0ef9bbb46642db2783883e6cad3a6aec23ca7d52c67"
+    },
+    {
+      "path": "notes/distributed/consumer-inbox.md",
+      "status": "edited",
+      "reviewBasis": "Inbox의 정의와 마커·실제 효과·outbox를 같은 DB transaction에 두는 코드는 유지합니다. ‘inbox는 어떤 논리 이벤트를 처리했는지 기록하는 저장소입니다.’와 코드의 ‘update points using atomic domain operation’, ‘send broker ACK’ 순서가 재전달을 효과 없이 흡수하는 핵심을 충분히 보여 줍니다. 다만 정상 event ID가 서로 다르면 중복 검사를 통과해 별도의 lost update가 생긴다는 문단은 실제 읽기·계산·쓰기 값으로 한 번 더 펼치는 것이 좋습니다.",
+      "sha256": "a59dfbbf2cd477383c90443663e84179ec7a7603e22b8dcbf7ed3218067414cf"
+    },
+    {
+      "path": "notes/distributed/crdt-counter.md",
+      "status": "edited",
+      "reviewBasis": "합계 재가산의 5와 3 반례, G-counter의 [5,0]·[0,3] 성분별 max, 멱등 병합의 설명은 유지합니다. ‘A의 상태 [5,0], B의 상태 [0,3]을 성분별 max로 병합하면 [5,3], 합계 8입니다.’와 ‘같은 상태를 다시 받아도 max 결과는 그대로입니다.’가 state-based 동작을 계산으로 보여 줍니다. 참여자 ID 재사용 구간은 max가 새 증가를 가리는 과정을 직접 적어 identity·epoch·내구 보존·단일 writer의 필요성을 연결합니다.",
+      "sha256": "2cc38cf12add73b0182cd0d58421041c7fe70587a1a219792df29fc92d216d0a"
+    },
+    {
+      "path": "notes/distributed/distributed-commit.md",
+      "status": "edited",
+      "reviewBasis": "2PC prepare의 내구 약속과 Saga 보상의 의미 차이는 유지합니다. ‘참여자는 prepare에서 commit할 준비를 내구 기록하고 필요한 자원을 유지한 뒤 yes를 응답합니다.’가 prepare의 작동을 정의하고, ‘예약→결제→배송에서 배송이 영구 실패하면 예약 해제·결제 취소를 수행할 수 있습니다.’가 보상은 과거 값을 지우는 rollback이 아니라 새 효과라는 점을 뒷받침합니다. 가장 어려운 in-doubt 문단은 coordinator 연결 단절부터 lock·버전·자원 보류, 복구 조회, heuristic 대사까지 한 사례로 연결합니다.",
+      "sha256": "80534fd1ee8fb51c73f59311091d524007ce667a7e1c5d24afa7d44635ce5fdb"
+    },
+    {
+      "path": "notes/distributed/event-contracts.md",
+      "status": "edited",
+      "reviewBasis": "핵심 원리는 유지합니다. 원문 12행의 “offset commit의 연속 완료 watermark는 누락을 막는 장치이지 이미 먼저 실행된 2의 효과를 되돌리는 장치가 아닙니다.”가 offset 완료 경계와 외부 효과를 분리하고, 31행의 “snapshot이 10까지의 상태라면 그 이후 delta만 이어 적용하고 dedup·삭제·계산 version을 유지합니다.”가 복구 후 재생 조건을 설명합니다. 이에 따라 gap 상한, schema 의미 변환, DLQ 책임 문단만 구체화합니다.",
+      "sha256": "a704b1d2229d47e7ec632a69c16cbd967f5f7ec90c88b19397e0d8a735ffb0ed"
+    },
+    {
+      "path": "notes/distributed/fencing.md",
+      "status": "edited",
+      "reviewBasis": "핵심 원리는 유지합니다. 원문 14행의 “오래된 소유권의 작업을 저장소가 거절하는 장치가 **펜싱**(fencing)입니다.”가 개념을 정의하고, 57행의 “실제 구현은 같은 자원의 모든 쓰기가 같은 잠금·조건 갱신을 통과해야 합니다.”가 실제 저장 경계를 설명합니다. 임대 ACK의 불확실성, 토큰 반영 전의 한계, DB와 객체 저장소 사이의 전환만 더 자연스럽게 연결합니다.",
+      "sha256": "101747caaabecf3b7b4f9f85485a497f8045e5df995a2613bda0256cca7659ac"
+    },
+    {
+      "path": "notes/distributed/idempotency.md",
+      "status": "edited",
+      "reviewBasis": "핵심 작동은 유지합니다. 원문 62행의 “최종 판정은 애플리케이션의 if 문이 아니라 DB의 고유 제약이 해야 합니다.”가 동시 선점의 판정 지점을 짚고, 92행의 “클라이언트가 같은 키로 다시 오면 현재 주문을 다시 계산하지 않고 원장에 보관한 status와 body를 그대로 돌려줍니다.”가 재시도 결과 재현을 설명합니다. savepoint와 deadline의 실행 순서, 24시간 뒤 키 재사용 반례를 읽는 흐름으로만 정리합니다.",
+      "sha256": "3afef28664d057719ede8673859df57c739622e9b1a731a1150c40e9e86cb64c"
+    },
+    {
+      "path": "notes/distributed/jetstream-storage.md",
+      "status": "edited",
+      "reviewBasis": "핵심 경계는 유지합니다. 원문 25행의 “같은 durable을 공유하면 한 소비 상태의 일을 나누며 독립 fan-out과 다릅니다.”가 consumer 독립성의 기준을 설명하고, 41행의 “ACK는 내구 효과 뒤에 보내고, 큐가 포화되면 새 demand를 줄여야 합니다.”가 실제 backpressure 순서를 제시합니다. Core NATS에서 JetStream으로 넘어가는 지점, retention 정책 이름, PubAck 유실 재시도를 사람의 실행 흐름으로 풀어 씁니다.",
+      "sha256": "5905ff0b84c5b9320612e3fbf9cc6eb5cece81d871f99c703e58799a9fac238c"
+    },
+    {
+      "path": "notes/distributed/kafka-consumer-offset.md",
+      "status": "edited",
+      "reviewBasis": "핵심 경계는 유지합니다. 원문 18행의 “`committed`: 소비자 그룹에 저장한 다음 읽을 위치입니다.”가 offset을 세 위치로 나누고, 164행의 “watermark는 **offset commit의 누락을 막는 장치**이지, 병렬 worker의 효과 순서를 재배열하는 장치가 아닙니다.”가 가장 중요한 한계를 분명히 합니다. 숫자 10·11·12의 commit 계산, 미제출 작업의 보관, pause와 poll의 관계만 실행 순서가 보이도록 다듬습니다.",
+      "sha256": "f3caa1e854f82083ae931c3ee50e94b3d3fe5c3b5f61fa8c7e5355582ad5154a"
+    },
+    {
+      "path": "notes/distributed/kafka-partition-order.md",
+      "status": "edited",
+      "reviewBasis": "핵심 범위는 유지합니다. 원문 12행의 “두 이벤트가 같은 Kafka **파티션**(partition)에 기록되었다면 소비자는 그 파티션에서 브로커 로그에 기록된 순서대로 받습니다.”가 순서 보장의 범위를 정의하고, 53행의 “`position`은 읽기 위치이고, group committed offset은 다음에 읽을 위치이며, 실제 DB·외부 시스템의 완료 상태는 별도입니다.”가 전환 시 완료 판정을 분리합니다. partitioner 계산, 증설 뒤 P1/P4의 적용 역전, 새 topic의 이중 발행 복구만 읽는 순서가 자연스럽게 보이도록 고칩니다.",
+      "sha256": "4b885808223a76938151caa37f9a981aebd851ff55ce498f0767142ac130ba7f"
+    },
+    {
+      "path": "notes/distributed/kafka-replication-acks.md",
+      "status": "edited",
+      "reviewBasis": "핵심 수치와 버전 경계는 유지합니다. 원문 16행의 “`min.insync.replicas=2`는 그 상태에서 쓰기를 허용할 최소 ISR 크기를 정합니다.”가 ACK 대기 수와 허용 하한을 구분하고, 73행의 “L과 F1이 ISR이었고 성공한 record가 두 곳에 모두 append되어 committed라면, F1이 새 leader가 되어 그 record를 이어갈 수 있습니다.”가 leader 장애 뒤 보존 경계를 계산합니다. ELR 단순화, append 전후 오류, RF와 min ISR의 관계를 같은 모델 안에서 읽게 정리합니다.",
+      "sha256": "4696c00e6747e586dfbb589bae6296d11ff182d1490d688b89926203230efe97"
+    },
+    {
+      "path": "notes/distributed/kafka-retained-state.md",
+      "status": "edited",
+      "reviewBasis": "핵심 복구 범위는 유지합니다. 원문 14행의 “background·segment 단위 처리이므로 설정 시간에 각 레코드가 정확히 삭제되거나 즉시 key당 한 개만 남는 것은 아닙니다.”가 compaction/delete의 실행 시점을 제한하고, 35행의 “non-null key와 null value의 tombstone은 해당 key 삭제를 나타냅니다.”가 tombstone과 null key를 구분합니다. offset 공백과 snapshot 이후 재생 위치를 실제 복구 계산으로 연결하는 두 문단만 다듬습니다.",
+      "sha256": "89968b05bdfcf35a4fc6bd6ac377262e7736eb222f2a89385a167296d71f16a0"
+    },
+    {
+      "path": "notes/distributed/kafka-transaction-scope.md",
+      "status": "edited",
+      "reviewBasis": "핵심 구간인 ACK 유실에 따른 재전송, 외부 DB 재처리, Kafka transaction의 LSO 경계를 모두 읽었습니다. 원문 근거인 「idempotent producer는 producer ID·epoch·partition별 sequence로 이 재전송을 식별해 중복 append를 줄입니다.」와 「consumer가 DB를 커밋한 뒤 offset 저장 전에 죽으면 같은 Kafka 레코드를 다시 처리할 수 있습니다.」는 producer 전송 중복과 소비 효과 중복을 정확히 나누므로 유지하되, 실제 실행 순서를 더 선명하게 만듭니다. 표·diagram·H2·frontmatter는 변경하지 않습니다.",
+      "sha256": "5a117cf2742080f906e975660f07e9729509ebe3ded42ab340683b11be006aae"
+    },
+    {
+      "path": "notes/distributed/kraft-control-plane.md",
+      "status": "edited",
+      "reviewBasis": "controller quorum의 metadata와 broker partition의 사용자 record를 나누는 핵심을 읽었고, 특히 controller 과반 손실과 data leader 손실을 같은 장애로 다루지 않는 구간을 검토했습니다. 원문 근거인 「metadata 로그와 사용자 데이터 로그는 다른 상태와 참여 집합을 가집니다.」와 「controller quorum이 없어도 기존 leader·metadata·연결이 유지된 일부 데이터 경로는 한동안 처리될 수 있습니다.」가 정확한 경계를 제공하므로 유지하면서 RF·ISR·acks·min ISR·leader 선택 용어의 작동을 풀어 씁니다. 표·diagram·H2·frontmatter는 변경하지 않습니다.",
+      "sha256": "3c4169c006cb25954f786aaa2432b6e9131c0483e93f4eb4d82a2e2faced9e72"
+    },
+    {
+      "path": "notes/distributed/logical-clocks.md",
+      "status": "edited",
+      "reviewBasis": "wall clock·monotonic clock·Lamport·vector의 비교 범위를 확인한 뒤, 가장 계산이 압축된 HLC 수신 예제를 집중 검토했습니다. 원문 근거인 「받은 값이 5, 로컬이 8이면 수신 사건의 값은 max(5,8)+1=9입니다.」와 「[1,0]과 [0,1]은 ... 동시입니다.」는 중간 계산을 이미 잘 보여 주므로 유지하고 HLC에도 같은 계산 단계를 맞춥니다. 표·diagram·H2·frontmatter는 변경하지 않습니다.",
+      "sha256": "e75a5a302374493acd80fc8e109254843a0400d68f6269b40b6e45fa86a9c757"
+    },
+    {
+      "path": "notes/distributed/migration-state.md",
+      "status": "edited",
+      "reviewBasis": "첫 접속 경합, cursor와 실제 반영의 순서, generation fencing, 공개 직전 권한 재확인을 핵심 구간으로 읽었습니다. 원문 근거인 「migration row의 상태·generation을 조건부 변경해 한 작업 ID를 만들고」와 「완료 표시만 fenced하고 데이터 쓰기는 무조건 허용하면 대상 내용이 오염될 수 있습니다.」는 올바른 안전 경계를 제시하므로 유지하면서 조건부 갱신과 재개 시점을 구체화합니다. 표·diagram·H2·frontmatter는 변경하지 않습니다.",
+      "sha256": "10551d8b30bf60ee65ac8c87ff65a7c17869663d874eec6d0d6096dcd4dbbcdf"
+    },
+    {
+      "path": "notes/distributed/nats-routing.md",
+      "status": "edited",
+      "reviewBasis": "queue group의 fan-out과 내부 분배, wildcard 범위, request-reply timeout과 inbox 재사용을 모두 읽었고, 특히 첫 응답과 실제 외부 효과가 분리되는 구간을 검토했습니다. 원문 근거인 「queue group은 현재 구독자 사이 분배이며 내구 메시지 보관·consumer ACK·외부 효과 단일 실행을 자동 제공하지 않습니다.」와 「timeout은 제한 시간 안에 응답이 없었다는 것만 알려 줍니다.」는 보존할 핵심 경계이므로 표·diagram·H2·frontmatter는 손대지 않고 실제 메시지 흐름만 풀어 씁니다.",
+      "sha256": "111a04f93fbe0947a6f3dd21663e478d7fe0d3a69300beae59c87a7c055ef7d5"
+    },
+    {
+      "path": "notes/distributed/paxos-values.md",
+      "status": "edited",
+      "reviewBasis": "Paxos의 가장 어려운 구간인 prepare 응답에서 값 계승, promise·accepted의 내구화, Multi-Paxos의 빈 슬롯 no-op과 chosen·learned·applied 구분을 실제로 검토했습니다. 원문 근거인 「prepare 응답 quorum에서 가장 높은 accepted ballot의 값」과 「chosen은 결정 사실, learned는 그 사실을 아는 상태, applied는 순차 실행입니다.」가 핵심 정의와 중간 규칙을 이미 정확히 담고 있어 prepare/accept의 실행 순서만 한 문단 보강합니다. 표·diagram·H2·frontmatter·code fence는 변경하지 않습니다.",
+      "sha256": "d9e3438145e0ea4919147da539e0422298ba9b51392908b252df2e40f5a7c575"
+    },
+    {
+      "path": "notes/distributed/raft-commit-read.md",
+      "status": "edited",
+      "reviewBasis": "log 저장·commit·apply·client 응답의 네 경계와 현재 term commit, 결정적 apply, 외부 outbox, 고립 leader 읽기를 모두 읽었습니다. 원문 근거인 「leader의 last index=105, commit index=100, applied index=97일 수 있습니다.」와 「log 수신·저장만 따라잡은 것은 상태 적용 완료가 아닙니다.」는 중간 상태를 정확히 제시하므로 유지하고, 가장 어려운 ReadIndex 순서만 실제 대기 조건까지 연결합니다. 표·diagram·H2·frontmatter는 변경하지 않습니다.",
+      "sha256": "1f966149ebbcbd4cdcb4d8100165c4884c39ff919bc8bfa4e422fd478caf3aab"
+    },
+    {
+      "path": "notes/distributed/raft-election.md",
+      "status": "edited",
+      "reviewBasis": "term을 선거 세대로 보는 정의, currentTerm·votedFor의 내구화, last term→index 최신성 비교, AppendEntries 접두부 일치와 timeout/pre-vote 경계를 읽었습니다. 원문 근거인 「vote 응답 후 저장 전에 죽으면 재시작 뒤 다른 후보에게 같은 term의 표를 줄 수 있습니다.」가 실제 crash 순서를 보여 주므로 그 문단만 저장→응답 순서로 재구성하고, code fence·표·diagram·H2·frontmatter는 유지합니다.",
+      "sha256": "337f9356d6e43373dbe2fb50a0f1fbc73be432059973fa7ae6da606b4f6beb03"
+    },
+    {
+      "path": "notes/distributed/raft-snapshot.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "복구 기준과 manifest 게시 뒤 log 정리의 안전성은 이미 설명되어 있어, 일관 view를 만드는 방법·생성 중 로그 증가량·follower suffix 분기만 구체화합니다.",
+        "keepEvidence": [
+          {
+            "line": 12,
+            "quote": "snapshot의 내용과 포함 위치가 같은 논리 시점이어야 합니다.",
+            "why": "commit 120과 applied 115의 차이로 lastIncludedIndex를 잘못 쓰면 재생을 건너뛴다는 핵심 불변식을 구체적으로 설명합니다."
+          },
+          {
+            "line": 35,
+            "quote": "새 snapshot이 재시작에서 유효하게 선택되기 전에 옛 log를 지우면 둘 다 사용할 수 없는 틈이 생깁니다.",
+            "why": "manifest 게시와 cleanup의 순서를 중단 시나리오와 함께 설명하므로 유지합니다."
+          },
+          {
+            "line": 41,
+            "quote": "수신 청크의 snapshot ID·offset·무결성·총 크기를 검사하고 임시 상태에 모은 뒤 완성된 snapshot을 원자적으로 설치합니다.",
+            "why": "부분 수신을 공개하지 않는 실제 순서와 검사 항목이 이미 충분히 드러납니다."
+          }
+        ],
+        "coreReviewed": "일관 view 생성부터 manifest 게시·접두 로그 삭제, follower 설치와 suffix 선택까지 검토했습니다."
+      },
+      "sha256": "34f99d46ca81c120e4fe354f0c02767ad07b4567f2d0529177db6fb15a15ccc5"
+    },
+    {
+      "path": "notes/distributed/retry-circuit.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "retry 곱셈과 breaker 상태 전이는 이미 안정적이므로, 첫 절의 호출 상한과 breaker 위치별 분모를 실제 수치로 풀어 씁니다. 55행의 주어는 기술 의미가 불명확해 추측하지 않고 질문으로 남깁니다.",
+        "keepEvidence": [
+          {
+            "line": 18,
+            "quote": "한 예로 k번째 재시도의 cap을 min(maxDelay, base×2^k)로 정하고 full jitter를 0~cap에서 선택할 수 있습니다.",
+            "why": "backoff 식과 jitter의 선택 범위를 직접 제시해 용어만 나열하지 않습니다."
+          },
+          {
+            "line": 31,
+            "quote": "closed에서는 호출 결과를 관찰하고, 실패 기준을 넘으면 open으로 새 호출을 빠르게 거절합니다.",
+            "why": "closed/open/half-open의 상태 목적과 전이 조건이 실제 동작으로 설명됩니다."
+          },
+          {
+            "line": 47,
+            "quote": "안전한 대표 호출을 작은 수·동시성으로 시험하고 충분한 표본과 지연 기준을 확인합니다.",
+            "why": "가벼운 health와 실제 쓰기 회복을 구분하는 시험 방법이 구체적입니다."
+          }
+        ],
+        "coreReviewed": "계층별 retry 증폭, backoff/jitter, breaker placement와 half-open probe, 공유 상태 저장소 장애 구간을 검토했습니다."
+      },
+      "sha256": "6dd90b4090b81e592d70baab4f02bddd4d557ab277fe506c1f6974d09441179e"
+    },
+    {
+      "path": "notes/distributed/shard-placement.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "배치 알고리즘과 hot-key의 의미 차이는 잘 설명되어 있어, weighted HRW의 선택을 실행 가능한 샘플링 절차로 바꾸고 handoff barrier 뒤 generation 전환을 순서대로 풀어 씁니다.",
+        "keepEvidence": [
+          {
+            "line": 12,
+            "quote": "많은 키가 몰린 hot shard와 한 key 자체가 뜨거운 hot key는 해법이 다릅니다.",
+            "why": "키 수 균등성과 workload 균등성을 구분하는 출발점이 명확합니다."
+          },
+          {
+            "line": 24,
+            "quote": "단순 구현의 조회 비용은 후보 N개에 O(N)이며 노드가 많으면 논리 bucket·캐시·계층화 비용을 비교합니다.",
+            "why": "Rendezvous 선택의 계산 복잡도와 규모가 커질 때의 선택지를 함께 보존할 근거가 있습니다."
+          },
+          {
+            "line": 46,
+            "quote": "독립 통계는 부분 counter·중복 제거·병합으로 나눌 수 있지만 잔액 10을 두 shard가 각각 보고 8씩 차감하면 전역 하한을 깨뜨립니다.",
+            "why": "hot key 분할 가능 여부를 데이터 의미와 반례로 판단하게 합니다."
+          }
+        ],
+        "coreReviewed": "ring/가상 노드, Rendezvous 점수 선택, snapshot·증분 handoff·barrier·generation 전환, hot-key semantic split과 rollback을 검토했습니다."
+      },
+      "sha256": "d095db85ed1127e41ab574c351cb17578ae7881b2238e9094b30bf4c02966a82"
+    },
+    {
+      "path": "notes/distributed/singleflight.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "singleflight의 정의, 대기자 취소와 프로세스 범위의 한계는 충분히 설명되어 있어, 코드 직후의 원자 등록·예외 정리와 늦은 완료의 삭제 경쟁만 실제 순서로 보강합니다.",
+        "keepEvidence": [
+          {
+            "line": 14,
+            "quote": "캐시는 완료된 값을 나중 요청에 재사용하고, singleflight는 **아직 끝나지 않은 실행**을 공유합니다.",
+            "why": "결과 cache와 진행 중 실행 공유를 정확히 분리하는 정의입니다."
+          },
+          {
+            "line": 77,
+            "quote": "정책상 기존 실행을 계속 추적하거나 새 실행을 제한하고, 원본 동시성 허가는 실제 종료 시점에 반환해야 합니다.",
+            "why": "취소 요청 뒤에도 남는 원본 비용과 재진입 상한을 실제 자원 수명으로 설명합니다."
+          },
+          {
+            "line": 85,
+            "quote": "서로 다른 키 100만 개가 모두 miss인 전체 캐시 장애는 키별 합치기만으로 막지 못합니다.",
+            "why": "singleflight가 키별 중복만 줄이고 전체 원본 admission은 별도라는 경계를 분명히 합니다."
+          }
+        ],
+        "coreReviewed": "동일 key의 flight 생성·참가·취소·실패 전달, map 세대 경쟁, 다중 인스턴스와 전체 miss 상한을 검토했습니다."
+      },
+      "sha256": "e2824a7053960be00804141674598bbad5d10283d6ff2f00804712850a5f37d2"
+    },
+    {
+      "path": "notes/distributed/stream-time-state.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "event/processing time, watermark의 비증명성, checkpoint 경계와 scheduler 회차 구분은 잘 잡혀 있어, snapshot 방식의 차이와 외부 sink 재실행을 한 번의 복구 장면으로 풀어 씁니다.",
+        "keepEvidence": [
+          {
+            "line": 12,
+            "quote": "event time은 사건에 부여한 발생 시각이고 processing time은 실제 처리 시각입니다. 네트워크·재시도·clock skew 때문에 둘은 다릅니다.",
+            "why": "시간 축 두 개를 10:00~10:01 매출 상황과 함께 정의합니다."
+          },
+          {
+            "line": 14,
+            "quote": "늦은 사건이 물리적으로 더는 올 수 없다는 증명이 아닙니다.",
+            "why": "watermark를 진행 추정으로 제한해 과도한 보장으로 강화하지 않습니다."
+          },
+          {
+            "line": 35,
+            "quote": "상태 합계가 offset 100까지 반영됐는데 복구 위치를 90으로 저장하면 91~100을 다시 더할 수 있습니다. 상태는 90인데 입력 위치가 100이면 효과를 건너뜁니다.",
+            "why": "state와 input position이 어긋날 때의 중복·누락 결과를 양쪽 반례로 보여 줍니다."
+          }
+        ],
+        "coreReviewed": "watermark/allowed lateness, partition idle, checkpoint의 state·offset 경계, 외부 sink 효과, 예정 회차 catch-up과 lease를 검토했습니다."
+      },
+      "sha256": "66b55a0163ac79a92adfcfcfcc24b679ca549b5e4774d0453a3729e426c5c809"
+    },
+    {
+      "path": "notes/distributed/time-based-identifiers.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "시간 역행·node lease·정렬과 commit/멱등성의 분리는 충분히 설명되어 있고, 비트 배치식의 22비트 shift가 어디서 나오는지만 중간 계산으로 보강합니다.",
+        "keepEvidence": [
+          {
+            "line": 12,
+            "quote": "시간·node ID·단위 시간 안 sequence를 결합하는 ID는 세 필드 조합이 유일해야 합니다.",
+            "why": "충돌 조건을 알고리즘 이름보다 필드 조합의 유일성으로 정의합니다."
+          },
+          {
+            "line": 34,
+            "quote": "논리 시간을 앞으로 유지하면 ID의 시간 성분이 실제 wall time과 달라질 수 있어 표시·만료 계산에 그대로 쓰지 않습니다.",
+            "why": "시계 역행 대응이 제품 시간 의미를 바꿀 수 있다는 제한을 보존합니다."
+          },
+          {
+            "line": 46,
+            "quote": "먼저 ID를 받은 거래가 나중에 commit할 수 있습니다.",
+            "why": "ID 정렬을 전역 인과·commit 순서로 과장하지 않는 핵심 반례입니다."
+          },
+          {
+            "line": 48,
+            "quote": "큰 ID는 JavaScript Number와 JSON 숫자 파싱에서 정밀도를 잃을 수 있어 문자열·정확 정수 경로를 end-to-end로 사용합니다.",
+            "why": "발급식과 별개인 전송·표현 정밀도 한계를 실제 사용 경계로 설명합니다."
+          }
+        ],
+        "coreReviewed": "비트 필드 수명·sequence 포화·clock rollback·node 재할당·재시작, ID 정렬·멱등성·JSON 정밀도를 검토했습니다."
+      },
+      "sha256": "9b679c9bcb917c17b56abfeea40072091d92791acafe2e3c5fa8c330dc0bc1a1"
+    },
+    {
+      "path": "notes/distributed/transactional-outbox.md",
+      "status": "edited",
+      "reviewBasis": {
+        "summary": "동일 DB transaction의 불변식, RETURNING으로 확정 결과를 만드는 흐름, lease generation과 ACK_UNKNOWN 경계는 매우 구체적이므로, 도입부의 두 저장소 경계와 consumer 범위만 더 자연스럽게 연결합니다.",
+        "keepEvidence": [
+          {
+            "line": 20,
+            "quote": "따라서 `orders`의 상태를 바꾸는 UPDATE와 `outbox_events` INSERT는 같은 DB 연결과 같은 트랜잭션을 사용해야 합니다.",
+            "why": "Outbox의 실제 보장이 어디에서 생기는지 구현 조건으로 고정합니다."
+          },
+          {
+            "line": 48,
+            "quote": "`PENDING`의 `lease_until`은 `NULL`이어도 됩니다. 대신 Relay가 찾는 조건에서 `PENDING`은 `next_attempt_at`으로, `CLAIMED`는 `lease_until` 만료로 각각 판정해야 합니다.",
+            "why": "초기 PENDING이 영원히 선택되지 않는 NULL 조건 반례와 해결 기준이 구체적입니다."
+          },
+          {
+            "line": 210,
+            "quote": "연결 timeout이나 응답 유실은 브로커가 받았는지 모르는 `ACK_UNKNOWN`으로 처리합니다.",
+            "why": "브로커 ACK와 SENT 표시 사이의 중단 경계를 실제 복구 상태로 설명합니다."
+          },
+          {
+            "line": 281,
+            "quote": "각 갱신의 영향받은 행이 0이면 이미 lease가 다른 Relay로 넘어갔거나 다른 경로가 처리한 것입니다.",
+            "why": "generation 조건부 갱신의 실패 의미를 운영 결과로 해석하게 합니다."
+          }
+        ],
+        "coreReviewed": "주문 UPDATE와 outbox INSERT의 공동 확정, payload/version 고정, Relay claim·publish·SENT 재시도, polling/CDC와 consumer 중복 경계를 검토했습니다."
+      },
+      "sha256": "0928c8139c1e7adda8deca84a3afd37dc88ae17405f2d4f0dd79f3fa69b2313b"
+    },
+    {
+      "path": "notes/game/aoi-disclosure.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “**AOI**는 전송 최적화이면서 누가 어느 시점에 무엇을 볼 수 있는지의 규칙입니다.”가 AOI를 단순 거리 필터와 구분하고, “큰 boss의 중심이 R 밖이어도 형상의 표면이 공개 반경과 닿을 수 있습니다.”와 “cell crossing은 후보 목록 갱신 계기일 뿐 정밀 관계 변경의 유일한 사건이 아닙니다.”가 후보와 정밀 관계를 나누는 실제 이유를 설명합니다. 생성 순서도 “객체 generation 4의 기준 version20을 받은 뒤 21 이후 증분을 적용합니다.”로 기준 snapshot과 증분의 관계를 보여 주므로 조건을 보존해 풀어 쓸 가치가 있습니다. 후보·관계·필드·event·송신을 나눈 표와 상태 전이를 그린 diagram은 이미 유용한 구조를 제공하므로 수정하지 않습니다.",
+      "sha256": "0fb014c8c5a366253d1de0e6d420da6aed09ff015ec8e427e376d98f3f8106ae"
+    },
+    {
+      "path": "notes/game/astar-frontier.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “A*는 출발점 누적 비용 g와 목표까지 추정 h를 더한 f=g+h가 작은 후보를 먼저 확장합니다.”가 핵심 실행 규칙을 직접 정의하고, “B→A에서 4>1+0이므로 일관되지 않습니다.”와 “A closed를 무조건 무시하면 G=6이 반환됩니다.”가 재오픈이 필요한 계산을 수치로 보여 줍니다. lazy deletion도 “pop에서 current g·generation과 대조해야 합니다.”라고 stale entry를 거르는 실제 조건을 설명합니다. 가중 heuristic의 표준 조건과 bound 증명은 한 문단에 압축되어 있어 그 부분만 중간 논리를 풀어 쓰고, 예제 표·코드 fence·복잡도와 timeout 조건은 보존합니다.",
+      "sha256": "48c765664e473d7f38b3000de8373d66f669ca7f8fb2e6b64ad53a9cb4df15df"
+    },
+    {
+      "path": "notes/game/behavior-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “Behavior Tree node는 Success·Failure 외에 Running을 반환할 수 있습니다.” 다음에 “이동 node가 Running일 때 경로 요청·timer·animation·예약·callback이 살아 있습니다.”가 Running의 실제 자원 수명을 설명합니다. 세대 보호도 “request 31의 경로가 뒤늦게 성공해도 generation 8이면 새 목표를 덮지 못해야 합니다.”로 늦은 결과의 적용 조건을 구체화하고, “논리 무효화와 물리 종료는 다르며 해제된 map pointer를 generation 검사로 안전하게 만들 수 없습니다.”가 가장 중요한 수명 경계를 분명히 합니다. 표는 NPC queue·worker·공정성·map 변화·결과의 정책을 압축해 보존할 가치가 있고, abort 순서와 공유 경로 서비스의 실제 실행 흐름만 풀어 씁니다.",
+      "sha256": "daf0bcd36cb01601441ab5777e7f2eebb5ab2c2e9a50e9ef0b11ce734b268385"
+    },
+    {
+      "path": "notes/game/continuous-contact.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “점 투사체가 x=0에서 x=10으로 한 tick에 움직이고 벽이 [4,5]에 있으면 끝점 overlap은 둘 다 false입니다.”가 tunneling을 바로 재현하고, “tick을 올려도 최대 속도·최소 벽 두께에 대한 보장이 없으면 완전히 사라지지 않습니다.”가 실행 한계를 남깁니다. TOI 계산도 “정규화 구간 t∈[0,1]에서 t=0.4입니다.”와 반경 0.5의 t=0.35 예로 중간 산출을 보여 주며, 관통 순서는 “한 tick에 대상 A(t=.2),B(t=.6)를 만나면 TOI 순으로 처리”한다고 설명합니다. sweep 단계와 반복 상한에서 broad/narrow phase 및 수치 재접촉을 실제 처리 순서로 읽히게 하는 두 문단만 교체하고, 수치·반례·Dedup 표·물리 실험 부재 고지는 유지합니다.",
+      "sha256": "9091536f5eb746a840a5e73750a755ef2f1ee6749143227c3a7bbf65a3c9ce27"
+    },
+    {
+      "path": "notes/game/dda-boundaries.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “ray를 `p(t)=o+t*d`로 두고 현재 cell에서 x/y/z축의 다음 경계를 만나는 tMax를 계산합니다.”와 “가장 작은 값을 가진 축으로 이동하고 해당 tMax에 tDelta를 더합니다.”가 DDA의 실제 반복을 정의합니다. 숫자 예제의 “시작 cell=(0,0),tMaxX=.75,tMaxY=1.5,tDeltaX=1,tDeltaY=2입니다.”와 표가 t=.75→1.5→1.75의 계산을 검산하게 하며, “미로딩 chunk는 empty로 반환하지 않고 보류/보수 차단을 사용합니다.”가 실행 한계를 명확히 합니다. 동점과 면 위 ray의 정책이 가장 어려운 구간이므로 그 경계 문단만 풀어 쓰고, 수식·표·diagram·방문 상한은 건드리지 않습니다.",
+      "sha256": "df0884be81f6215513e319ea009df85292d68f3cf6ae4f6cfd96ca510de3f395"
+    },
+    {
+      "path": "notes/game/input-authority.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “이동 방향·버튼·조준·대상·입력 번호는 client의 주장으로 받습니다. 최종 위치·피해 100·처치 여부를 그대로 저장하지 않습니다.”가 입력 의도와 서버 확정 결과를 정확히 가르고, “서버의 직전 상태·dt·속도·충돌·지형으로 허용 이동을 계산합니다.”가 실제 재계산 근거를 제시합니다. gap 처리도 “item 사용·공격 같은 명령은 누락/중복을 정해진 ACK/retry 계약으로 처리하고, 최신 방향 상태는 정책상 중간 sample을 대체할 수 있습니다.”로 의미 차이를 설명하며, replay 예제는 “S101로 계산 기준을 바꾸고 102·103만 순서대로 재시뮬레이션합니다.”라고 확정 prefix 제거를 보여 줍니다. 따라서 gap과 reconciliation 문단만 자연스럽게 연결하고, 표·sequence/session 조건·보정 한계는 유지합니다.",
+      "sha256": "a61d7aad822ca15124b16cdd383cb3dc1abb808270272e104c0020d940135193"
+    },
+    {
+      "path": "notes/game/jump-point-search.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “JPS는 부모 진입 방향과 장애물 배치로 이런 대칭을 제거하고 중요한 선택 지점만 A* 후보로 넣습니다.”가 JPS를 순간이동이 아닌 후보 생략으로 정의하고, “중간 이동의 충돌·예약이 사라지는 것은 아닙니다.”가 게임 실행과 탐색 최적화를 분리합니다. 대각선 핵심도 “대각 jump 중에는 두 직교 방향의 jump가 의미 있는 지점/목표를 찾는지도 검사합니다.”와 S=(0,0), G=(3,1) 예제로 설명되어 있고, 가중 지형의 일반 A* fallback 조건도 명시되어 있습니다. 문 변경 의존성과 JPS+ sentinel·압축 비용은 실제 stale 결과가 만들어지는 경로가 압축되어 있어 두 문단만 교체하며, 코드 fence·diagram·전처리 버전 조건은 유지합니다.",
+      "sha256": "9c81fd9eb3ef22b888afb18503a17d08cfee4616c68ae19ef2e62173cea0dd85"
+    },
+    {
+      "path": "notes/game/navigation-clearance.md",
+      "status": "edited",
+      "reviewBasis": "유지 근거: “S # / # G인 2×2 격자에서 S와 G가 비어도 대각선으로 두 벽 모서리 사이를 몸체가 통과할 수 있는지는 별도입니다.”가 cell 점유와 몸체 통과 가능성을 구분하고, “A*·JPS·충돌·client 예측이 같은 규칙을 사용해야 합니다.”가 실행 계층의 일관성 조건을 분명히 합니다. 해상도 손실도 “cell 한 변을 두 배로 하면 3D cell 수는 약 1/8입니다.” 뒤에 좁은 통로·얇은 벽·층간 높이가 섞이는 결과를 설명하며, clearance cache의 한계도 “cell center의 `clearance≥r`만으로 두 center 사이 segment 전체의 여유까지 자동 보장하지 않습니다.”라고 정확히 제한합니다. NavMesh와 원형 팽창 문단에서 표현 범위와 기하 전제가 압축되어 있어 두 곳만 풀고, 표현 비교 표·diagram·수치 조건은 보존합니다.",
+      "sha256": "c230c562860fc6fbb7fd25a36afa1ec62811576700a3e0a36b4ebf329402861c"
+    },
+    {
+      "path": "notes/game/path-execution.md",
+      "status": "edited",
+      "reviewBasis": "핵심 원리는 유지합니다. 원문은 “맵 version은 환경, 목표 generation은 현재 의도, agent profile version은 크기·능력·이동 규칙을 나타냅니다.”(L14)로 세 version의 역할을 나누고, “원래 우회 거리 10에 단가1이면 비용10입니다. 직선 거리6 중 4가 단가3, 2가 단가1이면 비용14입니다.”(L45)로 smoothing 비용 비교를 실제 계산으로 보여 줍니다. 다만 L12는 local avoidance를 정의 없이 나열하고, L25와 L29~31은 영향 범위·budget·취소 수명을 한꺼번에 압축하므로 해당 문단만 교체합니다.",
+      "sha256": "1c73d2f111b279b4f9bbe54972282f2cbcc9a76dfe8e81ef2f6e950f06ee1c65"
+    },
+    {
+      "path": "notes/game/ranking-entitlement.md",
+      "status": "edited",
+      "reviewBasis": "보상 산출의 기준은 유지합니다. 표의 “발생 시각·권위 tick”, “수신 시각”, “처리 위치·watermark” 구분은 시즌 귀속·지연·누락을 서로 다른 입력으로 다루는 근거가 되고(L20~25), 원문도 “원래 보상100에서 정정 후60이면 새 adjustment ID로 −40을 기록할 수 있습니다.”(L41)라고 정정 계산을 이미 보여 줍니다. L12~14의 cutoff 수신 순서와 L35, L43의 권리·재시도·정정 기록은 용어가 몰려 실제 확정/재개 순서가 흐려지므로 교체합니다.",
+      "sha256": "f172ea8db6f41541ce8abfb60071aa18b5913836e5d3229fa81b40ba50230721"
+    },
+    {
+      "path": "notes/game/rewind-evidence.md",
+      "status": "edited",
+      "reviewBasis": "시각 근거와 저장량 계산은 유지합니다. 원문은 “RTT/2는 비대칭 경로에서 정확한 one-way delay가 아니므로 추정의 한계와 hard rewind window를 둡니다.”(L14)로 상한의 이유를 분명히 하고, “대상 N·보관 T초·sample f/s·sample bytes b라면 대략 N*T*f*b에 index/metadata가 추가됩니다.”(L38)로 저장량의 중간 계산을 보존합니다. 다만 L14, L24, L28, L40은 rewind 시각 산정·불연속 상태·장애물 동기화·압축 검증을 명사와 정책어로 압축하므로 교체합니다.",
+      "sha256": "c6b3d0de2d280fc514c02b9f0c58664c6658dc5428ea053c500e7ebc519f0174"
+    },
+    {
+      "path": "notes/game/space-time-reservations.md",
+      "status": "edited",
+      "reviewBasis": "예약 모델의 반례와 한계는 유지합니다. 원문은 “state를 `(cell,arrivalTick)`으로 두면 wait·순차 통과를 표현할 수 있습니다.”(L12)라고 시간 차원을 추가하는 이유를 예로 들고, 한 cell 폭 외길에서 “우선순위만 바꿔도 해가 없습니다.”(L42)라고 우선순위가 기하적 막힘을 해결하지 못하는 반례를 보존합니다. 다만 L26, L32, L36, L42는 원자 확정·세대 수명·Horizon 끝 상태·wait-for cycle을 한꺼번에 압축하므로 네 문단을 교체합니다.",
+      "sha256": "bc311a494a624c3a6d795d1e5865abb958931e59bc0aef04c2b6173bfc34c108"
+    },
+    {
+      "path": "notes/game/spatial-candidates.md",
+      "status": "edited",
+      "reviewBasis": "후보 축소의 안전 기준은 유지합니다. 원문은 “n개 물체의 모든 쌍은 n(n−1)/2입니다.”와 “broad phase는 AABB·원 등 보수 경계로 가능성 있는 쌍을 추리고 narrow phase는 실제 캡슐·박스·mesh·trigger·접촉 규칙을 검사합니다.”(L12)로 단계와 O(n²) 기준을 함께 설명합니다. 또한 음수 좌표에서 “x=-1,s=16은 floor division으로 cell=-1이어야 합니다.”(L20)라고 중간 계산을 보존하므로, 그 정의·수치·표는 유지하고 시간 범위·dedup 수명·layer 갱신·계층 전환만 교체합니다.",
+      "sha256": "f59dcec08d98053e3e0826091d390c63fbafa35f363f9dc09b77f611cec845eb"
+    },
+    {
+      "path": "notes/game/tick-overload.md",
+      "status": "edited",
+      "reviewBasis": "고정 tick의 수치와 권위 규칙 구분은 유지합니다. 원문은 “50ms 주기의 서버가 500ms 멈추면 약 10틱이 밀립니다.”와 20ms/60ms 대비(L12)로 backlog가 왜 달라지는지 계산하고, “고정 dt는 수치·입력 재현에 도움되지만 실제 wall time과 simulation time이 항상 같게 만들지는 않습니다.”(L14)로 시간 의미를 나눕니다. code fence와 표·diagram은 건드리지 않고, L31의 overload 분기, L42~44의 AI 반응과 기록, L52의 교차 event 적용 순서만 문단 교체 대상으로 삼습니다.",
+      "sha256": "989c061ad8095ad4e928988c8250afa39107be3975f6dcf0e5c4278526d0ef6d"
+    },
+    {
+      "path": "notes/game/voxel-semantics.md",
+      "status": "edited",
+      "reviewBasis": "복셀 의미와 저장량의 기준은 유지합니다. 원문은 “원본의 재질·고체 부피, 동적 문/객체 점유, 반경·높이·경사·계단·비행 능력을 나눕니다.”(L12)로 occupied bit만으로는 부족한 이유를 설명하고, “16³=4096 cell의 1-bit 점유 bitmap은 payload 512 bytes입니다.”(L41)로 수치 비교를 제공합니다. L14, L18, L27, L47은 clearance/cache, 독립 contribution, overlay 병합, reader 수명을 정의 없이 압축하므로 네 문단만 교체하고 표·diagram·계산은 유지합니다.",
+      "sha256": "206d95c48c005978ad8e3ae9d4e962446f42caa13ecda52d91b36e63124184b6"
+    },
+    {
+      "path": "notes/game/voxel-version-bundle.md",
+      "status": "edited",
+      "reviewBasis": "경계 계산과 unknown 정책은 유지합니다. 원문은 “chunk=floor(x/C), `local=x−chunk*C`로 local을 0..C−1에 둡니다.”(L12)로 음수 좌표 계산을 구체화하고, “hash lookup miss를 무조건 empty로 반환하면 벽을 통과할 수 있습니다.”(L14)로 보수 정책의 이유를 제시합니다. L18, L28, L42, L48은 halo source version·원자 게시·지연 SLO·reader 수명을 용어와 목록으로 압축하므로 이 네 문단을 교체하며, 표·diagram·frontmatter·H2는 제외합니다.",
+      "sha256": "491750cb8babc7ca7de32623768b725a094e3911eb5be4ad9a2910cd45095a7a"
+    },
+    {
+      "path": "notes/game/world-authority.md",
+      "status": "edited",
+      "reviewBasis": "전체 파일 48행을 끝까지 읽었고, 핵심 흐름을 설명하는 4개 문단만 교체 제안합니다. `준비 | B의 snapshot·예정 epoch g+1`, `최종 반영 | 마지막 delta·lastAppliedInput·event 위치`, `권위 commit | 내구 owner B,g+1·handoff state`, `routing | router의 새 owner/epoch·stale cache 처리`가 전환 순서와 저장 지점을 표로 보존하므로 표는 유지합니다. Fencing 문단의 `실제 state/event/보상 저장이 expected epoch를 원자 검사해야 합니다.`와 `router cache에는 owner와 epoch를 같이 저장하고 mismatch면 재조회합니다.`는 stale writer를 저장 경계에서 막는 중간 작동을 이미 적고 있어 유지합니다. 실패 복구의 `A가 drain 중 죽었다면 기록된 prefix·원장으로 미확인 입력을 찾아 재전달하되 dedup합니다.`와 마지막의 `이 노트는 권위 이전 설계이며 실제 분산 게임 server handoff를 실행한 결과는 아닙니다.`도 실행 한계와 복구 근거를 보존하므로 유지합니다. H2 순서/개수, frontmatter, 표, diagram/code fence는 건드리지 않습니다. 다만 `bounded buffer` 포화 시 동작과 `cutover 전 B 실패`에서 말하는 `조정자`의 주체·재개 절차는 원문에 없어서 새 사실을 추가하지 않았고 technicalQuestions에 남겼습니다.",
+      "sha256": "86345f01b2d0fdc8ceaf1780d6a993240cb51c8572d57b6732eaade96f758320"
+    },
+    {
+      "path": "notes/infrastructure/cold-start-drain.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간은 visible backlog가 0이어도 in-flight 효과가 남는 축소 경계와, 감지부터 ACK까지 여러 준비 단계가 이어지는 cold start입니다. 아래 교체안은 용어를 처음 만나는 독자가 따라갈 수 있도록 실행 순서를 풀되, 40초 준비·20초 burst 예와 실제 측정 없이는 p99·비용을 제시하지 않는다는 제한은 유지합니다. 유지 근거로는 원문의 \"준비에 40초가 걸리는데 20초 간격 burst마다 완전히 내려가면 매번 cold start를 치를 수 있습니다.\", \"이 예는 설계 가정이며 적절한 시간은 실제 분포·SLO·비용으로 정합니다.\", \"현재 작업에서 scale-to-zero를 실행하지 않았으므로 실제 첫 처리 p99나 비용 절감 수치를 제시하지 않습니다.\"가 각각 진동의 원인, 수치의 성격, 검증 범위를 실제로 설명하므로 남깁니다. H2·frontmatter·diagram fence는 건드리지 않습니다.",
+      "sha256": "5061aa02ee7ea77daa14d35cc4d0b1fa723fe412426e75fcb595ec0abe19f59a"
+    },
+    {
+      "path": "notes/infrastructure/configmap-application.md",
+      "status": "edited",
+      "reviewBasis": "핵심은 API 객체, 전달 경로, 앱이 캐시한 값, 이미 만들어진 client pool이 서로 다른 시각에 바뀐다는 점입니다. 원문의 \"환경 변수는 보통 프로세스 시작 시 값이므로 기존 컨테이너 환경이 자동 변경되지 않습니다.\", \"잘못된 값은 적용을 거절하고 마지막 정상 snapshot을 유지하며 경고할 수 있습니다.\", \"현재 작업에서는 ConfigMap을 배포하거나 수정하지 않았습니다.\"는 시작 시점의 한계, 실패 시 보존 정책, 실제 검증을 하지 않았다는 범위를 정확히 말하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "c43f0e90ac7455277efc8d273371cf45abb19e14f5029aeee4debbb4aa2befb8"
+    },
+    {
+      "path": "notes/infrastructure/disruption-budget.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 부분은 PDB가 보호하는 eviction 경계와 실제 장애 영역 분산을 섞지 않는 것입니다. 원문의 \"PodDisruptionBudget은 주로 Eviction API를 사용하는 자발적 중단에서 동시에 중단할 수 있는 범위를 제한합니다.\", \"세 영역의 Pod 하나씩이 평소 용량의 80%를 쓰면 총 수요는 Pod 2.4개 분량입니다.\", \"현재 작업에서는 PDB나 영역 장애 시험을 실행하지 않았습니다.\"가 각각 PDB의 효력 범위, 장애 뒤 120%가 되는 중간 계산의 전제, 실행하지 않은 검증을 명확히 남기므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "b71422a79af5534b7848fb971d7bf17024187f0fdd06ab08ed75f22c5b35d061"
+    },
+    {
+      "path": "notes/infrastructure/event-autoscaling.md",
+      "status": "edited",
+      "reviewBasis": "핵심 난점은 activation threshold와 scaling target을 분리하면서도 Kafka partition·rebalance·commit lag를 실제 처리량과 연결하는 것입니다. 원문의 \"consumer가 DB 응답을 기다리면 CPU는 낮지만 backlog는 늘 수 있습니다.\", \"일반 Kafka consumer group에서 한 partition은 한 시점에 한 consumer에게 할당됩니다.\", \"consumer가 처리 후 offset을 묶어서 커밋하면 committed offset 기준 lag가 증가하다 한 번에 줄어드는 톱니가 될 수 있습니다.\"가 각각 외부 수요 신호, 병렬성 상한, 관측값의 중간 작동을 설명하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "1a0500cf505e8faad7c17c5d3fcf95fbddabd0e542283fc477f68fd74617966a"
+    },
+    {
+      "path": "notes/infrastructure/gitops-deletion.md",
+      "status": "edited",
+      "reviewBasis": "가장 중요한 구간은 Git 선언 복귀와 데이터 바이트 복원을 분리하고, 개별 prune과 Application cascade의 대상 집합을 따로 계산하는 부분입니다. 원문의 \"Git에서 PVC 선언을 제거하고 prune으로 실제 PVC·백엔드 볼륨까지 삭제되었다면 Git revert는 예전 선언만 되살립니다.\", \"백업 생성 성공을 복구 완료라고 부르지 않습니다.\", \"복구 성공은 Synced 표시가 아니라 필요한 데이터와 자격·서비스 결과가 정책을 만족하는지로 봅니다.\"가 각각 선언/상태 분리, 백업과 복원 분리, 운영 결과 기준을 구체적으로 제시하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "5ed6f364fa40e65abbd5505f76bab61e3493f90e0ee409af7ce3c0e8357dce61"
+    },
+    {
+      "path": "notes/infrastructure/gitops-state.md",
+      "status": "edited",
+      "reviewBasis": "중심 문제는 Git 조회 실패, 렌더/API 적용 실패, readiness 실패를 하나의 배포 상태로 뭉개지 않고 HPA가 쓰는 replicas의 책임까지 분리하는 것입니다. 원문의 \"Git에 replicas=4인데 운영자가 클러스터를 8로 바꾸면 선언과 실제 상태의 drift가 생깁니다.\", \"반대로 Git의 잘못된 이미지나 설정을 그대로 적용하면 Synced여도 앱은 실패할 수 있습니다.\", \"재개 전에 실제 클러스터와 Git의 차이를 다시 검토합니다.\"가 drift의 원인, 선언과 기능의 차이, 긴급 변경 종료 시 확인을 정확히 설명하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "ce8507b49e1d73efe382084ea17f11a03ac51437ae5bae01c364e2a4fc1dfb15"
+    },
+    {
+      "path": "notes/infrastructure/hpa-feedback.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간은 utilization의 request 분모와 HPA 추천 계산을 실제 준비 용량·지표 지연에 이어 붙이는 부분입니다. 원문의 \"HPA가 desired=10을 계산해도 Ready가 3이면 실제 서비스는 준비된 세 Pod 기준으로 봐야 합니다.\", \"request는 CPU utilization 분모와 scheduler 배치 기준을 동시에 바꿉니다.\", \"Pod를 5에서 20으로 늘리면서 각자 DB 풀 20개를 유지하면 최대 연결 요구가 100에서 400으로 늘 수 있습니다.\"가 각각 숫자상의 replica와 실제 용량, request의 이중 역할, 하위 시스템 상한 계산을 설명하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "1233e5aab3611c52dc2d5586a4758a1a72e93eed6b1d3fe0467195f719a649ca"
+    },
+    {
+      "path": "notes/infrastructure/interruptible-work.md",
+      "status": "edited",
+      "reviewBasis": "핵심 구간은 중단 통지의 정리 시간과 실제 생존을 분리하고, checkpoint 위치와 외부 효과의 확정 경계를 같은 논리 키로 연결하는 부분입니다. 원문의 \"100개씩 처리해 checkpoint를 기록하는 예에서 250개 효과를 반영한 뒤 중단하고 안전 위치는 200이라면 201부터 다시 확인합니다.\", \"고정 비용 checkpoint가 c초이고 작업 간격이 T초라면 기록 비중은 단순 모형에서 대략 c/T에 관련됩니다.\", \"on-demand도 모든 영역 장애나 클라우드 capacity 부족을 없애는 것은 아니므로 독립 영역과 실제 공급 지연을 고려합니다.\"가 재작업 경계 계산, checkpoint 비용의 가정, 대체 용량의 한계를 정확히 말하므로 유지합니다. 표·diagram·H2·frontmatter는 수정하지 않습니다.",
+      "sha256": "79a8d8998f1f5cf02ae877b2e0e2efe10056ec2a5a19d9a468cbd3b6794a04e9"
+    },
+    {
+      "path": "notes/infrastructure/migration-orchestration.md",
+      "status": "edited",
+      "reviewBasis": "핵심 흐름은 유지합니다. 단계 표의 “확장 | 옛 코드가 읽고 쓸 수 있는 새 구조 추가”와 “축소 | 더 이상 쓰지 않는 구조 제거”는 expand와 contract를 실행 조건과 함께 보여 주고, “Job이 DDL을 커밋한 뒤 응답·상태 반영 전에 중단될 수 있습니다.”와 “다음 실행은 원장을 확인하고 이미 적용된 단계면 결과를 재사용해야 합니다.”는 재실행의 실제 실패 시점을 설명합니다. 다만 phase·wave 단락은 정렬 규칙을 ‘확인합니다’로 끝내고, 백필 단락은 checkpoint·행 버전·종료 조건의 작동을 압축했으므로 두 문단만 교체합니다.",
+      "sha256": "37e1e2bbe0e35599dbf7a0d171062550042247ccf6d4d4d6cca9880cb5078f27"
+    },
+    {
+      "path": "notes/infrastructure/node-disruption.md",
+      "status": "edited",
+      "reviewBasis": "세션 상태와 노드 이동을 분리한 원리는 유지합니다. “스케줄링상 옮길 수 있다는 것과 게임 세션·처리 중 결제·로컬 파일이 안전하게 이어진다는 것은 다릅니다.”가 재배치 가능성과 상태 연속성의 차이를 정확히 설명하고, “PDB는 지원 eviction의 동시 중단을 조절하지만 노드 손실을 막거나 모든 앱 상태를 복구하지는 않습니다.”와 “강제 손실은 언제든 가능하므로 주기 snapshot·입력 로그·재접속·owner 세대 전환·멱등 보상을 원래부터 설계해야 합니다.”가 보호 한계와 복구 수단을 구체적으로 남깁니다. 다만 disruption 원인을 판별하는 문단과 consolidateAfter의 비용 절충은 설정 이름을 나열한 뒤 실제 대조 방법이 약해 두 문단을 교체합니다.",
+      "sha256": "e4e8e56aeaa8d6f6f6fb7aec7b89c3d2ff4c8342b6ae67869963ca30995a6412"
+    },
+    {
+      "path": "notes/infrastructure/node-provisioning.md",
+      "status": "edited",
+      "reviewBasis": "Controller의 책임 분리와 상태별 진단은 유지합니다. “HPA가 desired를 3에서 10으로 늘리면 workload controller가 Pod를 만듭니다.”는 Pod 생성과 노드 공급의 경계를 보여 주고, “Node Ready 뒤 Pod가 Pending이면 PVC topology·taint·실제 allocatable·확장 자원을 다시 대조합니다.”는 상태가 진행된 뒤에도 제약을 다시 보는 방법을 설명합니다. 다만 NodeClaim 성공 뒤의 준비 단계, PV zone 예외, burst 준비 용량은 용어와 중간 순서가 압축되어 있어 세 문단을 교체합니다.",
+      "sha256": "050bfd0b37a023514a3d60a3dfcf630102a201fcf1d0c46763af94983cc23376"
+    },
+    {
+      "path": "notes/infrastructure/object-publication.md",
+      "status": "edited",
+      "reviewBasis": "공개 상태를 객체 저장·DB 포인터·CDN으로 분리한 핵심은 유지합니다. “객체부터 저장하고 DB 업데이트 전에 죽으면 고아 객체가 남을 수 있고, DB부터 공개하면 아직 없는 객체를 가리킬 수 있습니다.”는 두 순서의 실패를 설명하고, “새 객체를 `report/version-8` 같은 불변 키로 저장하고 검증한 뒤 DB의 current_version=7 조건으로 포인터를 8로 바꾸면 옛 writer가 최신 포인터를 덮는 것을 막을 수 있습니다.”는 공개 전환의 실제 조건을 보여 줍니다. 다만 part 성공과 complete의 중간 데이터, 불변 키와 CDN 수명의 연결은 제품 용어가 한 문단에 몰려 있어 두 문단을 교체합니다.",
+      "sha256": "1344b988665243aba8c8f129e88286ae0e9bc88b23f7eea8eedcb337c51eceaf"
+    },
+    {
+      "path": "notes/infrastructure/probe-contracts.md",
+      "status": "edited",
+      "reviewBasis": "Probe별 질문과 효과를 나눈 표와 실행 원리는 유지합니다. “startup이 설정되어 성공하기 전에는 liveness·readiness의 실행이 억제됩니다.”가 probe 간 작동 순서를 정확히 설명하고, “100개 Pod가 5초마다 DB 쿼리 한 번씩 수행하면 정상 조건에서도 평균 20회/초의 검사입니다.”가 의존성 부하를 실제 산술로 보여 줍니다. 마지막 테스트 문단만 시나리오 목록에 머물러 있어 90초 초기화와 각 실패의 관찰 순서를 한 문단으로 교체합니다.",
+      "sha256": "471501ea3e3754ca67e0a1d3b5573fbfba1b08f91d01f6ea53d15835c44033af"
+    },
+    {
+      "path": "notes/infrastructure/reconciliation.md",
+      "status": "edited",
+      "reviewBasis": "대부분 유지합니다. “API 서버가 원하는 spec을 저장한 뒤 Deployment controller·ReplicaSet controller·scheduler·kubelet·컨테이너 런타임이 각각 상태를 맞춥니다.”는 선언 저장 뒤의 비동기 경계를 실제 구성요소로 설명하고, “최신 generation을 관찰했어도 quota·Pending·ImagePullBackOff·readiness 실패가 남을 수 있습니다.”는 generation과 Ready를 혼동하지 않게 합니다. 또한 “그냥 finalizer 문자열을 지우면 API 객체는 사라져도 클라우드 리소스·볼륨·데이터가 고아로 남을 수 있습니다.”와 “apply conflict를 force로 덮는 것은 소유권 이전이지 올바른 설계를 자동 선택하는 기능이 아닙니다.”는 운영상 결과를 구체적으로 남깁니다. 다만 제어 루프 정의만 replica 예시와 재읽기 계산을 연결하도록 한 문단 교체를 제안합니다.",
+      "sha256": "f38ca58cd7fdd4b0b4ef05483f02634b93b67c2359576e88ec7023a862947cb1"
+    },
+    {
+      "path": "notes/infrastructure/reproducible-image.md",
+      "status": "edited",
+      "reviewBasis": "입력 전체를 고정해야 한다는 핵심은 유지합니다. “FROM에 움직이는 tag를 쓰고 패키지 저장소의 최신 버전을 설치하면 Dockerfile이 같아도 며칠 뒤 다른 바이트가 들어옵니다.”가 재현성의 원인을 구체적으로 보여 주고, “같은 로컬 캐시를 재사용해 같은 이미지가 나온 것은 새 입력으로 재빌드해 같다는 증거와 다릅니다.”가 독립 재빌드의 기준을 설명합니다. 또한 “ARG·ENV·RUN 문자열에 자격을 넣으면 레이어·history·로그·캐시에 남을 수 있습니다.”는 비밀의 저장 경계를 정확히 짚으므로 유지합니다. base digest와 bit 재현성 문단, 보안 업데이트 문단의 용어와 판단 순서만 두 문단 교체합니다.",
+      "sha256": "e9c89b738fe20c9b8b225d1422f3be5c685bfa852ee5f6c406bae0cec27570f9"
+    },
+    {
+      "path": "notes/infrastructure/resource-budget.md",
+      "status": "edited",
+      "reviewBasis": "자원 모델과 숫자 산술은 유지합니다. “컨테이너의 CPU request=500m, limit=1이면 scheduler는 요청 자원을 배치 계산에 사용하고 런타임은 설정된 CPU 상한을 집행합니다.”가 request와 limit의 중간 작동을 설명하고, “노드 capacity가 CPU 8, 메모리 32 GiB이고 ... 앱 Pod가 CPU 2, 8 GiB씩이면 이 산술에서는 3개가 가능하지만”이 allocatable·DaemonSet 차감의 계산을 실제 수치로 보여 줍니다. “로그 sink가 느려지면 sidecar의 큐·재시도·디스크 쓰기가 증가할 수 있습니다.”도 앱 외 자원 간섭을 구체적으로 설명합니다. request와 HPA 분모의 관계, DaemonSet과 유효 request 계산만 더 자연스럽게 풀어 두 문단을 교체합니다.",
+      "sha256": "f23d62cdd7238e880ecdade64c89897942c137bfb0ca464d17469b0aa30a3640"
+    },
+    {
+      "path": "notes/infrastructure/rollout-capacity.md",
+      "status": "edited",
+      "reviewBasis": "전체 문서를 끝까지 읽었습니다. 가장 어려운 구간인 백분율 반올림과 종료 drain을 각각 실제 숫자와 종료 순서로 풀어 두 군데만 제안합니다. 다음 문장은 유지합니다: \"새 Pod가 Pending이면 객체 수가 5여도 처리 용량은 늘지 않습니다.\"가 객체 수와 실제 처리 용량의 차이를 설명하고, \"terminationGracePeriod가 30초인데 preStop이 20초를 쓰고 앱이 이후 30초 drain을 기다리면 총 예산을 넘습니다.\"가 유예 시간의 중간 계산을 이미 보여 줍니다. 또한 \"앱 이미지를 되돌려도 이미 변환한 DB 데이터·외부 메시지·사용자 효과는 돌아오지 않습니다.\"가 이미지 rollback과 데이터 효과의 범위를 분리하므로 유지합니다. H2 순서·개수, frontmatter, 표, diagram fence와 코드 내용은 건드리지 않습니다.",
+      "sha256": "5941e45b2fd4f7f53fa268f25e7ac254b09d9b09b513f66f2d0186609e5ec81f"
+    },
+    {
+      "path": "notes/infrastructure/service-connections.md",
+      "status": "edited",
+      "reviewBasis": "전체 문서를 끝까지 읽었습니다. 기존 HTTP/2 연결과 새 endpoint의 관계는 이미 \"api-1을 추가해 Ready로 만들었어도 기존 연결의 스트림이 자동으로 api-1로 이동하지는 않습니다.\"라고 상황과 결과를 정확히 잡고 있어 유지합니다. \"주소 목록 최신성과 새 연결 생성은 서로 다른 사건입니다.\"와 \"연결 수가 균등해도 요청 수·스트림 수·요청 비용은 불균등할 수 있습니다.\"도 resolver 갱신과 부하 측정의 중간 작동을 설명하므로 유지합니다. 연결 선택 책임, selector/targetPort 경로, 종료 drain만 실제 확인 순서가 드러나도록 세 군데 제안하며 H2 순서·개수, frontmatter, 표, diagram fence와 코드 내용은 건드리지 않습니다.",
+      "sha256": "e7c550f71803bdcaf6e11b34b3f0e75f6bf9c23a6545ccdac7018af44c537065"
+    },
+    {
+      "path": "notes/infrastructure/stateful-workload.md",
+      "status": "edited",
+      "reviewBasis": "전체 문서를 끝까지 읽었습니다. 가장 어려운 quorum 교착은 \"OrderedReady 정책에서 db-0이 Ready가 되어야 db-1을 시작하는데, db-0의 readiness가 3개 중 2개 quorum을 요구한다고 합시다.\"와 \"두 번째 Pod가 시작되지 않아 첫 번째가 영원히 Ready가 되지 않는 순환 대기가 생길 수 있습니다.\"로 조건→결과가 이미 선명해 유지합니다. 안정 식별자의 한계도 \"같은 이름으로 새 프로세스가 떴어도 옛 로그를 가진 replica가 바로 leader가 되어도 되는 것은 아닙니다.\"라고 실제 판정 기준을 제시하므로 유지합니다. 발견·시작·초기화·readiness의 분리 문단만 단계와 bootstrap의 역할이 보이도록 한 군데 제안하며 H2 순서·개수, frontmatter, 표, diagram fence와 코드 내용은 건드리지 않습니다.",
+      "sha256": "fe488839641bb5fb0cd054f13cd3d33e7459020252e8ac8831de3a29a98a707d"
+    },
+    {
+      "path": "notes/infrastructure/volume-recovery.md",
+      "status": "edited",
+      "reviewBasis": "전체 문서를 끝까지 읽었습니다. 저장소 복구의 핵심은 \"PVC Bound와 mount 성공은 사용할 저장소 연결을 확보했다는 뜻입니다.\" 다음에 \"마지막 커밋 데이터가 남았는지, 복제본이 어느 영역에 있는지, 옛 writer가 멈췄는지는 별도로 확인해야 합니다.\"라고 연결과 데이터 상태를 나눠 설명해 유지합니다. Snapshot 구간의 표와 \"데이터 파일과 WAL이 여러 볼륨에 나뉘면 각각 다른 시점 snapshot이 복구 가능한 조합인지 확인해야 합니다.\"도 일관성의 판단 단계를 보존할 가치가 있습니다. topology 확인 문단만 목록을 실제 교집합 확인 순서로 바꾸어 한 군데 제안하며 H2 순서·개수, frontmatter, 표, diagram fence와 코드 내용은 건드리지 않습니다.",
+      "sha256": "74b59e5f508d227100297060bab4bbb3a73dbd03bea784c60b509ca9fd2b559e"
+    },
+    {
+      "path": "notes/languages/celery-delivery.md",
+      "status": "edited",
+      "reviewBasis": "ACK와 업무 효과를 분리하는 핵심은 실제 순서로 이미 설명되어 있습니다. 원문의 “worker가 포인트를 DB에 지급한 뒤 ACK 전에 종료되면 broker가 같은 작업을 다시 전달할 수 있습니다.”는 재전달 원인을 구체적으로 보여 주고, 이어지는 거래 블록의 “insert payment_effect_key(P) with unique constraint”와 “apply points ledger entry” 및 “commit”은 멱등 키와 효과를 묶는 중간 실행을 보존합니다. visibility 90초 대 60초 예시와 구성별 표도 개념에서 실제 실패 경로로 이어지므로 유지하고, 키 저장 순서와 재시도 상한 문단만 설명형으로 다듬습니다.",
+      "sha256": "aff09d771b08a64fb977863ebbd1bd8a58d69772f1185d840deaa53bce06644e"
+    },
+    {
+      "path": "notes/languages/cpp-coroutine-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "이 글의 핵심 수명 경계는 이미 “코루틴은 중단·재개를 표현하는 언어 기능이고 버퍼 소유권·취소·스케줄링은 반환 타입과 awaiter·I/O 라이브러리의 계약입니다.”라고 정의되어 있습니다. 또한 “final_suspend에서 정지한 프레임은 논리 계산이 끝났어도 메모리가 남습니다.”와 취소·drain·파괴 diagram이 프레임의 논리 완료와 메모리 해제를 분리합니다. 가장 어려운 await_suspend 재진입과 timeout 뒤 destroy 문단만 등록 시점과 실제 drain 순서가 눈에 보이도록 교체하고, H2·diagram·code fence는 건드리지 않습니다.",
+      "sha256": "03b0e4d2c2bc2340d11457e8b839df0d4b91377f1be76de82e42c18cc2ed8d98"
+    },
+    {
+      "path": "notes/languages/cpp-exception-state.md",
+      "status": "edited",
+      "reviewBasis": "RAII의 의미와 업무 상태 rollback의 차이는 “RAII는 소유 객체의 수명에 자원 정리를 연결하는 관용구이지 모든 업무 변경의 자동 롤백이 아닙니다.”라는 문장과 계정 차감 예시에서 충분히 드러납니다. 상태 게시의 중심도 임시 State를 만든 뒤 “validate_invariant(replacement)”와 “swap_without_throw(current, replacement)”을 수행하는 실행 순서로 설명되어 있습니다. 독자 snapshot의 한계와 외부 저장 내구성은 중요하므로 독립 객체 교체와 write·flush·disk·이름 교체 문단을 자연스러운 실패 순서로만 다듬고 표·diagram·code fence는 유지합니다.",
+      "sha256": "9cac485d69c88b9bbcd22a5eac572593a06ed2df927dee9b3fe7a9a1aedddb9d"
+    },
+    {
+      "path": "notes/languages/cpp-move.md",
+      "status": "edited",
+      "reviewBasis": "`std::move`의 의미는 “이 함수는 source를 이동 가능한 값 범주인 xvalue로 변환할 뿐입니다.”라고 정확히 정의되어 있고, forwarding 표는 lvalue·rvalue·const 입력의 추론과 reference collapse를 실제 값으로 보여 줍니다. vector 재할당 사례의 “이동이 첫 두 원소의 자원을 가져간 후 세 번째에서 예외를 던지면 원본 두 원소를 정확히 되돌리기 어려울 수 있습니다.”와 allocator 불일치의 선형 비용도 핵심 중간 작동을 설명합니다. 따라서 강한 예외 보장과 `noexcept` 문단 한 곳만, 타입·연산의 결정 순서가 보이게 교체합니다.",
+      "sha256": "b1c57c202fab24577d38beabdf86680b15d228d8d360d42f9ca7fefefeeb285e"
+    },
+    {
+      "path": "notes/languages/cpp-shared-ownership.md",
+      "status": "edited",
+      "reviewBasis": "소유권과 데이터 동기화의 분리는 “참조 카운트의 동기화는 대상 객체의 필드 접근까지 보호하지 않습니다.”라는 정확한 경계와 세 층 표로 이미 잘 잡혀 있습니다. 논리 세대와 메모리 수명의 차이도 “세대 번호는 논리 권한을 검사하며 해제된 포인터 접근을 안전하게 만드는 장치는 아닙니다.”라고 명시되어 있고, atomic snapshot 부분의 “독자는 한 번 load한 지역 소유 참조로 관련 필드를 모두 읽습니다.”가 혼합 버전이 생기는 중간 원인을 보여 줍니다. 세대 검사 문단만 세대 7·8의 시간 순서와 잠금 경계를 앞세워 다듬고, C++20 atomic shared_ptr 예제와 실행 한계는 유지합니다.",
+      "sha256": "d0c4017a186f36b04cbf6d30e6e7d688aa98e5c738bf623680a9f4b2178ce085"
+    },
+    {
+      "path": "notes/languages/cpp-storage-validity.md",
+      "status": "edited",
+      "reviewBasis": "외부 바이트를 객체로 읽는 위험은 “길이가 네 바이트 이상이라는 검사만으로 충분하지 않습니다.”라는 상황과 정렬·수명·타입 접근·표현·값 의미 표로 충분히 정의되어 있습니다. 바이트 단위 `read_be32` 구현 뒤의 “각 바이트를 unsigned 32비트로 변환한 뒤 shift해 ... 함정을 피합니다.”는 중간 계산을 실제 코드와 연결하고, vector 부분의 “reserve는 정해진 크기 안에서 재할당을 줄일 뿐 영구 안정성을 만들지 않습니다.”는 흔한 오해를 반례로 교정합니다. `reinterpret_cast`·implicit-lifetime·packed 구조체 문단만 표준 조건과 해결 범위를 풀어 쓰고 나머지 코드·diagram은 유지합니다.",
+      "sha256": "6da3fbd4e212e850220bdee9b9e76982ab6f810c20a1121bd7368aefb6ac1dd2"
+    },
+    {
+      "path": "notes/languages/go-channel-lifecycle.md",
+      "status": "edited",
+      "reviewBasis": "채널 close 소유권의 핵심은 “close는 앞으로 더 이상 값을 보내지 않는다는 생산 측의 약속입니다.”와 “모든 송신이 끝났음을 아는 주체만 close해야 합니다.”로 명확히 정의되어 있습니다. `sendResult`의 `select` 예제와 “select가 send-on-closed-channel을 안전한 실패로 바꿔 주지는 않습니다.”라는 경계, WaitGroup 순환 대기와 nil·닫힌 채널 표가 실제 작동을 충분히 보여 줍니다. 취소 보장의 차이를 다룬 문단만 이미 시작한 작업·외부 효과·늦은 결과의 순서를 드러내도록 교체합니다.",
+      "sha256": "bb3441613810e89da489f2cb438a7c1eae088e52b7a564a8485ee1c272aa9ff5"
+    },
+    {
+      "path": "notes/languages/go-interface-values.md",
+      "status": "edited",
+      "reviewBasis": "typed nil의 정의와 표는 “동적 타입과 동적 값의 쌍”이라는 모델과 `p == nil`은 true지만 `err == nil`은 false인 실제 계산을 함께 제공합니다. 타입 assertion 뒤 `ok=true`이면서 포인터가 nil일 수 있다는 문장과 nil receiver의 필드 역참조 조건도 충분히 구체적입니다. 다만 interface 비교와 `map[any]` 문단은 비교 가능성의 원인을 한 번 더 실행 순서로 풀어 주면 좋으므로 두 문단만 교체하고, typed-nil code fence와 H2 순서는 유지합니다.",
+      "sha256": "54883a50f05a942fb2f794e884d0aa5aa1b7f7a3f66be3fc521d625540a39688"
+    },
+    {
+      "path": "notes/languages/go-map-state.md",
+      "status": "edited",
+      "reviewBasis": "핵심 작동 설명은 “값 읽기·계산·쓰기를 같은 임계 구역에 둡니다.”와 “LoadOrStore 호출 인자를 만들기 위해 비싼 생성 함수를 먼저 실행했다면 저장은 하나여도 생성 부수 효과는 이미 두 번일 수 있습니다.”로 이미 방향이 맞습니다. 다만 서로 다른 키가 내부 bucket을 공유하는 이유, 원자 경계와 비싼 생성의 차이, 옛 snapshot을 덮어쓰는 실행 순서가 압축되어 있어 네 문단을 교체합니다. 표·diagram·코드·H2 순서는 유지합니다.",
+      "sha256": "caba0b9bb5d7a02d49efcefce77b61a28b49394af5cf1cd3f611367295685da1"
+    },
+    {
+      "path": "notes/languages/go-request-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "Context의 역할은 “context는 취소·deadline과 요청 범위 메타데이터를 전달하는 수단이지 모든 의존성을 숨기는 저장소가 아닙니다.”로 이미 분명하고, defer 예제와 책임 표는 실제 동작을 보여 주므로 유지합니다. 가장 어려운 구간은 “errgroup은 첫 오류를 알리되 모든 함수의 종료를 기다립니다”라는 두 시간축과 “SetLimit에 도달하면 Group.Go 호출 자체가 활성 자리를 기다릴 수 있습니다.”라는 제출자 수명입니다. 이 구간은 A·B의 반환과 제출 대기를 순서대로 풀고, 표·diagram·코드·H2는 건드리지 않습니다.",
+      "sha256": "618ceb2f88079d70eaaab8f2f13e9887d47fbbfcb8e6dd24a5e85ea58594964c"
+    },
+    {
+      "path": "notes/languages/go-runtime-diagnosis.md",
+      "status": "edited",
+      "reviewBasis": "관측 표의 구분과 한계는 “goroutine profile | 현재 스택·대기 위치” 및 “빈 프로파일은 대기가 없다는 증거가 아닙니다.”로 충분해 유지합니다. 가장 압축된 핵심은 도착률·체류 시간의 100개 요청 예제와 pointer density·GOGC·GOMEMLIMIT의 상호작용입니다. 산술을 실제로 펼치고, profile·GC 용어의 관찰 대상과 남는 한계를 네 문단에서 분리하며 표·diagram·H2 순서는 보존합니다.",
+      "sha256": "d23bfabf86d2ed7ff02be4129f1648331b122a4b2351e8c4d68c963256d83759"
+    },
+    {
+      "path": "notes/languages/go-slice-storage.md",
+      "status": "edited",
+      "reviewBasis": "기반 배열과 헤더의 기본 모델은 “슬라이스는 기반 배열을 가리키는 정보와 len·cap을 가진 값으로 이해할 수 있습니다.”와 `b := a` 예제로 충분해 유지합니다. 가장 어려운 구간은 cap 안 append와 full slice expression이 서로 다른 격리를 만든다는 점이며, 원문의 “b의 len은 1이지만 cap은 3이므로 append가 a의 두 번째 원소를 덮습니다.”를 실제 index와 출력으로 풀어 씁니다. 비동기 소유권도 “채널로 slice 헤더를 전송했다고 데이터 소유권이 자동 복제되지 않습니다.”라는 핵심을 유지하고, 표·diagram·코드·H2는 수정하지 않습니다.",
+      "sha256": "3230e585c97edaac48ba507423c92bc1a00d16f040db17ad22ad24b5c63fe490"
+    },
+    {
+      "path": "notes/languages/java-context-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "요청 격리의 기본 경계는 “ThreadLocal은 스레드별 값이지 요청별 자동 격리·삭제 기능이 아닙니다.”와 finally 예제로 이미 충분합니다. 핵심 난점은 “약한 키가 사라져도 value 경로가 즉시 없어지는 것은 아니므로 요청 범위에서 remove합니다.”라는 보유 경로와, 이미 만들어진 executor worker에 InheritableThreadLocal을 기대하는 오해입니다. 두 문단만 교체해 key/value의 GC 경로와 capture·install·restore 순서를 구체화하고, 표·diagram·코드·H2는 보존합니다.",
+      "sha256": "8ae959c7f28e93978b99427b7724691c9b216cbff369d8c0d24225d77f20242c"
+    },
+    {
+      "path": "notes/languages/java-dispatch-erasure.md",
+      "status": "edited",
+      "reviewBasis": "호출 선택의 핵심은 “컴파일러는 receiver의 정적 타입 A에 있는 f(Object)를 선택하고, 실행 때 실제 객체 B의 그 시그니처 구현을 호출합니다.”로 정확히 설명되어 있어 코드·표는 유지합니다. 소거의 핵심도 “부모 Box.put의 erased signature는 put(Object)인데 자식의 작성된 메서드는 put(String)입니다.”라는 bridge 설명으로 방향이 맞습니다. 다만 widening·boxing 단계와 reifiable 배열의 의미가 압축되어 있어 세 문단만 실행 순서 중심으로 풀며, bridge diagram·code fence·H2 순서는 보존합니다.",
+      "sha256": "9994d88afea62cb09d3ebf1d9097bd7458374bcbeb919aa7ccb9f0a91fe08d45"
+    },
+    {
+      "path": "notes/languages/java-equality-immutability.md",
+      "status": "edited",
+      "reviewBasis": "equals·hashCode의 기본 계약은 “같은 hashCode가 같은 객체나 같은 값을 뜻하지는 않습니다.”와 충돌 후 equals로 구분한다는 설명이 충분해 유지합니다. 불변성의 핵심은 “final은 참조를 고정하고 객체 그래프를 얼리지 않습니다.”라는 문장과 view·copyOf 코드에 이미 드러납니다. 다만 HashSet 조회가 왜 다른 후보 위치로 가는지, view와 snapshot이 언제 관찰을 공유하는지, final 초기화 안전성의 전제가 압축되어 있어 네 문단을 교체하며 코드·diagram·H2는 보존합니다.",
+      "sha256": "17f2d30498ba227a3ed368ed323b1ef5d7a4f0d04a685cc1f452cfd66d7f45dc"
+    },
+    {
+      "path": "notes/languages/java-execution-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "Future 실행 위치는 “non-async 단계는 완료를 수행하는 스레드 등에서 실행될 수 있고, 이미 완료된 future에 단계를 붙이면 등록하는 스레드에서 실행될 수도 있습니다.”로 핵심이 맞습니다. timeout·취소 뒤 실제 작업이 계속될 수 있다는 점과 “가상 스레드는 DB 연결과 메모리를 늘리지 않습니다”의 하위 자원 상한이 가장 중요한 난점이므로, 완료 상태와 작업 수명을 나눠 네 문단을 구체화합니다. interrupt·JDK 버전별 pinning 단락, 표·diagram·코드·H2 순서는 원문 조건을 유지합니다.",
+      "sha256": "09a174e6cebed98882ab1057bd9610543f1d1539d54ce5234826a208308c156f"
+    },
+    {
+      "path": "notes/languages/java-metadata.md",
+      "status": "edited",
+      "reviewBasis": "반복 어노테이션과 증분 생성이 이 글의 가장 어려운 구간입니다. 24행의 \"Retention을 생략하면 CLASS입니다.\"와 50행의 \"각 단계의 증분 산출물과 새 디렉터리의 clean 산출물을 비교하고\"는 보존 기본값과 실제 비교 절차를 이미 분명하게 보여 주므로 유지합니다. 다만 34행은 T·TC의 표현, 메타데이터 호환, runtime 조회 조건을 한 번에 압축하고 36행은 두 조회 API의 차이를 실제 읽기 순서로 풀지 않아 2개 문단을 교체합니다.",
+      "sha256": "1db73993e07b47becf8dffa95706423f0dad7a95ac0161100c6c3ab0b3698e7d"
+    },
+    {
+      "path": "notes/languages/java-resource-reachability.md",
+      "status": "edited",
+      "reviewBasis": "GC 도달성과 외부 자원 수명을 구분하는 방향은 잘 잡혀 있습니다. 14행의 \"수집 가능하다는 것은 즉시 또는 정해진 시간까지 수집된다는 뜻이 아닙니다.\"와 54행의 \"클래스 언로드는 단일 System.gc 호출 직후 반드시 일어나는 사건이 아니므로\"는 시간 보장을 과장하지 않는 핵심 문장이므로 유지합니다. 12행은 GC root를 정의하지 않은 채 순환 예시로 바로 들어가고, 26행은 heap dump 용어를 정의 없이 병렬로 나열하며, 30행은 suppressed 오류의 의미를 독자가 추론해야 하므로 3개 문단을 교체합니다.",
+      "sha256": "9532619f49d01c41584ff5f5e5653407889456cabc2793d681bbc7742e6d4b38"
+    },
+    {
+      "path": "notes/languages/java-shared-state.md",
+      "status": "edited",
+      "reviewBasis": "이 글은 count++ 유실, volatile 공개, 여러 atomic 값, ConcurrentHashMap의 복합 연산을 순서대로 다루며 수치와 반례를 잘 보존합니다. 특히 12행의 \"`count++`는 읽기·계산·쓰기를 하나로 묶는 별도 원자 연산이 아닙니다.\"와 42행의 \"독자도 같은 묶음 루트를 한 번 읽어야 합니다.\"는 원리와 경계를 정확히 잡으므로 유지합니다. 다만 21행의 read-modify-write·LongAdder, 32행의 happens-before 경계, 38행의 monitor, 48행의 CHM 메서드별 부수 효과가 정의와 실행 순서 없이 이어져 핵심 동작을 4개 문단에서 풀어 씁니다.",
+      "sha256": "dcea64901e7f04d70e9b88136eb193204d62c008c261a5a69672bd66825cc908"
+    },
+    {
+      "path": "notes/languages/java-value-contract.md",
+      "status": "edited",
+      "reviewBasis": "래퍼 비교와 부재 의미를 127 예시, null unboxing, 표, Optional 기본값 순으로 연결한 구조는 유지합니다. 23행의 \"`n == null`은 참조 비교이고 `n == 0`은 숫자 비교를 위해 n의 기본형 값을 필요로 합니다.\"와 51행의 \"`orElseGet(() -> expensiveDefault())`는 값이 없을 때 supplier를 실행합니다.\"는 실제 실행 차이를 설명하므로 유지합니다. 12행의 상수 표현식·참조 공유 조건과 47행의 반환형 선택 조건만 조금 더 상황과 선택 순서가 드러나도록 2개 문단을 교체합니다.",
+      "sha256": "74db1e2bf9a5d9affc79214aff39874ca860029091aa855fc1a0a25b71f11ffb"
+    },
+    {
+      "path": "notes/languages/js-bindings.md",
+      "status": "edited",
+      "reviewBasis": "var·let·const의 초기화, shadowing·TDZ, 반복별 바인딩, ESM 순환을 예제와 표로 설명하고 있어 앞부분은 유지합니다. 40행의 \"함수 생성과 본문 실행은 다릅니다.\"와 53행의 \"for의 let j는 반복별 바인딩을 만들어 각각의 클로저가 다른 j를 봅니다.\"는 실행 시점과 바인딩 차이를 정확히 설명합니다. 59행은 forEach 매개변수, 객체 참조 공유, snapshot, async Promise 미대기를 다섯 문장에 몰아 넣어 한 문단만 교체합니다.",
+      "sha256": "3ddc16f02f4255ff7c4dd84cf19b74cc2c825d556a69211803f417836b190312"
+    },
+    {
+      "path": "notes/languages/js-object-graph.md",
+      "status": "edited",
+      "reviewBasis": "own·상속·undefined를 표와 코드로 분리하고 spread의 얕은 복사, structuredClone·JSON, 경로 복사, prototype 성능 조건까지 핵심 반례를 유지합니다. 12행의 \"own 값이 undefined라도 프로퍼티 자체가 있으면 상속값을 가립니다.\"와 72행의 \"변경하지 않은 노드는 구조적으로 공유하고 바뀐 경로만 복사하면\"은 객체 그래프를 이해하는 기준이 명확하므로 유지합니다. 53행은 spread의 getter·descriptor·prototype 효과를, 74행은 Proxy 비용과 측정 조건을 용어 나열처럼 압축해 2개 문단을 교체합니다.",
+      "sha256": "bc2a50df06f6e8706f5b4ccab3cb67f8c4fe18bc25756768e268dd44b5c48e73"
+    },
+    {
+      "path": "notes/languages/js-promise-state.md",
+      "status": "edited",
+      "reviewBasis": "catch가 반환한 값의 성공 전환, executor와 then callback 시점, handler 탐색, combinator 표, 동시 실행 상한을 코드와 표로 연결한 글입니다. 22행의 \"각 then·catch는 원래 Promise를 바꾸는 대신 새로운 Promise를 반환합니다.\"와 52행의 \"`await jobA(); await jobB();`는 A 완료 뒤 B를 호출합니다.\"는 상태와 시작 시점을 실제 순서로 설명하므로 유지합니다. 65행만 combinator의 관찰 결과, 실제 작업 취소, 서버 커밋의 비가역성을 한 번에 제품 API로 건너뛰어 한 문단을 교체합니다.",
+      "sha256": "6de9e53c2449418f262f76646eed7766f8abfd4555f387b92230356810719c03"
+    },
+    {
+      "path": "notes/languages/js-receiver.md",
+      "status": "edited",
+      "reviewBasis": "분리 호출, 화살표의 lexical this, bind 인자 순서, prototype 공유, 등록 제거의 함수 정체성과 수명을 코드·표로 설명합니다. 20행의 \"메서드가 저장된 곳과 호출 receiver는 다릅니다.\"와 79행의 \"다른 함수 객체라 등록이 제거되지 않습니다.\"는 오해가 생기는 지점을 직접 보여 주므로 유지합니다. 22행은 call·apply·bind와 new의 예외를 한 문단에서 빠르게 지나가므로 한 문단만 교체해 호출별 실행 순서를 드러냅니다.",
+      "sha256": "ea5b9aaafd517f030832a80bfc886c0ef1f1d118be7b3f80dba29473d3f551d5"
+    },
+    {
+      "path": "notes/languages/js-scheduling.md",
+      "status": "edited",
+      "reviewBasis": "핵심 순서는 원문의 코드 주석과 “ECMAScript의 Promise job과 브라우저의 이벤트 루프·렌더링, Node의 timer·I/O phase는 서로 다른 계층입니다.”(L22)에서 계층을 나눠 설명하고, 마지막에는 “CJS는 `sync → tick → promise`, ESM은 `sync → promise → tick`을 관찰했습니다.”(L71)처럼 버전과 미측정 범위도 남겨 두었으므로 유지합니다. 다만 첫 실행 순서와 microtask 양보, Node 문맥은 실제 큐가 어떻게 이어지는지 한 단계 더 풀어 쓰고, Worker 전송은 소유권이 언제 바뀌는지 문장 안에서 보이게 하는 편이 좋습니다.",
+      "sha256": "cceb44cd2935ca1aeccb891094464dbbd0c3375fe53f0f75919d7630a3b3d42b"
+    },
+    {
+      "path": "notes/languages/js-task-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "Listener 수명은 “removeEventListener에는 이벤트 종류·같은 함수 참조·capture 조건을 맞춥니다.”(L18)와 실제 `AbortController`·`clearInterval`을 함께 보여 주는 코드(L20-L31)가 이미 구현 단계를 담고 있어 그 구조는 유지합니다. Fetch 수명도 “서버 변경 취소 증명이 아닙니다.”(L37)와 헤더·본문·커밋 시점 표(L39-L45), “결과 적용 직전에 현재 세대와 비교합니다.”(L61)처럼 취소와 결과 적용을 나눠 설명하므로, 공유 신호와 `await` 사이의 상태 변화만 더 구체적으로 다듬습니다.",
+      "sha256": "7adb1c204a557ed6aabf68968c0d5ad13a2dcdf34a7fc0eb68bcb47e943b2c9f"
+    },
+    {
+      "path": "notes/languages/js-value-conversion.md",
+      "status": "edited",
+      "reviewBasis": "입력 경계는 “`'' == 0`은 true이고 `Number('')`도 0입니다.”(L12)라는 반례와 최소 단위 정수·`Number.isSafeInteger`·업무 상한(L14)을 이미 제시하므로, 숫자 변환 전에 무엇을 검사하는지 더 자연스럽게 잇습니다. 비교 표는 `===`·`Object.is`·`SameValueZero`의 `NaN`·0 차이를 직접 보여 주고(L18-L24), 정밀도 예제는 `9007199254740993`이 `9007199254740992`로 읽히는 왕복 손실을 코드로 고정하므로 유지합니다.",
+      "sha256": "4afa6718dabaf25e46f0f60cafc56011467076ec39973486aa904e2ef810fb15"
+    },
+    {
+      "path": "notes/languages/jvm-warmup.md",
+      "status": "edited",
+      "reviewBasis": "바이트코드 의미와 VM 구현을 나누는 “JVM 명세는 이 코드의 의미를 정하지만 모든 구현이 항상 인터프리터만 쓰거나 모든 메서드를 즉시 JIT하도록 강제하지 않습니다.”(L12)는 핵심 정의라 유지합니다. 또한 cold·warmup·steady를 나누고 “JFR·JMH·컴파일 로그 실험은 수행하지 않았습니다.”(L51)라고 한계를 명시한 부분은 새 성능 사실을 만들지 않는 근거가 되므로 그대로 두고, 계층형 컴파일·가드·JMH 사용법처럼 용어가 몰린 세 문단만 실행 순서로 풀어 씁니다.",
+      "sha256": "cfeebd1ef4628e286eb5dbf2247faa9ee8a7b26ecd5c11ed08d2bb9c04336106"
+    },
+    {
+      "path": "notes/languages/pypy-tracing.md",
+      "status": "edited",
+      "reviewBasis": "PyPy 선택의 한계는 “짧은 CLI가 끝나기 전에 추적·컴파일 비용을 회수하지 못하면 더 빠르지 않을 수 있습니다.”(L12)와 CPython·PyPy 비교에서 cold·예열·steady·입력 타입 변화를 나누고 p95·p99·메모리·오류를 기록하라는 문단(L41)에 구체적으로 적혀 있습니다. 또 `0.8 + 0.2/2 = 0.9` 계산(L39)은 개선 비율을 서비스 전체로 확대하지 않는 좋은 중간 계산이므로 유지하고, trace의 guard/side exit와 C API 경계의 작동만 더 쉽게 연결합니다.",
+      "sha256": "52237537a2ddf1d576dc2360a447164d5050ad147e498e6fb7f0bdd63080dab4"
+    },
+    {
+      "path": "notes/languages/python-async-scope.md",
+      "status": "edited",
+      "reviewBasis": "동기 호출의 차단을 “`await asyncio.sleep(...)`처럼 실제로 중단되는 대기는 다른 task에 기회를 줍니다.”(L14)로 대비하고, `to_thread`·executor·process pool의 시작 의미와 잔여 비용을 표(L18-L23)로 나눠 둔 부분은 유지합니다. TaskGroup도 Python 3.11+ 조건과 “KeyboardInterrupt·SystemExit 같은 특별한 경우”를 명시하고(L31), 마지막에 CPython 3.9.6과 3.14.7의 실제 실행 범위를 구분하므로 그대로 둡니다. 네 문단은 coroutine 실행 시점, 취소 뒤 실제 스레드 수, TaskGroup의 종료 순서, ContextVar의 얕은 문맥 복사를 더 단계적으로 제안합니다.",
+      "sha256": "04bc70904f2244c41baa948baa419fee86d463c904bc082f0e26b445ea70ba73"
+    },
+    {
+      "path": "notes/languages/python-iteration.md",
+      "status": "edited",
+      "reviewBasis": "Generator의 지연 실행은 코드와 “generator 함수 호출은 generator 객체를 만들고 본문 실행은 next 등으로 값을 요구할 때 시작합니다.”(L26)에서 이미 정확히 정의되어 있고, iterable·iterator·generator·factory 차이 표(L30-L35)도 재순회 계약을 한눈에 비교하므로 유지합니다. 또한 `tee`의 느린 소비자 버퍼와 파일·DB 재읽기 차이(L39), 조기 종료에서 `close`와 `GeneratorExit`을 나눈 부분(L67-L69)은 실제 한계까지 담고 있어, `yield from`의 반환값·제어 위임 구간만 실행 흐름으로 교체합니다.",
+      "sha256": "6b78b5e8d24201eed70560224df0283e00ef05540aa3d4eb3ed5dfb8c183effe"
+    },
+    {
+      "path": "notes/languages/python-object-state.md",
+      "status": "edited",
+      "reviewBasis": "기본값과 늦은 바인딩은 코드 출력과 “기본 인자 표현식은 함수 정의를 평가할 때 실행됩니다.”(L21), “late는 나중 실행할 때 공유 바인딩 i의 현재 값을 읽습니다.”(L34)에서 시점과 결과를 함께 보여 주므로 유지합니다. 얕은 복사도 `append`가 원본에 보이고 `deep`에는 보이지 않는 코드와 “수정할 경로와 복사할 경로를 맞춰야 합니다.”(L56)로 작동을 충분히 설명합니다. 따라서 이 파일에서는 `deepcopy`의 memo·별칭·순환과 외부 실행 자원 경계를 더 단계적으로 제안합니다.",
+      "sha256": "3f94639b06d65a039cb9c4dc03b8a5b079fd3d1a8233e3bcd3312375f88b3fe9"
+    },
+    {
+      "path": "notes/languages/python-ordering.md",
+      "status": "edited",
+      "reviewBasis": "부분 교체를 권장합니다. 안정 정렬·다중 정렬·적응형 run·key 비용의 핵심은 맞지만, 일부 문단은 결과와 이유를 한 번에 압축해 실제 실행 순서를 따라가기 어렵습니다. 반면 `set의 순회는 안정적인 정렬 순서 보장이 아닙니다.`와 `set 기반 출력은 여러 PYTHONHASHSEED의 새 프로세스로 실행하고 순서가 계약이면 최종 정렬이 같은지 확인합니다.`는 원인과 확인 방법을 직접 연결하므로 유지합니다. `최악 비교 비용과 임시 메모리를 함께 고려합니다.`도 복잡도와 임시 메모리를 함께 보라는 기준을 정확히 남기므로 유지합니다.",
+      "sha256": "b94c4c9eabfc2521a755e11a5ac256993f321846a52bf008c87ec331f076215d"
+    },
+    {
+      "path": "notes/languages/python-parallel-boundary.md",
+      "status": "edited",
+      "reviewBasis": "부분 교체를 권장합니다. CPU/I/O 구분과 프로세스 전달 비용은 흐름이 좋지만, `fork`와 shared memory 문단은 lock·native 상태·close·unlink·resource tracker를 한 번에 나열해 어느 시점에 무엇을 책임지는지 흐려집니다. `4개 Python worker가 각자 8개 native thread를 만들면 32개 계산 thread가 코어·메모리 대역폭을 경쟁할 수 있습니다.`는 과구독을 수치로 보여 주므로 유지하고, `작은 작업을 배치로 합치면 전송 고정 비용을 줄일 수 있지만 큰 앞 작업이 뒤 작업을 막거나 메모리 피크가 늘 수 있습니다.`도 batching의 이득과 부작용을 함께 설명하므로 유지합니다. 아래 교체는 GIL의 실행 경계와 fork/shared memory의 실제 순서를 구체화합니다.",
+      "sha256": "0bd7b33624093e9d09ff76c6c0d346c483b9289638830c5e6e450d31e42da57f"
+    },
+    {
+      "path": "notes/languages/python-protocol-mro.md",
+      "status": "edited",
+      "reviewBasis": "부분 교체를 권장합니다. Protocol의 정적 구조와 런타임 행동 계약은 잘 분리되어 있지만, 공변/가변 속성의 차이와 C3 merge의 head·tail 선택은 독자가 중간 상태를 직접 계산해야 합니다. `runtime_checkable의 isinstance는 제한된 멤버 구조 확인이지 반환값·인자 의미·예외·멱등성의 실행 검증이 아닙니다.`와 `hasattr 사전 검사가 통과해도 실제 호출이 실패하거나 상태가 바뀔 수 있습니다.`는 정적 검사·런타임 구조 검사·실제 행동 검사의 경계를 정확히 나누므로 유지합니다. `협력적 __init__은 같은 고정 시그니처를 약속하거나 각 mixin이 자기 키워드 인자를 소비하고 나머지를 전달하는 방식으로 맞춥니다.`도 super 협력의 선택지를 실제 호출 방식으로 설명하므로 유지합니다.",
+      "sha256": "d9da45a1b53e1ebd784493f46de3e21c60d9103574cf7568fe47449840c0150c"
+    },
+    {
+      "path": "notes/languages/python-resource-lifetime.md",
+      "status": "edited",
+      "reviewBasis": "부분 교체를 권장합니다. 참조 수·순환 GC·context manager의 핵심 조건은 들어 있지만, weakref의 경쟁 창과 exit 예외 우선순위가 용어 중심으로 빠르게 지나갑니다. `할당자가 회수한 메모리를 재사용하려고 보유하면 heap 객체량이 줄어도 RSS가 그대로일 수 있습니다.`는 객체 회수와 프로세스 메모리의 차이를 실제 결과로 설명하므로 유지합니다. 또한 `__enter__가 실패하면 그 manager의 __exit__가 자동으로 정리해 줄 것이라고 기대하지 않습니다.`와 `여러 manager를 순차 진입할 때 이미 성공한 자원은 ExitStack 등에 등록해 역순으로 정리할 수 있습니다.`는 진입 실패 시의 책임과 정리 순서를 직접 제시하므로 유지합니다.",
+      "sha256": "72eb4857a8b6e38a9a0bbe254fcf98c405b5418aa89f8b0d48bb49920708bec6"
+    },
+    {
+      "path": "notes/machine-learning/classification-metrics.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 핵심인 임계값 조정, 사람 검토 용량, 양성 비율 변화의 연결을 실제 계산 흐름으로 검토했습니다. 유지 근거는 원문의 \"TP는 찾은 양성, FN은 놓친 양성, FP는 잘못 잡은 음성, TN은 정상 통과시킨 음성입니다.\"가 혼동 행렬의 용어와 분모를 정확히 정의하고, 코드의 \"precision = TP / (TP + FP) = 80 / 170 ≈ 47.1%\"와 \"recall    = TP / (TP + FN) = 80 / 100 = 80%\"가 중간 계산을 보여 주며, \"이 계산은 조건부 오류율이 유지된다는 가정 아래의 기대값입니다.\"가 분포 이동 계산의 한계를 분명히 하기 때문입니다. 표·diagram·코드 펜스·H2는 건드리지 않고, 임계값 변화의 작동 과정과 검토량 산정, prevalence 계산만 교체합니다.",
+      "sha256": "7e5223ef6dd6ce6c3f8a78d01f3ae6a35e8eaddf18bbf5c9a7e32383ec94a244"
+    },
+    {
+      "path": "notes/machine-learning/data-splits.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 핵심인 전처리 fit 경계, 교차 검증 접기 상관, 시간·라벨 가용 시점의 누출을 실제 실행 순서로 검토했습니다. 유지 근거는 원문의 \"훈련은 모델 파라미터를 맞추고, 검증은 모델·전처리·임계값·중단 시점을 선택하며, 테스트는 선택을 마친 뒤 고정한 방법을 평가합니다.\"가 세 분할의 역할을 정확히 나누고, 교차 검증 코드의 `transformer.fit(data[trainIds])`와 `choose_without_reading_final_test()`가 경계를 실행으로 보여 주기 때문입니다. 표·diagram·코드 펜스·H2는 보존하고, 전처리 적용, 접기별 불확실성, 누출 검사 방법을 구체화합니다.",
+      "sha256": "bdefa9f703722cabfec24cd2bb6dd99f2a2eb22ed6f258591376685fe8e157c9"
+    },
+    {
+      "path": "notes/machine-learning/generalization.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 핵심인 훈련·검증 곡선에서 원인을 섣불리 확정하지 않는 진단, 작은 표본 과적합 시험, 분포 차이와 seed 변동의 분리를 검토했습니다. 유지 근거는 원문의 \"학습이 진행될수록 훈련 손실은 줄지만 검증 손실은 어느 시점부터 커질 수 있습니다.\"가 과적합 신호와 확정의 차이를 설명하고, \"조기 종료는 검증 성능으로 학습 시점도 선택하는 절차이므로 최종 평가는 별도 테스트에서 해야 합니다.\"가 선택과 최종 평가를 구분하기 때문입니다. 손실 표·augmentation 표·diagram·코드 펜스·H2는 수정하지 않고, 검증 조건 점검과 원인 분리 단락만 교체합니다.",
+      "sha256": "ad4242ad0f1ee90c2a1f7c95c92fd02b208fcb95383c6fabbd01951a954fb8e0"
+    },
+    {
+      "path": "notes/machine-learning/gradient-descent.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 핵심인 학습률 예시의 수렴 경계와 실제 모델에서의 수치·배치·gradient 상태 진단을 검토했습니다. 유지 근거는 원문의 \"현재 w에서 기울기는 `2(w-3)`이고, 경사하강법은 `w ← w - η·2(w-3)`으로 움직입니다.\"가 기울기와 학습률의 역할을 직접 정의하고, η별 표의 `0<η<1` 경계와 \"이 숫자를 신경망의 권장 학습률로 사용하면 안 됩니다.\"가 예시의 적용 한계를 분명히 합니다. 수식 표·diagram·코드 펜스·H2는 유지하고, feature scale·NaN·gradient 누적 진단만 실제 순서로 다듬습니다.",
+      "sha256": "467636c0b3f4420b99be95fbd08482c201bdcce16bf0fe73ba374f7da74faf92"
+    },
+    {
+      "path": "notes/machine-learning/loss-objective.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 핵심인 클래스 가중치와 임계값을 분리해 운영 용량과 함께 비교하는 구간, 그리고 weighted mean과 logits 기반 손실의 수치적 차이를 검토했습니다. 유지 근거는 원문의 \"손실 함수는 개별 예측의 오차를 학습 신호로 표현합니다. 목적 함수는 예측 손실을 집계하고 가중치·정규화·제약 비용 등을 더해 optimizer가 줄이는 전체 식입니다. 평가 지표는 최종 목적에 맞는 예측·행동 결과를 측정합니다.\"가 세 층위를 정의하고, 0.2→0.4 로그 손실 예시와 objective/backprop·validation 코드가 학습과 운영 경계를 실제로 보여 주기 때문입니다. 표·diagram·코드 펜스·H2는 유지하고, 검토 용량을 넘는 정책과 집계·수치 안정성 설명만 교체합니다.",
+      "sha256": "a26b1feb511c0be3559224ef3dbefc63ad80fb52ef3ac8fbca5f5afc5f13c6c9"
+    },
+    {
+      "path": "notes/mobile/arc-ownership.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간인 비동기 완료 클로저의 참조 수명과 취소·정상 완료의 경쟁을 실제 참조 흐름으로 검토했습니다. 첫 단락은 화면 계층에서 제거된 뒤에도 왜 객체가 남는지 경로를 더 선명하게 하고, weak·unowned와 await가 만나는 지점은 호출 시점과 강한 지역 참조의 범위를 풀어 쓰는 편이 좋습니다. 유지: 「콜백은 잠금 밖에서 실행해 재진입과 교착을 줄입니다.」는 상태를 잠근 채 사용자 코드를 호출하지 않는 실제 실행 순서를 설명하고, 「작업 서비스가 실제 결과·불확정 상태를 기록하고 UI는 현재 요청 세대에 맞는 것만 표시하도록 나눕니다.」는 사용자 결과와 외부 효과를 분리하는 원리를 설명하므로 그대로 둡니다.",
+      "sha256": "dac00840c8a64b67c269015da75c48b90e9242849f56b9a5da04d4225d8dd7c2"
+    },
+    {
+      "path": "notes/mobile/observation-contracts.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간인 초기 snapshot과 후속 이벤트의 순서 경쟁, 그리고 증분 이벤트에서 버전만 비교했을 때의 손실을 실제 도착 순서로 검토했습니다. 통신 방식 선택과 조회·구독 사이의 race는 용어를 나열하기보다 화면에서 어떤 결과가 빠지는지 먼저 보여 주고, 재진입 구간은 구독자 목록을 언제 고정하는지로 풀어 쓰는 편이 좋습니다. 유지: 「UI는 적절한 MainActor 경계에서 바꾸고, 느린 파일 처리·네트워크를 동기 알림 콜백에 넣어 발신자를 막지 않도록 합니다.」는 UI와 필수 효과의 실행 위치를 설명하고, 「알림 payload에는 필요한 ID·버전만 넣고 비밀번호·원문 자격 등 불필요한 민감값을 방송하지 않습니다.」는 payload 범위와 보안 이유를 구체적으로 제시하므로 그대로 둡니다.",
+      "sha256": "9910cc3cf9caaab200c58889c6fb8ba54607a6eacb3023b53a09faabb0add98b"
+    },
+    {
+      "path": "notes/mobile/scene-persistence.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간인 같은 기준 버전의 중복 저장과 서로 다른 편집의 충돌, 그리고 오래된 비동기 저장의 역행을 실제 요청·완료 순서로 검토했습니다. 저장 실패와 중복을 추상적인 검증 문장으로 넘기지 않고 changeId·expectedVersion·확정 버전이 각각 어느 시점에 검사되는지 드러내는 제안을 골랐습니다. 유지: 「새 파일을 완성·검증한 뒤 교체하고 내용 버전과 완료 정보를 일치시킵니다.」는 파일 저장의 중간 단계와 복구본 보호를 설명하고, 「입력 직후·파일 작성 중·교체 직전·원격 성공 응답 전 중단을 시험합니다.」는 실제 중단 지점을 열거하므로 그대로 둡니다.",
+      "sha256": "8090d675560b48772656c5bbf7cd30afe4373bf2765e9e5e2a281f1a961acb72"
+    },
+    {
+      "path": "notes/mobile/view-coordinates.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간인 bounds.origin을 포함한 점 계산과 회전 사각형의 축 정렬 외접 상자 계산을 실제 숫자로 다시 따라갔습니다. frame·bounds의 기준 공간은 부모와 자기 내부를 먼저 분리하고, 45도 계산은 cos·sin 값을 식에 넣는 중간 단계를 보여 주면 용어를 몰라도 결과가 어디서 나오는지 알 수 있습니다. 유지: 「외접 상자는 회전 사각형 밖의 빈 모서리 영역도 포함합니다.」와 「정밀 hit test가 필요하면 AABB 포함만으로 실제 형상 내부라고 판정하지 않습니다.」는 경계 계산과 실제 형상 판정을 혼동하지 않게 하는 반례를 정확히 제시하므로 그대로 둡니다.",
+      "sha256": "75f0296a05ccd609d72ba654ac1ab31c2f2b770c55feb06d4f07cd963e667754"
+    },
+    {
+      "path": "notes/mobile/view-lifecycle.md",
+      "status": "edited",
+      "reviewBasis": "가장 어려운 구간인 재등장 때 구독과 갱신을 누적하지 않는 흐름, 취소 뒤 늦게 도착한 결과를 generation으로 걸러 내는 흐름, 화면 밖 작업의 소유 분리를 실제 순서로 검토했습니다. viewDidLoad·appearance·deinit의 차이는 객체 재사용 상황에서 먼저 관찰할 사건을 보여 주고, generation 검사는 세대 3과 세대 4의 늦은 완료 예로 풀어 쓰는 편이 좋습니다. 유지: 「Auto Layout의 frame은 계산 결과입니다.」와 「애니메이션 모델 상태와 화면에 실제 보이는 presentation 상태도 다릅니다.」는 레이아웃·애니메이션 측정 시점을 구분하는 핵심 정의이므로 그대로 둡니다.",
+      "sha256": "4e628eab4c84855120333d0ce44dcc2a6479375ee838211df22cfbf07bbfa0be"
+    },
+    {
+      "path": "notes/networking/acceptex.md",
+      "status": "retained",
+      "reviewBasis": "제목은 AcceptEx의 핵심 작업을 바로 드러내고, 수락과 첫 수신의 분리→수락 소켓·주소 버퍼 준비→BOOL 반환과 IOCP 완료→context 설정→실패 소켓·backlog→실제 Windows 코드와 버전 한계 순서가 자연스럽습니다. 주소 길이, TRUE·ERROR_IO_PENDING, 완료 바이트, 버퍼와 OVERLAPPED 수명, SO_UPDATE_ACCEPT_CONTEXT까지 이미 실무와 학습 흐름이 연결되어 있어 본문 교체 없이 유지합니다. 특히 첫 수신 길이 0의 정상 완료를 TCP EOF와 구분한 마지막 설명이 충분한 유지 근거입니다.",
+      "sha256": "8c06fc459507b9d73eed7ff8c13a9c623f3b80e96423db3e263907e2481b2566"
+    },
+    {
+      "path": "notes/networking/datagram-contracts.md",
+      "status": "edited",
+      "reviewBasis": "제목과 도입은 최신 snapshot과 중요 명령의 전달 책임을 TCP·UDP 선택보다 먼저 분리합니다. 메시지 부류→UDP 혼잡·신뢰 경계→MTU와 경로 크기→앱 조각 재조립→손실·도메인 결과 검사의 H2 순서가 실제 설계 순서와 맞습니다. 증분 상태의 번호가 snapshot과 같은 방식으로 처리되지 않는다는 문장이 정확하지만 압축되어 있어, 현재 적용 위치와 gap을 한 번 계산하는 교체를 제안합니다.",
+      "sha256": "52dd76e6894ab8bab2f49a54f16b9b2d9de8996be9d66ad2e578b62c5bcae256"
+    },
+    {
+      "path": "notes/networking/dns-transition.md",
+      "status": "edited",
+      "reviewBasis": "제목은 DNS 변경이 기존 연결을 옮기지 않는다는 핵심을 잘 담습니다. 권한 DNS·resolver·앱·연결 풀의 네 층→TTL 사전 조정→연결 수명과 drain→음성 캐시→Happy Eyeballs→registry watch와 실제 로그 순서가 운영 전환의 시간축에 맞습니다. 연결 최대 수명과 유휴 수명의 차이는 정확하지만 한 연결을 신규 대여 중단 후 drain하는 중간 상태가 조금 압축되어 있어 그 부분을 자연스럽게 풀어 쓰는 교체를 제안합니다.",
+      "sha256": "bcc9ef7d061810d9164808a5c6b5ab3980beaedc8571b6a82e9a0c1ac61cffaa"
+    },
+    {
+      "path": "notes/networking/event-stream-recovery.md",
+      "status": "edited",
+      "reviewBasis": "제목은 SSE·WebSocket의 연결 재수립과 상태 복구를 혼동하지 않게 합니다. 채널 선택→heartbeat→적용 커서와 중복→snapshot 전환→프록시 buffering→느린 소비자와 재현 시험의 H2 흐름이 메시지 의미와 자원 문제를 함께 보여 줍니다. 오래된 커서에서 snapshot을 설치하고 그 이후 이벤트를 이어 붙이는 순서가 한 문단에 압축되어 있어, 기준 커서 100의 예를 실제 버퍼·설치·재생 단계로 펼치는 교체를 제안합니다.",
+      "sha256": "a9d98da08dba3c97cc393892f7df121f31bd0093c4e7209ef505c48033146276"
+    },
+    {
+      "path": "notes/networking/http-cache.md",
+      "status": "retained",
+      "reviewBasis": "제목은 저장 허용·재검증·표현 분리를 정확히 잡고 있습니다. 개인 캐시와 공유 캐시→ETag와 304→사용자 전환→Content-Type과 Accept→Vary→strong·weak validator→캐시 hit 검사의 순서가 독립 학습 글로 충분합니다. 304 본문 재사용, 계정 전환, Vary가 인가를 대신하지 않는 경계가 이미 예제와 표에 연결되어 있어 억지 교체 없이 유지합니다.",
+      "sha256": "eda7227b216229ccd9df05e7ad4972968fc0d4ea48c1424443cbeac0df70e1d0"
+    },
+    {
+      "path": "notes/networking/http-method-retry.md",
+      "status": "edited",
+      "reviewBasis": "제목은 HTTP 메서드 의미와 실패 후 재시도를 함께 다루며, safe·idempotent·캐시·기밀성→상태 코드와 불확정성→논리 요청 키→Retry-After와 전체 기한→시험 순서가 자연스럽습니다. 504와 연결 오류가 서버 미실행을 증명하지 않는다는 내용은 정확하지만, 주문 하나의 실패 흐름을 한 번 더 따라가면 재시도 계약이 더 쉽게 이해됩니다. 기존 메서드 의미와 요청 키 보관 전제는 유지하는 한 문단 교체를 제안합니다.",
+      "sha256": "fc085258a77ed30ed5e17f4dcf4d1bef48cb9d9af26a3dce54385ef60935a08e"
+    },
+    {
+      "path": "notes/networking/http-multiplexing.md",
+      "status": "retained",
+      "reviewBasis": "제목은 HTTP 다중화의 이점과 공유 연결 지연을 함께 나타냅니다. HTTP/2 stream ID와 TCP 바이트 흐름→서버·전달 지연 분리→stream·connection flow window→QUIC의 stream별 전달→큰 응답과 작은 RPC의 공정성→동일 경로 비교 순서가 정확합니다. TCP 선두 지연과 HTTP/2 흐름 제어, QUIC에서도 혼잡·CPU·앱 큐가 공유된다는 설명이 이미 충분하므로 본문 교체 없이 유지합니다.",
+      "sha256": "9f0e8f04496f5c09982845da895f83cf6d2e4f9cc4ff3d5ea31483d103c99aa8"
+    },
+    {
+      "path": "notes/networking/http-pools.md",
+      "status": "edited",
+      "reviewBasis": "제목은 풀 대기와 전체 동시성 예산을 명확히 드러냅니다. 한 호출의 단계 분리→하위 지표와 인스턴스 환산→HTTP/2 stream 자원→절대 기한→유휴 연결 실패와 결과 불확정→부하 회복 검사의 순서가 실제 운영 판단과 맞습니다. 단계별 timeout을 새로 시작하지 않는 수치 예제가 이미 있지만, 남은 예산을 다음 단계로 넘기는 계산을 한 단계 더 보여 주면 학습성이 높아져 해당 문단만 교체합니다.",
+      "sha256": "6ea998fc04d1631a88fec9bd21c8a9cdbf7d5287322b74a810f4bf8e8d99d3ed"
+    },
+    {
+      "path": "notes/networking/http-preconditions.md",
+      "status": "edited",
+      "reviewBasis": "제목은 If-Match 변경 보호와 If-Range 이어받기를 함께 다루며, 같은 URL의 다른 상태→원자적 If-Match 비교·쓰기→412 뒤 충돌→Range와 표현 정체성→206·200·416·checksum 처리 순서가 좋습니다. B의 412 재시도와 504성 불확정 결과가 이미 분리되어 있지만, v7에서 v8로 바뀐 실제 순서를 한 문단으로 다시 연결하면 낡은 본문 덮어쓰기 위험이 더 선명해집니다.",
+      "sha256": "34b146d4b7186025b362680fc80d71d4b8da3a233b52b419fd8e1300c72d2bd7"
+    },
+    {
+      "path": "notes/networking/io-readiness.md",
+      "status": "retained",
+      "reviewBasis": "제목은 readiness와 completion의 차이뿐 아니라 버퍼 소유권까지 포함합니다. epoll의 EAGAIN까지 진행→oneshot 재무장→IOCP 제출부터 참조 유지→io_uring opcode별 완료와 buffer 수명→공통 계약 시험 순서가 매우 충실합니다. read-ready와 read-complete를 같은 콜백으로 숨기지 않는 경계, partial I/O와 EOF, Windows·Linux 실행 한계까지 이미 설명되어 있어 중복 교체 없이 유지합니다.",
+      "sha256": "0a6b9c32fd235ba586983389229564065572b0734f9819e5d343dff80dd7e561"
+    },
+    {
+      "path": "notes/networking/iocp-completion.md",
+      "status": "retained",
+      "reviewBasis": "IOCP 5편 중 완료 흐름을 담당하는 문서로서 completion key와 OVERLAPPED의 식별 역할, GQCS 반환 조합, 즉시 성공·pending·skip 모드, 제출 반환 전 완료, 제출자·완료 참조, 버퍼 수명, 세대와 메모리 안전성, 구형 Windows 조건까지 이미 충분히 설명합니다. 특히 `WSA_IO_PENDING`을 재시도 오류로 보지 않고 실패 완료·취소 완료를 같은 종결 경로로 보내는 부분이 API 반환 계약을 보존합니다. 기존 보강과 중복되는 문단 교체는 제안하지 않습니다.",
+      "sha256": "47787ff6f2a0097d400fd85abcff8fc0f5e4d51ef0ff6ff6bd9eb24e39ad7f90"
+    },
+    {
+      "path": "notes/networking/iocp-scheduling.md",
+      "status": "retained",
+      "reviewBasis": "IOCP 5편 중 워커 구성 문서는 worker 수와 port concurrency, 완료 큐와 깨움, GQCSEx batch 소유권, 시간·연결별 공정성, 후속 실행기 backpressure, 연결별 직렬화, drain 후 종료를 모두 분리합니다. 한 연결의 수신·송신 완료가 다른 워커에서 처리될 수 있다는 경계와 후속 큐의 참조 수명도 이미 실무적으로 충분합니다. 기존 보강을 반복하는 교체안은 넣지 않습니다.",
+      "sha256": "70926671d9b53ce1bf33c8c6a76f6672e3cb3f644768d291348f6ff1fe54b833"
+    },
+    {
+      "path": "notes/networking/iocp-send.md",
+      "status": "retained",
+      "reviewBasis": "IOCP 5편 중 송신 문서는 여러 생산자와 연결별 단일 송신 소유권, TCP 바이트 혼합, WSABUF descriptor·payload·OVERLAPPED·후속 참조의 서로 다른 수명, 즉시 실패·pending·부분 진행, transport 완료와 업무 ACK의 차이까지 이미 연결합니다. 완료 바이트만 offset에 반영하고 앞 프레임 잔량이 끝난 뒤 다음 프레임을 보내는 예제가 정확합니다. 실무·가독성 보강을 중복하는 본문 제안은 하지 않습니다.",
+      "sha256": "1d1218fd9a5b1596def56ac016a0d0c73eab3715fcb57864a709a5476cdfffff"
+    },
+    {
+      "path": "notes/networking/iocp-shutdown.md",
+      "status": "retained",
+      "reviewBasis": "IOCP 5편 중 종료 문서는 CancelIoEx 반환과 실제 완료를 분리하고, 새 제출 차단→취소 요청→완료·후속 처리 drain→worker 종료 패킷→join→포트 close 순서를 코드와 표로 연결합니다. 작업 목록 snapshot, batch 소비, stop packet, CancelIo와 CancelIoEx의 버전 차이, worker join 전 버퍼 수명과 독립 로그 sink까지 이미 충분합니다. 종료 기한을 넘겨도 사용 중 버퍼를 바로 free하지 않는 한계까지 명시되어 있어 중복 교체는 제안하지 않습니다.",
+      "sha256": "d7ea7d69078cfbf7ef61e13576a9a01ffffc5cd0dd357d7770166fcd59da75ea"
+    },
+    {
+      "path": "notes/networking/proxy-boundaries.md",
+      "status": "retained",
+      "reviewBasis": "제목은 프록시의 분산 단위와 전달 헤더 신뢰를 함께 잡고 있습니다. L4·L7 연결/요청 분산→backend drain→실제 peer와 전달 헤더→직접 backend 경로→backlog→보안·부하 측정의 순서가 설계 판단에 맞습니다. X-Forwarded-For의 첫 값, Host·Forwarded-Proto, backlog와 앱 큐를 이미 각각 실제 상황으로 설명하므로 본문 교체 없이 유지합니다.",
+      "sha256": "f5ae7985efee053a12cd1afc60ad5f3b47cedf893698c33213e5a354e108452b"
+    },
+    {
+      "path": "notes/networking/small-write-latency.md",
+      "status": "retained",
+      "reviewBasis": "제목은 작은 TCP 쓰기의 지연을 계층별로 진단한다는 목적을 바로 보여 줍니다. 앱 flush·TLS record·Nagle·지연 ACK·NIC 경로→세 가지 비교 실험→TCP 바이트 스트림과 완료 의미→캡처 시점 측정 순서가 자연스럽습니다. NODELAY가 다른 버퍼를 끄지 않는다는 한계와 로컬 송신 완료가 애플리케이션 커밋이 아니라는 설명이 이미 충분하여 유지합니다.",
+      "sha256": "6fe4ad793a274fa975f6161cdfc5e77713a38e31d18b75a41d8962496f112445"
+    },
+    {
+      "path": "notes/networking/tcp-close.md",
+      "status": "retained",
+      "reviewBasis": "제목은 TCP 반닫기와 애플리케이션·NAT 자원 진단을 함께 다룹니다. FIN 반닫기→대표 상태표→TIME_WAIT·CLOSE_WAIT→NAT 포트 자원→유휴 연결 재사용의 결과 불확정→정상 종료와 고갈 재현 순서가 충분히 구체적입니다. TCP 상태와 FD·NAT·요청 성공을 중복 집계하지 않는 주의, 비동기 버퍼 수명과 half-close 경계가 이미 명확하므로 교체 없이 유지합니다.",
+      "sha256": "251fda943dd7aaca01ace6db8459744be172532d8ad269b891775f7ed510b3cf"
+    },
+    {
+      "path": "notes/networking/tcp-handshake.md",
+      "status": "retained",
+      "reviewBasis": "제목은 TCP 연결 수립의 순서 번호와 재전송을 정확히 나타냅니다. 양방향 ISN·ACK의 다음 기대 번호→세 단계 표→마지막 ACK 유실→동시 오픈→애플리케이션 성공과 분리→양 끝 캡처 대조 순서가 안정적입니다. SYN이 순서 공간에서 1을 소비하고 순수 ACK는 소비하지 않는 수치 전제가 표와 함께 잘 설명되어 있어 유지합니다.",
+      "sha256": "54e9f04bcd79aa70c0c323e680ced3da3069f0db46ec354c898c58ab4c1c2705"
+    },
+    {
+      "path": "notes/networking/tcp-throughput.md",
+      "status": "retained",
+      "reviewBasis": "제목은 수신 흐름 제어와 경로 혼잡을 분리해 진단한다는 핵심을 바로 드러냅니다. rwnd·cwnd→BDP 수치→bufferbloat와 앱 큐→관찰값을 같은 시간축에 놓기→원인별 대조 실험의 순서가 좋습니다. 10MB/s·0.1초·1MB와 100KB의 모형, window scaling·pacing·overhead의 한계, 앱 메모리 큐의 별도 예산이 이미 충분하므로 교체하지 않습니다.",
+      "sha256": "fc6a594c08870fd8ff33c7a9c6fcd1111f700ffd8199d0ff13a187545e09563c"
+    },
+    {
+      "path": "notes/networking/tcp.md",
+      "status": "retained",
+      "reviewBasis": "제목은 TCP 스트림에서 메시지 경계를 복원한다는 핵심을 바로 보여 줍니다. 두 write가 한 read나 여러 조각이 될 수 있다는 도입→4바이트 길이 계약→고정 세 읽기 추적→증분 파서와 큐 backpressure→복사·view 수명→EOF·송신 완료→분할 형태 대조 순서가 독립 학습 글로 충분합니다. API 반환 바이트와 프레임 경계, MAX_MESSAGE·MAX_BUFFER, 원형 버퍼의 두 span과 소비자 수명까지 이미 설명되어 있어 유지합니다.",
+      "sha256": "c416e034f7b0aefd8e10e0f399f5acdffd33c1d6aff754ca200dbde85beae693"
+    },
+    {
+      "path": "notes/networking/wire-format.md",
+      "status": "retained",
+      "reviewBasis": "제목은 메모리 객체와 전송 바이트를 분리하는 학습 목표를 잘 잡습니다. memcpy·ABI 위험→golden bytes→길이·버퍼 검증→캐스팅과 디코딩→버전·JSON 숫자 정밀도→상호운용 검사 순서가 자연스럽습니다. 16비트 엔디언, 4바이트 길이, UTF-8 바이트 수, 2^53 경계와 부분 프레임 수명이 서로 연결되어 있어 본문 교체 없이 유지합니다.",
+      "sha256": "d9e32ba0f376320fc3a46db497b7be8b3a5d6e96b634b8eb39367d49f402965c"
+    },
+    {
+      "path": "notes/operating-systems/address-translation.md",
+      "status": "edited",
+      "reviewBasis": "제목은 세그먼트·페이징·주소 공간 태그라는 서로 다른 층을 함께 다루는 범위를 정확히 밝힙니다. 논리 영역과 물리 배치의 대비→작은 수치 변환→세그먼트 내부 페이징→TLB 태그와 전환 비용→경계 시험 순서가 좋고, 실제 플랫폼에 대한 주의도 충분합니다. 세그먼트 범위를 통과한 뒤에도 페이지 매핑과 접근 권한에서 다시 실패하는 실행 단계를 한 번 더 풀면 두 변환 모델이 더 잘 연결됩니다.",
+      "sha256": "864f7363fa67421cbf8f06692b653ed7e746cdf976fc0feb2e969bb69c12af68"
+    },
+    {
+      "path": "notes/operating-systems/cpu-scheduling.md",
+      "status": "edited",
+      "reviewBasis": "제목은 응답성·실행 예산이라는 두 관점을 잘 드러냅니다. 같은 세 작업의 FCFS·SJF 수치→비선점과 선점→Round Robin quantum→실행 시간 추정→aging·배치 예산→관측 순서가 논리적으로 안정적이고, 표와 복잡도성 수치는 유지해야 합니다. 도입에서 완료 시각만 제시된 예를 첫 실행 시점과 연결하면 응답 시간·반환 시간·대기의 차이를 독자가 바로 계산할 수 있습니다.",
+      "sha256": "8301c4905567a4e79a340da282c1041aca6e123f27f664d92db7f8fe85eee0cf"
+    },
+    {
+      "path": "notes/operating-systems/execution-boundaries.md",
+      "status": "edited",
+      "reviewBasis": "제목은 프로세스·스레드·커널 진입을 각각 다른 경계로 읽게 합니다. 주소 공간과 스택→Ready/Blocked/Running→syscall·vDSO→context switch→프로세스 재시작·공유 메모리 복구→측정 순서가 자연스럽고, 상태 표와 복구 슈도코드는 유지할 만합니다. syscall이 같은 스레드의 커널 실행으로 끝나는 경우와 블로킹 뒤 다른 runnable 스레드가 선택되는 경우를 한 번 더 나란히 적으면 syscall 수와 context switch 수의 비일대일 관계가 더 쉽게 이해됩니다.",
+      "sha256": "0de68a311e8d89e0ad8e720c5a85353d8741511721a15ee527d7b98f4ee426fe"
+    },
+    {
+      "path": "notes/operating-systems/file-state.md",
+      "status": "edited",
+      "reviewBasis": "제목은 FD 숫자, 매핑, 내구 교체를 별도 상태로 다루겠다는 범위를 잘 잡습니다. dup·별도 open·pread→mmap·COW→rename/fsync→다중 파일 manifest→장애 시험 순서가 실제 파일 수명 흐름과 맞고, 코드와 POSIX 한계 고지도 충분합니다. 이름 교체가 반쪽 파일 노출을 줄이는 단계일 뿐 내용·디렉터리 내구성을 자동 확정하지 않는다는 점을 앞에서 한 번 더 풀면 뒤의 flush/fsync 절차를 읽기 쉬워집니다.",
+      "sha256": "f795bd22ce38259ce7338c528a555e69f364eb578746e855964c185ce68607ef"
+    },
+    {
+      "path": "notes/operating-systems/memory-accounting.md",
+      "status": "edited",
+      "reviewBasis": "제목은 heap·RSS·단편화·보유 공간을 혼동하지 않게 잘 정리합니다. 객체 해제와 페이지 반환→지표 표와 PSS 수치→연속 공간·size class→대형 페이지→cgroup file/anonymous memory→누수 대조 부하 순서가 좋고, 각 숫자와 실행 한계도 정확히 남아 있습니다. 컨테이너 limit보다 heap만 작게 보이는 상황이 왜 안전하지 않은지를 영역별 peak와 연결해 한 번 더 적으면 실제 진단 순서가 더 분명해집니다.",
+      "sha256": "4e443acdf7e636facd1cd94c4f088e7c3bef949f37f7224233fac7a0075f9a86"
+    },
+    {
+      "path": "notes/operating-systems/numa.md",
+      "status": "edited",
+      "reviewBasis": "제목은 NUMA에서 작업·페이지·객체 소유를 함께 봐야 한다는 핵심을 담습니다. first-touch 예제→작업과 페이지 이동→노드별 풀→원격 메모리와 거짓 공유→동일 작업 집합 측정 순서가 논리적으로 좋고, 표는 선택지의 trade-off를 압축해 보여 줍니다. 작업 이동과 페이지 이동의 비용을 노드 0·1의 구체 상태로 연결하면 유휴 코어만 보고 이동하는 판단을 피하기가 더 쉽습니다.",
+      "sha256": "f97f9f96802165692a173b41bed1b5a75005f4d76907512bc01925a1425d0416"
+    },
+    {
+      "path": "notes/operating-systems/page-replacement.md",
+      "status": "edited",
+      "reviewBasis": "제목은 페이지 교체 알고리즘과 작업 집합 부족을 함께 보되 근사와 지속 압박을 구별합니다. cold fault와 thrashing의 도입→FIFO·LRU·Clock 표→Clock의 비트 처리→작업 집합→fault·writeback 측정→동일 참조열 비교 순서가 안정적이며, Belady anomaly와 실행 한계도 보존해야 합니다. 세 작업의 4페이지와 8프레임 수치를 실제 재접근 순서와 연결하면 알고리즘을 바꾸기 전에 동시 실행 예산을 봐야 하는 이유가 더 직접적으로 드러납니다.",
+      "sha256": "bb42b03c573495b6bcd0ede89c9508e7db568474dda45fdf95e163346f80df86"
+    },
+    {
+      "path": "notes/operating-systems/virtual-memory.md",
+      "status": "edited",
+      "reviewBasis": "제목은 TLB miss와 페이지 폴트를 구별한다는 학습 목표를 직접 보여 줍니다. 첫 접근의 minor fault 상황→주소 분해 계산→TLB·페이지 테이블 경로→fault 종류 표→반복 측정→작업 집합과 큰 페이지→원인 대조의 흐름이 자연스럽고, 모형 수치와 실행 한계도 잘 보존되어 있습니다. TLB miss 뒤 유효한 page-table entry를 찾는 경로가 fault 없이 이어질 수 있다는 점을 한 문단에서 더 직접적으로 연결하면 핵심 대비가 선명해집니다.",
+      "sha256": "ab50350eb059a98368da73f1ba81a10e5c72f3ba4852d420238ec592fd0deb82"
+    },
+    {
+      "path": "notes/performance/broker-progress.md",
+      "status": "edited",
+      "reviewBasis": "핵심 경계와 중간 계산은 유지합니다. 원문은 12행에서 \"offset 100을 worker에게 넘기자마자 101을 commit하고 worker가 외부 결제를 아직 기다리면 broker 관점의 commit lag는 줄어도 업무는 미완료입니다.\"라고 commit과 외부 효과의 순서를 설명하고, 25행에서 \"로그 끝이 200, fetch position이 190, commit이 180, 업무가 연속 완료된 다음 위치가 160이라면 각각 fetch 차이 10·commit 차이 20·업무 경계 차이 40입니다.\"라고 차이를 실제 숫자로 계산합니다. 21행의 LSO와 exporter가 사용하는 offset은 정의와 확인 절차를 조금 보강하고, 45행은 나열된 장애 상황을 어떤 순서로 대조할지 드러내는 편이 좋습니다.",
+      "sha256": "d537c812695db5c4f9e7156e8c9eaed9bddd5bd8cd889e2f2097134e5182fb0a"
+    },
+    {
+      "path": "notes/performance/cache-freshness.md",
+      "status": "edited",
+      "reviewBasis": "부재와 freshness의 핵심 작동은 유지합니다. 12행은 \"부재 캐시**(negative cache)는 조회가 성공했고 대상이 없었다는 결과를 짧게 저장합니다.\"라고 negative cache를 정의하고, 25행은 \"시각 1에 조회 A가 없음으로 읽고, 시각 2에 생성 B가 commit·cache 삭제를 마친 뒤, 시각 3에 A가 부재를 cache에 쓰면 새 상품이 다시 가려집니다.\"라고 늦은 refill의 순서를 보여 줍니다. 29행의 fresh/stale/expired 반환 경계와 41행의 최신 version 조건부 갱신도 실제 정책을 설명하므로 유지하고, sentinel·key generation/version·singleflight가 무엇을 비교하거나 합치는지 세 문단에서 보강합니다.",
+      "sha256": "a2f50f7783f97e783429d5f916f667ea2a8b870d6503ca77726943461f1d6327"
+    },
+    {
+      "path": "notes/performance/cacheline-layout.md",
+      "status": "edited",
+      "reviewBasis": "false sharing과 데이터 배치의 핵심 원리는 이미 실제 작동까지 설명합니다. 12행은 \"논리 변수는 다르지만 coherence 단위를 공유하는 것이 false sharing입니다. 같은 counter 하나를 원자 증가하는 true sharing과 구분합니다.\"라고 두 현상을 구분하고, 41행은 \"위치를 대량 갱신할 때 큰 AoS는 필요 없는 필드를 cache line에 함께 가져올 수 있고 SoA는 연속 데이터·SIMD에 유리할 수 있습니다.\"라고 배치 선택의 이유를 설명합니다. 47행의 \"SoA에서 삭제 후 마지막 원소를 옮기면 모든 필드 배열의 같은 인덱스가 같은 객체를 가리켜야 합니다.\"도 수명과 ID 불변식을 잘 보여 주므로 유지하고, coherence 작동·miss 실험·AoSoA 정의만 보강합니다.",
+      "sha256": "46bcdc31cd2ee80bae405ab0a291cc4ec751acb7c07d83452d62b25b7722f6b4"
+    },
+    {
+      "path": "notes/performance/hedged-read.md",
+      "status": "edited",
+      "reviewBasis": "헤지의 시작 조건과 승자 선택은 이미 구체적입니다. 12행은 \"80ms까지 유효 응답이 없을 때 B replica로 보조 요청을 보내 먼저 얻은 유효한 결과를 사용할 수 있습니다.\"라고 임계 지연 뒤의 실제 흐름을 보여 주고, 37행은 \"취소 요청을 보내고 완료 callback·연결 정리·자원 반환을 확인한 뒤 물리 permit을 해제합니다.\"라고 취소의 종료 조건을 설명합니다. 43행의 지표와 주입 시나리오도 보존하며, read-your-writes token·상관된 병목·permit의 의미를 문장 안에서 풀어 씁니다.",
+      "sha256": "079e26d1d02740109c41ab0f2303254289287bcc6ac2044eaf444b5be84af0a8"
+    },
+    {
+      "path": "notes/performance/latency-capacity.md",
+      "status": "edited",
+      "reviewBasis": "처리량·지연·Little의 법칙·Amdahl의 수치와 경계는 유지 가치가 높습니다. 원문은 18행에서 \"초당 100개가 평균 0.2초 머무르면 평균 20개입니다.\"라고 L=λW를 계산하고, 42행에서 \"s=0.2면 p=2에서 약 1.67배, p=4에서 2.5배, 무한 병렬에서도 5배가 한계입니다.\"라고 병렬화 한계를 중간 수치로 보여 줍니다. 30행의 nearest-rank와 32행의 histogram 계열은 숫자를 합치는 실제 경로와 용어 정의를 보강하되, 1000개/1개·10ms/1000ms·505ms 및 bucket 오차 조건은 그대로 둡니다.",
+      "sha256": "74b2b31f4983636d19fb391f97c0cb4b5c2d99b0c6b5b36c427a7968aa9744b1"
+    },
+    {
+      "path": "notes/performance/load-model.md",
+      "status": "edited",
+      "reviewBasis": "부하 모델의 가장 어려운 구간인 coordinated omission과 soak 진단은 실제 예시와 한계를 갖추고 있습니다. 23행은 \"서버가 10초 멈췄을 때 한 closed 사용자도 10초 기다리면 새 요청을 만들지 않습니다. 실제 도착률 100/s가 계속되는 상황을 평가하려 했다면 그동안 도착할 1000개 요청의 대기를 측정하지 못합니다.\"라고 누락 계산을 보여 주고, 29행은 생성기 포화와 예정/실제 발송을 분리합니다. 45행의 \"예열·cache가 한도에 수렴하거나 큰 buffer가 pool에 남아 RSS가 유지될 수 있습니다.\"와 47행의 GC 후 RSS 해석도 유지하되, 입력 변수·시나리오·RSS/retained의 의미를 실제 절차에 맞게 풀어 씁니다.",
+      "sha256": "414c9b3924f58ed7ec934313b7aad5519fd8b60e5f30cfc89a2a9b1688a52892"
+    },
+    {
+      "path": "notes/performance/memory-headroom.md",
+      "status": "edited",
+      "reviewBasis": "메모리 예산과 수명 경계는 이미 반례를 통해 잘 드러납니다. 27행은 \"GOMEMLIMIT는 Go 런타임이 관리하는 메모리의 소프트 한도입니다.\"라고 정의하고 runtime 밖 부담을 분리하며, 29행은 \"한도 1GiB에서 관측된 비Go·기타 부담과 peak 여유가 250MiB라면 그만큼을 고려한 더 낮은 runtime 목표를 시험할 수 있지만 고정 권장 비율은 아닙니다.\"라고 수치와 비보장 조건을 함께 둡니다. 45행의 \"I/O callback이 아직 buffer를 읽는데 사용자 timeout으로 풀에 반환하면 새 요청이 같은 메모리를 덮을 수 있습니다.\"도 핵심 수명 반례이므로 유지하고, cgroup/throttling과 객체 풀의 size class만 쉽게 풉니다.",
+      "sha256": "b829df8b9a650cb982f9cf7a851536048f6ba674ab4087104549d59aeb6686ce"
+    },
+    {
+      "path": "notes/performance/metric-budget.md",
+      "status": "edited",
+      "reviewBasis": "cardinality 예산 계산과 관측 신호의 역할 분리는 유지합니다. 14행은 \"route 20×status 5×instance 10이면 최대 1000개 조합입니다. bucket 10개(무한 bucket 포함으로 가정)에 sum·count 2개를 가진 classic histogram이면 약 12,000개 시계열이 됩니다.\"라고 중간 곱셈을 명시하고, 31행은 \"느린·실패·대표 정상 요청 일부를 histogram 표본에서 trace로 이어갈 수 있습니다.\"라고 exemplar의 사용 지점을 설명합니다. 39행의 큰 tenant와 작은 tenant 실패 반례와 41행의 고유 ID hash 한계도 유지하며, cardinality와 exemplar의 정의만 문장 안에 넣습니다.",
+      "sha256": "b2ab1b826fd54646eb7d7fad04555fa201970c5ba8db51576d7e3e5dfb5f5465"
+    },
+    {
+      "path": "notes/performance/redis-bounded-cleanup.md",
+      "status": "edited",
+      "reviewBasis": "핵심 교체 구간은 big key의 비용 경로, 발견 뒤 삭제 경쟁, 재시작 예산입니다. notes/performance/redis-bounded-cleanup.md:12의 \"key 100만 개와 field 100만 개를 가진 hash 하나는 다른 문제입니다.\"는 구분을 제시하지만 big key의 뜻과 메모리에서 삭제까지 이어지는 작동 경로가 압축되어 있어 보강합니다. :32의 \"정리 A가 `job:7`의 오래된 version 3을 발견한 뒤 B가 version 4로 갱신하면 A의 늦은 DEL이 새 상태를 지울 수 있습니다.\"는 반례가 분명하므로 GET·DEL 경쟁과 원자적 재검사의 순서를 풀어 씁니다. :48의 기록·재시작·throttle 목록도 실제 운영 순서가 드러나도록 다듬습니다. 반면 :18의 \"SCAN cursor는 불투명한 순회 상태입니다.\"와 :20의 \"전체 순회 내내 존재한 원소는 반환된다는 보장이 있지만 중복이 가능하고 순회 도중 추가·삭제된 항목은 반환 여부를 일반적으로 보장하지 않습니다.\"는 cursor 종료·중복·변경 중 보장을 직접 설명합니다. :38의 원자 구간, :42의 \"UNLINK는 keyspace에서 제거하고 적절한 해제를 background로 넘겨 긴 동기 해제 부담을 줄일 수 있습니다.\", :50의 테스트 경계도 중간 작동과 한계를 이미 보여 주므로 유지합니다. 표·diagram·H2·frontmatter는 교체하지 않습니다.",
+      "sha256": "2537ea0eee279bef929015429d8a98080e080efc677e0fb0f7069babb049b1bf"
+    },
+    {
+      "path": "notes/performance/subscriber-budget.md",
+      "status": "edited",
+      "reviewBasis": "핵심 교체 구간은 Core NATS의 유실 경로, pull batch의 실제 bytes 계산, 공유 consumer의 Ack 예산입니다. notes/performance/subscriber-budget.md:12의 \"메시지를 초당 1000개 받는데 callback이 600개만 처리하면 400개/s가 어딘가에 누적되거나 유실됩니다.\"는 수지 계산과 대기 계층을 이미 보여 주고, :18의 bounded queue·worker·bytes·deadline과 queue group의 보장 범위도 유지합니다. :39의 \"효과 전에 Ack하면 crash로 업무를 잃을 수 있고, 효과 뒤 Ack가 유실되면 재전달되므로 내구 dedup·idempotent effect가 필요합니다.\"와 :43의 유실·redelivery·업무 성공 분리 및 shutdown 경계도 실제 결과를 설명하므로 유지합니다. 반면 :14는 구현·설정별 동작을 ‘확인합니다’로 남기고, :29는 1000×1MiB 계산과 pull 동시성의 곱을 한 문단에 압축하며, :37은 공유 consumer의 제한 단위를 오해하기 쉽습니다. 표·diagram·H2·frontmatter는 교체하지 않습니다.",
+      "sha256": "32c6b8bbeb9a626bc332b3ab52f707814f695825d2abc14b45ec86e9348aacbd"
+    },
+    {
+      "path": "notes/performance/trace-wait-evidence.md",
+      "status": "edited",
+      "reviewBasis": "핵심 교체 구간은 On-CPU·Off-CPU의 관측 방법, lock wait와 hold의 원인 연결, 계측 실험 순서입니다. notes/performance/trace-wait-evidence.md:12의 \"DB 작업 span이 800ms인데 pool acquire=750ms, query=50ms라면 SQL 최적화만으로 큰 개선을 얻기 어렵습니다.\"와 :14의 병렬 A=100ms·B=300ms critical path 설명은 계산과 해석 기준이 분명해 유지합니다. :42의 \"여러 producer 요청의 메시지를 한 batch로 처리하면 batch span에 한 parent만 고르면 나머지 인과가 사라집니다.\", :48의 clock skew 반례, :54의 head/tail sampling 결정 시점, :56의 전체 RED 지표와 trace 표본 분리는 어려운 후반부의 작동 근거가 충분하므로 유지합니다. 반면 :26은 profile 종류와 대조 대상이 나열되고, :36은 획득 시도부터 해제까지의 기록 목적이 압축되며, :60은 합성 실험을 ‘분리합니다’로 끝내 실제 순서를 숨깁니다. 표·diagram·H2·frontmatter는 교체하지 않습니다.",
+      "sha256": "9b307f104e6706b706d2a4b576cc8e8c88dd4b959bff337cf83e7a8638d18e37"
+    },
+    {
+      "path": "notes/security/account-linking.md",
+      "status": "edited",
+      "reviewBasis": "핵심 원리는 유지합니다. 원문의 “이 두 문자열의 일치는 공급자가 같은 사람을 같은 신뢰 수준으로 확인했다는 증거가 아닙니다.”가 이메일 일치와 소유권 증명을 분리하고, 코드의 `insert external_identity(P, S, A) with unique(P, S)`가 저장 경계의 유일성을 보여 주므로 그대로 둡니다. 다만 issuer·subject, purpose·state, 보안 버전이 시작부터 callback과 세션 재평가까지 어떻게 묶이는지 더 자연스럽게 읽히도록 세 문단을 교체합니다.",
+      "sha256": "933b0638b812997e3f69382abc2b0890d7549683be037b9cf4025f3ef9618320"
+    },
+    {
+      "path": "notes/security/account-recovery.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “복구는 편의 기능만이 아니라 계정의 접근 수단을 바꾸는 권한 상승 흐름입니다.”가 복구의 위험을 정의하고, 표의 “토큰 소비와 한 변경을 같은 거래로 확정”과 코드의 `mark reset_record consumed`가 원자 전환을 보여 주므로 해당 앵커는 유지합니다. 토큰과 비밀번호의 저장 차이, URL 토큰의 노출 경로와 GET 스캐너, 비싼 해시와 최종 소비 재확인의 실제 작동을 세 문단에서 덜 압축해 제안합니다.",
+      "sha256": "44a955b2772754add83fccd32587a150968304f6212d27c73d60bda4dafda534"
+    },
+    {
+      "path": "notes/security/authentication.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “누구인지 확인하는 과정을 인증, 특정 대상에 특정 행동을 허용할지 결정하는 과정을 인가라고 합니다.”가 기본 개념을 정의하고, 슈도코드의 `tenant_id`·`owner_id` 조회와 `expected_version` 갱신이 주체 범위를 실행까지 보존합니다. 또한 “정책 결정점인 PDP는 주체·행동·대상·정책 버전으로 허용 여부를 계산하고, 정책 집행점인 PEP는 실제 API·DB·파일 접근 직전에 그 결과를 강제합니다.”가 PDP·PEP의 역할을 정의하므로 그대로 둡니다. 조회 후 상태 경쟁, 결정 캐시 문맥, 역할 회수와 실행 사이의 틈만 세 문단에서 중간 작동을 더 선명하게 제안합니다.",
+      "sha256": "054813ad012c46357f2865a9893c34d047799e507c47270ad950a4f7e655e241"
+    },
+    {
+      "path": "notes/security/browser-request-security.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “CSRF와 XSS는 한 설정으로 함께 해결되는 문제가 아닙니다.”가 자동 쿠키 요청과 같은 origin의 코드 실행을 나누고, “HTML 본문·속성·URL·JavaScript 문자열은 다른 문법입니다.”가 출력 문맥별 방어를 정의하므로 해당 설명과 다이어그램은 유지합니다. 대신 site·origin 관계, 브라우저별 SameSite 확인, CSRF 토큰 검증, sanitizer와 URL 스킴 검사의 실행 단계를 네 문단에서 더 직접적으로 제안합니다.",
+      "sha256": "4d6957caa7b3cfe7c1d0e3c98751c84d7776b95fb33e36bc0d81b332d16fbb9b"
+    },
+    {
+      "path": "notes/security/device-authorization.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “기기가 이미 사용자로 인증됐다는 가정은 필요하지 않습니다.”가 승인 주체와 기기 요청을 분리하고, 표의 pending→approved→issued→received 상태가 전이 구조를 보존합니다. interval·slow_down의 polling 동작과 발급 직후 응답 유실·재전달의 한계를 실제 순서로 읽히도록 세 문단을 제안하며, device_code/user_code 구분과 기기 자격 보관 원칙은 유지합니다.",
+      "sha256": "cadbc4843d615df3761bc5c3fe2f1dff5fceb3737525fb64bdaf492555e613c2"
+    },
+    {
+      "path": "notes/security/early-data-replay.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “기밀성과 무결성이 있다고 논리 요청이 한 번만 실행되는 것은 아닙니다.”가 전송 보안과 업무 효과를 분리하고, 다이어그램의 “공통 업무 상태의 멱등 경계”가 여러 서버 실행 경계를 잇는 핵심을 보여 주므로 그대로 둡니다. anti-replay 상태의 실제 공유 범위와 dedupe 기록·상태 변경의 원자 연결을 두 문단에서 정의와 중간 결과 중심으로 제안합니다.",
+      "sha256": "2b1d1b5255a89c80c25b5d6941a4e9c2750e6e18ff30e6a613f2b834a608a19e"
+    },
+    {
+      "path": "notes/security/file-publication.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “둘 다 클라이언트가 지정한 주장입니다.”가 파일명·MIME의 신뢰 경계를 분명히 하고, 표의 “정규화 후 열기 | 검사 뒤 symlink 교체 | directory-relative 접근·안전한 OS 옵션”이 경로 경쟁의 원인과 방어를 압축해 보여 주므로 유지합니다. 디렉터리 기준 접근과 객체 버전 경쟁을 두 문단에서 실제 파일 선택·공개 순서로 풀어 제안합니다.",
+      "sha256": "34499ce7109c3461625065abe8eca2d7a10efde90be8d33aa226807027ea308a"
+    },
+    {
+      "path": "notes/security/http-boundary-validation.md",
+      "status": "edited",
+      "reviewBasis": "원문의 “request smuggling의 핵심은 이 메시지 경계 불일치입니다.”가 서로 다른 길이 해석의 핵심 개념을 직접 정의하고, 다이어그램의 “각 계층의 길이·헤더·프로토콜 변환 해석이 일치해야”가 프런트와 backend의 공통 경계를 제시하므로 그대로 둡니다. 다중 프록시의 전달 헤더 신뢰와 모호한 HTTP 파서 입력의 처리 결과를 두 문단에서 실행 순서로 제안합니다.",
+      "sha256": "66d60118e30c4cc0dbc3d8c4299902b9da2b95a97ff5039f32fa23c2f6d8d7ef"
+    },
+    {
+      "path": "notes/security/input-object-boundary.md",
+      "status": "edited",
+      "reviewBasis": "첫 H2의 사례와 표는 파싱→스키마→내부 객체→인가의 경계를 순서대로 보여 줍니다. 특히 \"파서에서 중복 키를 앞값으로 읽고 뒤의 검증기가 뒷값으로 읽는 등 해석이 갈리면 같은 바이트가 다른 의미가 됩니다.\"와 \"보안 역할을 입력에서 복사하지 않고 서버의 principal에서 주체를 가져오는 것이 핵심입니다.\"가 입력 해석과 주체 결합의 중간 작동을 설명하므로 유지합니다. 다만 일반 객체 직렬화·복원 후크, 중복 키·수치 계약, prototype과 own property의 관계가 각 문단에 압축되어 있어 세 문단만 교체하고 코드·표·diagram·자원 상한·반례 테스트는 구현 앵커로 보존합니다.",
+      "sha256": "7b3dcaf2c979f226cb7d861ca4570219c2671e7f1c1e55b13b91f017769fdbc8"
+    },
+    {
+      "path": "notes/security/key-rotation.md",
+      "status": "edited",
+      "reviewBasis": "표의 준비→전환→대기→제거 순서와 \"K1 제거 시각은 계획상 전환 시각이 아니라 **마지막 실제 K1 발급**과 검증기가 허용하는 최대 토큰 수명·시계 오차를 기준으로 봅니다.\"라는 문장이 교체 완료 조건을 실제 수명 계산에 연결하므로 유지합니다. 대칭 API 키의 별도 절차, 유출 시 중첩 기간을 쓰지 않는 반례, 기존 유효 키를 빈 값으로 덮지 않는 제한, 코드 fence와 테스트 문단도 보존합니다. `kid`와 singleflight·negative cache가 한 구간에 몰려 있으므로 두 문단만 교체합니다.",
+      "sha256": "70c92922e0d60cc2cc6480988545e4c0e522f31db563f7cd9217c06170095210"
+    },
+    {
+      "path": "notes/security/login-transaction.md",
+      "status": "edited",
+      "reviewBasis": "state·PKCE verifier·nonce의 결합 대상을 표로 나누고, \"PKCE의 S256 challenge는 `BASE64URL(SHA256(verifier))`입니다.\"와 \"서버가 교환 응답을 받기 전에 중단되면 provider에서는 code가 이미 소비됐을 수 있습니다.\"가 각각 계산과 실패 시 상태를 설명하므로 유지합니다. 공급자 설정에서 issuer·redirect URI를 선택하는 문단, ID token의 audience·시간·authorized party 조건, 코드 교환 전후 실패 테스트와 로그 비노출 조건도 구현 앵커입니다. state와 nonce의 저장·대조 절차만 실제 callback 순서가 보이도록 한 문단을 교체합니다.",
+      "sha256": "961dd60454036c181a4be7f10b9641ab2bf4e180d5b4c5c0a0992f91dbee1769"
+    },
+    {
+      "path": "notes/security/nats-authorization.md",
+      "status": "edited",
+      "reviewBasis": "첫 사례와 표가 subject 이름, `*`·`>` wildcard, publish/subscribe, queue group을 서로 다른 권한으로 나누고, \"명명 규칙은 경계를 표현하고, broker의 account·사용자 자격·publish/subscribe 권한이 경계를 강제합니다.\"라고 실제 강제 지점을 짚으므로 유지합니다. 기존 연결 회수의 불확실성을 \"자격 파일을 바꿨다고 장기 TCP 연결이 즉시 모든 구독을 멈춘다는 보장은 없습니다.\"로 제한한 문단과 교차 경계 테스트도 보존합니다. account의 export/import 흐름과 동적 reply 권한은 제품 용어가 갑자기 이어지므로 두 문단만 구체화합니다.",
+      "sha256": "2ce8c88a850dbdd8af115f8c6e6290e5fd325893cc98589e0ffbdd3fde1d3dd4"
+    },
+    {
+      "path": "notes/security/passkey-binding.md",
+      "status": "edited",
+      "reviewBasis": "origin·RP ID·challenge·credential ID 표와 \"일반적인 WebAuthn assertion에서 검증 서명 입력은 `authenticatorData || SHA256(clientDataJSON)`입니다.\"가 사이트 바인딩의 입력과 계산을 구체적으로 보존합니다. 등록을 기존 계정의 소유권 변경으로 보는 문단, 동기화 자격의 카운터를 무조건 증가한다고 가정하지 않는 제한, 세션 탈취·복구의 분리도 핵심 반례입니다. relying party 용어와 challenge 소비·UP/UV 조건이 한 문단에 압축되어 있어 두 문단을 교체하고 formula·diagram·테스트 조건은 건드리지 않습니다.",
+      "sha256": "932aad496d92f53532a1cfee927e28b83c4c44b41ad871036efc1ed484d9044c"
+    },
+    {
+      "path": "notes/security/password-verification.md",
+      "status": "edited",
+      "reviewBasis": "salt·반복/시간·메모리·pepper 표가 각 구성의 역할과 해결하지 못하는 문제를 나누고, \"원문 없이 모든 구 해시를 일반적인 새 비밀번호 해시로 일괄 바꿀 수는 없습니다.\"가 정책 전환의 근본 한계를 정확히 잡으므로 유지합니다. 재해시의 `UPDATE ... WHERE credential_version = expected` 조건, 장기 미접속 계정의 별도 전환, 벤치마크 전 확정 금지와 테스트 문단도 구현·운영 한계로 보존합니다. 알고리즘 비교와 40×64 MiB 산술이 한 문단에 압축되어 있어 두 문단만 풀어 씁니다.",
+      "sha256": "39f8db8f68179e1ec1a11f05339be7ee1ff534582b6d13c6305a9d0911d7614b"
+    },
+    {
+      "path": "notes/security/presigned-capability.md",
+      "status": "edited",
+      "reviewBasis": "첫 사례와 표가 URL을 가진 사람의 bearer 권한과 현재 로그인 인가를 분리하고, \"객체 키를 사용자가 요청했다고 그대로 서명하지 않습니다.\"가 발급 시 서버가 대상과 행동을 고르는 실제 방법을 제시합니다. 만료 시 이미 전달한 바이트를 회수하지 못하는 한계, CDN cache key와 원본 인증의 차이, 업로드 quarantine·실제 바이트 검사, URL 공유·진행 중 전송 테스트는 제품별 조건을 보존해야 하므로 유지합니다. bearer 의미가 첫 문단에서 추상적으로 소개되어 한 문단만 교체합니다.",
+      "sha256": "0fb48ee7c1f9edb99b9fd0c4653aa51daed3825f22f0a3e3b8acfd1599f290b8"
+    },
+    {
+      "path": "notes/security/refresh-rotation.md",
+      "status": "edited",
+      "reviewBasis": "두 탭에서 R7이 경쟁하는 사례와 \"회전은 갱신 성공 때 이전 토큰을 소비하고 후속 토큰으로 바꾸는 과정입니다.\"가 회전과 재사용 탐지의 출발점을 명확히 합니다. 트랜잭션 슈도코드의 조건부 전이, 해시만으로 R8을 재전달할 수 없는 이유, 제한적 결과 재전달 표, family 회수와 access token 잔여 수명의 분리는 핵심 작동과 한계를 그대로 유지해야 합니다. family 상태와 암호화 결과 재전달이 압축되어 있으므로 두 문단만 교체하고 code fence·diagram·수치·정책 분기는 보존합니다.",
+      "sha256": "0378854852e2769c261689d8bd0798b763a3450cecb24426a70f12126aca8a28"
+    },
+    {
+      "path": "notes/security/secret-delivery.md",
+      "status": "edited",
+      "reviewBasis": "핵심 경계는 유지합니다. ‘Kubernetes의 Secret volume 갱신은 전파 지연이 있으며 subPath 마운트는 자동 갱신 대상이 아닌 제약이 있습니다.’는 플랫폼 갱신 한계를 정확히 설명하고, ‘이미 회수됐다는 신호가 있으면 저장소가 불안정하다는 이유로 옛 자격을 다시 살리지 않습니다.’는 마지막 정상값 정책의 안전 한계를 분명히 하므로 앵커로 보존합니다. 다만 소비자가 실제로 옛 키를 계속 쓰는 경로와 10분·3분 stale 계산이 압축되어 있어 세 문단을 구체적인 실행 순서로 교체합니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "12fa772f7a5a0249f067d0b5a7fa88243a6a4c82e7445f15c987e73f1e9af6b4"
+    },
+    {
+      "path": "notes/security/server-url-fetch.md",
+      "status": "edited",
+      "reviewBasis": "목적지 검증의 층위는 유지합니다. ‘허용한 주소에 실제 연결을 결합하고, 재시도·다중 A/AAAA 후보도 모두 같은 검사를 적용해야 합니다.’는 DNS 검사와 연결을 분리하면 안 되는 핵심을 담고 있고, ‘Content-Length가 없거나 거짓일 수 있으므로 실제 읽은 바이트와 해제 후 크기를 제한합니다.’는 응답 예산의 실제 한계를 설명하므로 유지합니다. SSRF 정의, 파서 결과, 프록시 경로, redirect hop의 실행 순서를 네 문단에서 보강합니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "afccda3aa8e910f5d7670c9b667f18b28cf70382e8d4ff1a35c8f0dc70c48461"
+    },
+    {
+      "path": "notes/security/session-authority.md",
+      "status": "edited",
+      "reviewBasis": "자격 형식과 현재 권위 상태를 분리하는 원리는 유지합니다. ‘서명은 발급 당시 주장에 대한 무결성 근거이지 계정의 현재 상태를 실시간으로 바꾸는 장치가 아닙니다.’는 JWT의 한계를 정확히 정의하고, 표의 ‘회수 단위 | 토큰, 기기 세션, 계정 | 기존 실행의 중단’은 회수 범위와 실행 중 작업을 분리하므로 보존합니다. 동시 회수의 누락 사례, replica·cache의 20초+60초 계산, TOCTOU와 진행 중 작업의 경계를 세 문단에서 실행 순서로 보강합니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "f217808260cdcec3b3bf7bc322b327f52b175180ce34d342dc7d98274400a107"
+    },
+    {
+      "path": "notes/security/tls-trust.md",
+      "status": "edited",
+      "reviewBasis": "TLS 신뢰와 애플리케이션 인가를 나누는 설명은 유지합니다. 특히 ‘SNI는 서버가 어떤 인증서를 낼지 선택하는 힌트이며 hostname 검증을 대신하지 않습니다.’는 이름 검증의 역할을 정확히 구분하고, ‘pin 실패 시 일반 검증을 끄거나 동일한 실패 채널에서 받은 새 pin을 무조건 신뢰하면 공격자가 복구를 가장할 수 있습니다.’는 pinning 복구의 공격 경계를 설명하므로 보존합니다. 다만 TLS 1.3 재개와 인증서 교체 때 열린 연결의 상태가 나열되어 있어 두 문단만 실제 연결 시점으로 풀어 씁니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "ee9d387b862724f332aaf1df41eb87c128181885893bc2e95a14ee4c32fa0673"
+    },
+    {
+      "path": "notes/security/webhook-intake.md",
+      "status": "edited",
+      "reviewBasis": "서명과 중복·상태 전이를 분리하는 원리는 유지합니다. ‘서명은 지정된 키로 발급된 메시지의 무결성과 출처 근거를 확인합니다.’는 서명의 역할을, ‘worker가 이벤트 ID만 먼저 처리 완료로 저장하고 원장 쓰기 전에 죽으면 재시도가 효과를 건너뜁니다.’는 처리 마커와 원장 변경의 순서를 정확히 설명하므로 그대로 둡니다. inbox·ACK의 관계만 내구 접수의 실제 의미가 보이도록 한 문단에서 보강하고, outbox 용어는 후속 전달용 기록으로 짧게 풀어 씁니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "d2c2b47ba6caa777c11f5597cb24084b6b2975981871f18c72f586c433aadbe5"
+    },
+    {
+      "path": "notes/security/workload-policy.md",
+      "status": "edited",
+      "reviewBasis": "두 접근 경계를 나누는 설명은 유지합니다. ‘NetworkPolicy는 지원하는 네트워크 구현에서 선택된 Pod의 ingress·egress를 제한합니다.’와 ‘ServiceAccount는 workload의 API 신원을 나타내며, 그 신원이 어떤 verb·resource·namespace에 접근하는지는 RBAC 등 인가가 결정합니다.’가 네트워크 도달과 API 권한을 각각 정의하고, ‘Secret 읽기는 다른 자격을 얻는 간접 권한입니다.’가 권한 확장 경로를 설명하므로 앵커로 보존합니다. 정책 합집합·peer 결합, projected token 재읽기, Kubernetes 토큰과 workload identity의 분리를 네 문단에서 실제 판단 순서로 보강합니다. frontmatter, H2, 표, diagram, code fence는 건드리지 않습니다.",
+      "sha256": "50cfd6d885d87bde746f88094a4a77e34b9513b12264dc5fecb344666591b16c"
+    },
+    {
+      "path": "notes/web/browser-navigation.md",
+      "status": "edited",
+      "reviewBasis": "유지: “fragment는 일반적으로 HTTP 요청 대상에 포함되지 않고 문서 내부 위치 등 클라이언트 처리에 사용됩니다.”(L18)는 URL 구성요소의 경계를 정확히 설명하고, “캐시와 기존 연결이 있으면 여러 단계가 생략되므로 첫 방문과 재방문의 시간표는 다릅니다.”(L14)는 cold·warm 비교의 이유를 설명합니다. 또한 “Service Worker가 요청을 가로채 자체 응답을 만들면 일반 HTTP 캐시만 보고 원인을 판단하기 어렵습니다.”(L48)와 “콘텐츠 표시 지표, 전체 다운로드 완료, 이벤트 핸들러 준비와 사용자 입력 응답은 별도로 기록합니다.”(L50)는 원인 추적의 실제 경계를 제공하므로 유지합니다. 교체는 HTTPS 연결 단계의 역할, 재사용과 TLS resumption의 차이, waterfall 중간 계산을 상황과 실행 순서로 풀어 읽기 쉽게 만드는 데 집중합니다.",
+      "sha256": "98c473bc603aab18f14cb381e57a6243dad7cfd3a682119ae676a246e41f5808"
+    },
+    {
+      "path": "notes/web/cors.md",
+      "status": "edited",
+      "reviewBasis": "유지: “CORS는 브라우저가 집행하는 교차 출처 응답 접근 규칙이지 서버 간 호출을 막는 방화벽이 아닙니다.”(L14)는 CORS의 보호 범위를 정확히 제한하고, CORS·인증·인가·CSRF를 표로 나눈 장치별 질문(L52-L57)은 유용한 비교 구조라 보존합니다. “CORS 허용이 있어도 SameSite·Secure·브라우저의 제3자 쿠키 제한 등 별도 규칙으로 쿠키가 전송되지 않을 수 있습니다.”(L50)와 “브라우저 preflight 캐시와 일반 HTTP 캐시를 같은 저장소라고 생각하지 않습니다.”(L65)도 혼동하기 쉬운 작동 경계를 충분히 설명합니다. 교체는 preflight의 실제 순서, safelisted 조건의 판정 범위, 장애 재현 절차를 구체적인 흐름으로 바꿉니다.",
+      "sha256": "6fecae936ca59431fe7c496e0de73fe42d6c7a97498c37d5b076d0bab59ff9e0"
+    },
+    {
+      "path": "notes/web/css-cascade.md",
+      "status": "edited",
+      "reviewBasis": "유지: “상속은 자식의 값이 결정되지 않을 때 적용되는 별도 과정입니다.”(L12)는 부모 선택자와 자식 선언의 혼동을 풀어 주는 핵심 정의입니다. 레이어 표와 “important는 레이어 순서가 뒤집힙니다.”(L41)는 일반·important의 반대 방향을 보존하고, “initial은 ‘브라우저가 이 태그에 보통 주는 스타일로 복귀’가 아닙니다.”(L59)는 UA 스타일과 명세 초기값의 차이를 정확히 남깁니다. 교체는 cascade 후보를 어떤 순서와 조건으로 추적하는지, 마지막 테스트를 실제 도구 사용 순서로 바꿉니다.",
+      "sha256": "5d6b72135dc7f42ea323bae8191c15567e6378608b2599b85698c4b61fe9f0c0"
+    },
+    {
+      "path": "notes/web/css-reset.md",
+      "status": "edited",
+      "reviewBasis": "유지: “Reset은 선택한 기본 표현을 제거하고 제품이 다시 정하도록 하는 접근이고, normalize는 유용한 기본값을 남기면서 차이를 보정하는 접근입니다.”(L14)는 두 전략의 정의를 정확히 구분합니다. 코드 뒤의 “box-sizing은 상속되는 속성이 아니므로 필요한 요소와 가상 요소에 직접 적용합니다.”(L38)와 “outline을 지우려면 동등하게 식별 가능한 대체 포커스가 있어야 합니다.”(L54)는 선언이 실제 동작에 미치는 중간 이유를 설명하므로 보존합니다. 또한 상태 표와 display:none·링크 설명은 긴 문단으로 바꾸지 않습니다. 교체는 native control과 접근성 시험을 실제 사용 흐름으로 풀어 줍니다.",
+      "sha256": "1c6dd1539a13a4869b08082d105452f758ce54ed7689ab1635665a84b895e5b5"
+    },
+    {
+      "path": "notes/web/event-delegation.md",
+      "status": "edited",
+      "reviewBasis": "유지: “event.target은 span일 수 있고, event.currentTarget은 리스너를 붙인 목록입니다.”(L14)는 위임에서 가장 중요한 두 대상의 차이를 정확히 설명합니다. stopPropagation·preventDefault·bubbles·composed를 표에서 분리한 구조와 “실제 button·link를 사용하면 키보드 활성화의 기본 의미를 활용할 수 있습니다.”(L64)는 유용한 비교·반례이므로 그대로 둡니다. 교체는 코드의 `closest`·`contains`·중첩 목록 범위 검사를 실행 순서로, Shadow DOM과 동적 시험을 실제 재현 흐름으로 풀어 줍니다.",
+      "sha256": "eb56438a700d2ad8a2636c11d18b96ec7c6fe1485fd3d08cb1e4a224a822527f"
+    },
+    {
+      "path": "notes/web/hydration.md",
+      "status": "edited",
+      "reviewBasis": "유지: “콘텐츠 표시와 상호작용 준비는 같은 사건이 아닙니다.”(L12)와 “hydration은 서버가 만든 DOM을 클라이언트의 초기 상태·이벤트 로직과 연결하는 과정이며, 보통 처음부터 빈 화면을 다시 그리는 것과 다릅니다.”(L14)는 글의 핵심 개념 정의입니다. 표의 현재 시각·난수·저장소·로케일·API snapshot별 계약(L20-L25), “사용자 A의 HTML을 공유 캐시에 넣으면 B에게 A의 정보가 전달될 수 있습니다.”(L60), “hydration 불일치와 API 계약 오류는 증상과 해결 경계가 다릅니다.”(L62)는 구체 조건과 보안 경계를 제공하므로 유지합니다. 교체는 초기 snapshot 주입, 이벤트 준비 전 동작, 스트리밍 오류, 실제 비교 시험을 실행 흐름으로 구체화합니다.",
+      "sha256": "d7d41e7827ba222a500ca2bf7b0a1a1c4e4123d84f105075dadaac9dab14ea3f"
+    },
+    {
+      "path": "notes/web/rendering-layout.md",
+      "status": "edited",
+      "reviewBasis": "유지: “강제 동기 레이아웃은 변경 뒤 기하 정보가 필요한 순간 계산을 앞당기는 것이고, 이런 읽기·쓰기 교차 반복이 레이아웃 스래싱을 만듭니다.”(L14)는 핵심 원인과 용어를 함께 정의합니다. “contain은 레이아웃·크기·페인트 등의 영향을 제한하는 계약입니다.”(L47)와 “CLS는 예상하지 못한 레이아웃 이동의 사용자 영향을 측정하는 지표이며 모든 위치 변화가 동일하게 집계되는 것은 아닙니다.”(L66)는 실행 한계와 지표의 범위를 정확히 제한하므로 유지합니다. 읽기·쓰기 배치 코드와 방법별 표(L26-L39, L51-L56)는 중간 계산과 선택지를 보여 주므로 문단으로 바꾸지 않습니다. 교체는 rAF의 의미, content-visibility의 실제 영향 범위, 성능 시험의 측정 순서를 보완합니다.",
+      "sha256": "7519708e07d1b14d914b17e4a34feda5bd6d163482812af7ee588493520451a1"
+    }
+  ]
+}

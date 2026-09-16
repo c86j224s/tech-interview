@@ -10,7 +10,7 @@ questionIds: [dependency-injection-boundaries, solid-dependency-inversion, polic
 
 ## 생성자 주입만으로 정책의 의존 방향이 바뀌지는 않습니다
 
-CheckoutService에 PostgresClient를 생성자로 넘겨도 SQL·driver 예외·transaction 타입을 정책이 알고 있으면 기술 결합은 남습니다. **DI**는 필요한 상대를 밖에서 전달하는 조립 방식이고, **DIP**는 고수준 정책이 요구하는 추상 계약을 중심으로 소스 의존을 바꾸는 설계입니다.
+CheckoutService의 생성자에 PostgresClient를 넣는 것만으로는 결합이 사라지지 않습니다. 정책 코드가 여전히 SQL 문법·driver 예외·transaction 타입을 처리하면, 호출 대상만 밖에서 바꿔 끼웠을 뿐 기술 세부사항을 알고 있기 때문입니다. **DI**는 필요한 상대를 밖에서 전달하는 조립 방식이고, **DIP**는 고수준 정책이 요구하는 추상 계약을 중심으로 소스 의존을 바꾸는 설계입니다.
 
 정책이 `PaymentRecordStore`라는 port를 사용하고 PostgreSQL adapter가 그 port를 구현하게 할 수 있습니다. 런타임에는 정책이 adapter를 호출해도 소스 import 방향은 adapter→정책 port가 됩니다. 시작점이 양쪽을 알아 연결하는 것은 정상입니다.
 
@@ -18,7 +18,7 @@ CheckoutService에 PostgresClient를 생성자로 넘겨도 SQL·driver 예외·
 
 `exists(key)` 후 `insert(record)` 두 메서드는 중복 검사와 저장 사이 경쟁을 호출자에게 남깁니다. `recordOnce(key, expectedVersion, result)`가 생성·이미 처리됨·충돌·실행 불확정을 반환하는 식으로 필요한 원자 의미를 표현합니다. 단순 CRUD를 interface에 복사했다고 정책 소유 추상화가 되지는 않습니다.
 
-외부 결제와 DB 기록을 adapter가 원자적으로 묶지 못한다면 port가 “항상 정확히 한 번 동시에 성공”을 약속해서는 안 됩니다. 조회·불확정·부분 효과·dedup 기간을 계약에 포함합니다. SDK 예외를 그대로 반환하면 정책이 다시 특정 구현을 알아야 합니다.
+외부 결제 승인과 DB 기록을 한 adapter 호출로 묶더라도 두 시스템의 성공을 하나의 원자 작업으로 확정할 수 없으면, port는 “항상 정확히 한 번 동시에 성공”이라고 말할 수 없습니다. 결제 결과를 아직 조회하지 못한 불확정 상태, 한쪽만 반영된 부분 효과, dedup 기간과 결과 조회 방법을 계약에 포함합니다. SDK 예외를 그대로 밖으로 내보내지 않고 정책이 이해할 수 있는 실패·불확정 결과로 바꿔야 정책이 특정 구현을 다시 알지 않습니다.
 
 ```diagram
 {"title":"소스 의존은 정책 포트를 향하고 조립은 밖에서 합니다","caption":"화살표는 소스 의존 또는 조립 관계로 라벨에 표시했습니다. 실제 실행 호출은 정책에서 주입된 adapter로 갈 수 있습니다.","rows":[[{"id":"root","label":"Composition Root"}],[{"id":"policy","label":"Checkout 정책"},{"id":"adapter","label":"Postgres adapter"}],[{"id":"port","label":"정책 소유 PaymentRecordStore"}]],"edges":[{"from":"root","to":"policy","label":"객체 조립"},{"from":"root","to":"adapter","label":"구현·수명 소유"},{"from":"policy","to":"port","label":"계약 의존"},{"from":"adapter","to":"port","label":"구현·import"}]}
@@ -39,7 +39,7 @@ CheckoutService에 PostgresClient를 생성자로 넘겨도 SQL·driver 예외·
 
 ## Composition Root는 생성뿐 아니라 종료 책임도 정합니다
 
-공유 DB/HTTP pool·logger와 요청별 인증 문맥을 구분합니다. 요청 주체를 process singleton에 저장하면 동시 요청이 섞일 수 있습니다. 정책이 service locator에서 전역 구현을 다시 찾게 하면 의존성을 숨기는 것이므로 명시적 주입을 유지합니다.
+Composition Root에서 만든 공유 DB/HTTP pool·logger와 각 요청의 인증 문맥을 별도로 보관합니다. 요청 주체를 process singleton 한 곳에 저장한 상태에서 두 요청이 동시에 처리되면, 한 요청의 문맥이 다른 요청과 섞일 수 있습니다. 정책이 service locator에서 전역 구현을 다시 찾으면 생성자에 드러난 의존성이 사라지므로, 필요한 port와 자원을 명시적으로 주입합니다.
 
 pool 생성 후 worker 생성에 실패했다면 이미 만든 pool만 회수합니다. 종료 때는 새 유입 차단→진행 작업 종료→pool close→남은 진단 flush처럼 의존자가 자원보다 먼저 정리되게 합니다. logger도 이미 닫힌 뒤 destructor가 호출하지 않도록 소유 순서를 정합니다. 테스트마다 새 객체 그래프를 만들면 전역 reset의 병렬 경쟁을 줄일 수 있습니다.
 

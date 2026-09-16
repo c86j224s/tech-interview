@@ -10,7 +10,7 @@ questionIds: [cache-negative-results, cache-stale-while-revalidate]
 
 ## 없다는 결과도 의미와 만료가 있는 데이터입니다
 
-상품 ID 42가 없을 때 요청마다 DB를 조회하면 존재하지 않는 ID의 반복 요청이 원본을 압박합니다. **부재 캐시**(negative cache)는 조회가 성공했고 대상이 없었다는 결과를 짧게 저장합니다. DB timeout은 없다는 증거가 아니므로 같은 sentinel로 저장하지 않습니다. 인가 때문에 보이지 않는 결과도 다른 사용자에게 공유할 수 없습니다.
+상품 ID 42가 없을 때 요청마다 DB를 조회하면 존재하지 않는 ID의 반복 요청이 원본을 압박합니다. **부재 캐시**(negative cache)는 원본 조회가 정상적으로 끝나 대상이 없다는 결과만 짧게 저장하고, DB timeout·연결 오류는 부재 표식으로 저장하지 않습니다. 또 인가 범위에서만 보이지 않는 결과라면 해당 사용자·tenant·권한 문맥을 cache key에 포함하거나 다른 문맥과 공유하지 않아야 하므로, 다른 사용자에게 존재 여부가 드러나지 않게 처리합니다.
 
 | 결과 | 저장 판단 | 주의점 |
 | --- | --- | --- |
@@ -23,7 +23,9 @@ tenant·권한·query 정규화가 결과 의미를 바꾸면 cache key에도 �
 
 ## 생성 시 삭제해도 늦은 부재 조회가 돌아올 수 있습니다
 
-시각 1에 조회 A가 없음으로 읽고, 시각 2에 생성 B가 commit·cache 삭제를 마친 뒤, 시각 3에 A가 부재를 cache에 쓰면 새 상품이 다시 가려집니다. 단순한 생성 후 DEL만으로 이 경쟁을 제거하지 못합니다. key generation·version을 조건부 비교해 오래된 refill을 거절하거나 원본 변경과 연결된 일관성 정책을 사용합니다. TTL은 최대 불일치 기간을 제한하는 선택이지 즉시 일관성 증명이 아닙니다.
+시각 1에 조회 A가 상품 42의 부재를 읽고, 시각 2에 생성 B가 commit한 뒤 cache에서 키를 삭제해도, 시각 3에 A가 돌아와 부재를 다시 쓰면 새 상품이 가려집니다. 따라서 refill은 부재를 읽을 때 본 key generation·version을 기억하고, 현재 generation·version 검사와 캐시 쓰기를 원자적으로 묶어 값이 달라졌으면 오래된 결과를 거절하거나, 원본 변경과 cache 갱신을 연결하는 일관성 정책을 적용해야 합니다.
+
+TTL은 이 경주가 일어났을 때 불일치가 남는 최대 기간을 제한할 뿐 즉시 일관성을 증명하지 않습니다.
 
 ## Fresh와 Stale 허용 시간을 분리합니다
 
@@ -37,7 +39,9 @@ tenant·권한·query 정규화가 결과 의미를 바꾸면 cache key에도 �
 
 ## 재검증도 동시성과 실패 예산을 소비합니다
 
-같은 key의 refresh를 singleflight로 합치고 전체 refresh 동시 수·queue bytes·deadline을 제한합니다. 각 프로세스의 singleflight는 여러 replica 전체의 1회를 뜻하지 않습니다. 분산 lease를 사용하더라도 만료된 owner의 늦은 결과와 중복 실행에 대비해야 합니다.
+같은 key에 대한 refresh가 동시에 여러 번 시작되면 한 프로세스 안의 여러 요청을 하나의 실행으로 합치는 **singleflight**를 사용할 수 있습니다. 이때 전체 refresh 동시 수·queue bytes·deadline을 함께 제한합니다.
+
+replica가 여러 개면 각 프로세스가 한 번씩 refresh할 수 있으므로, 로컬 singleflight만으로 전체 replica에서 실행이 1회가 되지는 않습니다. 분산 lease를 쓰더라도 lease가 만료된 owner의 늦은 결과가 최신 값을 덮거나 중복 실행을 일으킬 수 있으므로 이에 대비해야 합니다.
 
 실패 시 backoff·jitter·재시도 상한을 두되 요청마다 새 refresh를 무제한 만들지 않습니다. foreground 요청 취소가 공유 refresh 전체를 불필요하게 취소하지 않도록 owner와 수명을 정합니다. 더 최신 version이 cache에 들어갔다면 늦은 refresh가 덮지 못하게 조건부 갱신합니다.
 

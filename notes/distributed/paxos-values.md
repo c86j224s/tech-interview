@@ -12,7 +12,9 @@ questionIds: [paxos-prepare-accept, paxos-competing-proposers-liveness, multi-pa
 
 acceptor A·B·C에서 ballot 7의 X를 A와 B가 수락했다면 X는 과반에 선택된 chosen 값입니다. proposer가 응답을 받기 전에 죽어도 그 사실은 생겼습니다. 새 proposer가 ballot 8로 B·C에 prepare하면 B의 accepted X를 보고 X를 이어받아야 합니다. C가 비어 있다는 이유로 Y를 새로 고르면 안 됩니다.
 
-prepare는 높은 ballot으로 진행할 promise와 과거 수락 정보를 얻는 단계이고, accept는 그 정보에 따라 선택한 값을 수락시키는 단계입니다. 데이터 복사만이 아니라 이후 결정이 이전 선택과 충돌하지 않게 하는 프로토콜입니다.
+prepare는 새 proposer가 높은 ballot을 제시해 acceptor에게 그보다 낮은 ballot의 제안을 더는 수락하지 않겠다는 promise와 과거 accepted ballot·value를 함께 요청하는 단계입니다. proposer는 prepare quorum 응답에서 가장 높은 accepted ballot의 value를 골라 accept(n,v)로 다시 제안하고, 과거 수락이 없을 때만 새 값을 넣습니다.
+
+따라서 이 절차는 데이터를 복사하는 일이 아니라, 이미 chosen됐을 수 있는 값과 이후 quorum 결정이 충돌하지 않도록 가장 높은 이전 수락을 다음 제안에 이어가는 안전 규칙입니다.
 
 ## Promise와 Accepted 기록은 응답 전에 보존합니다
 

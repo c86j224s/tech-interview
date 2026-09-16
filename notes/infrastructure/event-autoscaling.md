@@ -12,7 +12,9 @@ questionIds: [keda-hpa-role, keda-activation-target-boundaries, keda-scaledjob-s
 
 consumer가 DB 응답을 기다리면 CPU는 낮지만 backlog는 늘 수 있습니다. 큐 길이·Kafka lag·메시지 나이 같은 외부 수요 지표가 CPU보다 직접적인 신호일 수 있습니다. 그러나 DB 자체가 병목이면 consumer 증가가 오히려 DB 요청을 더 쌓을 수 있어 실제 처리 경로를 먼저 봅니다.
 
-일반적인 ScaledObject 구성에서 KEDA는 외부 scaler로 이벤트를 읽고 활성화와 HPA 메트릭을 연결하며 HPA를 생성·구성합니다. HPA는 활성 workload의 메트릭 target과 behavior를 바탕으로 replica를 조정합니다. 두 제어기가 무계획으로 독립 경쟁하는 구조가 아니라 역할을 나누는 구성입니다.
+`ScaledObject`로 장수 consumer를 연결한 경우 KEDA는 구성한 scaler에서 큐나 Kafka 수요를 읽어 0 replica에서 활성화할 조건과 HPA가 사용할 메트릭을 제공하고, 그 구성에 맞춰 HPA를 생성·구성합니다. workload가 활성화된 뒤에는 HPA가 target과 `behavior`를 적용해 replica를 조정하므로, KEDA와 HPA가 같은 수를 따로 쓰며 경쟁하는 것이 아니라 0에서 깨우는 신호와 활성 replica 조정의 경계를 나눕니다.
+
+따라서 별도 HPA를 추가하거나 같은 workload의 replica 필드를 수동으로 바꾸기 전에 어느 controller가 각 값을 소유하는지 확인합니다.
 
 ## Activation과 Target은 서로 다른 문턱입니다
 
@@ -23,7 +25,9 @@ consumer가 DB 응답을 기다리면 CPU는 낮지만 backlog는 늘 수 있습
 | min/max replica | 유지·확장의 범위 | 하위 DB 용량과 불일치 |
 | polling·cooldown·stabilization | 언제 감지하고 얼마나 유지할까 | cold start 반복 또는 늦은 대응 |
 
-scaler가 “50을 초과하면 활성”이라는 계약을 가진 예에서 backlog=50 이하이고 다른 활성 조건도 없으면 0에서 깨어나지 않을 수 있습니다. 비교가 초과인지 이상인지·기본값·복수 trigger 결합·최소 replica는 실제 scaler 버전에서 확인합니다. 작은 메시지 한 개도 기한 내 처리해야 한다면 activation을 비용 최적화 숫자만 보고 높이지 않습니다.
+scaler의 활성화 조건이 “50을 초과하면 활성”이라면 backlog가 50 이하인 동안에는 조건을 넘지 않으므로, 다른 활성 조건이 없을 때 0 replica에서 깨어나지 않을 수 있습니다. 이때 `>`인지 `>=`인지, 기본값과 복수 trigger의 결합 방식, 최소 replica가 실제 scaler 버전에서 어떻게 정해지는지 구성과 이벤트를 함께 확인합니다.
+
+작은 메시지 하나도 기한 내 처리해야 하는 서비스라면 activation threshold를 비용 절감만 보고 높이지 말고, 0에서 깨어나는 지연을 SLO와 비교합니다.
 
 ```diagram
 {"title":"외부 수요를 활성화와 Replica 제어로 나눕니다","caption":"화살표는 일반 ScaledObject의 제어 역할입니다. 대상 workload의 replica 소유자는 충돌 없이 구성하고 별도 수동 HPA를 무작정 추가하지 않습니다.","rows":[[{"id":"source","label":"큐·Kafka 외부 수요"}],[{"id":"keda","label":"KEDA scaler·활성화"}],[{"id":"hpa","label":"HPA target·behavior"}],[{"id":"workload","label":"workload replica·실제 처리"}]],"edges":[{"from":"source","to":"keda","label":"인증된 지표 조회"},{"from":"keda","to":"hpa","label":"외부 메트릭 연결"},{"from":"hpa","to":"workload","label":"수량 조정"},{"from":"keda","to":"workload","label":"0에서 활성화 등"}]}
@@ -47,7 +51,9 @@ consumer가 처리 후 offset을 묶어서 커밋하면 committed offset 기준 
 
 ## ScaledJob은 단위 작업의 수명 모델입니다
 
-ScaledObject는 장수 Deployment consumer 등의 replica를 조정하고, ScaledJob은 수요에 따라 Job 실행 단위를 준비하는 모델입니다. 연결 재사용·초기화 비용·작업 길이·종료 정책으로 고릅니다. Job 하나가 특정 메시지 한 개를 자동으로 정확히 한 번 예약·처리하는 것은 아닙니다. 실제 큐 claim·ACK·effect key는 앱과 broker의 책임입니다.
+예를 들어 연결을 오래 유지하며 여러 메시지를 처리하는 Deployment consumer라면 `ScaledObject`가 replica 수를 조정하고, 수요에 따라 작업 하나를 별도 실행 단위로 만들고 싶다면 `ScaledJob`이 Job을 준비하는 모델입니다. 선택할 때는 연결 재사용과 초기화 비용, 작업 길이와 종료 정책을 비교하되, Job 하나가 특정 메시지 하나를 자동으로 정확히 한 번 예약·처리한다고 가정하지 않습니다.
+
+큐에서 작업을 claim하는 시점, ACK를 보내는 시점, 외부 효과를 중복 방지하는 `effect key`는 앱과 broker가 별도로 정의해야 합니다.
 
 진행 중 Job을 어떻게 계수하는지·max replica·스케일링 전략·재시도는 KEDA 버전과 trigger 의미를 확인합니다. visible backlog가 0이어도 실행 중 외부 효과가 남을 수 있으므로 drain·checkpoint·중복 방지가 필요합니다.
 

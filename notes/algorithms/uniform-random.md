@@ -28,7 +28,7 @@ questionIds: [algorithm-random-modulo-bias]
 {"title":"균등한 원천 구간만 통과시키기","caption":"화살표는 원천 값의 수락·거절 분기입니다. 거절된 값을 보정하지 않고 독립적인 새 표본을 다시 요청합니다.","rows":[[{"id":"source","label":"원천 x ∈ [0,8)","detail":["각 값 확률 1/8"]}],[{"id":"accept","label":"x < 6","detail":["0,1,2,3,4,5"]},{"id":"reject","label":"x ≥ 6","detail":["6,7은 버림"]}],[{"id":"result","label":"x mod 3 반환","detail":["각 결과 조건부 확률 1/3"]}]],"edges":[{"from":"source","to":"accept","label":"수락"},{"from":"source","to":"reject","label":"다시 추출"},{"from":"accept","to":"result","label":"나머지 변환"}]}
 ```
 
-원천 값 개수가 M이고 후보 수가 n이면 `limit = floor(M/n)*n`을 구합니다. `[0,limit)`에는 각 나머지가 정확히 `floor(M/n)`개씩 있으므로 수락된 값의 나머지는 균등합니다. 이것은 샘플을 많이 뽑아 비슷하게 보인다는 통계적 관찰보다 직접적인 근거입니다.
+원천 값 개수가 M이고 후보 수가 n이면 `limit = floor(M/n)*n`을 구합니다. 예를 들어 M=8, n=3이면 `limit=6`이고 수락 구간 `[0,6)`에서 나머지 0·1·2는 각각 두 번씩 나타납니다. 6과 7을 버리면 각 결과가 같은 수의 원천 값에 대응하므로, 수락된 표본의 나머지가 균등해집니다. 이것은 샘플을 많이 뽑아 비슷하게 보인다는 통계적 관찰보다 직접적인 근거입니다.
 
 ## 범위와 산술을 명시한 슈도코드
 

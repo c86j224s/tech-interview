@@ -30,7 +30,9 @@ commit
 execute claimed jobs outside the transaction
 ```
 
-정확한 SQL·LIMIT·locking syntax와 엔진 지원은 별도로 맞춥니다. 핵심은 잠금 안에서 실행권 상태를 내구 기록한 뒤 거래를 끝내는 것입니다. 상태 기록 없이 lock만 풀면 다른 worker가 같은 pending 행을 다시 가져갈 수 있습니다. 외부 I/O 내내 거래를 유지하면 연결·lock·snapshot 비용이 커집니다.
+위 순서에서 A는 선택한 행에 `state='running'`, `owner`, `generation`, `lease_until`을 함께 내구적으로 기록하고 COMMIT해야, 그 COMMIT이 성공하고 lease가 유효한 동안 다른 worker가 그 행을 `pending`으로 다시 가져가지 않습니다. `FOR UPDATE SKIP LOCKED`와 `LIMIT`의 정확한 SQL·locking syntax 및 엔진 지원 범위는 DBMS별로 맞춰야 하며, 이 설명은 특정 문법을 단정하지 않습니다.
+
+커밋 뒤 외부 I/O를 수행하면 실행 중인 transaction이 연결·lock·snapshot을 계속 붙잡지 않습니다. 반대로 상태를 기록하지 않고 lock만 풀거나 외부 I/O 내내 transaction을 열어 두면 각각 중복 claim 또는 연결·lock·snapshot 비용이 커집니다.
 
 | 중단 지점 | 남는 상태 | 복구 |
 | --- | --- | --- |
@@ -41,13 +43,13 @@ execute claimed jobs outside the transaction
 
 ## Lease 만료는 옛 Worker의 종료 증명이 아닙니다
 
-worker A가 잠깐 멈춘 사이 lease가 끝나 B가 generation=8로 재획득했다고 합시다. A가 generation=7의 결과로 done을 저장하면 새 owner 상태를 덮을 수 있습니다. 완료 UPDATE에 job ID·owner·generation·허용 state 조건을 포함하고 영향 행 수로 적용 여부를 확인합니다.
+worker A가 멈춘 사이 lease가 만료되어 B가 같은 job을 `generation=8`로 다시 claim했다고 합시다. A의 `generation=7` 완료 요청은 `job_id`, `owner`, `generation=7`, `state='running'`을 `WHERE`에 넣은 조건부 UPDATE로 보내고, 반환된 영향 행 수가 0이면 `done`으로 바꾸지 않습니다. 영향 행 수가 1일 때만 현재 세대의 완료가 적용되므로, A의 늦은 쓰기가 B의 상태를 덮지 않습니다.
 
 ```diagram
 {"title":"재획득 뒤 옛 세대의 완료는 거절합니다","caption":"화살표는 완료 요청입니다. DB 상태 조건은 job 기록을 보호하고 외부 효과의 중복은 별도 멱등·펜싱 경계에서 보호해야 합니다.","rows":[[{"id":"old","label":"옛 worker · 세대 7"},{"id":"new","label":"현재 worker · 세대 8"}],[{"id":"record","label":"job 현재 generation=8"}],[{"id":"result","label":"세대 8 조건만 완료 적용"}]],"edges":[{"from":"old","to":"record","label":"7 완료 조건 불일치"},{"from":"new","to":"record","label":"8 완료 조건 일치"},{"from":"record","to":"result","label":"원자 UPDATE"}]}
 ```
 
-하지만 이 조건은 job 행만 보호합니다. A가 이미 외부 결제를 했다면 완료 기록 거절로 결제가 사라지지 않습니다. 외부 저장 지점이 안정된 effect key·fencing을 검사하거나 실제 결과 대사를 지원해야 합니다. 서로 다른 세대가 새 지급 ID를 만들면 중복 효과를 막지 못합니다.
+다만 이 `WHERE` 조건은 DB의 job 행만 보호합니다. A가 세대 7에서 외부 결제를 먼저 성공시킨 뒤 완료 UPDATE가 0행이 되어도, 완료 기록이 적용되지 않았을 뿐 결제는 이미 남아 있습니다. 따라서 외부 저장 지점도 안정된 `effect key`로 같은 효과의 재요청을 구분하거나 세대가 늦은 요청을 거부하는 `fencing`을 검사해야 하며, 이를 지원하지 않으면 실제 결과를 대사해야 합니다. 세대마다 새 지급 ID를 만들기만 하면 A와 B가 서로 다른 ID로 결제해 중복 효과를 막지 못합니다.
 
 ## 순서·기아·빈 조회를 별도로 관측합니다
 

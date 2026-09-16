@@ -16,13 +16,13 @@ final 참조가 가리키는 목록을 다른 코드가 바꾸면 읽는 설정�
 
 ## 관련 필드는 한 번 얻은 Root에서 읽습니다
 
-v1의 min=10,max=20과 v2의 min=30,max=40은 각각 유효합니다. min을 v2에서, max를 v1에서 읽으면 30>20의 혼합이 생깁니다. 요청이 root를 한 번 얻고 관련 필드를 같은 version에서 읽어야 합니다. 새 root는 완전히 초기화한 뒤 언어의 안전 공개 규칙에 따라 교체합니다.
+`v1`의 `min=10,max=20`과 `v2`의 `min=30,max=40`은 각각 유효하지만, 한 요청이 `min`을 v2에서 읽고 `max`를 v1에서 읽으면 `30>20`인 혼합 snapshot이 됩니다. 따라서 요청 시작 시 root를 한 번 얻고 그 root가 가리키는 같은 version에서 관련 필드를 모두 읽어야 합니다. 새 root는 모든 필드를 초기화한 뒤 언어가 보장하는 안전 공개 규칙으로 교체합니다.
 
-두 writer가 같은 v1에서 다른 필드를 바꾸면 마지막 root 게시가 앞선 변경을 잃을 수 있습니다. expected root/version CAS 실패 시 최신 root에서 변경을 재계산하거나 writer를 직렬화합니다. 참조 교체의 원자성과 여러 필드의 의미 일관성을 구분합니다.
+두 writer가 같은 `v1`에서 서로 다른 필드를 바꾸면, 각자가 만든 root를 차례로 게시하는 동안 앞선 변경이 뒤의 root에서 사라질 수 있습니다. `expected root/version`을 비교해 현재 root일 때만 교체하는 CAS가 실패하면, 최신 root에서 변경을 다시 계산하거나 writer를 직렬화해야 합니다. 참조 교체 자체가 원자적이어도 여러 필드의 의미가 한 version에서 맞는지는 별도로 보장해야 합니다.
 
 ## 바뀐 Leaf까지의 경로만 복사합니다
 
-root R의 왼쪽 A 아래 leaf L을 바꾸면 새 L′·A′·R′을 만들고 오른쪽 불변 subtree B와 바뀌지 않은 형제는 공유할 수 있습니다. 높이 h의 단순 이진 트리에서는 경로 노드 수가 O(h)지만 분기 배열 복사·rebalance가 있으면 실제 비용을 따로 계산합니다. 불균형 트리는 h가 커질 수 있습니다.
+root `R`의 왼쪽 `A` 아래 leaf `L`을 바꿀 때는 새 `L′·A′·R′`만 만들고, 오른쪽의 불변 subtree `B`와 바뀌지 않은 형제는 그대로 공유할 수 있습니다. 높이 `h`인 단순 이진 트리에서는 새로 만드는 경로 노드 수가 `O(h)`이지만, 분기 배열을 복사하거나 rebalance하면 그 비용을 따로 계산해야 합니다. 트리가 불균형하면 `h` 자체가 커질 수 있어 경로 복사가 항상 작은 비용이라는 뜻은 아닙니다.
 
 ```diagram
 {"title":"옛 Root와 새 Root가 불변 하위 트리를 공유합니다","caption":"화살표는 참조입니다. 새 root는 변경 경로를 새로 만들고 B는 변경되지 않는 불변 subtree이므로 두 버전이 함께 참조할 수 있습니다.","rows":[[{"id":"old","label":"옛 root R"},{"id":"new","label":"새 root R′"}],[{"id":"a","label":"옛 경로 A→L"},{"id":"anew","label":"새 경로 A′→L′"}],[{"id":"b","label":"공유하는 불변 subtree B"}]],"edges":[{"from":"old","to":"a","label":"옛 값"},{"from":"new","to":"anew","label":"변경된 값"},{"from":"old","to":"b","label":"동일 노드 공유"},{"from":"new","to":"b","label":"동일 노드 공유"}]}
@@ -32,7 +32,7 @@ root R의 왼쪽 A 아래 leaf L을 바꾸면 새 L′·A′·R′을 만들고 
 
 ## 옛 Version은 오래됐다는 이유로 강제 해제할 수 없습니다
 
-살아 있는 reader가 R을 읽는 동안 메모리를 유지해야 합니다. GC·참조계수·epoch·hazard pointer 등 선택한 언어/자료구조의 실제 보호·회수 계약을 따릅니다. epoch에서 장기 reader가 quiescent 상태로 돌아오지 않으면 회수가 막힐 수 있습니다. 취소 신호만 보내고 강제로 free하면 use-after-free가 생깁니다.
+reader가 `R`을 읽는 동안에는 옛 root를 메모리에서 회수하면 안 됩니다. GC·참조계수·epoch·hazard pointer 중 무엇을 쓰든, 선택한 언어와 자료구조가 정한 보호 시작·종료 및 회수 계약을 따라야 합니다. epoch 방식에서 장기 reader가 quiescent 상태로 돌아오지 않으면 회수가 계속 막힐 수 있으며, 취소 신호만 보낸 채 강제로 free하면 use-after-free가 됩니다.
 
 | 보유 원인 | 줄이는 방법 |
 | --- | --- |

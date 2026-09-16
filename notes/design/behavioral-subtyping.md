@@ -12,11 +12,11 @@ questionIds: [solid-liskov, variance-behavioral-subtyping, inheritance-compositi
 
 부모 Rectangle이 두 크기를 독립적으로 바꿀 수 있다고 약속하면 `setWidth(5); setHeight(4)` 뒤 면적은 20이어야 합니다. Square가 각 setter에서 두 변을 같이 바꾸면 마지막에 4×4=16입니다. 수학적 포함 관계보다 변경 API의 관찰 가능한 계약이 문제입니다.
 
-**리스코프 치환**은 부모를 쓰던 client에 자식을 넣어도 그 계약을 보존하는 조건입니다. 부모보다 입력 사전조건을 강화하거나 보장한 사후조건을 약화하면 안 됩니다. 예외·상태 변화·외부 호출 횟수·명시된 비블로킹 약속도 관찰 계약에 포함될 수 있습니다.
+**리스코프 치환**은 부모를 사용하던 client(호출하는 코드)에 자식을 대신 넣어도 같은 호출의 계약을 지키는 조건입니다. 자식은 부모가 허용한 입력보다 좁은 입력만 받도록 사전조건을 강화할 수 없고, 부모가 보장한 결과를 약하게 하는 사후조건도 바꿀 수 없습니다. 예외, 상태 변화, 외부 호출 횟수, 명시된 비블로킹 약속도 client가 관찰하는 계약이면 함께 보존해야 합니다.
 
 ## 타입 Variance는 행동까지 모두 증명하지 않습니다
 
-입력의 반공변·반환의 공변 관계를 만족해도 자식이 부모가 허용한 0을 거절하거나 두 번 결제하면 행동은 달라집니다. 구체 언어의 override·generic variance 지원과 일반 함수 타입 관계도 구분합니다. 타입 검사 통과를 상태·효과 보장의 증명으로 확대하지 않습니다.
+함수 타입이 입력의 반공변(부모가 받던 입력보다 넓게 받을 수 있는 관계)·반환의 공변(부모가 약속한 반환보다 구체적인 값을 줄 수 있는 관계)을 만족해도 행동까지 같아지는 것은 아닙니다. 자식이 부모가 허용한 0을 거절하거나 결제를 두 번 보내면 타입 검사는 통과해도 실제 계약은 깨집니다. 구체 언어의 override와 generic 타입 variance 지원을 일반 함수 타입 관계와 따로 확인하고, 타입 검사 결과를 상태·효과 보장의 증명으로 확대하지 않습니다.
 
 | 부모 계약 | 치환 실패 예 |
 | --- | --- |
@@ -29,7 +29,7 @@ questionIds: [solid-liskov, variance-behavioral-subtyping, inheritance-compositi
 
 ## 독립적으로 바뀌는 책임은 조합할 수 있습니다
 
-Email/SMS/Push×로깅×retry 정책을 상속 계층으로 만들면 조합마다 class가 늘어납니다. Notifier가 Channel·RetryPolicy·Logger를 받아 위임하면 변화 축을 분리할 수 있습니다. 그러나 timeout이 실제 수신 후일 수 있어 retry policy에는 확실한 미전송·불확정·멱등 key 계약이 필요합니다.
+Email·SMS·Push 채널마다 로깅과 retry 정책을 상속으로 조합하면 조합 수만큼 class가 늘어납니다. 대신 Notifier가 Channel·RetryPolicy·Logger를 받아 각 역할을 위임하면 채널, 재시도, 기록이라는 변화 축을 따로 바꿀 수 있습니다. 다만 timeout 뒤에 외부에서 실제 수신됐는지 알 수 없는 경우가 있으므로, RetryPolicy에는 확실한 미전송과 불확정 결과를 구분하는 규칙, 그리고 멱등 key(같은 요청을 중복 적용하지 않게 식별하는 키) 계약이 필요합니다.
 
 ```diagram
 {"title":"채널과 재시도와 관측을 독립적으로 조합합니다","caption":"화살표는 위임입니다. 조합이 자동으로 중복 전송이나 callback 수명을 해결하지는 않으며 각 협력 계약을 확인합니다.","rows":[[{"id":"notifier","label":"Notifier · 전송 흐름"}],[{"id":"channel","label":"Channel · 외부 전송"},{"id":"retry","label":"RetryPolicy · 실패 의미"}],[{"id":"log","label":"Logger · 안전한 관측"}]],"edges":[{"from":"notifier","to":"channel","label":"전송 위임"},{"from":"notifier","to":"retry","label":"재시도 판단"},{"from":"notifier","to":"log","label":"결과 기록"}]}
@@ -39,7 +39,7 @@ Email/SMS/Push×로깅×retry 정책을 상속 계층으로 만들면 조합마�
 
 ## 생성 중 Virtual 호출은 언어마다 다릅니다
 
-Java에서 Base 생성자가 override 가능한 `initialize()`를 호출하면 Derived override가 아직 자식 field initializer 실행 전의 기본값 0/null을 읽을 수 있습니다. C++에서는 Base 생성/소멸 단계의 virtual 호출이 아직/더 이상 존재하지 않는 Derived 단계로 같은 방식으로 dispatch되지 않습니다. 현재 생성·소멸 클래스 규칙을 따라야 하며 pure virtual 호출 같은 별도 위험을 피합니다.
+Java에서 Base 생성자가 override 가능한 `initialize()`를 호출하면, Derived override가 실행될 때 자식 field initializer가 아직 끝나지 않아 기본값 `0`/`null`을 읽을 수 있습니다. 반대로 C++는 Base 생성·소멸 단계에서 virtual 호출을 해도 아직 존재하지 않거나 이미 끝난 Derived 단계로 같은 방식으로 dispatch하지 않습니다. 따라서 언어별 현재 생성·소멸 클래스 규칙을 따르고, pure virtual 호출이라는 별도 위험도 피해야 합니다.
 
 두 언어를 하나의 “항상 자식 호출” 규칙으로 설명하지 않습니다. 생성 중 this escape·callback 등록·외부 공개를 피하고 완전히 만들어진 뒤 명시적 start나 factory로 초기화합니다. 이 경우 start 실패·부분 자원 회수와 중복 start도 계약에 포함합니다.
 

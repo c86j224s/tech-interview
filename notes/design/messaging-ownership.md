@@ -23,7 +23,9 @@ worker 20개가 주문 작업을 나누는 것과 분석·알림·검색 service
 
 ## Broker 확인과 실제 업무 완료를 분리합니다
 
-Ack·offset commit·message delete는 consumer가 선택한 진행 경계입니다. 효과 전 확인하면 crash 때 일을 잃을 수 있고 효과 후 확인 유실이면 재전달됩니다. consumer는 안정 event/업무 ID·조건부 갱신·처리 원장·외부 idempotency를 사용합니다. visibility 만료로 같은 작업이 동시에 실행되는 경우도 다룹니다.
+consumer가 선택한 진행 경계인 Ack·offset commit·message delete를 실제 효과를 적용하거나 업무 원장을 갱신하기 전에 보내면, 그 직후 process가 멈출 때 broker는 이미 처리된 것으로 보고 작업을 다시 주지 않을 수 있습니다. 반대로 효과를 적용한 뒤 해당 Ack·offset commit·message delete가 유실되면 같은 메시지가 재전달되므로, consumer는 안정적인 event/업무 ID로 조건부 갱신을 하고 처리 원장이나 외부 idempotency로 중복 효과를 막습니다.
+
+visibility 만료가 있는 전달 모델에서는 제한 시간이 끝나기 전에 visibility 연장이나 broker의 진행 확인이 성공하지 않으면 같은 작업이 동시에 실행될 수 있으므로, 그 경우도 업무 원장에서 다룹니다. 따라서 broker에 진행을 알리는 확인과 실제 업무 완료는 같은 사건으로 취급하지 않습니다.
 
 ```diagram
 {"title":"생산·전달·외부 효과의 책임은 나뉩니다","caption":"화살표는 사건 흐름입니다. broker 운영자가 업무 원장의 중복·projection 정확성을 자동 보장하지 않습니다.","rows":[[{"id":"producer","label":"Producer owner · 원본·schema"}],[{"id":"broker","label":"Broker owner · 전달·보관·가용성"}],[{"id":"consumer","label":"Consumer owner · 위치·재처리"}],[{"id":"effect","label":"업무 owner · 효과·dedup·대사"}]],"edges":[{"from":"producer","to":"broker","label":"생산 확인 계약"},{"from":"broker","to":"consumer","label":"순서·재전달 범위"},{"from":"consumer","to":"effect","label":"실제 완료 확인"}]}
@@ -37,7 +39,9 @@ RPC 제공자는 deadline·오류·인가·멱등·결과 조회, caller는 제�
 
 ## 관리형 요금은 Send 횟수만이 아닙니다
 
-생산·receive·delete·empty poll·visibility 연장·retry·DLQ 이동/재처리 API, 청구 bytes 단위, 보관·cross-region transfer·암호화/API 부가 비용·consumer compute를 실제 provider 계약으로 계산합니다. duplicate 때문에 DB·외부 API가 더 사용된 비용도 포함합니다.
+관리형 queue 비용을 계산할 때는 논리 작업 수만 곱하지 말고, 생산·receive·delete뿐 아니라 empty poll, visibility 연장, retry, DLQ 이동/재처리 API 호출을 각각 셉니다. provider가 청구하는 bytes 단위와 보관·cross-region transfer·암호화/API 부가 비용, consumer compute를 계약에 대입하고, duplicate로 DB·외부 API가 추가 호출되는 비용도 더합니다.
+
+이렇게 해야 메시지 한 건의 업무 비용과 broker 호출·보관·소비 비용을 같은 계산에 넣을 수 있습니다.
 
 예를 들어 논리 작업 100만 개의 평균 전달 시도가 1.2회라면 소비 처리는 약 120만 회이며 빈 poll·삭제 재시도는 별도입니다. batch는 호출 수를 줄일 수 있지만 대기 지연·큰 payload·부분 성공·재시도 단위가 달라집니다. 제품별 실제 과금 단위를 하나의 보편 가격 공식으로 단정하지 않습니다.
 

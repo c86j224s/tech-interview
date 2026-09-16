@@ -42,7 +42,7 @@ static void handle(String userId) {
 
 ## 약한 Key는 Value의 즉시 회수를 뜻하지 않습니다
 
-일반적인 OpenJDK ThreadLocalMap의 entry는 키를 약하게 참조하지만 value를 강하게 보유할 수 있습니다. ThreadLocal 키가 수집돼도 장수 worker의 map에서 stale entry 정리가 일어나기 전까지 값이 남을 수 있습니다. GC가 키를 지웠다는 사실을 요청 자원 해제 계약으로 사용하지 않습니다.
+일반적인 OpenJDK의 `ThreadLocalMap`에서 entry는 키를 약한 참조로 들고 value를 강한 참조로 보유할 수 있습니다. 키가 더 이상 다른 곳에서 참조되지 않아 GC가 키를 지워도, 장수 worker의 map에 stale entry가 남아 정리되기 전까지 value는 계속 남을 수 있습니다. 따라서 키가 수집됐다는 사실을 요청 자원이 곧 해제됐다는 계약으로 사용하지 말고, 값을 설정한 요청 범위에서 `remove()`를 실행해야 합니다.
 
 ```diagram
 {"title":"장수 Worker가 옛 요청 값을 붙잡을 수 있습니다","caption":"화살표는 강한 보유 경로를 단순화한 그림입니다. 약한 키가 사라져도 value 경로가 즉시 없어지는 것은 아니므로 요청 범위에서 remove합니다.","rows":[[{"id":"thread","label":"살아 있는 pool worker"}],[{"id":"map","label":"ThreadLocalMap entry","detail":["키는 약한 참조"]}],[{"id":"value","label":"옛 요청 value","detail":["사용자·큰 데이터·앱 타입"]}]],"edges":[{"from":"thread","to":"map","label":"스레드 보유"},{"from":"map","to":"value","label":"남을 수 있는 강한 값"}]}
@@ -52,7 +52,7 @@ static void handle(String userId) {
 
 ## 비동기 전달은 필요한 의미만 옮깁니다
 
-InheritableThreadLocal은 새 자식 스레드 생성 시점의 상속 규칙이지 이미 만들어진 풀 worker의 매 요청 전파가 아닙니다. 작업을 다른 executor에 제출할 때 필요한 불변 문맥을 명시적으로 캡처하고, 실행 중 설치·복원하는 검증된 전파 기능을 사용하거나 함수 인자로 전달합니다.
+`InheritableThreadLocal`은 새 자식 스레드를 만드는 순간 부모 값을 상속하는 규칙이며, 이미 만들어진 executor 풀의 worker에 매 요청마다 값을 옮기는 기능이 아닙니다. 다른 executor에 작업을 제출할 때는 필요한 불변 문맥을 명시적으로 캡처합니다. 실행 직전에 설치하고 `finally`에서 이전 값을 복원하는 검증된 전파 기능을 사용하거나, 함수 인자로 전달합니다.
 
 로그 상관 ID를 전달하는 것과 인증된 주체·DB transaction 객체를 복사하는 것은 다른 문제입니다. 주체의 범위·만료·대상 인가가 유지되어야 하고 스레드 종속 거래를 임의로 공유하면 안 됩니다. ThreadLocal에 저장한 객체 참조가 여러 곳에서 공유되면 그 객체의 동시 수정은 여전히 보호해야 합니다.
 

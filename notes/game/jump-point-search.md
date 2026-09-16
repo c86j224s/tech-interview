@@ -48,7 +48,7 @@ jump(cell, direction, goal):
 
 ## 문 하나가 멀리 시작하는 Ray의 표를 바꿀 수 있습니다
 
-변경 cell을 통과하는 jump ray와 그 주변의 forced-neighbor 판단, 직교 jump 결과를 참조하는 대각 의존까지 추적해야 합니다. 인접 cell만 수정하면 먼 출발점의 표가 낡습니다. ray/청크 역참조·보수 영향 영역·의존 전파로 재계산하고 증명 못 한 부분 갱신은 넓은 rebuild나 A* fallback으로 처리합니다.
+cell 하나(예: 문 하나)를 바꾸면 그 cell을 지나는 jump ray뿐 아니라, ray 주변의 forced-neighbor 판정과 대각 jump가 참조하는 직교 jump 결과까지 영향을 받을 수 있습니다. 그래서 인접 cell만 다시 계산하면 먼 출발점의 방향 표가 stale로 남을 수 있습니다. ray/청크 역참조와 보수적인 영향 영역을 따라 의존성을 전파해 재계산하고, 영향 범위를 증명하지 못한 부분 갱신은 넓은 rebuild나 A* fallback으로 보수적으로 처리합니다.
 
 청크 경계를 넘는 jump는 이웃 source version도 포함합니다. 새 배열을 완성한 뒤 한 bundle로 게시하고 옛 reader의 실제 참조 수명을 유지합니다. 정적 표+동적 overlay 검사는 안전한 후보 실행에 유용하지만 막힌 경로를 국소 우회한다고 전역 최단성이 자동 유지되지는 않습니다.
 
@@ -61,4 +61,6 @@ jump(cell, direction, goal):
 | 아직 미계산 | fallback/대기 필요 |
 | stale | 다른 source/profile·재사용 금지 |
 
-미계산과 막힘을 같은 sentinel로 합치면 존재하는 길을 없다고 할 수 있습니다. 거리 overflow·direction code·목표 중간 정지를 보존하고 palette/RLE/bit packing의 decode·branch·cache 비용을 측정합니다. 작은 맵 모든 시작/목표를 기준 A*와 비교하고 빈 공간·강제 이웃·corner·가중 반례·문 변경을 포함합니다. 이 노트는 알고리즘 구조이며 완전한 JPS/JPS+ 구현을 실행 검증한 결과는 아닙니다.
+방향 표에서 ‘아직 미계산’과 ‘진행 불가’를 같은 sentinel로 저장하면, 전처리가 끝나지 않은 길을 막힌 길로 잘못 반환할 수 있습니다. 따라서 유효 jump 거리, 거리 overflow, direction code, 목표가 jump 구간 중간에 있을 때 멈춰야 한다는 정보를 보존하고, palette/RLE/bit packing을 쓸 때는 decode·branch·cache 비용을 따로 측정합니다.
+
+작은 맵의 모든 시작/목표 쌍을 기준 A*와 비교하면서 빈 공간·강제 이웃·corner·가중 반례·문 변경을 포함합니다. 이 노트는 알고리즘 구조를 설명할 뿐, 완전한 JPS/JPS+ 구현을 실행 검증한 결과는 아닙니다.

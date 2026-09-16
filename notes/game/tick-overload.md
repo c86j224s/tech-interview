@@ -29,7 +29,7 @@ if accumulator still too large:
   enterDeclaredOverloadPolicy()
 ```
 
-이 의사코드의 overload policy가 중요합니다. 비핵심 갱신 지연·입력 수락 제한·방 일시 정지·용량 이전 등을 명시하고 핵심 피해/자원 차감을 조용히 skip하지 않습니다. clamp로 버린 시간이 있으면 그 사실·정책 version·생략한 회차를 기록합니다.
+`maxSteps`나 CPU budget에 걸린 뒤에도 처리하지 못한 backlog가 남으면, 그 tick에서 어떤 일을 생략할지 overload policy로 분기합니다. 예를 들어 비핵심 갱신을 늦추거나 입력 수락을 제한하거나 방을 잠시 정지하거나 용량을 이전할 수 있지만, 핵심 피해와 자원 차감은 조용히 skip하지 않습니다. 시간을 clamp로 버리는 정책이라면 버린 사실, policy version, 생략한 회차를 기록해 replay에서 같은 과부하를 재현합니다.
 
 | 시간 | 적용 정책 |
 | --- | --- |
@@ -40,9 +40,9 @@ if accumulator still too large:
 
 ## AI 평가를 줄여도 반응성이 자동 보존되지는 않습니다
 
-전략 목표·장식·먼 NPC 갱신과 공격 입력·충돌·cooldown·자원 차감 같은 권위 규칙을 분리합니다. AI가 공격/회피를 결정하는 평가 자체를 늦추면 반응 분포가 달라집니다. 허용 지연을 게임 규칙으로 명시하고 위험 event의 우선 wake-up·phase 분산·최소 진행을 둡니다.
+전략 목표·장식·먼 NPC 갱신은 늦춰도 되는 작업인지, 공격 입력·충돌·cooldown·자원 차감은 권위 규칙인지 먼저 나눕니다. 과부하 때 AI의 공격·회피 평가를 뒤로 미루면 평가 시점이 달라져 반응 분포 자체가 바뀌므로, 허용 지연을 규칙으로 두고 위험 event는 우선 wake-up합니다. 나머지 NPC 평가는 phase를 나눠 실행하되 각 작업에 최소 진행을 남깁니다.
 
-NPC별 stable phase로 부하를 나누되 치명적 위험의 즉시 처리보다 낮은 우선순위로 둡니다. 과부하 mode·시작/종료 tick·policy·실제 decision을 replay 자료에 남깁니다. 평균 CPU만 보지 말고 공격/회피 반응·피해 결과·최악 tick을 대조합니다.
+NPC별 stable phase는 매 tick 모든 NPC를 동시에 평가하지 않고 정해진 phase에 나눠 평가하는 기준으로 사용하되, 치명적 위험을 즉시 처리하는 일보다 낮은 우선순위로 둡니다. 과부하 mode의 시작·종료 tick, 적용 policy, 실제 decision을 replay 자료에 함께 남깁니다. 평균 CPU만 비교하지 말고 공격·회피 반응과 피해 결과, 최악 tick을 정상 상태와 대조합니다.
 
 ```diagram
 {"title":"권위 규칙은 보존하고 허용된 작업만 지연합니다","caption":"화살표는 과부하 판단입니다. 시간 손실과 AI 반응 변화는 기록된 정책이며 숨은 실행 차이로 만들지 않습니다.","rows":[[{"id":"measure","label":"틱 비용·누적 backlog·입력 age"}],[{"id":"budget","label":"max step·CPU budget·과부하 mode"}],[{"id":"critical","label":"순서 보존 전투·자원"},{"id":"optional","label":"허용된 AI/통계 지연"}],[{"id":"record","label":"정책·틱·입력·결과 기록"}]],"edges":[{"from":"measure","to":"budget","label":"지속/순간 구분"},{"from":"budget","to":"critical","label":"불변 규칙"},{"from":"budget","to":"optional","label":"명시적 저하"},{"from":"critical","to":"record","label":"확정 결과"},{"from":"optional","to":"record","label":"생략·반응 변화"}]}
@@ -50,7 +50,7 @@ NPC별 stable phase로 부하를 나누되 치명적 위험의 즉시 처리보�
 
 ## 서버끼리 같은 Wall Time을 본다고 같은 전투 Tick은 아닙니다
 
-교차 event에는 authority server·owner epoch·기준 tick/snapshot·논리 sequence·event ID를 넣습니다. 수신자는 어느 snapshot으로 검증하고 어느 권위 순서에 적용할지 정의합니다. 늦은 event의 bounded reorder·보류·거절·보정 정책이 필요합니다.
+서버를 넘나드는 event에는 authority server, owner epoch(그 서버가 권위를 가진 세대), 기준 tick/snapshot, 논리 sequence, event ID를 함께 넣습니다. 수신자는 이 값으로 어느 snapshot에서 event를 읽고 어떤 권위 순서에 적용할지 결정합니다. 늦게 온 event는 bounded reorder로 잠시 순서를 맞출지, 보류·거절·보정할지 정하고, 임의의 도착 순서에 맡기지 않습니다.
 
 handoff 전후 두 server가 같은 피해를 독립 확정하지 않도록 현재 owner를 검사하고 replay는 우연한 thread 도착 순서보다 기록된 확정 순서를 재현합니다. 보관 범위 밖 tick을 임의로 현재 tick과 동일시하지 않습니다.
 

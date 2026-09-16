@@ -10,7 +10,7 @@ questionIds: [metrics-cardinality, metric-exemplar-trace-selection, tenant-slo-c
 
 ## 사용자 ID 하나가 모든 라벨 조합을 늘릴 수 있습니다
 
-라벨 조합마다 시계열이 생기는 시스템에서 user ID·order ID·원문 URL·자유 오류 문구를 넣으면 계속 새 시계열이 생성됩니다. 수집기 메모리·전송·저장 인덱스·query·대시보드 비용이 늘고 장애 중 오류 문구가 다양해질 때 관측 시스템 자체가 포화될 수 있습니다.
+**Cardinality**는 라벨 값 조합으로 만들어지는 시계열의 개수이며, 라벨 조합마다 시계열을 만드는 시스템에서 user ID·order ID·원문 URL·자유 오류 문구를 넣으면 새로운 값 조합이 관측될 때마다 새 시계열이 생깁니다. 예를 들어 장애 중 오류 문구가 요청마다 달라지면 수집기 메모리와 전송량뿐 아니라 저장 인덱스·query·대시보드 비용도 함께 늘어 관측 시스템 자체가 포화될 수 있습니다. 그래서 라벨을 추가할 때는 현재 조합 수만 세지 말고 새로운 값 조합의 churn도 비용으로 봅니다.
 
 예를 들어 route 20×status 5×instance 10이면 최대 1000개 조합입니다. bucket 10개(무한 bucket 포함으로 가정)에 sum·count 2개를 가진 classic histogram이면 약 12,000개 시계열이 됩니다. 여기 user 100만 명을 추가하면 잠재 조합이 120억으로 커집니다. 실제 조합은 모두 생기지 않을 수 있지만 새로운 ID의 churn도 비용입니다.
 
@@ -31,7 +31,7 @@ questionIds: [metrics-cardinality, metric-exemplar-trace-selection, tenant-slo-c
 
 ## Exemplar는 모든 요청의 보관을 약속하지 않습니다
 
-느린·실패·대표 정상 요청 일부를 histogram 표본에서 trace로 이어갈 수 있습니다. trace가 sampling으로 버려졌거나 보관 기간이 끝나면 링크가 없을 수 있어 양쪽 retention·sampling·접근권한을 맞춥니다. exemplar의 trace ID도 민감 정보와 연결될 수 있으므로 viewer 권한을 유지합니다.
+**Exemplar**는 histogram의 특정 표본에 trace ID 같은 진단 링크를 붙여, 전체 집계를 개별 요청의 trace로 따라가게 하는 일부 표본입니다. 느린·실패·대표 정상 요청을 골라도 trace가 sampling으로 버려졌거나 보관 기간이 끝나면 링크가 없을 수 있으므로, metric과 trace의 retention·sampling·접근권한을 함께 맞춥니다. 모든 요청을 exemplar로 보관하는 대신 이 제한을 전제로 운영하고, trace ID가 민감 정보와 연결될 수 있다는 점까지 포함해 viewer 권한을 관리합니다.
 
 전체 오류율·p99를 exemplar 몇 개로 계산하지 않습니다. metric은 집계, trace는 원인 분석이라는 역할을 보존합니다. 모든 요청을 exemplar로 넣거나 payload를 붙여 cardinality 문제를 다른 필드로 옮기지 않습니다.
 

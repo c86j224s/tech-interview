@@ -28,7 +28,7 @@ questionIds: [cpp-coroutine-frame-lifetime, cpp-final-suspend-destroy-owner, cpp
 
 ## 등록하자마자 다른 스레드가 재개할 수 있습니다
 
-await_suspend에서 완료 콜백을 등록한 순간 다른 worker가 완료를 처리할 수 있습니다. 그 경로가 코루틴을 재개하고 awaiter나 프레임의 수명에 영향을 준다면 등록 뒤 await_suspend가 그 객체의 필드를 계속 만지는 것은 위험합니다. 등록 전에 필요한 상태를 준비하고, 핸들 게시 뒤 접근 가능 범위를 awaiter 계약으로 제한합니다.
+완료 콜백을 `await_suspend`에서 등록하는 순간, 다른 worker가 그 완료를 처리해 코루틴을 재개할 수 있습니다. 그 재개 경로가 awaiter나 프레임의 수명에 영향을 준다면, 등록 호출이 아직 끝나지 않았다는 이유로 `await_suspend`가 해당 객체의 필드를 계속 읽거나 쓰면 안 됩니다. 등록 전에 필요한 상태를 준비하고 핸들을 게시한 뒤에는 awaiter 계약이 허용한 접근만 남깁니다.
 
 이것은 “동기 완료면 언제나 같은 호출 스택”이라는 가정으로 해결할 수 없습니다. 즉시 완료·지연 완료·등록 실패를 각각 정의하고 resume가 동시에 두 번 실행되지 않도록 단일 완료 권위를 둡니다. 손으로 작성한 awaiter는 메모리 순서·재진입·예외까지 함께 검토해야 합니다.
 
@@ -38,7 +38,9 @@ await_suspend에서 완료 콜백을 등록한 순간 다른 worker가 완료를
 {"title":"다시는 재개되지 않을 때 프레임을 파괴합니다","caption":"화살표는 종료에 필요한 순서입니다. 취소 요청만으로 완료 callback의 참조가 사라지는 것은 아니므로 등록 해제 또는 drain과 실행 중 재개 종료를 확인합니다.","rows":[[{"id":"cancel","label":"논리 취소 요청"}],[{"id":"drain","label":"I/O 종결·완료 경로 정리"}],[{"id":"suspend","label":"실행·재개 참조 없음 확인","detail":["라이브러리의 안전한 정지 상태"]}],[{"id":"destroy","label":"소유자가 destroy 한 번"}]],"edges":[{"from":"cancel","to":"drain","label":"실제 중단 확인"},{"from":"drain","to":"suspend","label":"늦은 callback 차단"},{"from":"suspend","to":"destroy","label":"파괴 허가"}]}
 ```
 
-사용자 timeout이 났다고 coroutine_handle을 즉시 destroy하면 늦은 I/O 완료가 해제된 프레임을 resume할 수 있습니다. 취소를 요청한 주체와 실제 완료를 확인한 주체를 구분하고 종료 상태 전이를 하나로 관리합니다. 세대 검사는 잘못된 결과 적용을 막을 수 있어도 해제된 프레임 주소를 읽는 것 자체를 정당화하지 않습니다.
+사용자 timeout으로 `coroutine_handle`을 즉시 `destroy`했다고 합시다. 늦게 도착한 I/O 완료 경로가 여전히 그 핸들을 `resume`하려 하면 이미 해제된 프레임을 읽게 됩니다.
+
+취소를 요청한 주체와 실제 완료를 확인하는 주체를 구분하고, I/O callback의 등록 해제 또는 drain으로 늦은 완료 경로를 정리하고 실행 중인 재개의 종료를 확인한 뒤 종료 상태 전이를 하나의 경로로 관리합니다. 세대 검사는 잘못된 결과 적용은 막을 수 있어도 해제된 프레임 주소를 읽는 행위 자체를 안전하게 만들지 않습니다.
 
 ## Final suspend의 정책에 따라 핸들 유효성이 달라집니다
 

@@ -22,17 +22,21 @@ questionIds: [denormalization-maintenance, projection-snapshot-versus-delta-vers
 | 증분 | v11 +10, v12 +20 | v12 뒤 v11을 버리면 +10 유실 |
 | 삭제·정정 | delete v13, refund event | tombstone·중복·후속 재생 규칙 필요 |
 
-전체 상태가 모든 이전 변경을 포함한다는 계약이 있어야 “더 큰 version만 적용”이 안전합니다. 다른 필드의 부분 snapshot을 전체 상태처럼 취급하면 누락됩니다. delta는 event ID 중복 제거·연속 sequence·갭 대기 또는 snapshot 재동기화가 필요합니다. 교환 가능한 덧셈이어도 중복·누락 방지는 남고 잔액 음수 금지 같은 중간 상태 조건은 순서에 영향을 받습니다.
+전체 상태 snapshot이 v12처럼 이전 변경을 모두 포함한다면 projection에 v12를 저장한 뒤 더 작은 v11은 건너뛸 수 있습니다. 하지만 일부 필드만 담은 snapshot을 전체 상태로 취급하면 더 작은 version을 건너뛰는 동안 다른 필드가 누락될 수 있습니다.
+
+delta는 v12를 먼저 적용한 뒤 v11을 버리면 +10을 잃으므로 event ID를 중복 제거하고 연속 sequence를 확인하며, 갭이면 기다리거나 snapshot으로 재동기화해야 합니다. 덧셈처럼 교환 가능한 변화도 중복·누락 방지는 필요하고, 잔액 음수 금지처럼 중간 상태 조건이 있으면 도착 순서가 결과에 영향을 줍니다.
 
 ```diagram
 {"title":"이벤트 형태에 맞는 적용 조건을 사용합니다","caption":"화살표는 적용 전략의 분기입니다. 최신 version 하나만 남기는 규칙은 모든 delta 합계에 사용할 수 없습니다.","rows":[[{"id":"event","label":"원본 변경 이벤트"}],[{"id":"snapshot","label":"완전한 상태 snapshot"},{"id":"delta","label":"증분·부분 변경"}],[{"id":"replace","label":"원자 max-version 교체"},{"id":"sequence","label":"event 중복·순서·갭 검사"}]],"edges":[{"from":"event","to":"snapshot","label":"이전 상태 포함"},{"from":"event","to":"delta","label":"이전 효과 필요"},{"from":"snapshot","to":"replace","label":"낡은 전체값 거절"},{"from":"delta","to":"sequence","label":"필요 변화 보존"}]}
 ```
 
-중복 처리 마커와 projection 변경도 같은 거래 또는 검증된 원자 경계에 둡니다. 마커만 먼저 기록하면 효과 누락, 변경만 먼저 하면 중복 적용이 생깁니다. outbox·CDC는 발행 누락을 줄이는 경로이지 소비자의 이 경계를 대신하지 않습니다.
+이벤트 ID를 처리했다는 마커와 projection 변경은 같은 transaction에 넣거나, 두 작업을 함께 성공시키는 원자 경계 안에서 처리해야 합니다. 마커만 먼저 저장한 뒤 장애가 나면 projection은 바뀌지 않은 채 다음 재처리가 막히고, projection만 먼저 바뀌면 마커가 없어 같은 이벤트가 다시 적용될 수 있습니다. outbox·CDC는 원본 변경을 빠뜨리지 않고 발행하는 데 도움을 주지만, 소비자가 마커와 projection을 함께 반영하는 경계까지 대신 만들지는 않습니다.
 
 ## 선택 재구축도 현재 이벤트와 경쟁하는 Writer입니다
 
-원본 version 10을 읽어 요약을 계산하는 동안 실시간 이벤트가 projection을 12로 바꿀 수 있습니다. 늦은 rebuild가 무조건 10을 저장하면 상태가 역행합니다. source version·계산 규칙 버전·현재 projection 세대를 비교해 게시하고, 갱신 중 새 이벤트를 놓치지 않게 snapshot 기준과 이후 로그 위치를 연결합니다.
+원본 version 10을 읽어 요약을 계산하는 동안 실시간 이벤트가 projection을 12로 바꿀 수 있습니다. 이때 rebuild가 계산한 version 10 결과를 그대로 저장하면 이미 12가 된 projection을 덮어써 상태가 역행하므로, 게시 시점에 source version·계산 규칙 버전·현재 projection 세대를 비교하고 검사와 게시를 원자적으로 묶은 조건부 게시만 허용해야 합니다.
+
+rebuild가 읽은 snapshot 기준과 그 이후 로그 위치를 연결해 재생하지 않으면 계산 중 도착한 새 이벤트를 놓칠 수 있습니다.
 
 전수 삭제 후 재생성만이 방법은 아닙니다. 원본·요약의 행 수·합계·정규화한 해시·관계를 비교해 차이 있는 키 범위를 다시 계산할 수 있습니다. 대조도 같은 기준 version에서 해야 정상 동시 변경을 오류로 오인하지 않습니다. hash 일치는 유용한 신호지만 충돌·빠진 의미를 고려해 필요한 상세 검증을 둡니다.
 
@@ -52,4 +56,4 @@ questionIds: [denormalization-maintenance, projection-snapshot-versus-delta-vers
 
 ## 재생·순서 역전·삭제와 Rebuild 경쟁을 확인합니다
 
-합성 원본에서 v12→v11 snapshot, delta 순서 역전·중복·갭, delete 후 옛 이벤트, 재구축 중 새 변경을 시험합니다. 최종 합계·행 관계·적용 version이 원본 계산과 일치해야 합니다. 현재 작업에서는 실제 materialized view·CDC·projection 재구축을 실행하지 않았습니다. 본문은 적용·신선도 계약의 설명입니다.
+별도 테스트 원본에 v12→v11 snapshot 순서, delta의 순서 역전·중복·갭, delete 뒤 옛 이벤트, rebuild 중 새 변경을 차례로 넣습니다. 각 경우에 최종 합계·행 관계·적용 version을 원본으로 다시 계산한 값과 비교해야 어느 변화가 누락되거나 중복됐는지 알 수 있습니다. 현재 작업에서는 실제 materialized view·CDC·projection 재구축을 실행하지 않았으므로, 여기서 말하는 결과는 실행 결과가 아니라 적용·신선도 계약의 설명입니다.

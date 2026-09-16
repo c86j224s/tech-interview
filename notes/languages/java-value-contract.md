@@ -10,7 +10,7 @@ questionIds: [java-boxing-null, java-unboxing-promotion-order, java-absence-opti
 
 ## 같은 127이 같은 참조라고 모든 숫자를 ==로 비교할 수는 없습니다
 
-int를 Integer로 바꾸는 boxing과 Integer에서 int를 꺼내는 unboxing은 컴파일러가 자동으로 넣을 수 있습니다. 하지만 두 Integer를 ==로 비교하면 기본적으로 참조 동일성을 비교합니다. 일부 상수 표현식 값의 boxing은 언어 명세가 참조 공유를 보장하므로 작은 수에서 값 비교처럼 보입니다. 더 큰 값의 공유는 구현이 확장할 수 있어 “128 이상이면 반드시 다른 참조”라고도 단정하지 않습니다.
+int와 Integer 사이를 오갈 때 컴파일러가 boxing·unboxing을 자동으로 넣을 수 있지만, 두 Integer에 `==`를 쓰면 먼저 값이 아니라 참조가 같은지 비교합니다. 그래서 `127`처럼 일부 상수 표현식의 boxing에서 참조 공유가 보장되는 값은 숫자 비교처럼 보일 수 있습니다. 더 큰 값의 참조 공유는 구현이 확장할 수 있으므로 “128 이상이면 반드시 다른 참조”라고 단정하지 말고, 숫자를 비교할 때는 기본형 변환이나 `equals`의 타입 계약을 의도에 맞게 선택합니다.
 
 ```java
 Integer a = 127;
@@ -45,7 +45,7 @@ System.out.println(n == null); // true
 {"title":"숫자 계산 전에 부재와 실패를 구분합니다","caption":"화살표는 입력 해석 순서입니다. null-safe 비교는 부재 의미를 정하지 않으므로 유효한 값일 때만 기본형 계산으로 넘깁니다.","rows":[[{"id":"input","label":"DB·API의 숫자 결과"}],[{"id":"meaning","label":"값·정상 부재·조회 실패 분리"}],[{"id":"validate","label":"숫자 타입·범위 확정"}],[{"id":"calc","label":"기본형 또는 도메인 계산"}]],"edges":[{"from":"input","to":"meaning","label":"계약 해석"},{"from":"meaning","to":"validate","label":"값이 있는 경우"},{"from":"validate","to":"calc","label":"unboxing 전 조건 충족"}]}
 ```
 
-nullable Integer는 호출자가 null 분기를 처리해야 하는 계약입니다. Optional<Integer> 또는 OptionalInt 같은 반환형은 부재 분기를 API에 드러낼 수 있지만 필드·직렬화·컬렉션에서 항상 최선은 아닙니다. 프레임워크 지원과 비용·사용 위치를 봅니다. 정상 부재만 Optional.empty로 표현하고 오류를 자동으로 empty에 숨기지 않습니다.
+nullable `Integer`를 반환하는 API는 호출자가 `null`인지 먼저 분기한 뒤 숫자 계산으로 넘어가야 한다는 계약입니다. `Optional<Integer>`나 `OptionalInt`는 정상적으로 값이 없는 경우를 반환형에 드러내지만, 필드·직렬화·컬렉션에서 항상 최선인 것은 아니므로 프레임워크 지원·비용·사용 위치를 함께 봅니다. 정상 부재만 `Optional.empty`로 표현하고, 오류를 같은 empty로 바꾸어 숨기지 않습니다.
 
 ## 기본값 함수의 실행 시점도 다릅니다
 

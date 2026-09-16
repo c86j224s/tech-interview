@@ -12,7 +12,7 @@ questionIds: [kafka-acks-isr, kafka-unclean-election-policy]
 
 한 파티션(partition)에 복제 계수(**replication factor**, RF)가 3이라고 하겠습니다. 이것은 leader 하나와 follower 둘을 포함해 배치할 사본 수가 세 개라는 뜻입니다. 하지만 세 replica가 항상 현재 복제 성공 집합으로 인정되는 것은 아닙니다. follower 하나가 장애를 겪거나 leader를 따라잡지 못하면 **ISR(in-sync replicas)** 에서 빠질 수 있습니다.
 
-이 노트의 기본 모델은 Kafka 4.3의 **Eligible Leader Replicas(ELR)를 비활성화한 단순 ISR 모델**입니다. 즉 `eligible.leader.replicas.version=0`으로 ELR을 끈 상태에서, 리더 장애 시 ISR 안의 후보를 우선 선출하고 ISR 밖의 뒤처진 replica를 안전한 후보로 취급하지 않는 경우를 먼저 추적합니다. ELR이 활성화된 현행 클러스터에서는 이 단순화가 그대로 성립하지 않는 부분을 뒤에서 따로 설명합니다.
+먼저 Kafka 4.3에서 **Eligible Leader Replicas(ELR)를 끈 단순 ISR 모델**만 따라갑니다. `eligible.leader.replicas.version=0`이면 ELR이 비활성화되므로, 리더가 고장 났을 때는 ISR 안의 후보를 우선 선출하고 ISR 밖의 뒤처진 replica는 안전한 후보로 보지 않습니다. ELR이 켜진 현행 클러스터에서는 이 경로만으로 선출 결과를 설명할 수 없으므로, 뒤에서 별도 조건으로 나눠 보겠습니다.
 
 예를 들어 처음에는 `ISR={L,F1,F2}`이고 `min.insync.replicas=2`라고 하겠습니다. F2가 늦어져 ISR 밖으로 나가면 현재 ISR은 `{L,F1}`이 됩니다. 이 상태에서는 `acks=all` 생산이 여전히 가능하지만, “세 replica 중 아무 두 개만 골라 기다린다”는 뜻은 아닙니다. 현재 ISR에 들어 있는 L과 F1 모두의 확인을 기다리고, `min.insync.replicas=2`는 그 상태에서 쓰기를 허용할 최소 ISR 크기를 정합니다.
 
@@ -53,7 +53,7 @@ Kafka 4.3 공식 복제 설계 문서는 현재 ISR 전체가 기록을 받아�
 
 A에서 min ISR이 2라는 이유로 F2를 무시하고 L과 F1만 기다리는 것이 아닙니다. F2가 아직 ISR이면 세 replica가 모두 확인해야 성공합니다. B처럼 F2가 ISR에서 제거된 뒤에야 현재 집합이 두 개가 됩니다.
 
-또한 ISR이 줄어드는 시점과 append가 진행되는 시점이 겹치면 오류가 `NotEnoughReplicas`인지 `NotEnoughReplicasAfterAppend`인지에 따라 producer가 본 경계가 달라질 수 있으므로, 오류 응답만으로 레코드가 절대 log에 들어가지 않았다고 단정하지 않아야 합니다.
+ISR이 줄어드는 순간과 leader의 append가 겹치면 `NotEnoughReplicas`와 `NotEnoughReplicasAfterAppend` 중 어느 오류가 돌아오는지에 따라 producer가 관찰한 경계가 달라질 수 있습니다. 두 이름을 같은 실패로 뭉뚱그리지 말고 append 전후의 상태와 broker log를 함께 확인해야 하며, 오류 응답만으로 record가 log에 절대 들어가지 않았다고 단정하지 않습니다.
 
 ## acks 값은 서로 다른 기록 확인을 선택합니다
 
@@ -63,7 +63,7 @@ A에서 min ISR이 2라는 이유로 F2를 무시하고 L과 F1만 기다리는 
 
 Kafka 공식 설계 문서는 filesystem append가 OS page cache에 머물 수 있고, 성능 때문에 매 write마다 `fsync`를 요구하지 않는다고 설명합니다.
 
-`min.insync.replicas`는 `acks=all`과 결합할 때 특히 의미가 있습니다. `acks=all`만 두고 min ISR을 1로 두면 ISR이 leader 하나로 줄어도 producer 성공이 가능할 수 있습니다. RF를 3으로 설정했다는 사실만으로 성공한 모든 레코드가 항상 세 곳에 존재한다고 말할 수 없는 이유입니다.
+`min.insync.replicas`는 `acks=all`이 현재 ISR을 모두 기다리더라도 최소 몇 개의 ISR이 남아 있어야 쓰기를 허용할지 정합니다. 그래서 min ISR을 1로 두면 ISR이 leader 하나로 줄어든 상태에서도 producer 성공이 가능할 수 있습니다. RF를 3으로 설정했다는 숫자만으로 성공한 모든 record가 언제나 세 replica에 남는다고 말할 수 없는 이유입니다.
 
 반대로 min ISR을 3으로 올리면 ISR 하나라도 빠지는 순간 쓰기 가용성을 포기하고 복제 여유를 보전하는 방향이 됩니다. 아래의 consumer 가시성 설명은 Kafka 4.3 topic 설정 문서가 제시한 규칙이며, ELR 비활성 단순 ISR 모델로만 읽지 않습니다. ELR을 사용하는 환경에서는 high watermark와 eligible leader 후보를 함께 확인해야 합니다.
 

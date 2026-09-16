@@ -12,7 +12,7 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 
 **host**는 사용자·모델·정책·문맥을 관리하는 앱, **client**는 host 안에서 server와 프로토콜을 주고받는 역할, **server**는 도구·자료·템플릿을 제공하는 역할입니다. 이슈 조회 server를 연결하면 client는 요청과 응답을 연결하고 host는 필요한 도구를 모델에 보여 줄 수 있습니다. 호출 제안 뒤에도 host 승인·예산과 server의 대상 인가가 남습니다.
 
-한 host의 server A에서 읽은 자료를 server B에 자동 전달할 권한은 없습니다. 연결별 자격·출처·장애·deadline을 구분합니다. server 내부에 LLM이 있다고 외부 API가 자동으로 목표 위임 프로토콜이 되는 것도 아닙니다.
+예를 들어 한 host가 server A에서 이슈 원문을 읽었다고 해서 그 내용을 server B의 요청에 자동으로 붙여 보낼 권한이 생기지는 않습니다. A와 B의 연결별 자격, 데이터 출처, 장애 상태, 마감 시각(`deadline`)을 서로 구분해 다뤄야 합니다. server 안에 LLM이 들어 있어도 외부 API가 곧바로 목표를 다른 에이전트에 위임하는 프로토콜이 되는 것은 아닙니다.
 
 ## 함수·자료·템플릿의 사용 목적을 나눕니다
 
@@ -22,7 +22,9 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 | resources | URI로 특정 규정 원문 읽기 | 읽었다고 자동 모델 문맥에 들어가지는 않음 |
 | prompts | 사용자가 선택할 리뷰 요청 템플릿 | host 정책을 덮는 권한 아님 |
 
-검색은 자료를 반환해도 질의·실행 비용이 있는 tool이 자연스러울 수 있습니다. template에 규정 전문을 복사하면 resource와 version이 갈라질 수 있어 갱신 책임을 정합니다. 목록의 제목·설명도 비공개일 수 있고 발견·원문 조회·변경 실행은 다른 인가입니다. 큰 자료에는 범위·page·잘림·원본 ID를 제공합니다.
+규정 원문을 찾는 검색은 결과를 읽는 일처럼 보여도 질의와 실행 비용이 있으므로 `tool`로 두는 편이 자연스러울 수 있습니다. 반대로 `template`에 규정 전문을 복사하면 원문을 제공하는 `resource`와 `version`이 따로 바뀔 수 있으니 어느 쪽을 갱신할지 정해야 합니다.
+
+목록에서 제목·설명만 보는 발견, URI로 원문을 읽는 조회, 실제 변경을 실행하는 호출은 각각 다른 인가를 받습니다. 자료가 크면 범위와 `page`, 잘림 여부, 원본 ID를 함께 반환해 다음 조회가 무엇을 이어야 하는지 알 수 있게 합니다.
 
 ## 최신이라는 말 대신 실제 리비전을 고정합니다
 
@@ -50,11 +52,13 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 
 ## 추가 입력과 내구 Task를 구분합니다
 
-코어 MRTR은 `resultType:input_required`와 inputRequests를 받고 inputResponses를 포함해 원래 요청을 다시 진행합니다. 실제 사용자 승인 필드는 host UI로 받아야 하며 모델이 동의를 만들어서는 안 됩니다.
+`MRTR`은 추가 입력을 받아 원래 요청을 이어 가는 코어 흐름입니다. 이 흐름에서 추가 정보가 필요한 요청은 `resultType:input_required`와 `inputRequests`를 반환하고, host가 받은 `inputResponses`와 함께 원래 요청을 다시 진행합니다. 예를 들어 실제 사용자 승인 여부는 host UI에서 받아 전달해야 하며, 모델이 동의 값을 만들어 제출해서는 안 됩니다.
 
-확인한 tasks 안내는 `io.modelcontextprotocol/tasks`를 양쪽이 지원·선언했을 때 server가 `resultType:task`의 내구 핸들을 반환한다고 설명합니다. 매 호출마다 별도 생성 flag가 없어도 될 수 있지만 **client 지원 없이 반환해도 된다는 뜻은 아닙니다**. 접수는 응답 전 내구화하고 taskId·ttlMs·pollIntervalMs를 저장합니다.
+오래 걸리는 작업을 접수할 때 양쪽이 `io.modelcontextprotocol/tasks`를 지원·선언했다면 server는 `resultType:task`와 내구 핸들을 반환할 수 있습니다. 매 호출마다 별도 생성 flag가 없어도 될 수 있지만, **client가 지원하지 않는데 server가 task를 반환해도 된다는 뜻은 아닙니다**. 접수 상태는 응답을 보내기 전에 내구화하고 `taskId`, `ttlMs`, `pollIntervalMs`를 저장해야 재연결 뒤에도 같은 작업을 조회할 수 있습니다.
 
-`tasks/get`은 working·input_required·completed·failed·cancelled 상태와 종결 결과/error를 조회합니다. 추가 입력은 outstanding 요청 key에 맞춰 `tasks/update`로 보내고 중복·이미 충족된 입력을 새 행동으로 처리하지 않습니다. `tasks/cancel`은 협력적 요청이며 실제 종결을 보장하지 않습니다. 알림을 놓쳐도 조회로 상태를 확인하고 핸들만 아는 타인이 결과를 읽거나 취소하지 못하게 인가합니다.
+`tasks/get`으로 `working`, `input_required`, `completed`, `failed`, `cancelled` 상태를 조회하고, 작업이 끝났다면 종결 결과나 `error`도 함께 읽습니다. `input_required`일 때는 해당 outstanding 요청 key에 맞춰 `tasks/update`로 추가 입력을 보내며, 이미 처리했거나 이미 충족된 입력을 새로운 행동으로 다시 실행하지 않습니다.
+
+`tasks/cancel`은 server에 보내는 협력적 요청일 뿐 실제 종결을 보장하지 않으므로, 알림을 놓치면 다시 조회해 상태를 확인해야 합니다. task 핸들만 알고 있는 다른 주체가 결과를 읽거나 취소하지 못하도록 조회·변경 모두에 인가를 적용합니다.
 
 ## 혼합 버전과 실패 경로를 실제로 시험해야 합니다
 

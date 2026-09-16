@@ -10,9 +10,9 @@ questionIds: [elasticsearch-shard-mapping, elasticsearch-docvalues-inverted-inde
 
 ## 정확한 ID와 본문 단어 검색은 같은 표현이 아닙니다
 
-상품 ID `AB-123`을 정확히 비교하려는데 text 분석기로 나누면 원문 전체와 다른 token들이 검색됩니다. mapping은 필드 타입·분석·색인·정렬·집계의 표현을 정합니다. shard 수를 늘려도 잘못된 token화가 올바른 검색 의미로 바뀌지 않습니다.
+`mapping`은 필드마다 어떤 타입으로 저장하고 분석·색인·정렬·집계를 허용할지 정하는 색인 스키마입니다. 상품 ID `AB-123`에 `text` analyzer를 적용하면 문자열을 여러 `token`으로 나누어 검색할 수 있으므로 원문 전체와 같은 값인지 확인하는 ID 조회에는 맞지 않을 수 있고, shard(데이터를 나누어 저장하는 단위) 수를 늘려도 이 tokenization 의미는 바뀌지 않습니다.
 
-ID·tenant·분류의 정확 값은 보통 keyword, 본문은 적절한 analyzer를 쓰는 text가 출발점입니다. 같은 제목에 본문 검색과 정확 정렬이 필요하면 multi-field로 별도 표현을 둘 수 있습니다. 실제 ID GET의 `_id`와 일반 keyword 필드 조회는 API 경로가 다릅니다.
+ID·tenant·분류처럼 정확히 같아야 하는 값은 보통 `keyword`, 본문 단어 검색은 `text`가 출발점이며, 같은 제목을 검색하면서 정확히 정렬하려면 하나의 원문에 두 표현을 두는 `multi-field`를 사용할 수 있습니다. 알려진 문서의 `_id`를 GET하는 경로와 일반 `keyword` 필드를 query하는 경로도 서로 다르므로 API 사용 목적을 먼저 나눕니다.
 
 | 요구 | 표현·접근 후보 | 확인할 것 |
 | --- | --- | --- |
@@ -23,13 +23,13 @@ ID·tenant·분류의 정확 값은 보통 keyword, 본문은 적절한 analyzer
 
 ## 역색인은 Term에서 문서로, Doc Values는 문서에서 값으로 갑니다
 
-역색인은 term→문서 목록 같은 구조로 검색 후보를 좁힙니다. doc values는 문서별 필드 값을 열 지향 형태로 읽는 데 적합해 sort·aggregation·script 등의 접근에 쓰입니다. 같은 필드의 index와 doc_values 설정은 다른 책임입니다.
+`역색인`은 검색어인 `term`에서 그 term을 포함한 문서 ID 목록으로 가는 표라서 검색 후보를 먼저 좁힙니다. `doc values`는 반대로 문서에서 특정 필드의 값을 읽기 쉽도록 저장한 열 지향 표현이라 정렬·집계·스크립트에 쓰입니다. 따라서 같은 필드의 `index` 설정은 검색 후보를 만들 수 있는지, `doc_values` 설정은 문서별 값을 읽을 수 있는지와 관련된 별도 책임입니다.
 
 ```diagram
 {"title":"질의 방향에 따라 필요한 저장 표현이 다릅니다","caption":"화살표는 조회 방향입니다. term에서 후보 문서를 찾는 것과 각 문서의 정렬·집계 값을 읽는 것은 다른 접근입니다.","rows":[[{"id":"term","label":"검색 term"},{"id":"doc","label":"후보 문서 ID"}],[{"id":"inverted","label":"역색인 · 문서 후보"},{"id":"values","label":"doc values · 필드 값"}]],"edges":[{"from":"term","to":"inverted","label":"term → documents"},{"from":"doc","to":"values","label":"document → value"}]}
 ```
 
-text의 fielddata를 무심코 켜서 정렬·집계를 가능하게 하면 heap 비용이 커질 수 있습니다. keyword multi-field처럼 목적에 맞는 표현을 검토합니다. index:false여도 일부 타입은 doc values를 통한 제한된 검색이 가능할 수 있으나 지원 연산·성능이 같지 않으므로 실제 버전 계약을 확인합니다. doc values가 모든 필드 타입에 같은 방식으로 존재하는 것도 아닙니다.
+`text`에 `fielddata`(분석된 text 값을 메모리에 올려 정렬·집계에 쓰는 표현)를 켜면 heap 비용이 커질 수 있습니다. 그래서 정확 값과 집계가 필요하면 `keyword` multi-field처럼 목적에 맞는 표현을 먼저 검토합니다. `index:false`인 일부 타입도 doc values를 이용한 제한된 접근이 가능할 수 있지만 지원 연산과 성능이 같다는 뜻은 아니며, doc values가 모든 필드 타입에 같은 방식으로 존재하는 것도 아니므로 실제 버전 계약을 확인해야 합니다.
 
 ## 동적 필드와 큰 집계는 저장·메모리를 키웁니다
 

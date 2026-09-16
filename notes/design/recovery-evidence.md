@@ -29,7 +29,7 @@ backup bytes가 있어도 암호화 key·권한·호환 DB version·WAL 일부�
 
 ## 서비스별 같은 시각 문자열이 원자 Cut은 아닙니다
 
-주문 backup은 결제 요청 전, 결제 backup은 결제 성공 후일 수 있습니다. “둘 다 12시” timestamp만으로 인과가 일치하지 않습니다. 가능하면 조정된 snapshot·로그 위치·처리 watermark로 복구 기준을 정하고 안정 주문/event ID로 주문·결제·재고·외부 provider를 대사합니다.
+주문 backup이 결제 요청 전 시점이고 결제 backup이 결제 성공 후 시점이면, 두 백업에 기록된 사실의 순서가 서로 맞지 않을 수 있습니다. 따라서 두 시스템의 “둘 다 12시” timestamp만 맞추어서는 인과가 일치했다고 볼 수 없습니다. 가능하면 조정된 snapshot·로그 위치·처리 watermark 중 실제 계약이 있는 기준을 선택하고, 복구 뒤 안정 주문/event ID로 주문·결제·재고·외부 provider의 상태를 대사합니다.
 
 ```diagram
 {"title":"각 복구 위치에서 공통 업무 관계를 대조합니다","caption":"화살표는 검증 근거입니다. 벽시각 하나가 모든 서비스의 원자 snapshot을 만들지 않으므로 ID·위치·외부 결과로 불일치를 해결합니다.","rows":[[{"id":"orders","label":"주문 snapshot·log 위치"},{"id":"payments","label":"결제 snapshot·log 위치"}],[{"id":"reconcile","label":"주문 ID·event ID·외부 원장 대사"}],[{"id":"verify","label":"참조·잔액·인가·핵심 쓰기 검증"}],[{"id":"open","label":"재개 기준 충족 뒤 traffic 허용"}]],"edges":[{"from":"orders","to":"reconcile","label":"복구한 사실"},{"from":"payments","to":"reconcile","label":"복구한 사실"},{"from":"reconcile","to":"verify","label":"누락·중복·불확정 분리"},{"from":"verify","to":"open","label":"실제 서비스 기준"}]}
@@ -39,7 +39,7 @@ backup bytes가 있어도 암호화 key·권한·호환 DB version·WAL 일부�
 
 ## Restore 환경이 옛 Mail을 다시 보내지 않게 합니다
 
-실제 backup에는 개인정보·token·과거 outbox·scheduler state가 있습니다. 복원 전부터 운영 endpoint·자격·egress를 차단하고 자동 consumer/scheduler 시작을 막습니다. 허용한 합성 sink로 전환한 뒤 필요한 읽기·제한된 쓰기·event 경로를 검사합니다. log 수집도 개인정보 복제 경로입니다.
+실제 backup에는 개인정보·token·과거 outbox·scheduler state가 있으며, 복원하면 이런 데이터가 함께 읽힐 수 있습니다. 그래서 복원 작업을 시작하기 전부터 운영 endpoint·자격·egress를 차단하고, 자동 consumer와 scheduler가 시작되지 않도록 합니다. 외부로 보내는 대신 허용한 합성 sink로 전환한 뒤 필요한 읽기·제한된 쓰기·event 경로를 확인하며, log 수집도 개인정보를 복제하는 경로로 따로 다룹니다.
 
 비식별 합성 데이터 훈련은 절차 검증에 유용하지만 실제 backup의 읽기 가능성·key 접근·무결성을 증명하지는 않습니다. 실제 backup 검사는 통제된 접근·암호화·보관·삭제 환경에서 필요한 범위로 수행해야 합니다.
 

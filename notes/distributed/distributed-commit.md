@@ -25,7 +25,9 @@ questionIds: [db-two-phase-commit, saga-compensation, saga-orchestration-choreog
 | coordinator commit 내구 기록 | 최종 결정 존재 | 다른 참가자에 abort 선택 |
 | 일부 participant commit | 나머지는 in-doubt일 수 있음 | 응답 유실을 미결정으로 단정 |
 
-A만 commit 결정을 받고 B는 못 받았을 때 B가 timeout으로 abort하면 전체 원자성이 깨집니다. coordinator 로그·participant 복구 프로토콜로 결정을 알아야 합니다. in-doubt 동안 lock·버전·자원이 남아 다른 거래를 막을 수 있습니다. heuristic 강제 결정을 지원하는 제품도 그것이 불일치·대사를 요구할 수 있음을 명시해야 합니다.
+A만 commit 결정을 받고 B가 받기 전에 coordinator와의 연결이 끊겼다고 합시다. B는 prepared 상태로 lock·버전·자원을 잡은 채 결정을 모르는 in-doubt 상태가 되므로, 자기 timeout만으로 abort하면 A의 commit과 달라져 원자성이 깨집니다.
+
+따라서 B가 복구할 때 coordinator 로그와 participant 복구 프로토콜에서 같은 transaction ID의 결정을 조회하고, 결정이 확인될 때까지 재전달하거나 대기해야 합니다. 제품이 heuristic 강제 결정을 제공하더라도 그 선택은 자동으로 일관성을 복구하는 것이 아니라 불일치 분류와 대사를 추가로 요구합니다.
 
 ```diagram
 {"title":"Prepare 뒤에는 내구 최종 결정을 복구해야 합니다","caption":"화살표는 2PC의 두 단계입니다. coordinator가 중단되면 prepared 참여자는 자기 timeout만으로 반대 결정을 내려서는 안 됩니다.","rows":[[{"id":"coord","label":"Coordinator prepare 요청"}],[{"id":"a","label":"DB A prepared·yes"},{"id":"b","label":"DB B prepared·yes"}],[{"id":"decision","label":"최종 commit 결정 내구 기록"}],[{"id":"apply","label":"모든 참여자에 결정 재전달"}]],"edges":[{"from":"coord","to":"a","label":"준비 요청"},{"from":"coord","to":"b","label":"준비 요청"},{"from":"a","to":"decision","label":"내구 yes"},{"from":"b","to":"decision","label":"내구 yes"},{"from":"decision","to":"apply","label":"commit·복구 재시도"}]}

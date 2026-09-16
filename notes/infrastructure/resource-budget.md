@@ -22,7 +22,7 @@ questionIds: [k8s-requests-limits, k8s-resource-qos-eviction, sidecar-log-resour
 | node pressure | 노드 전체 자원 부족 | kubelet eviction·시스템 OOM |
 | Pod priority·QoS | 압력·스케줄 정책 요소 | 절대 생존 보장 아님 |
 
-request를 낮추면 노드에 더 들어갈 수 있지만 정상 피크에 경쟁이 커질 수 있습니다. 높이면 실제 유휴가 있어도 배치되지 않을 수 있습니다. CPU utilization 기반 HPA는 request를 분모로 쓰므로 배치 설정 변경이 확장 입력까지 바꿉니다.
+request를 낮추면 scheduler는 같은 노드에 더 많은 Pod를 넣을 수 있지만 정상 피크 때 CPU 경쟁이 커질 수 있고, 높이면 실제 유휴가 있어도 Pending이 될 수 있습니다. CPU utilization 기반 HPA는 사용량을 request로 나누어 비율을 계산하므로, 같은 사용량이어도 request를 바꾸면 확장 입력이 달라집니다. 따라서 request 조정은 배치 가능 수와 HPA가 보는 비율을 함께 다시 계산해야 합니다.
 
 ## QoS 이름만으로 종료 순서를 고정하지 않습니다
 
@@ -38,7 +38,9 @@ node pressure eviction은 request 대비 초과 사용·priority·상대 사용�
 {"title":"노드 총량에서 앱이 쓸 수 있는 배치 예산을 구합니다","caption":"화살표는 자원 예산 차감입니다. allocatable에 이미 반영된 시스템 예약을 다시 빼지 않고, 그 노드에 실제 배치될 DaemonSet과 기존 Pod 요청을 계산합니다.","rows":[[{"id":"capacity","label":"Node capacity"}],[{"id":"allocatable","label":"Node allocatable","detail":["시스템 예약·여유 반영"]}],[{"id":"daemon","label":"DaemonSet·기존 요청 제외"}],[{"id":"apps","label":"새 앱 Pod 배치 가능량"}]],"edges":[{"from":"capacity","to":"allocatable","label":"노드 예약 정책"},{"from":"allocatable","to":"daemon","label":"실제 배치 집합"},{"from":"daemon","to":"apps","label":"CPU·메모리·기타 상한"}]}
 ```
 
-DaemonSet은 selector·taint toleration·architecture에 따라 어떤 노드에 들어갈지 달라집니다. 인스턴스 유형을 넓힐 때도 네트워크·스토리지·GPU·Pod 수 한도를 함께 확인합니다. init container·native sidecar·Pod overhead의 유효 request 계산은 단순 앱 컨테이너 합과 다를 수 있어 실제 scheduler 계약을 사용합니다.
+DaemonSet이 어느 노드에 실제로 들어가는지는 selector·taint toleration·architecture 등 실제 스케줄 조건을 대입해 결정하므로, allocatable에서 모든 DaemonSet을 일괄 차감하지 않고 해당 노드의 실제 배치 집합만 계산합니다. 인스턴스 유형을 넓힐 때는 네트워크·스토리지·GPU·Pod 수 한도를 후보별로 함께 대조합니다.
+
+init container·native sidecar·Pod overhead의 유효 request는 단순 앱 컨테이너 합과 다를 수 있으므로 실제 scheduler 계약으로 계산합니다.
 
 ## Sidecar가 로그를 처리해도 비용이 사라지지 않습니다
 

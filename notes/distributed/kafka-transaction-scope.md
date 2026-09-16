@@ -10,13 +10,15 @@ questionIds: [kafka-idempotent-producer, kafka-idempotence-inflight-order, kafka
 
 ## Broker에 저장됐지만 ACK가 유실되면 같은 배치를 재전송합니다
 
-idempotent producer는 producer ID·epoch·partition별 sequence로 이 재전송을 식별해 중복 append를 줄입니다. 같은 payload를 앱이 두 번 새 이벤트로 만들어 다른 sequence로 보내는 것은 별개입니다. producer의 전송 중복 방지와 주문·포인트의 논리 중복 방지를 구분합니다.
+broker에 배치가 먼저 기록됐지만 ACK가 유실되면 producer는 같은 배치를 다시 보냅니다. idempotent producer는 producer ID·epoch·partition별 sequence를 비교해 이 재전송을 식별하고 중복 append를 줄입니다. 반대로 앱이 같은 payload를 두 번 새 이벤트로 만들어 다른 sequence로 보내면 Kafka는 이를 같은 전송으로 식별하지 않으므로, producer 전송 중복과 주문·포인트의 논리 중복을 따로 막아야 합니다.
 
-consumer가 DB를 커밋한 뒤 offset 저장 전에 죽으면 같은 Kafka 레코드를 다시 처리할 수 있습니다. producer idempotence는 이 외부 소비 효과까지 자동으로 한 번으로 만들지 않습니다.
+consumer가 Kafka 레코드를 읽고 DB transaction을 commit한 직후, Kafka offset을 저장하기 전에 죽을 수 있습니다. 재시작한 consumer는 저장되지 않은 offset부터 같은 레코드를 다시 읽으므로 DB 변경도 다시 시도될 수 있습니다. producer idempotence는 이 소비 시점과 외부 DB 효과까지 자동으로 한 번으로 만들지 않으므로 DB inbox·effect key 같은 별도 경계가 필요합니다.
 
 ## In-flight·ACK·Retry 설정을 한 계약으로 봅니다
 
-Kafka Java client의 일반적인 idempotence 조건은 acks=all, retries>0, max.in.flight.requests.per.connection<=5 같은 결합 요구를 가집니다. 사용 client·broker 버전의 정확한 제한·기본값·명시적 idempotence와 충돌 설정 처리를 확인합니다. 다른 언어 client에 숫자만 복사하지 않습니다.
+일반적으로 Kafka Java client에서 기대하는 idempotence는 acks=all, retries>0, max.in.flight.requests.per.connection<=5처럼 여러 설정이 함께 맞아야 하는 계약입니다. 예를 들어 in-flight 요청 수나 ACK 조건을 임의로 바꾸면 이 문서의 재전송·순서 설명을 같은 방식으로 적용할 수 있는지 다시 판단해야 합니다.
+
+사용 client·broker 버전의 정확한 제한·기본값·명시적 idempotence와 충돌 설정 처리를 확인하고, 다른 언어 client에 숫자만 복사하지 않습니다.
 
 idempotence 없이 여러 배치가 in-flight일 때 앞 배치가 실패·재시도되고 뒤 배치가 먼저 append되면 순서가 바뀔 수 있습니다. compatible idempotent 설정은 해당 producer·partition의 sequence 계약을 유지하는 데 도움되지만 여러 producer의 업무 생성 순서를 전역으로 만들지는 않습니다.
 
@@ -41,7 +43,9 @@ idempotence 없이 여러 배치가 in-flight일 때 앞 배치가 실패·재�
 
 Kafka transaction은 관련 출력 records와 소비 group offset을 commit·abort 경계로 묶을 수 있습니다. read_committed 소비자는 aborted 출력을 업무 레코드로 받지 않도록 합니다. 그러나 한 transaction의 모든 partition 결과가 단일 poll·단일 consumer·한 외부 DB transaction으로 동시에 전달되는 것은 아닙니다. 여러 poll과 consumer에 걸친 적용 원자성은 앱의 별도 요구입니다.
 
-LSO(last stable offset)는 아직 결론 나지 않은 transaction 때문에 안전하게 읽을 경계를 제한할 수 있습니다. high watermark는 복제 확정 경계이고 LSO와 consumer position·committed offset은 다른 값입니다. 앞의 열린 transaction 때문에 그 뒤의 다른 기록도 read_committed에서 기다릴 수 있어 consumer가 멈춘 것처럼 보입니다.
+앞쪽 Kafka transaction이 아직 commit·abort되지 않은 상태라면 read_committed consumer는 그 transaction의 결과가 정해질 때까지 이후 offset의 레코드를 업무 레코드로 넘기지 않을 수 있습니다. 이때 LSO(last stable offset)는 그런 미결정 transaction의 시작 offset을 넘지 않는 읽기 경계이고, high watermark는 복제가 확정된 경계라서 둘의 의미가 다릅니다.
+
+consumer position은 다음 fetch에서 사용할 현재 읽기 위치이고 committed offset은 consumer group에 저장한 위치이므로 LSO와 같은 값이라고 보면 안 되며, 열린 transaction 뒤의 기록까지 기다리면서 consumer가 멈춘 것처럼 보일 수 있습니다.
 
 외부 API의 긴 대기를 Kafka transaction 안에 넣으면 외부 원자성은 얻지 못하면서 LSO·timeout·coordinator 비용을 늘릴 수 있습니다. transaction 길이·batch·timeout·abort·commit 응답 유실을 관리합니다.
 

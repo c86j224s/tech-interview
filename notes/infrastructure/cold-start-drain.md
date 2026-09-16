@@ -10,13 +10,15 @@ questionIds: [keda-scale-zero, warm-pod-versus-warm-node, queue-visible-inflight
 
 ## 첫 메시지는 Polling 뒤 바로 처리되지 않을 수 있습니다
 
-consumer가 0개일 때 메시지가 도착하면 scaler 감지·활성화·Pod 생성·노드 배치·이미지·초기화·broker 연결·assignment가 필요합니다. 노드도 줄어 있다면 인스턴스 공급·Node Ready·CNI·CSI·DaemonSet 준비가 추가됩니다. 첫 ACK까지의 지연을 polling interval 하나로 설명하면 대부분의 준비 비용을 놓칠 수 있습니다.
+consumer가 0개일 때 메시지가 도착하면, 먼저 scaler가 이벤트를 감지해 workload 활성화를 요청하고, Pod를 생성한 뒤 노드에 배치해야 합니다. 이어 이미지·앱 초기화·broker 연결·assignment를 거쳐야 첫 처리를 시작할 수 있습니다.
+
+노드도 줄어 있다면 인스턴스 공급과 Node Ready 외에 CNI(네트워크 플러그인), CSI(스토리지 플러그인), DaemonSet(노드별 에이전트) 준비가 더해집니다. 따라서 첫 ACK 시각은 polling interval 하나가 아니라 각 단계의 소요 시간과 의존 관계로 계산해야 하며, 단계가 겹칠 수 있는지도 타임라인으로 확인해야 합니다.
 
 ```diagram
 {"title":"첫 효과와 ACK까지 전체 준비 경로를 측정합니다","caption":"화살표는 단계별 시간 경계입니다. 일부 단계는 겹칠 수 있으므로 단순 추정 합뿐 아니라 실제 타임라인을 측정합니다.","rows":[[{"id":"event","label":"이벤트 도착·scaler 감지"}],[{"id":"node","label":"Pod·노드 배치 준비"}],[{"id":"app","label":"이미지·앱 초기화"}],[{"id":"broker","label":"연결·assignment·fetch"}],[{"id":"ack","label":"처리·효과 커밋·ACK"}]],"edges":[{"from":"event","to":"node","label":"활성화"},{"from":"node","to":"app","label":"실행 자원 준비"},{"from":"app","to":"broker","label":"소비 준비"},{"from":"broker","to":"ack","label":"첫 작업 실행"}]}
 ```
 
-Pod Running은 메시지 처리 준비와 다릅니다. readiness가 실패한다고 pull consumer의 fetch가 자동 중단되는 것도 아닙니다. 앱 자체가 필수 초기화·assignment 뒤 소비를 시작하고 종료 때 새 fetch를 멈추는 수명 계약을 가져야 합니다.
+Pod 상태가 Running으로 바뀌어도 필수 설정을 읽고 broker assignment를 받은 뒤라는 뜻은 아니므로, 메시지를 바로 처리할 준비가 됐다고 세지 않습니다. readiness 실패만으로 pull consumer의 fetch가 자동 중단되지 않는다면, 앱이 초기화와 assignment를 끝낸 뒤에만 소비를 시작하고 종료 신호를 받으면 새 fetch를 먼저 멈추도록 구현합니다. 그래야 종료 중 새 작업이 계속 들어오는 것을 막으면서 실제 처리 준비와 상태 표시를 같은 기준으로 맞출 수 있습니다.
 
 ## Warm Node와 Warm Pod가 없애는 비용은 다릅니다
 
@@ -33,9 +35,11 @@ warm이라고 이름 붙인 Pod가 실제 Ready·broker 연결 상태가 아니�
 
 ## Visible이 0이어도 진행 중 변경은 남습니다
 
-큐에서 메시지를 가져와 invisible 상태가 되었지만 worker가 DB를 쓰는 중일 수 있습니다. visible backlog=0만 보고 종료하면 아직 확정하지 않은 작업이 끊깁니다. broker의 in-flight 의미·지표 지연·ACK·commit 위치를 같이 봅니다. Kafka committed lag도 처리 중 상태와 항상 같은 값은 아닙니다.
+worker가 큐에서 메시지를 가져간 뒤에는 visible backlog에서 사라져도 DB 쓰기나 외부 효과가 끝나지 않은 in-flight 작업일 수 있습니다. 예를 들어 visible backlog=0인 시점에 축소를 완료하면 아직 확정하지 않은 작업을 끊을 수 있으므로, broker가 in-flight를 어떻게 정의하는지와 지표 지연을 확인하고 ACK 또는 commit이 어느 단계에서 발생하는지 함께 기록합니다.
 
-축소 요청을 받으면 새 fetch·자식 작업을 차단하고 현재 작업의 실제 종결을 기다립니다. grace 안에 끝나면 효과 확정 후 ACK하고, 못 끝나면 checkpoint·안전한 재전달로 복구합니다. 실제 효과가 이미 적용됐는지 불확실한 경우 새 worker는 같은 논리 키로 조회·멱등 처리해야 합니다. 숫자 0을 만들려고 ACK를 먼저 보내면 누락이 생깁니다.
+Kafka에서는 committed lag가 마지막 커밋을 기준으로 하므로 처리 중 레코드 수와 항상 같은 값으로 보지 않습니다.
+
+축소 요청이 오면 먼저 새 fetch와 자식 작업 수락을 막고, 이미 시작한 작업은 실제로 끝나면서 효과가 확정될 때까지 기다립니다. grace 안에 끝나면 효과를 확정한 뒤 ACK하고, 끝나지 않으면 checkpoint를 남기거나 안전하게 재전달해 새 worker가 이어서 처리하게 합니다. 효과가 이미 적용됐는지 응답만으로 알 수 없을 때는 같은 논리 키로 조회하고 멱등 처리해야 하며, replica 수를 0으로 만들려고 ACK부터 보내면 그 작업이 재전달되지 않아 누락될 수 있습니다.
 
 ## 제어기의 Cooldown과 앱의 Drain은 대체 관계가 아닙니다
 

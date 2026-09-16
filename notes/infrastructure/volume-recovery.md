@@ -28,7 +28,9 @@ ReadWriteOnce는 일반적으로 한 노드의 읽기·쓰기 mount 범위를 �
 
 볼륨을 먼저 영역 A에 만들고 Pod는 affinity 때문에 영역 B에만 배치할 수 있으면 Pending이 될 수 있습니다. WaitForFirstConsumer는 소비 Pod의 스케줄링 제약을 고려할 때까지 바인딩·공급을 늦춰 이런 불일치를 줄입니다. 데이터를 다른 영역에 복제하거나 장애 후 자동으로 새 영역에 옮기는 기능은 아닙니다.
 
-StorageClass·allowed topology·PV node affinity·Pod affinity·taint·NodePool·실제 영역 용량을 함께 봅니다. scheduler를 우회해 nodeName을 직접 지정하면 지연 바인딩 흐름과 맞지 않을 수 있어 실제 계약을 확인합니다. 이미 만들어진 단일 영역 볼륨은 compute 여유가 다른 영역에 있어도 접근할 수 없는 제약이 남습니다.
+먼저 StorageClass의 allowed topology와 PV node affinity가 허용하는 영역을 확인하고, Pod의 affinity·taint 조건과 NodePool의 실제 영역 용량을 같은 표에 놓고 겹치는지 봅니다. scheduler를 우회해 nodeName을 직접 지정하면 WaitForFirstConsumer가 소비 Pod의 제약을 반영하기 전에 흐름이 달라질 수 있으므로, 이 설정 조합이 지연 바인딩과 맞는지 확인합니다.
+
+이미 만들어진 단일 영역 볼륨은 다른 영역에 compute 여유가 있어도 접근할 수 없다는 제약이 그대로 남습니다.
 
 ## Snapshot의 일관된 복구 집합을 확인합니다
 

@@ -20,7 +20,7 @@ questionIds: [distributed-snowflake-id]
 | node 10bit | 1024개 ID | 동시에 같은 ID 소유 금지 |
 | sequence 12bit | 0~4095 | 같은 ms에 wrap 금지 |
 
-예제 결합은 `((time-epoch) << 22) | (node << 12) | sequence`입니다. 입력 필드 범위를 먼저 검증하고 overflow·부호 비트를 조용히 잘라내지 않습니다. 단위 시간 생성률은 로컬 한도이며 전체 throughput·지연 보장은 별도입니다.
+이 예에서는 `41+10+12=63`비트이므로 node와 sequence를 합친 22비트를 시간 필드 뒤로 밀어 `((time-epoch) << 22) | (node << 12) | sequence`로 결합합니다. 생성 전에 `time-epoch`가 41bit, node가 10bit, sequence가 12bit 범위에 들어오는지 확인하고 overflow나 부호 비트를 조용히 잘라내지 않습니다. 이 비트 배치가 정하는 단위 시간별 생성 한도는 로컬 한도일 뿐이며, 전체 throughput이나 지연은 별도 문제입니다.
 
 ## Sequence가 다 차면 다음 시간을 기다리거나 거절합니다
 

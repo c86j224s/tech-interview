@@ -10,9 +10,9 @@ questionIds: [db-pool-long-transactions, idle-transaction-pool-starvation, datab
 
 ## 풀 부족 전에 빌린 연결이 어디서 시간을 쓰는지 봅니다
 
-연결을 얻어 주문을 읽고 같은 transaction 안에서 결제 API를 기다린 뒤 저장하면 SQL은 짧아도 연결은 결제 지연 전체를 점유합니다. pool을 키우면 잠시 대기를 줄일 수 있지만 하위 DB 동시성을 더 늘려 문제를 옮길 수 있습니다.
+`connection pool`은 여러 요청이 재사용할 물리 DB 연결을 모아 두고 요청이 빌려 쓰게 하는 관리 구조입니다. 주문을 읽은 뒤 같은 transaction 안에서 결제 API를 기다리면 SQL 자체는 짧아도 빌린 연결이 외부 지연 전체 동안 점유되고, pool을 키우면 잠시 대기만 줄어든 채 DB 동시성·lock·I/O 부담이 커질 수 있습니다.
 
-획득 대기·연결 보유·query 실행·transaction 시작~종료·결과 전송·reset을 별도 span으로 기록합니다. DB session ID와 요청 trace를 연결해 앱이 기다리는 위치와 DB의 실제 상태를 대조합니다.
+따라서 pool 획득 대기·연결 보유·query 실행·transaction 시작~종료·결과 전송·reset을 각각 별도 `span`(요청의 특정 구간을 기록하는 관측 단위)으로 기록합니다. DB session ID와 요청 trace를 연결해야 앱이 기다린 위치와 DB의 실제 상태를 대조할 수 있습니다.
 
 | 시간·상태 | 남는 자원 | 개선할 경계 |
 | --- | --- | --- |
@@ -26,9 +26,9 @@ questionIds: [db-pool-long-transactions, idle-transaction-pool-starvation, datab
 
 ## 거래 밖으로 대기를 옮기면 다시 검증해야 합니다
 
-DB에서 짧게 예약·읽기를 확정하고 외부 API는 연결 밖에서 호출한 뒤 결과를 받아 조건부 갱신할 수 있습니다. 그러나 연결을 반납하는 순간 원래 transaction의 원자 경계도 끝납니다. expected version·예약 상태·논리 요청 ID를 유지하고 그 사이 변경을 다시 확인해야 합니다. 단순히 코드 위치만 옮기면 같은 정확성이 유지되지 않습니다.
+외부 API를 기다리기 전에 DB에서 짧게 예약·읽기를 확정하고 연결을 반납한 뒤, 결과가 돌아오면 조건부 갱신하는 방식은 연결 보유 시간을 줄일 수 있습니다. 이 구성에서는 원래 transaction을 먼저 commit 또는 rollback으로 끝내고 연결을 반납합니다. 이후 외부 호출과 새 transaction은 하나의 원자적 작업이 아니므로, 예약 상태·`expected version`(읽을 때 확인한 버전)·논리 요청 ID를 함께 들고 있다가 돌아온 뒤 그 사이 변경과 중복 요청을 다시 확인해야 합니다. 코드 블록을 transaction 밖으로 옮겼다는 이유만으로 원래 정확성이 유지되지는 않습니다.
 
-서버 instance 10개에 pool 20개씩이면 최대 200개 연결에 배치·관리·복제·다른 서비스 예산이 추가됩니다. DB 최대 연결 수와 안정적인 실제 실행 병렬도는 다릅니다. 하위 CPU·I/O·lock 여유가 있고 정상 query 동시성이 병목일 때만 pool 증설을 검토합니다.
+서버 10개가 pool 20개씩 가지면 최대 200개 연결에 배치·관리·복제·다른 서비스의 연결 예산까지 더해지며, DB 최대 연결 수와 안정적으로 처리할 수 있는 실제 병렬도는 다릅니다. 하위 CPU·I/O·lock에 여유가 있고 정상 query의 동시성 제한이 실제 병목일 때 pool 증설을 검토합니다.
 
 ## 스트리밍은 메모리와 연결 보유를 교환합니다
 
@@ -48,9 +48,9 @@ client가 기다리기를 끝내고 취소 신호를 보냈어도 서버 query�
 
 ## 물리 세션의 옛 Role·시간대가 다음 요청에 남지 않아야 합니다
 
-요청 A가 search_path·role·timezone·isolation·임시 테이블·세션 변수를 바꾸고 반환하면 B의 같은 SQL이 다른 의미로 실행될 수 있습니다. 가능한 transaction-local 설정을 사용하고 실제 pool·driver의 rollback/reset 범위를 확인합니다. `close()` 메서드가 물리 연결 종료인지 풀 반환인지도 다릅니다.
+물리 DB 연결에는 `search_path`, `role`, `timezone`, `isolation`, 임시 테이블, 세션 변수처럼 다음 요청에도 남을 수 있는 세션 상태가 있습니다. 요청 A가 이 값을 바꾼 뒤 pool에 반환되고 B가 같은 SQL을 실행하면 B가 다른 테이블·권한·시간대·격리 조건으로 실행될 수 있으므로, 가능한 설정은 transaction-local로 두고 반환 전 `rollback`(열린 거래를 되돌리는 처리)/`reset`(세션 설정과 잔여 상태를 초기화하는 처리) 범위를 driver와 pool 계약으로 확인해야 합니다.
 
-prepared statement·임시 객체 reset은 성능 비용과 연결됩니다. 모든 상태를 무작정 지우기보다 필요한 상태를 최소화하고 검증된 반환 계약을 사용합니다. reset 실패를 정상 성공으로 숨기지 않습니다. 다른 스레드의 ThreadLocal 정리와 DB 세션 정리도 별개입니다.
+`close()`가 실제 DB 연결을 닫는지 pool에 빌린 연결을 돌려주는지는 구현마다 다르며, prepared statement와 임시 객체를 reset하는 비용도 고려해야 합니다. 사용할 세션 상태를 최소화하고, 다음 요청에 영향을 줄 상태는 검증된 반환 절차로 초기화합니다. reset 실패를 성공으로 숨기지 말고, 다른 스레드의 ThreadLocal 정리와 DB 세션 정리는 별개로 처리합니다.
 
 ## 물리 연결 하나로 오염을 재현합니다
 

@@ -40,7 +40,7 @@ questionIds: [agent-durable-execution, agent-tool-idempotency, agent-human-appro
 
 ## 재개 워커는 과거 결정을 무조건 다시 생성하지 않습니다
 
-기록된 모델 결정과 도구 인자를 replay할 단계와 새 관찰로 추론할 단계를 나눕니다. workflow·모델·prompt·도구 버전이 바뀌면 옛 단계 의미를 유지하거나 명시적으로 migration합니다. lease가 만료됐어도 옛 워커는 살아 있을 수 있으므로 checkpoint 쓰기와 가능한 실제 변경 지점에서 세대를 검사합니다. 외부 API가 fencing을 지원하지 않으면 그 한계를 idempotency·상태 조회와 함께 드러냅니다.
+재개할 때는 기록된 모델 결정과 도구 인자를 replay할 단계와 새 관찰로 추론할 단계를 먼저 나눕니다. workflow·모델·prompt·도구 버전이 바뀌었다면 옛 단계의 의미를 유지한 채 진행하거나, 명시적으로 migration한 뒤 진행합니다. lease가 만료된 뒤에도 옛 워커가 살아 있을 수 있으므로 checkpoint 저장과 가능한 실제 변경 지점에서 세대 검사와 쓰기를 같은 원자적 경계로 묶습니다. 외부 API가 fencing을 지원하지 않는다면 그 한계를 idempotency·상태 조회와 함께 드러냅니다.
 
 ## 취소 상태와 실제 효과를 동시에 정직하게 보존합니다
 

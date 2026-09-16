@@ -16,7 +16,7 @@ chunk size C=16에서 world cell −1은 chunk −1·local15입니다. `chunk=fl
 
 ## Halo에도 어느 원본을 복사했는지 기록합니다
 
-ghost cell은 이웃 query 비용을 줄이는 복사본입니다. A의 halo가 B version4를 복사했는데 B가 version5로 벽을 만들었다면 A의 경계 판정은 낡습니다. halo source chunk ID·sourceVersion·포함 영역을 기록하고 경계 변경을 이웃 halo와 파생 데이터 invalidation으로 전파합니다.
+ghost cell/halo는 이웃 chunk를 매번 찾아가지 않도록 그 경계 영역을 복사해 둔 값입니다. A의 halo가 B version4를 복사한 뒤 B가 version5에서 벽을 만들면 A가 보는 경계는 낡으므로, halo마다 source chunk ID·sourceVersion·포함 영역을 저장합니다. B의 경계가 바뀔 때는 그 정보로 영향받는 이웃 halo와 파생 데이터를 찾아 invalidation을 전파합니다.
 
 각 chunk의 version 숫자가 서로 같아야 한다는 뜻은 아닙니다. 요청이 요구하는 snapshot/의존 version 집합이 실제 원본과 맞는지 검사합니다. 불일치·미갱신을 empty로 위장하지 않고 보류·현재 source 재조회·보수 차단을 적용합니다. halo 폭은 고정 한 cell이 아니라 사용 query·agent radius·생성 dependency에 맞춥니다.
 
@@ -26,7 +26,7 @@ ghost cell은 이웃 query 비용을 줄이는 복사본입니다. A의 halo가 
 
 ## 원본 변경과 세 파생 결과 완성은 다른 사건입니다
 
-새 벽은 source에 있지만 collision은 옛 version이면 이동이 통과할 수 있습니다. 각 artifact에 sourceVersion·생성 상태·profile/rules·영향 영역을 둡니다. 완성된 새 배열을 만들고 필요한 호환 조합을 확인한 뒤 pointer를 한 번 전환합니다. 생성 중 배열을 공유하지 않습니다.
+source에 새 벽이 기록됐는데 collision artifact가 옛 version이면, collision이 그 벽을 보지 못해 이동이 통과할 수 있습니다. 그래서 각 artifact에 sourceVersion·생성 상태·profile/rules·영향 영역을 붙이고, 새 배열을 완성한 뒤 필요한 artifact들의 호환 조합을 확인합니다. 조건을 통과한 bundle에서만 pointer를 한 번 전환하고, 생성 중인 배열은 reader와 공유하지 않습니다.
 
 | 조합·상황 | 가능한 정책 예 |
 | --- | --- |
@@ -40,12 +40,12 @@ ghost cell은 이웃 query 비용을 줄이는 복사본입니다. A의 halo가 
 
 ## 임시 안전층의 지속 시간도 운영 목표입니다
 
-새 벽을 즉시 막는 overlay는 안전하지만 오래 남으면 불필요하게 길을 막습니다. source→필수 파생 게시 지연·가장 오래된 dirty 영역·임시 overlay age·재생성 queue·stale 폐기·version 불일치 거절을 SLO/경보로 둡니다. version 숫자 차이는 변경 빈도가 다르면 시간을 대표하지 않으므로 age도 측정합니다.
+새 벽을 즉시 막는 overlay는 collision 누락을 줄이지만, 파생 결과가 늦게 갱신된 채 오래 남으면 길을 불필요하게 막습니다. 따라서 source 변경부터 필수 파생 결과를 게시하기까지의 지연, 가장 오래된 dirty 영역, 임시 overlay age, 재생성 queue, stale 결과 폐기 수, version 불일치 거절 수를 SLO(서비스 수준 목표)와 경보로 추적합니다. version 숫자의 차이는 변경 빈도가 다르면 경과 시간을 뜻하지 않으므로 age도 별도로 측정합니다.
 
 계속 바뀌는 chunk는 최신 목표 하나로 job을 합치되 안전층을 먼저 갱신합니다. 한 늦은 job이 최신 root를 덮지 못하도록 현재 목표 version 조건을 검사합니다. 정확한 영향 범위를 모르면 더 넓은 invalidation으로 안전성을 우선합니다.
 
 ## Root 교체 뒤에도 옛 Reader는 살아 있습니다
 
-ray/path 작업이 참조한 chunk를 pin하거나 immutable snapshot·참조계수·RCU 등 실제 lifetime 보호를 사용합니다. logical generation은 stale 적용을 막고 reclamation epoch 같은 구현은 별도의 보호 계약을 갖습니다. 숫자 비교만으로 dangling pointer를 안전하게 만들 수 없습니다.
+ray/path 작업이 chunk를 읽는 동안에는 chunk를 pin하거나 immutable snapshot·참조계수·RCU처럼 reader 수명을 붙잡는 방법을 사용합니다. logical generation은 늦게 끝난 결과의 stale 적용을 막는 식별자이고, reclamation epoch는 reader가 끝난 뒤에만 메모리를 회수하도록 하는 별도 보호 계약이 필요합니다. generation 숫자만 비교해서는 이미 해제된 dangling pointer를 안전하게 만들 수 없습니다.
 
 음수 좌표·모서리 이웃·경계 수정·load 중 ray·이웃 unload·연속 파괴/복원·job crash·동시 세 기능 query를 시험합니다. 이 노트는 version/수명 설계이며 실제 streaming voxel 엔진 실험 결과는 아닙니다.

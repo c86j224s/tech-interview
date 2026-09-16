@@ -10,7 +10,9 @@ questionIds: [elasticsearch-refresh-visibility, elasticsearch-get-search-readbac
 
 ## 색인 성공 직후 검색에 없다고 저장 실패는 아닐 수 있습니다
 
-문서 저장 ACK와 검색 reader가 새 segment를 보는 refresh 시점은 다를 수 있습니다. 알려진 ID의 GET은 기본 realtime 경로를 사용할 수 있어 검색보다 먼저 새 문서를 볼 수 있습니다. 실제 realtime 옵션·routing·version·대상 index가 맞는지 확인합니다.
+문서 저장 ACK는 색인 요청이 처리됐다는 응답이고, 검색 reader가 새 segment를 읽기 시작하는 시점은 그 뒤일 수 있습니다. 그래서 같은 문서라도 저장 직후에는 알려진 ID의 GET이 새 값을 보여 줄 수 있지만 일반 search에는 아직 없을 수 있습니다.
+
+장애를 좁힐 때는 먼저 GET과 search가 같은 대상 index와 문서 ID를 기준으로 비교되는지 맞추고, version은 각 API가 반환하는 메타데이터나 문서에 저장한 version을 별도로 대조하며, routing(문서를 어느 shard로 보낼지 정하는 값)과 GET의 realtime 옵션은 각 API 계약에 맞게 실제 요청에 적용됐는지 확인합니다.
 
 원본 DB가 따로 있으면 DB commit→outbox·CDC→Elasticsearch 색인→refresh→검색이라는 지연이 더해집니다. 검색에 없다는 증상에서 어느 단계가 아직 완료되지 않았는지 나눠야 합니다.
 
@@ -33,13 +35,17 @@ refresh는 검색 리더 공개이고 디스크 crash durability를 모두 보�
 
 ## 즉시 확인이 필요한 요청에만 비용을 지불합니다
 
-저장 직후 편집 화면은 저장 응답이나 ID GET으로 확인할 수 있습니다. 반드시 검색 필터 결과에 들어와야 하는 요청은 wait_for를 검토합니다. wait_for는 보통 다음 refresh를 기다려 매번 강제 refresh 비용을 줄이지만 listener 한도 등 조건에서 강제 refresh가 발생할 수 있고 refresh 비활성 구성에서는 대기가 길어질 수 있습니다. 정확한 제품 계약을 확인합니다.
+저장 직후 편집 화면이 같은 문서를 보여 주는 것이 목적이면 저장 응답이나 알려진 ID의 GET으로 확인하고, 검색 필터에 바로 포함되어야 하는 요청에만 wait_for를 붙이는 식으로 요구를 나눕니다. wait_for는 보통 다음 refresh까지 기다리는 방식이라 매번 refresh=true를 강제하는 비용을 줄일 수 있지만, listener 한도 같은 조건에서는 강제 refresh가 발생할 수 있습니다.
+
+refresh가 비활성화된 구성에서는 기다림이 길어질 수 있으므로, 요청 timeout을 검색 실패로 단정하지 말고 해당 버전·설정의 대기 계약과 문서 ID·source version을 함께 확인합니다.
 
 모든 쓰기에 강제 refresh를 적용하면 작은 segment·후속 merge·검색·색인 I/O 비용이 늘 수 있습니다. bulk 요청의 batch·동시성·visibility SLO·색인 처리량을 같이 비교합니다. timeout은 색인이 없다는 증명이 아니므로 같은 문서 ID·source version으로 결과를 확인합니다.
 
 ## Reindex 완료는 동시 변경을 모두 반영했다는 뜻이 아닙니다
 
-mapping 변경으로 새 index를 만들고 reindex하는 동안 old index나 원본 DB에 write·delete가 계속 들어올 수 있습니다. 기준 snapshot과 그 이후 변경 위치를 확보하고 새 index에 빠짐없이 적용해야 합니다. reindex 작업 완료만 보고 alias를 바꾸면 스캔 뒤에 생긴 변경이나 삭제가 누락될 수 있습니다.
+mapping을 바꾸려고 새 index를 만들고 reindex(기존 문서를 새 index로 복사하는 작업)하는 동안에도 old index나 원본 DB에는 write와 delete가 계속 들어올 수 있습니다. 먼저 reindex가 읽을 기준 snapshot(한 시점에 고정한 원본 상태)을 정하고, 그 snapshot을 읽은 뒤 발생한 변경을 식별할 위치를 확보해 새 index에 빠짐없이 이어서 적용해야 합니다.
+
+reindex 작업이 ‘완료’로 끝났다는 것은 스캔 범위가 끝났다는 뜻일 뿐이므로, 그 뒤의 변경·삭제까지 반영했는지 확인하기 전에 alias를 전환하면 누락이 생깁니다.
 
 늦은 snapshot 문서가 더 최신 delta 적용을 덮지 않도록 source version·계산 버전을 검증합니다. Elasticsearch의 외부 version 사용·sequence number/primary term 조건은 서로 다른 기능이므로 채택 API의 정확한 계약에 맞춥니다. 단순 dual-write는 한쪽 성공·다른 쪽 실패의 복구 기록이 필요합니다. outbox·CDC로 재생할 수 있는 원본 권위를 두면 대사가 쉬워집니다.
 

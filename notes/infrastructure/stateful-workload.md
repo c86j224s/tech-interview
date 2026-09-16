@@ -37,7 +37,9 @@ Headless Service의 endpoint 공개는 readiness 및 publishNotReadyAddresses �
 
 OrderedReady 정책에서 db-0이 Ready가 되어야 db-1을 시작하는데, db-0의 readiness가 3개 중 2개 quorum을 요구한다고 합시다. 두 번째 Pod가 시작되지 않아 첫 번째가 영원히 Ready가 되지 않는 순환 대기가 생길 수 있습니다.
 
-서비스 발견·프로세스 시작·클러스터 초기화·사용자 트래픽 readiness를 분리합니다. Parallel Pod 관리나 별도 bootstrap 단계가 해결에 도움될 수 있지만 단순히 readiness를 항상 true로 바꾸면 미복구 노드에 사용자 요청이 들어갈 수 있습니다. 데이터 서비스가 동시 시작·기존 로그 복구·한 번의 bootstrap을 어떻게 지원하는지 확인해야 합니다.
+시작 절차에서는 서비스 발견·프로세스 시작·클러스터 초기화·기존 로그 복구·사용자 트래픽 readiness를 서로 다른 단계로 구분하고, readiness를 언제 올릴지는 데이터 서비스가 정한 초기화·복구 조건으로 판단합니다. Parallel Pod 관리나 별도 bootstrap(클러스터를 구성하기 위한 초기 절차)을 사용할 수 있지만, readiness를 항상 true로 바꾸면 아직 복구되지 않은 노드에도 사용자 요청이 들어갈 수 있습니다.
+
+따라서 데이터 서비스가 동시 시작, 기존 로그 복구, 한 번만 수행하는 bootstrap을 어떤 순서와 조건으로 지원하는지 제품의 실제 절차로 확인합니다.
 
 Parallel 정책도 StatefulSet의 모든 업데이트·종료 동작이 무조건 무순서가 된다는 뜻으로 확대하지 않습니다. Pod 관리 정책과 updateStrategy·partition 등의 실제 버전별 계약을 나눕니다. 초기 생성과 일부 재시작·전체 복구는 서로 다른 테스트입니다.
 

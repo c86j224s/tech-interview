@@ -10,7 +10,7 @@ questionIds: [java-gc-reachability, java-gc-root-leak-classification, java-clean
 
 ## 서로 가리켜도 외부에서 도달하지 못하면 수집 가능할 수 있습니다
 
-A.next=B, B.next=A인 두 객체에서 다른 참조가 모두 사라졌다고 합시다. Java의 추적 GC는 단순 참조 수가 아니라 살아 있는 root에서의 도달 가능성을 기준으로 판단하므로 이 순환도 수집 대상이 될 수 있습니다. 반대로 순환이 없어도 살아 있는 스레드·전역 registry가 객체를 잡으면 남습니다.
+A.next=B, B.next=A인 두 객체만 남고 스레드 스택이나 전역 registry 같은 GC root에서 두 객체로 가는 참조가 끊겼다고 합시다. 추적 GC는 서로 몇 번 가리키는지가 아니라 root에서 따라갈 수 있는지를 보므로, 이 순환은 수집 대상이 될 수 있습니다. 반대로 순환이 없어도 살아 있는 스레드나 전역 registry가 객체를 계속 참조하면 객체는 남습니다.
 
 수집 가능하다는 것은 즉시 또는 정해진 시간까지 수집된다는 뜻이 아닙니다. System.gc 요청도 필요한 파일·연결 반환의 완료 보장이 아닙니다. 메모리 객체의 수명과 OS 자원의 적시 반납을 나눠야 합니다.
 
@@ -24,11 +24,11 @@ A.next=B, B.next=A인 두 객체에서 다른 참조가 모두 사라졌다고 �
 | JNI handle | native의 강한 참조 | native 소유·해제 계약 |
 | class loader 경로 | 옛 앱 타입·thread context loader | 재배포 종료·registry 정리 |
 
-static이 있다는 것만으로 영구 누수라고 단정하지 않습니다. 그 클래스와 로더에 어떤 살아 있는 경로가 있는지 봅니다. heap dump에서 retained size·dominator·root 경로를 조사하고 기능 종료 뒤에도 그 경로가 필요하다는 설계 근거가 있는지 확인합니다. 정상 캐시라도 무한 보유하면 용량 문제가 됩니다.
+static 필드가 보인다는 사실만으로 영구 누수라고 결론내리지 말고, 그 필드를 가진 클래스·클래스 로더가 root에서 객체까지 이어지는 살아 있는 경로를 먼저 찾습니다. heap dump에서는 root 경로로 누가 객체를 붙잡는지, dominator로 특정 노드가 함께 보유하는 하위 객체 범위를, retained size로 그 노드를 유지할 때 따라오는 메모리 규모를 나눠 봅니다. 기능이 끝난 뒤에도 그 보유 경로가 필요한지 설계와 대조하고, 정상 캐시라도 만료·용량 제한 없이 계속 보유하면 메모리 용량 문제가 됩니다.
 
 ## 파일과 연결은 Try-with-resources로 범위를 드러냅니다
 
-AutoCloseable 자원을 try-with-resources에 두면 정상 반환·예외에서 close를 호출하는 구조가 됩니다. 여러 자원은 선언 역순으로 정리되고 본문 예외와 close 실패가 함께 나면 일반적으로 본문 예외에 정리 실패가 suppressed로 연결됩니다. 주 오류만 출력해 정리 실패를 버리지 않습니다.
+AutoCloseable 자원을 try-with-resources 괄호 안에 넣으면 블록이 정상 종료되거나 본문에서 예외가 나도 범위를 빠져나갈 때 close가 호출됩니다. 자원을 여러 개 선언하면 선언한 역순으로 닫히고, 본문과 close가 모두 실패하면 close 오류는 보통 본문 예외에 suppressed로 붙습니다. 따라서 로그와 오류 전달에서 주 예외만 남기지 말고 suppressed 오류도 함께 확인해야 자원 정리 실패를 놓치지 않습니다.
 
 ```java
 try (var in = java.nio.file.Files.newInputStream(path)) {

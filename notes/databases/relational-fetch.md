@@ -45,7 +45,7 @@ LEFT JOIN order_items AS i ON i.order_id = p.id
 ORDER BY p.created_at DESC, p.id DESC, i.product_id;
 ```
 
-이는 LIMIT과 named parameter를 사용하는 설명용 문법이며 SQL Server 등에서는 해당 dialect로 바꿉니다. 결과 행은 20개보다 많을 수 있지만 선택한 부모는 최대 20개입니다. 부모 정렬의 동점 보조 키와 자식의 정렬도 명시합니다. 부모 테이블·자식 테이블의 tenant 제약이 실제로 교차 테넌트 연결을 막는지도 확인합니다.
+이는 `LIMIT`과 named parameter를 사용하는 설명용 문법이므로 SQL Server 등에서는 해당 dialect로 바꿔야 합니다. 결과 행은 20개보다 많을 수 있지만 `parent_page`가 고른 부모는 최대 20개이고, 부모 정렬의 동점 보조 키와 자식 정렬도 각각 지정되어 있습니다. 실제 쿼리에서는 부모·자식의 tenant 제약이 같은 테넌트 범위만 연결하도록 적용되어 교차 테넌트 연결을 막는지 확인해야 합니다.
 
 ```diagram
 {"title":"페이지의 단위는 부모이고 결합 행은 별도입니다","caption":"화살표는 조회 단계입니다. 부모 20개를 먼저 정해 자식 수가 부모 페이지 크기를 바꾸지 않도록 합니다.","rows":[[{"id":"filter","label":"권한·필터·부모 정렬"}],[{"id":"page","label":"부모 ID 최대 20개 확정"}],[{"id":"batch","label":"관련 자식 제한 batch 조회"}],[{"id":"assemble","label":"원래 부모 순서로 조합"}]],"edges":[{"from":"filter","to":"page","label":"페이지 경계"},{"from":"page","to":"batch","label":"해당 ID 집합"},{"from":"batch","to":"assemble","label":"부재·여러 자식 보존"}]}

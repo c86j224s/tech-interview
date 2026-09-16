@@ -23,7 +23,9 @@ primary key는 논리 식별 제약이고 클러스터링은 행 저장 구조�
 | SQL Server heap | RID 기반 행 접근 | forwarded record 등 추가 접근 가능 |
 | PostgreSQL heap | tuple 위치와 MVCC 가시성 확인 | CLUSTER가 항상 유지되는 자동 저장 순서는 아님 |
 
-이는 대표 저장 모형입니다. 버전·압축·포함 열·특수 인덱스에 따른 세부는 실제 메타데이터와 계획으로 확인합니다. 물리적으로 정렬된 리프라도 SQL 결과 순서는 ORDER BY로 요구해야 합니다.
+표의 `locator`는 보조 인덱스에서 찾은 후보를 실제 원본 행으로 다시 찾아가기 위해 저장하는 값입니다. InnoDB는 보조 키에서 primary key로 clustered 행을 다시 찾고, SQL Server는 clustered table의 clustering key 또는 heap의 `RID`(행 식별자)를 사용하며 forwarded record 때문에 추가 접근이 생길 수 있습니다. PostgreSQL heap은 tuple 위치와 MVCC 가시성을 함께 확인하고, `CLUSTER`로 한 번 정렬했더라도 그 물리 순서가 계속 유지되거나 SQL 결과 순서를 보장하는 것은 아니므로 필요한 순서는 `ORDER BY`로 요구해야 합니다.
+
+이 표는 대표 모형이므로 버전·압축·포함 열·특수 인덱스의 세부와 실제 페이지 수는 메타데이터·실행 계획으로 확인해야 합니다.
 
 ```diagram
 {"title":"보조 키 탐색과 원본 행 접근을 따로 셉니다","caption":"화살표는 조회 경로입니다. locator가 물리 위치인지 다른 트리의 키인지에 따라 추가 읽기와 가시성 검사 비용이 달라집니다.","rows":[[{"id":"secondary","label":"고객 보조 인덱스 구간"}],[{"id":"locator","label":"행 위치 또는 clustering key"}],[{"id":"row","label":"원본 행·버전 가시성"}],[{"id":"result","label":"요청 컬럼 반환"}]],"edges":[{"from":"secondary","to":"locator","label":"후보별 locator"},{"from":"locator","to":"row","label":"추가 lookup"},{"from":"row","to":"result","label":"필터·결과 구성"}]}
@@ -31,11 +33,11 @@ primary key는 논리 식별 제약이고 클러스터링은 행 저장 구조�
 
 ## Covering은 구조적 가능성이고 실제 Heap 접근은 별도입니다
 
-필요 컬럼을 모두 가진 인덱스는 데이터 관점에서 covering입니다. PostgreSQL의 index-only scan은 해당 인덱스가 값을 반환할 수 있고 필요한 열이 포함되는 것 외에 MVCC 가시성을 확인해야 합니다. heap page가 visibility map에서 all-visible이면 heap 접근을 피할 수 있지만 최근 쓰기로 그 조건이 달라지면 Heap Fetches가 남습니다.
+`covering` 인덱스는 질의가 요구하는 값을 인덱스만으로 꺼낼 수 있을 만큼 필요한 열을 포함한다는 구조적 의미입니다. PostgreSQL의 `index-only scan`은 값이 인덱스에 있어도 각 행의 MVCC 가시성을 확인해야 하며, `visibility map`(페이지의 tuple이 모든 일반 snapshot에 보이는지 기록)이 `all-visible`로 표시한 heap page에서는 heap 접근을 피할 수 있지만 최근 갱신으로 표시가 깨지면 `Heap Fetches`(원본 heap을 다시 읽은 횟수)가 남습니다.
 
-계획에 Index Only Scan이 있어도 Heap Fetches가 0이라는 뜻은 아닙니다. 읽기 위주 오래된 페이지와 최근 갱신 페이지를 나눠 봅니다. 다른 엔진의 covering·버전 검사도 별도 계약이므로 PostgreSQL 설명을 그대로 일반화하지 않습니다.
+따라서 계획에 `Index Only Scan`이 보인다는 사실과 `Heap Fetches=0`은 다르고, 다른 엔진의 covering과 버전 검사도 PostgreSQL 규칙으로 일반화하지 않습니다.
 
-INCLUDE는 반환 데이터를 싣는 역할이며 key 열처럼 모든 탐색·정렬 조건에 같은 역할을 주는 것은 아닙니다. 지원 문법·압축·중복 처리도 엔진마다 다릅니다. 반환 컬럼을 전부 넣으면 인덱스가 넓어져 같은 메모리에 덜 들어가고 모든 쓰기의 로그·페이지 비용이 커집니다.
+`INCLUDE` 열은 반환값을 싣지만, 인덱스 키 열과 같은 탐색 범위나 정렬 순서를 만들어 주지는 않습니다. 포함한 값을 필터에서 사용할 수 있는지와 키 순서로 탐색할 수 있는지는 다른 문제입니다. 반환 열을 많이 넣을수록 인덱스·로그·페이지 비용이 커질 수 있습니다. 지원 문법과 압축·중복 처리도 엔진별로 확인해야 합니다. 인덱스가 넓어지면 같은 메모리에 담을 수 있는 항목 수도 줄어듭니다. 읽기 위주로 안정된 페이지와 최근 갱신된 페이지를 나누어 Heap Fetches를 비교하면 가시성 확인 비용을 파악하기 쉽습니다.
 
 ## 키 폭이 다른 인덱스까지 반복될 수 있습니다
 

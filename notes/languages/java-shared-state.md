@@ -19,7 +19,7 @@ volatile count가 0일 때 A와 B가 각각 0을 읽고 1을 계산해 저장하
 | 3 | 1 쓰기 | | 1 |
 | 4 | | 1 쓰기 | 1 |
 
-AtomicInteger의 get과 set을 따로 써도 같은 문제가 생깁니다. incrementAndGet 같은 원자 read-modify-write 또는 같은 monitor 안의 증가가 필요합니다. LongAdder 같은 통계 도구는 경합 특성이 좋을 수 있지만 동시에 읽는 합계의 일관성 요구와 맞는지 확인합니다.
+AtomicInteger라도 `get()`으로 읽은 뒤 `set()`하는 두 호출을 따로 두면 `count++`와 같은 경쟁이 남습니다. 값을 읽고 새 값을 계산해 쓰는 read-modify-write 전체를 `incrementAndGet()` 같은 원자 연산으로 수행하거나, 같은 monitor 안에서 읽기·증가·쓰기를 묶어야 합니다. `LongAdder`는 경합이 큰 통계 집계에서 유리할 수 있지만, 여러 작업이 진행되는 동안 읽은 합계가 즉시 일관되어야 하는지에 따라 적합성이 달라집니다.
 
 ## Volatile은 연결되는 쓰기와 읽기 사이의 순서를 만듭니다
 
@@ -30,13 +30,17 @@ volatile boolean ready;
 // 소비자: if (ready) use(data);
 ```
 
-한 번 게시하고 data를 다시 바꾸지 않는 예제에서, 생산자의 data 쓰기 다음 ready volatile 쓰기와 그 게시 이후의 소비자 ready 읽기가 동기화되어 이전 data 쓰기를 볼 근거가 됩니다. 다른 flag를 읽거나 ready=false인데 data를 사용하면 같은 근거가 아닙니다. ready를 재사용하며 data를 계속 바꾸면 이전 소비자와 다음 쓰기의 별도 경쟁을 해결해야 합니다.
+한 번 게시하고 `data`를 다시 바꾸지 않는 전제에서 생산자는 먼저 `data = 42`를 쓰고 같은 스레드에서 `ready = true`를 씁니다. 소비자가 그 `ready`의 volatile 쓰기를 관찰한 뒤 `data`를 읽으면, 그 ready 경계보다 앞선 data 쓰기를 볼 수 있다는 순서가 생깁니다.
+
+그러나 다른 flag를 읽거나 `ready == false`인 상태에서 data를 사용하면 이 연결을 얻지 못합니다. ready를 다시 false/true로 재사용하면서 data도 계속 바꾼다면, 이전 소비자와 다음 생산자의 경쟁을 별도로 설계해야 합니다.
 
 ```diagram
 {"title":"같은 Volatile 필드의 게시 경로를 따릅니다","caption":"화살표는 순서와 동기화 관계입니다. 한 번 게시 뒤 data를 바꾸지 않는 모형이며 volatile 변수가 있다는 사실만으로 모든 필드 읽기가 보호되는 것은 아닙니다.","rows":[[{"id":"data","label":"생산자 data=42"}],[{"id":"publish","label":"ready=true volatile 쓰기"}],[{"id":"observe","label":"소비자 ready 게시 읽기"}],[{"id":"use","label":"소비자 data 사용"}]],"edges":[{"from":"data","to":"publish","label":"프로그램 순서"},{"from":"publish","to":"observe","label":"동기화"},{"from":"observe","to":"use","label":"프로그램 순서"}]}
 ```
 
-synchronized는 같은 monitor의 상호 배제와 unlock→이후 lock의 happens-before를 제공합니다. 인스턴스 synchronized는 해당 객체, static synchronized는 클래스 객체의 monitor를 사용합니다. 서로 다른 인스턴스의 잠금으로 같은 static 데이터를 보호하면 한 경계가 되지 않습니다.
+`synchronized` 블록이나 메서드는 같은 monitor, 즉 같은 잠금 대상을 잡은 스레드가 겹치지 않게 실행되도록 하고, 한 스레드가 그 monitor를 unlock한 뒤 다른 스레드가 같은 monitor를 lock하면 happens-before 관계가 생깁니다. 인스턴스 메서드의 `synchronized`는 그 인스턴스를, `static synchronized`는 해당 클래스 객체를 monitor로 사용합니다.
+
+따라서 static 데이터를 보호하면서 서로 다른 인스턴스를 잠그면 두 스레드가 같은 monitor를 잡지 않아 하나의 보호 경계가 되지 않습니다.
 
 ## 두 Atomic의 합계는 한 번에 읽히지 않습니다
 
@@ -46,7 +50,9 @@ CAS 갱신 함수는 충돌로 재실행될 수 있으므로 외부 결제·알�
 
 ## ConcurrentHashMap은 내부 연산 단위를 보호합니다
 
-두 스레드가 get에서 없음으로 보고 각각 생성·put하면 map은 손상되지 않아도 중복 생성이 생깁니다. putIfAbsent는 저장 승자를 원자적으로 정하지만 메서드 인자로 만들기 전에 두 번 실행한 생성 부수 효과까지 없애지는 못합니다. computeIfAbsent는 해당 map의 원자 계산 계약을 제공하지만 mapping 함수가 null을 반환하거나 예외를 던지면 값이 남지 않아 나중 호출에서 다시 계산할 수 있습니다. 삭제 뒤 재생성도 가능합니다.
+두 스레드가 `get`으로 같은 키의 부재를 본 뒤 각각 객체를 만들고 `put`하면, map 자료구조는 깨지지 않아도 생성 작업은 두 번 실행됩니다. `putIfAbsent`는 이미 만들어진 값 중 저장할 승자를 원자적으로 정하지만, 메서드 인자로 넘길 객체를 만드는 부수 효과까지 취소하지는 않습니다.
+
+`computeIfAbsent`는 해당 map의 계산·저장을 원자적으로 다루는 계약을 제공하지만, mapping 함수가 null을 반환하거나 예외를 던지면 값이 남지 않아 다음 호출이 다시 계산할 수 있습니다. 값이 삭제된 뒤에는 같은 키가 다시 생성될 수도 있습니다.
 
 mapping 함수는 짧고 부수 효과가 적게 유지하고 긴 외부 I/O·재진입·연쇄 map 갱신을 피합니다. 특정 구현의 잠금 범위를 추측해 다른 키 작업은 절대 영향 없다고 단정하지 않습니다. 긴 조회 합치기는 별도의 singleflight 수명·대기 상한이 더 명확할 수 있습니다.
 

@@ -34,7 +34,7 @@ questionIds: [db-mvcc-snapshot, isolation-two-read-experiment, old-transaction-v
 
 각 문장마다 스냅샷을 새로 얻는 정책이라면 A의 두 번째 조회는 120을 볼 수 있습니다. 같은 스냅샷을 유지하는 정책이라면 100을 봅니다. 따라서 “MVCC를 쓴다”는 정보만으로 두 번째 값을 결정할 수 없습니다.
 
-트랜잭션 스냅샷의 정확한 생성 시점도 단순 `BEGIN` 호출 시점이라고 일반화하지 않습니다. 엔진과 설정에 따라 첫 읽기 시점일 수 있고, 잠금 읽기는 일반 스냅샷 읽기와 다른 규칙을 쓸 수 있습니다. PostgreSQL, InnoDB, SQL Server의 비슷한 이름을 하나의 계약처럼 섞지 말고 실제 버전·격리 수준·조회 종류를 고정해야 합니다.
+위 표의 두 번째 읽기 결과를 해석하려면 먼저 스냅샷이 언제 만들어졌는지를 고정해야 합니다. 어떤 엔진·설정에서는 `BEGIN`이 아니라 첫 읽기 때 스냅샷이 생길 수 있고, `FOR UPDATE` 같은 잠금 읽기는 일반 스냅샷 읽기와 다른 규칙을 쓸 수 있습니다. 따라서 PostgreSQL·InnoDB·SQL Server에서 이름이 비슷한 격리 수준을 섞지 말고, 실제 버전·격리 수준·조회 종류를 정한 뒤 같은 순서를 재현합니다.
 
 ## 읽기 알고리즘을 개념적으로 표현하면
 
@@ -108,4 +108,6 @@ A 자신의 UPDATE 후 읽기는 자기 변경을 보는 별도 시험으로 분
 
 ### 실제 실행 범위를 좁혀 기록합니다
 
-`scripts/verify-isolation-study.py`는 임시 SQLite 파일의 WAL 모드에서 실제 두 연결을 사용합니다. A 첫 읽기→B UPDATE·COMMIT→A 두 번째 읽기를 동기 호출 완료 순서로 통제하며 sleep에 의존하지 않습니다. 명시 read transaction의 snapshot 유지, autocommit의 문장별 새 읽기, 자기 쓰기 관찰과 stale snapshot의 write 실패를 각각 검사합니다. 이는 SQLite 계약의 실행 확인이고 PostgreSQL·InnoDB·SQL Server를 대신 검증한 결과는 아닙니다. 제품별 예상 SQL과 실제 실행 근거를 이렇게 분리해야 비슷한 격리 이름을 혼동하지 않습니다.
+`scripts/verify-isolation-study.py`는 임시 SQLite 파일을 WAL 모드로 열고 실제 두 연결을 사용합니다. A의 첫 읽기, B의 UPDATE·COMMIT, A의 두 번째 읽기를 각 호출의 완료 순서로 통제하므로 `sleep`에 기대지 않습니다.
+
+명시적 read transaction의 snapshot 유지, autocommit의 문장별 새 읽기, 자기 쓰기 관찰, 오래된 snapshot에서의 write 실패를 각각 나눠 검사합니다. 이 결과는 SQLite 계약만 확인하며 PostgreSQL·InnoDB·SQL Server의 결과를 대신하지 않으므로, 제품별 예상 SQL과 실제 실행 근거를 따로 기록합니다.

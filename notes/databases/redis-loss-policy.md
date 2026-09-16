@@ -22,9 +22,9 @@ GET의 nil 하나로 원인을 구분할 수 없습니다. expired_keys·evicted
 | volatile 계열 | 만료가 설정된 eligible key | 후보가 부족하면 메모리 증가 쓰기 거절 가능 |
 | noeviction | 메모리 확보를 위한 key 제거 안 함 | 상한에서 관련 쓰기 오류 처리 필요 |
 
-volatile 정책인데 대부분 TTL이 없는 큰 key라면 작은 TTL key를 다 지워도 필요한 공간을 확보하지 못할 수 있습니다. 이것을 allkeys처럼 어떤 key든 지우는 정책으로 이해하면 안 됩니다. 오류가 났다고 기존 데이터와 읽기 모두가 동일하게 실패하는 것도 아니므로 명령·버전별 허용 동작을 확인합니다.
+volatile 정책인데 대부분 TTL이 없는 큰 key라면 작은 TTL key를 다 지워도 필요한 공간을 확보하지 못해 쓰기가 거절될 수 있습니다. 따라서 이를 allkeys처럼 어떤 key든 지우는 정책으로 이해하면 안 됩니다. 메모리 압박을 재현할 때는 실행 중인 Redis 버전에서 쓰기 명령별 오류와 기존 key의 `GET` 결과를 따로 기록해, 명령·버전별로 쓰기 실패가 읽기까지 같은 방식으로 막는지 확인합니다.
 
-LRU·LFU·random·TTL 기준의 선택과 샘플링 구현은 서로 다릅니다. 정책 이름 하나로 엄밀한 전체 LRU 순서를 가정하지 않습니다. 제거되어도 재생성 가능한 캐시와 잔액·멱등 레코드·세션 권위 상태를 같은 손실 정책에 두는 것이 맞는지 먼저 판단합니다.
+LRU는 최근 사용 시점이 오래된 키를, LFU는 접근 빈도를 근사한 값이 낮은 키를 우선 보는 방식이며, random·TTL 기준의 선택과 샘플링 구현은 서로 다릅니다. 따라서 정책 이름만 보고 전체 키를 정확히 정렬한 LRU나 정확한 누적 사용 횟수에 따른 LFU를 가정하지 말고, 실제 제거 결과를 정책별로 따로 봐야 합니다. 제거되어도 다시 만들 수 있는 캐시와 잔액·멱등 레코드·세션 권위 상태를 같은 손실 정책에 둘지는 먼저 나눠 판단해야 합니다.
 
 ```diagram
 {"title":"키 부재는 여러 다른 원인에서 올 수 있습니다","caption":"화살표는 key가 없어지는 원인입니다. TTL 설정만 보고 보존을 약속하지 말고 정책·명령·장애 상태를 함께 관찰합니다.","rows":[[{"id":"ttl","label":"시간 만료"},{"id":"memory","label":"용량 eviction"}],[{"id":"missing","label":"GET에서 key 부재"}],[{"id":"recover","label":"원본 재생성 또는 권위 복구"}]],"edges":[{"from":"ttl","to":"missing","label":"만료 정책"},{"from":"memory","to":"missing","label":"TTL 전에도 가능"},{"from":"missing","to":"recover","label":"데이터 종류별 처리"}]}
@@ -32,7 +32,7 @@ LRU·LFU·random·TTL 기준의 선택과 샘플링 구현은 서로 다릅니�
 
 ## Maxmemory는 전체 프로세스 RSS의 절대 상한이 아닙니다
 
-복제·AOF·client output buffer·allocator fragmentation·fork copy-on-write·자식 프로세스가 추가 메모리를 쓸 수 있습니다. maxmemory 계산에 포함되지 않거나 다른 수명인 영역을 actual INFO·OS 지표로 확인하고 노드·container 여유를 둡니다.
+복제·AOF·client output buffer·allocator fragmentation·fork copy-on-write·자식 프로세스가 추가 메모리를 쓸 수 있습니다. 이 가운데 `maxmemory` 계산에 포함되지 않거나 수명이 다른 영역이 있으므로, `RSS`(운영체제가 프로세스에 실제로 잡아 둔 상주 메모리)와 실제 `INFO`·OS 지표를 함께 확인하고 노드·container 여유를 둬야 합니다.
 
 큰 key 삭제의 해제 CPU가 주 실행을 오래 막을 수 있습니다. UNLINK·lazy freeing 등은 실제 메모리 반환을 뒤로 미루어 즉시 응답 지연을 줄일 수 있지만 lazyfree backlog·peak memory는 남습니다. RSS가 바로 줄지 않았다고 삭제가 실패했다고 단정하지 않습니다.
 

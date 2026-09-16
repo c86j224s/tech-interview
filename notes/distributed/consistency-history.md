@@ -46,9 +46,11 @@ questionIds: [consistency-linearizability, linearizability-operation-history, ca
 
 ## R+W>N은 집합 교집합이지 완전한 선형화 프로토콜이 아닙니다
 
-N=3,R=2,W=2에서 고정 replica 집합의 완료 쓰기와 읽기 집합은 겹칩니다. 하지만 동시 쓰기·부분 실패·버전 비교·stale 반환·구성 변경을 처리할 규칙이 추가로 필요합니다. 일부에만 남은 불확정 쓰기를 한 읽기는 보고 다음 읽기는 못 보는 경우 등에서 read-back·repair의 정확한 프로토콜이 중요합니다.
+N=3, R=2, W=2라면 고정된 replica 집합에서 완료한 쓰기 2곳과 읽기 2곳이 적어도 한 곳에서 겹칩니다. 그러나 그 교집합에서 어떤 버전을 선택할지, 동시 쓰기·부분 실패·stale 응답·구성 변경을 어떻게 처리할지는 별도 규칙입니다. 예를 들어 쓰기가 일부 replica에만 남은 채 응답이 끊기면 첫 읽기는 그 값을 보고 다음 읽기는 못 볼 수 있으므로, read-back과 repair가 어느 시점에 무엇을 다시 기록하는지까지 정해야 합니다.
 
-sloppy quorum처럼 실제 참여 집합이 바뀌면 원래 교집합 가정도 달라집니다. 가장 큰 wall timestamp를 선택하면 clock skew의 변경 손실 문제가 생깁니다. read repair는 읽은 키의 stale replica를 고쳐 수렴을 돕지만 읽히지 않는 키를 전부 정리하지는 않으므로 anti-entropy·복구 경로가 필요할 수 있습니다. repair 부하·삭제·충돌 정책도 운영 비용입니다.
+sloppy quorum처럼 장애 시 실제 참여 집합이 바뀌는 방식에서는, 쓰기 집합과 읽기 집합이 고정되어 겹친다는 출발점이 더는 성립하지 않습니다. 여러 replica가 서로 다른 값을 갖고 가장 큰 wall timestamp만 고르면, clock skew 때문에 실제 순서와 무관하게 한 값이 더 최신처럼 선택되어 다른 변경을 덮을 수 있습니다.
+
+read repair는 이번 읽기에서 발견한 stale replica만 고치므로 읽히지 않은 키까지 정리하지 못하고, anti-entropy·복구 경로와 repair 부하·삭제·충돌 정책을 따로 운영해야 합니다.
 
 ## 분할 복구 뒤 값뿐 아니라 사용자 약속을 대조합니다
 

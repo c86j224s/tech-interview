@@ -24,7 +24,7 @@ questionIds: [oauth-oidc-pkce, oidc-nonce-state-binding]
 
 PKCE의 S256 challenge는 `BASE64URL(SHA256(verifier))`입니다. authorization 요청에는 challenge를 보내고, token endpoint의 코드 교환에는 원래 verifier를 보냅니다. 새 verifier를 만들거나 challenge와 함께 verifier를 공개하면 결합 목적을 잃습니다. SPA·모바일 앱에 배포한 client secret은 비밀 클라이언트의 안전한 비밀로 가정할 수 없습니다.
 
-state는 URL에 존재하는 것만으로 충분하지 않습니다. 서버가 저장한 시작 세션·만료·미사용 시도와 대조해야 합니다. nonce도 토큰 안에 값이 있다는 것보다 원래 요청에 저장한 값과 같은지가 중요합니다. Authorization Code Flow에서 nonce를 보냈다면 반드시 검사하고, 사용 프로파일이 nonce를 요구하면 생성부터 강제합니다. 모든 Code Flow가 무조건 같은 nonce 필수 조건을 가진다고 일반화하지 않습니다.
+`state`는 URL에 돌아왔다는 사실만으로 통과시키지 않고, 서버가 시작할 때 저장한 세션·만료·미사용 시도에서 같은 값을 찾아 대조합니다. `nonce`는 ID token 안의 값과 그 OIDC 인증 요청에 저장한 값을 비교해, 서명된 토큰이 이번 요청에 대응하는지 확인합니다. Authorization Code Flow에서 nonce를 보냈다면 반드시 검사하고, 사용하는 프로파일이 nonce를 요구하면 생성 단계에서 빠지지 않게 하되, 모든 Code Flow에 똑같은 nonce 필수 조건이 있다고 일반화하지 않습니다.
 
 ## 시도마다 상태를 분리합니다
 

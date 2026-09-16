@@ -35,11 +35,13 @@ partition별 watermark의 최소를 사용하면 하나의 멈춘 source가 전�
 
 상태 합계가 offset 100까지 반영됐는데 복구 위치를 90으로 저장하면 91~100을 다시 더할 수 있습니다. 상태는 90인데 입력 위치가 100이면 효과를 건너뜁니다. state snapshot과 partition별 다음 입력 위치를 일관된 복구 기준으로 저장해야 합니다.
 
-분산 스트림 엔진은 barrier·channel state·aligned 또는 unaligned snapshot 같은 방식으로 일관성을 구현할 수 있지만 실제 지원 프로토콜을 확인합니다. 이때 source offset은 모든 partition을 관통하는 하나의 시간 번호가 아닙니다. window state·timer·dedup·serializer·계산 버전도 재시작 의미에 포함될 수 있습니다.
+엔진이 `barrier`를 사용한다면 각 입력 경계가 state snapshot과 함께 처리될 때까지 맞추는(aligned) 방식인지, 진행 중인 channel state까지 함께 저장하는(unaligned) 방식인지에 따라 복구 때 필요한 입력이 달라집니다. 어떤 엔진이 barrier·channel state·aligned·unaligned snapshot을 지원하는지는 구현 계약을 확인해야 하며, source offset을 모든 partition을 관통하는 하나의 시간 번호로 취급하면 안 됩니다.
+
+복구 기준에는 window state·timer·dedup뿐 아니라 serializer·계산 버전의 호환 정보도 포함될 수 있으므로, 하나라도 빠졌을 때 재시작 결과가 같은지 확인해야 합니다.
 
 ## 내부 Exactly-once와 외부 Sink는 다른 경계입니다
 
-엔진 state와 입력 위치가 맞아도 메일·HTTP 결제·외부 DB 출력은 다시 실행될 수 있습니다. transactional sink·stable effect key·outbox·결과 조회 등 그 sink의 commit 프로토콜이 필요합니다. checkpoint 성공이 외부 모든 효과의 단일 적용을 자동 뜻하지 않습니다.
+예를 들어 checkpoint 직후 작업이 외부 DB에 쓰거나 HTTP 결제를 보냈는데 프로세스가 멈추면, state와 입력 위치는 복구돼도 그 외부 효과를 다시 실행할 수 있습니다. transactional sink를 쓰거나, sink가 지원한다면 같은 효과를 식별하는 stable effect key를 함께 보내고, outbox나 결과 조회처럼 해당 sink의 commit 경계에 맞는 방법을 써야 합니다. 그래서 checkpoint 성공만으로 메일·HTTP 결제·외부 DB 효과가 정확히 한 번 적용됐다고 결론 내릴 수 없습니다.
 
 checkpoint가 자주 실패하면 정상 처리율이 높아도 재작업 구간이 커집니다. 마지막 성공 나이·state 크기·저장 대역폭·checkpoint 시간·source 보관 범위를 관찰합니다. 코드·state serializer를 바꿀 때 old snapshot 복구와 rollback이 가능한지도 시험합니다. 필요한 입력이 retention 밖이면 새 원본 snapshot·대사가 필요합니다.
 

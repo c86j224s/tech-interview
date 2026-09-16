@@ -10,9 +10,9 @@ questionIds: [nats-core-jetstream, jetstream-durable-consumer, jetstream-retenti
 
 ## 연결이 없을 때 놓친 이벤트를 다시 읽어야 하나요?
 
-Core NATS는 현재 연결된 publish·subscribe의 실시간 전달에 초점을 둡니다. 오프라인 subscriber를 위한 내구 재생을 기본 계약으로 하지 않습니다. 다음 snapshot으로 복구할 위치 알림에는 단순한 선택일 수 있지만 반드시 처리할 주문 사건에는 보관·재전달이 필요합니다.
+연결된 subscriber에게 현재 발행한 이벤트를 실시간으로 전달하는 것이 Core NATS의 기본 범위입니다. subscriber가 끊긴 동안의 메시지를 나중에 다시 읽는 내구 재생은 기본 계약에 들어 있지 않습니다. 다음 snapshot으로 현재 위치를 다시 맞출 수 있는 알림이라면 단순한 선택일 수 있지만, 반드시 처리해야 하는 주문 사건에는 보관과 재전달 경로가 필요합니다.
 
-JetStream은 subject 메시지를 stream에 저장하고 consumer의 전달·ACK·재생 상태를 관리합니다. 클라이언트 재연결 buffer나 일반 publish 반환이 stream의 PubAck와 같은 저장 확인은 아닙니다. 저장 확인 API·stream 포착 subject·저장 유형·복제·한도를 구성해야 합니다.
+JetStream을 선택하면 subject로 들어온 메시지를 stream에 저장하고, consumer마다 전달 위치와 확인 응답(ACK), 재생 상태를 관리합니다. 클라이언트 재연결 buffer나 일반 `publish` 호출의 반환값은 stream이 저장을 확정했다는 `PubAck`와 같은 확인이 아닙니다. 따라서 저장 확인을 어떤 API로 받을지, stream이 어떤 subject를 포착할지, 저장 유형·복제·각종 한도를 실제 설정으로 정해야 합니다.
 
 ## Stream은 로그이고 Consumer는 소비 상태입니다
 
@@ -31,7 +31,7 @@ JetStream은 subject 메시지를 stream에 저장하고 consumer의 전달·ACK
 
 ## Retention은 누가 ACK하면 무엇을 지울지 결정합니다
 
-LimitsPolicy는 시간·개수·크기 한도로 보관하고, InterestPolicy는 관련 관심 consumer의 ACK를 기준으로 메시지 수명을 정합니다. 관심이 없던 시기에 들어온 메시지를 나중 새 consumer가 반드시 재생한다고 가정하지 않습니다. WorkQueuePolicy는 한 작업 소비 경로가 완료하면 제거하는 목적이며 겹치는 필터의 독립 소비자를 같은 메시지에 붙이는 fan-out과 맞지 않습니다.
+보관 정책을 고를 때는 무엇이 메시지를 남기고 지우는지부터 실제 흐름으로 따라가야 합니다. `LimitsPolicy`는 시간·개수·크기 한도까지 보관하고, `InterestPolicy`는 관련 consumer들이 보낸 ACK를 기준으로 메시지 수명을 정합니다. 관심 consumer가 없던 때 들어온 메시지를 나중에 만든 consumer가 반드시 재생한다고 볼 수 없으며, `WorkQueuePolicy`는 한 작업 경로가 완료하면 제거하는 모델이라 겹치는 필터를 가진 독립 consumer들의 fan-out에는 맞지 않습니다.
 
 어느 정책이든 설정한 한도·discard 정책·서버 버전을 확인합니다. stream에서 삭제된 메시지는 durable 위치만으로 복원할 수 없습니다. 재시작 때 consumer ACK floor·pending·redelivery와 stream 첫 보관 위치를 비교하고 보관 범위 밖이면 snapshot·원본 대사로 복구합니다. 최신부터 조용히 읽어 누락을 숨기지 않습니다.
 
@@ -49,6 +49,6 @@ replicas=3 stream은 정상 프로토콜에서 통신 가능한 과반으로 변
 
 ## PubAck 유실은 저장 실패의 증명이 아닙니다
 
-leader 전환 중 메시지가 저장됐지만 ACK만 유실될 수 있습니다. 안정된 message ID와 지원 dedup window·결과 조회 경로로 재시도하고 매번 새 ID로 발행하지 않습니다. broker의 생산 dedup 창이 외부 DB의 최대 재생 기간을 대신하지 않습니다.
+leader가 바뀌는 순간 메시지는 저장됐지만 그 확인 응답만 사라질 수 있습니다. 이때는 같은 message ID와 broker가 지원하는 dedup window, 저장 결과를 조회할 경로를 사용해 재시도하고, 매번 새 ID를 만들어 중복 발행하지 않습니다. broker의 생산 중복 제거 창은 외부 DB가 재생될 수 있는 최대 기간까지 대신 보장하지 않습니다.
 
 정상 응답 ID와 불확정 ID를 구분해 복구 stream과 대조합니다. PubAck는 consumer 처리가 끝났다는 뜻이 아니고 consumer ACK도 외부 효과와 자동 원자 transaction이 아닙니다. 현재 작업에서는 NATS·JetStream을 실행하지 않았으며 본문은 저장·소비·복제 계약의 설명입니다.

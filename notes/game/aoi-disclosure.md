@@ -12,7 +12,7 @@ questionIds: [aoi-interest-management, aoi-incremental-boundary-check, aoi-large
 
 위치·외형은 주변에, 체력은 전투 참여자에게, inventory·숨은 목표는 허용 주체에게만 공개할 수 있습니다. **AOI**는 전송 최적화이면서 누가 어느 시점에 무엇을 볼 수 있는지의 규칙입니다. client가 화면에서 숨겨도 이미 받은 비밀을 회수할 수 없습니다.
 
-같은 instance·거리·시야·지형·팀/파티·전투 관계를 조합합니다. 보상·전투 결과처럼 거리 밖에서도 필요한 event는 위치 최신성 stream과 다른 전달·복구 계약으로 보냅니다.
+수신자를 판정할 때 같은 instance인지 구분하고, 거리·시야·지형·팀/파티·전투 관계를 함께 적용합니다. 따라서 가까운 객체라는 이유만으로 모든 필드가 공개되는 것이 아니라, 공개 대상과 필드를 각각 판단합니다. 보상·전투 결과처럼 거리 밖에서도 필요한 event는 위치 최신성 stream과 섞지 않고 별도의 전달·복구 계약으로 보냅니다.
 
 ## 공간 Index는 보수적인 후보만 만듭니다
 
@@ -42,7 +42,7 @@ questionIds: [aoi-interest-management, aoi-incremental-boundary-check, aoi-large
 
 ## 생성 Snapshot보다 증분을 먼저 적용하지 않습니다
 
-객체 generation 4의 기준 version20을 받은 뒤 21 이후 증분을 적용합니다. version19는 stale이고 아직 기준 snapshot이 없으면 bounded buffer·재요청·resync 정책을 사용합니다. 삭제 뒤 도착한 옛 generation 갱신이 객체를 되살리지 않게 합니다. 재접속에서는 현재 AOI snapshot ID와 객체 세대를 기준으로 수렴합니다.
+예를 들어 객체 generation 4의 기준 version20을 받은 뒤에만 version21 이후 증분을 그 객체에 적용합니다. version19는 stale로 버리고, 아직 기준 snapshot이 없다면 bounded buffer에 보관한 뒤 재요청하거나 resync하는 정책을 사용합니다. 객체 삭제 뒤 도착한 옛 generation 갱신은 버려 객체를 되살리지 않으며, 재접속 때는 현재 AOI snapshot ID와 객체 세대를 기준으로 상태를 수렴시킵니다.
 
 필수/선택 snapshot 필드를 나누면 선택값 미도착을 확정 default로 오해하지 않도록 표현합니다. 위치 stream은 중간 update를 합쳐 최신값으로 갈 수 있어도 보상 event는 같은 방식으로 버릴 수 없습니다.
 

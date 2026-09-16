@@ -28,7 +28,7 @@ questionIds: [nats-subject-isolation, nats-account-import-export-trust]
 
 ## Account의 기본 분리와 명시적 연결을 구분합니다
 
-NATS account는 독립 subject namespace를 제공하는 격리 경계입니다. 서로 다른 account 사이에는 export·import로 특정 stream이나 service를 노출할 수 있습니다. export는 제공자가 어떤 범위를 내놓는지, import는 소비자가 그 범위를 어떻게 가져오는지 정합니다. 양방향 전체 신뢰가 자동으로 생기는 것은 아닙니다.
+`NATS account`는 서로 다른 subject namespace를 제공하는 기본 격리 경계입니다. 예를 들어 분석 account가 주문 account의 일부 이벤트만 읽어야 하면, 주문 account가 `export`로 공개 범위를 정하고 분석 account가 `import`로 그 범위를 자기 쪽 subject에 들여옵니다. `stream` export와 `service` export는 전달·응답 경로가 다를 수 있으므로 종류와 매핑을 따로 확인해야 하며, 어느 쪽 설정도 양방향 전체 신뢰를 자동으로 만들지는 않습니다.
 
 ```diagram
 {"title":"교차 account 연결은 필요한 한 방향만 엽니다","caption":"화살표는 예시 이벤트 노출 방향입니다. 실제 설정에서는 stream·service 종류와 원본·로컬 subject 매핑, 허용 account를 확인해야 합니다.","rows":[[{"id":"provider","label":"주문 제공 account","detail":["최소 subject export"]}],[{"id":"mapping","label":"명시적 import 매핑","detail":["제공자·방향·종류 확인"]}],[{"id":"consumer","label":"분석 소비 account","detail":["필요 subject만 subscribe"]}]],"edges":[{"from":"provider","to":"mapping","label":"지정 범위 공개"},{"from":"mapping","to":"consumer","label":"제한된 수신 경로"}]}
@@ -40,7 +40,7 @@ stream export와 request-reply service export는 전달·응답 경로가 다릅
 
 request-reply는 요청 subject 외에 응답을 돌려받을 inbox를 사용합니다. 편의를 위해 모든 subject publish를 열면 최소 권한이 무너집니다. 필요한 응답 권한·메시지 수·수명을 제한하는 제품 기능을 확인하고 사용자 입력의 reply subject를 임의 공개 대상으로 신뢰하지 않습니다.
 
-동적 response permission 같은 기능도 서버 버전과 인증 구성에 따라 정확한 의미를 확인해야 합니다. 정상 응답 한 건에 필요한 권한과 무기한 다른 테넌트 inbox 발행 권한은 다릅니다. account 경계를 넘는 응답 매핑도 정상·거절 테스트에 포함합니다.
+동적 response permission을 쓸 때는, 요청에 필요한 reply subject 하나만 허용하는지 아니면 더 넓은 범위를 여는지 서버 버전과 인증 구성의 계약으로 확인합니다. 정상 응답 한 건에 필요한 권한과 다른 테넌트의 inbox에 무기한 publish하는 권한은 다르므로, 제품 계약을 확인해 지원되는 메시지 수·수명 제한만 적용하고 지원되지 않는 제한을 있다고 가정하지 않습니다. account 경계를 넘는 응답 매핑도 정상 응답과 잘못된 inbox 거절을 함께 시험합니다.
 
 ## 자격 회수 뒤 기존 연결을 관찰합니다
 

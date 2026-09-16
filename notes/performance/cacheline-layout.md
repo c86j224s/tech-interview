@@ -10,7 +10,9 @@ questionIds: [cpu-cache-false-sharing, cache-readonly-sharing-versus-writes, fal
 
 ## 서로 다른 카운터를 써도 같은 Line의 소유권을 주고받을 수 있습니다
 
-코어 A는 counter[0], B는 counter[1]만 쓰는데 둘이 같은 cache line에 있으면 쓰기 소유권과 무효화가 반복될 수 있습니다. 논리 변수는 다르지만 coherence 단위를 공유하는 것이 false sharing입니다. 같은 counter 하나를 원자 증가하는 true sharing과 구분합니다.
+코어 A가 `counter[0]`, 코어 B가 `counter[1]`만 쓰더라도 두 주소가 같은 cache line에 있으면, 한 코어가 쓸 때 다른 코어의 line 복사본을 무효화하고 소유권을 다시 가져오는 일이 반복될 수 있습니다. 논리적으로 다른 변수가 coherence 단위인 cache line을 함께 써서 생기는 이 현상을 **false sharing**이라고 합니다.
+
+반대로 같은 counter 하나를 여러 코어가 원자 증가하는 경우는 **true sharing**이므로, 주소가 다른지와 변수 자체를 공유하는지를 나눠 봅니다.
 
 atomic 증가라면 그 메모리 접근 자체는 C++ data race가 아니어도 coherence·직렬화 비용이 있습니다. 비원자 같은 counter 증가는 정확성 문제까지 더해집니다. lock이 없다는 사실이 캐시 경쟁이 없다는 뜻은 아닙니다.
 
@@ -23,7 +25,7 @@ atomic 증가라면 그 메모리 접근 자체는 C++ data race가 아니어도
 
 ## Cache Miss 하나만으로 원인을 확정하지 않습니다
 
-miss는 용량·충돌·첫 접근·원격 NUMA 등 여러 원인에서 생깁니다. 필드 주소·정렬·실제 line 크기·thread placement를 확인하고 카운터 쓰기 제거·line 분리·local 합산을 같은 연산량에서 대조합니다. hardware counter는 아키텍처별 지원·이벤트 의미·샘플링 오차를 확인합니다.
+`cache miss` 하나가 관측됐다고 false sharing을 확정할 수는 없습니다. 같은 연산량으로 (1) 카운터 쓰기를 없앤 경우, (2) 두 카운터를 실제 cache line 경계 밖으로 분리한 경우, (3) local 합산을 한 경우를 비교하면서 필드 주소·정렬·실제 line 크기·thread placement를 함께 기록합니다. miss가 용량·충돌·첫 접근·원격 NUMA에서 생겼을 가능성도 남기고, hardware counter는 아키텍처가 지원하는 이벤트와 그 의미, 샘플링 오차를 확인해 해석합니다.
 
 ```diagram
 {"title":"독립 쓰기라도 같은 Coherence 단위일 수 있습니다","caption":"화살표는 쓰기 대상입니다. 두 논리 카운터가 한 line에 있으면 독립 변수 간에도 line 소유권 이동이 생길 수 있습니다.","rows":[[{"id":"a","label":"코어 A · counter[0]"},{"id":"b","label":"코어 B · counter[1]"}],[{"id":"line","label":"같은 cache line","detail":["서로 다른 카운터 포함"]}]],"edges":[{"from":"a","to":"line","label":"독립 변수 쓰기"},{"from":"b","to":"line","label":"독립 변수 쓰기"}]}
@@ -41,7 +43,7 @@ line을 분리해도 NUMA 원격 메모리·memory bandwidth·작업 불균형·
 
 AoS는 `{x,y,health,name,...}` 객체들을 배열에 두고, SoA는 x 배열·y 배열·health 배열처럼 같은 필드를 모읍니다. 위치만 대량 갱신할 때 큰 AoS는 필요 없는 필드를 cache line에 함께 가져올 수 있고 SoA는 연속 데이터·SIMD에 유리할 수 있습니다. 객체 하나의 모든 필드를 사용하는 로직은 AoS의 지역성이 더 자연스러울 수 있습니다.
 
-pointer 배열은 객체 이동을 줄이지만 간접 참조·흩어진 할당·prefetch의 다른 비용이 있습니다. AoSoA 같은 혼합 구조도 가능하지만 단순 microbenchmark 하나로 전체 설계를 바꾸지 않습니다. 실제 필드 사용률·분기·순회·삭제·최대 크기를 봅니다.
+pointer 배열은 객체 이동을 줄일 수 있지만, 포인터를 따라가는 간접 참조와 흩어진 할당 때문에 prefetch가 어려워지는 비용이 생길 수 있습니다. **AoSoA**는 여러 원소를 작은 묶음으로 나눈 뒤 각 묶음 안에서는 필드별 배열을 쓰는 혼합 구조이지만, 작은 성능 측정(microbenchmark) 하나로 전체 설계를 바꾸지는 않습니다. 실제 필드 사용률·분기·순회·삭제·최대 크기를 같은 입력 조건에서 비교해야 어떤 배치가 맞는지 판단할 수 있습니다.
 
 ## 배치를 바꾸어도 논리 ID와 수명이 유지되어야 합니다
 

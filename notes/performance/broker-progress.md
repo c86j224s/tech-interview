@@ -19,7 +19,7 @@ offset 100을 worker에게 넘기자마자 101을 commit하고 worker가 외부 
 | committed offset | 재시작 시 사용할 다음 위치 | 외부 효과 원자적 완료 |
 | 연속 업무 완료 경계 | 그 앞의 필요한 효과가 완료됨 | 이후 hole도 완료됨 |
 
-transactional topic의 read_committed에서는 LSO 등 실제 읽기 가능한 경계도 구분합니다. exporter가 어느 offset을 사용하는지 확인하지 않고 모든 lag를 같은 값으로 비교하지 않습니다.
+`read_committed`로 transactional topic을 읽을 때는 미완료 트랜잭션 뒤로 넘어가지 않는 LSO 같은 읽기 경계를 함께 봅니다. 예를 들어 exporter가 log end를 수집하는지, consumer position이나 committed offset을 수집하는지 먼저 확인한 뒤 그 값으로 같은 partition의 lag를 계산합니다. 이 기준을 확인하지 않으면 같은 이름의 lag라도 실제로 읽을 수 있는 범위와 재시작 지점이 달라져 잘못 비교하게 됩니다.
 
 ## 숫자 예제로 네 경계를 따로 기록합니다
 
@@ -43,4 +43,4 @@ DLQ 이동을 “원래 업무 성공”으로 계산하지 않고 분리된 종
 
 ## 정상 처리·Hole·재시작을 분리해서 검증합니다
 
-느린 offset 하나, commit 실패, 효과 성공 후 crash, effect 전 commit 후 crash, retention 초과, rebalance 중 실행을 시험합니다. group 지표와 업무 ledger·사용자 관측을 대조합니다. 여기의 산술과 상태 설명은 특정 Kafka cluster에서 실행한 측정 결과가 아닙니다.
+느린 offset 하나가 있는 경우, commit 실패, 효과 성공 후 crash, effect 전 commit 후 crash, retention 초과, rebalance 중 실행을 각각 별도 시나리오로 재현합니다. 각 경우에 group 지표의 offset과 업무 ledger의 효과 상태를 시간순으로 맞춰 보고, 사용자에게 보인 결과까지 대조해야 commit이 줄어든 것과 실제 업무 완료를 구분할 수 있습니다. 여기의 산술과 상태 설명은 특정 Kafka cluster에서 실행한 측정 결과가 아닙니다.

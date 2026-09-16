@@ -57,7 +57,9 @@ var i의 바인딩은 반복 전체가 공유합니다. 함수 안이면 함수 
 {"title":"콜백이 어떤 바인딩을 공유하는지 추적합니다","caption":"화살표는 클로저의 참조입니다. var 예제의 두 콜백은 반복이 끝난 같은 i를 읽고, let 반복에서는 서로 다른 바인딩이 생깁니다.","rows":[[{"id":"f1","label":"var 콜백 A"},{"id":"f2","label":"var 콜백 B"}],[{"id":"binding","label":"공유 바인딩 i = 3"}],[{"id":"result","label":"둘 다 3을 읽음"}]],"edges":[{"from":"f1","to":"binding","label":"참조"},{"from":"f2","to":"binding","label":"같은 참조"},{"from":"binding","to":"result","label":"나중 실행"}]}
 ```
 
-forEach의 각 호출 매개변수도 호출별 바인딩입니다. 그러나 매개변수마다 같은 객체 참조를 받으면 객체 내부 변경은 공유됩니다. let·const도 객체를 깊게 복제하지 않습니다. 숫자 snapshot이 필요하면 별도 값 매개변수로 전달하고, 가변 객체 snapshot이 필요하면 복사·불변 소유 계약을 추가합니다. forEach는 async callback의 Promise를 모아 기다리지 않으므로 `await array.forEach(async ...)`로 전체 완료를 기다릴 수 없습니다.
+forEach 콜백의 매개변수 바인딩은 호출마다 새로 생기지만, 각 호출이 같은 객체 참조를 받으면 그 객체 내부 변경은 서로 공유됩니다. `let`·`const`도 객체를 깊게 복제하지 않으므로 그 시점의 숫자 snapshot이 필요할 때는 값 자체를 별도 매개변수로 넘기고, 가변 객체 snapshot이 필요할 때는 복사하거나 불변 소유 계약을 둡니다.
+
+또한 forEach는 async callback이 돌려준 Promise를 모아 기다리지 않습니다. 따라서 `await array.forEach(async ...)`는 전체 완료를 기다리는 코드가 아니며, 실제 완료를 기다리는 별도 수집·대기 흐름이 필요합니다.
 
 ## 모듈 연결은 값의 초기화 완료와 다릅니다
 

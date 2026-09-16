@@ -12,7 +12,7 @@ questionIds: [sqlserver-rcsi-snapshot, sqlserver-updlock-version-read]
 
 RCSI는 READ_COMMITTED_SNAPSHOT 데이터베이스 옵션으로 READ COMMITTED의 일반 읽기에 행 버전을 사용하는 방식입니다. 보통 문장 시작의 커밋된 상태를 기준으로 하므로 같은 거래의 첫 SELECT와 두 번째 SELECT 사이 다른 세션의 commit을 볼 수 있습니다.
 
-SNAPSHOT은 ALLOW_SNAPSHOT_ISOLATION 허용과 세션의 SNAPSHOT 선택이 필요하며 거래의 snapshot을 유지합니다. 기준 생성은 BEGIN의 벽시계 순간 하나로 추측하지 말고 첫 데이터 접근·거래 시퀀스의 실제 계약을 확인합니다. 자기 거래의 쓰기는 일반적으로 자기 읽기에 보이므로 “언제나 시작 당시 값만”이라는 설명도 불충분합니다.
+SNAPSHOT 격리를 쓰려면 데이터베이스에서 ALLOW_SNAPSHOT_ISOLATION을 허용하고 세션이 SNAPSHOT을 선택해야 하며, 한 거래가 읽기 기준으로 삼은 snapshot을 유지합니다. 다만 그 기준을 BEGIN의 벽시계 시각으로 단정하지 말고, 실제로는 첫 데이터 접근과 거래 명령 순서를 바꾸어 어느 시점의 커밋을 읽는지 확인해야 합니다. 같은 거래가 직접 쓴 값은 일반적으로 자기 읽기에서 보이므로, SNAPSHOT을 ‘항상 시작 당시 값만 보는 격리’라고 설명하면 자기 쓰기와 충돌 처리를 놓치게 됩니다.
 
 ## 같은 실행 순서에서 결과를 비교합니다
 
@@ -61,11 +61,13 @@ RCSI가 writer의 모든 잠금을 없애는 것은 아닙니다. 서로 다른 
 
 ## UPDLOCK은 일반 버전 읽기와 같은 경로가 아닙니다
 
-`SELECT ... WITH (UPDLOCK)`은 이후 갱신을 위한 update lock을 요구하며 일반적으로 거래 종료까지 보유합니다. RCSI가 켜져 있다고 이 명시적 잠금 요구가 사라지는 것은 아닙니다. SNAPSHOT에서 UPDLOCK을 사용하면 최신 행과 충돌의 조건이 관여하므로 언제나 오래된 snapshot 값을 잠금 없이 돌려준다고 가정하지 않습니다.
+`SELECT ... WITH (UPDLOCK)`은 A가 읽은 행을 나중에 갱신하려는 의도를 DB에 알리고 update lock을 요청하는 읽기입니다. 그 잠금은 일반적으로 거래가 끝날 때까지 유지되므로, A가 먼저 확보하면 B의 UPDATE가 같은 행에서 기다릴 수 있고 RCSI가 켜져도 이 명시적 잠금 요청이 없어지지 않습니다.
+
+SNAPSHOT에서 이 힌트를 섞으면 일반 snapshot 읽기처럼 오래된 값을 잠금 없이 계속 돌려준다고 볼 수 없으며, 최신 행 확인과 갱신 충돌이 어느 순서에서 발생하는지는 실제 버전·옵션 조합으로 나누어 시험해야 합니다.
 
 테스트에서는 A가 UPDLOCK을 먼저 얻은 경우 B의 UPDATE가 어디서 기다리는지, A가 일반 snapshot 읽기를 먼저 하고 B가 commit한 뒤 UPDLOCK을 요청한 경우 어떤 update conflict가 나는지 나눕니다. 대상이 없거나 범위 조건인 경우는 UPDLOCK 하나만으로 모든 신규 삽입·phantom을 막는다고 보지 않습니다. HOLDLOCK·격리·인덱스의 범위 보호는 별도입니다.
 
-이 구체 동작은 SQL Server 버전·DB 옵션·힌트 조합으로 검증해야 합니다. 잠금 리소스·모드·보유 시간·실제 plan과 오류를 함께 기록합니다.
+같은 SQL도 SQL Server 버전·DB 옵션·힌트 조합이 달라지면 관찰할 경로가 달라질 수 있으므로, A가 잠금을 얻는 경우와 snapshot을 먼저 읽는 경우를 별도 실행해야 합니다. 각 실행에서 잠금 리소스와 모드, 보유 시간, 실제 plan, 발생 오류를 함께 남겨야 ‘기다림’과 ‘update conflict’를 구분할 수 있습니다. 이 노트의 기대 결과는 위 조건을 갖춘 테스트 DB에서 재현한 뒤에만 특정 환경의 계약으로 사용해야 합니다.
 
 ## 줄어든 읽기 대기 대신 Version Store 비용이 생깁니다
 

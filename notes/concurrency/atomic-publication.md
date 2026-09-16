@@ -32,7 +32,7 @@ if (ready.load(std::memory_order_acquire)) {
 {"title":"release와 acquire 사이의 공개 관계","caption":"화살표는 순서·동기화 관계입니다. acquire가 해당 release의 true를 읽는 것이 연결 조건이며, 단순히 시간상 나중에 실행됐다는 관찰만으로 대체할 수 없습니다.","rows":[[{"id":"write","label":"일반 result=42 쓰기"}],[{"id":"release","label":"ready.store(true, release)"}],[{"id":"acquire","label":"ready.load(acquire) == true"}],[{"id":"read","label":"일반 result 읽기"}]],"edges":[{"from":"write","to":"release","label":"생산자 내부 순서"},{"from":"release","to":"acquire","label":"그 값을 읽음"},{"from":"acquire","to":"read","label":"소비자 내부 순서"}]}
 ```
 
-false를 읽고 result를 사용하거나 다른 atomic의 acquire를 읽으면 같은 근거가 아닙니다. relaxed는 해당 atomic의 연산을 원자적으로 유지하지만 이 공개 동기화를 자동으로 제공하지 않습니다. 결과가 보였다는 작은 실행 실험은 모든 허용 실행의 증명이 아닙니다.
+`ready=false`를 읽은 소비자는 아직 `result`를 사용해서는 안 되며, 그 load는 생산자의 `result=42`와 연결되지 않습니다. 나중에 같은 `ready`에서 생산자의 release가 만든 `true`를 acquire로 읽는 경우와, 전혀 다른 atomic을 acquire로 읽는 경우를 구분해야 합니다. `relaxed`는 해당 atomic 자체의 원자성만 유지하므로 이 공개 관계를 자동으로 만들지 않고, 한 CPU에서 값이 보였다는 실험도 모든 허용 실행의 증명은 아닙니다.
 
 ## Release sequence는 같은 atomic의 수정 순서를 봅니다
 

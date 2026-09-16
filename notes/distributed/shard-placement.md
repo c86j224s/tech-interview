@@ -30,7 +30,7 @@ questionIds: [hash-sharding-and-resharding, consistent-hash-virtual-nodes, rende
 | node B 제거 | 원래 다른 node를 선택한 key | B를 선택했던 key가 다음 후보로 |
 | node ID 변경 | 다른 모든 입력이 같은 범위 | 사실상 제거+추가 영향 |
 
-균일한 무가중 hash라면 새 node가 받을 기대 비율을 계산할 수 있지만 실제 값 분포·용량 가중치는 별도입니다. 단순 점수×가중치가 원하는 비율을 준다고 가정하지 말고 검증된 weighted HRW를 사용합니다. 여러 상위 후보를 replica로 골라도 복제 commit·읽기 일관성은 다른 프로토콜입니다.
+균일한 무가중 hash에서는 노드 수가 `N`일 때 한 key가 각 노드에 갈 기대 비율을 `1/N`으로 볼 수 있지만, 실제 값 크기·요청률과 용량 가중치는 별도로 측정해야 합니다. 가중치가 있으면 단순히 점수에 가중치를 곱한 결과를 원하는 배치 비율로 해석하지 말고, 사용하는 weighted HRW 구현의 점수 계산과 tie-break 규칙으로 샘플 key를 배치해 비율과 이동량을 확인합니다. 여러 상위 후보를 replica로 고르는 단계는 복제 commit이나 읽기 일관성을 결정하지 않습니다.
 
 ```diagram
 {"title":"배치 선택과 데이터 권위 전환은 다른 단계입니다","caption":"화살표는 증설의 순서입니다. 해시 알고리즘이 새 목적지를 정해도 그 목적지에 최신 데이터와 쓰기 권한이 준비되어야 합니다.","rows":[[{"id":"placement","label":"새 노드 집합·배치 계산"}],[{"id":"copy","label":"snapshot·변경 로그 이동"}],[{"id":"barrier","label":"최종 적용 장벽 검증"}],[{"id":"owner","label":"라우팅·쓰기 세대 전환"}]],"edges":[{"from":"placement","to":"copy","label":"이동 범위 선택"},{"from":"copy","to":"barrier","label":"동시 쓰기·삭제 포함"},{"from":"barrier","to":"owner","label":"현재 권위 게시"}]}
@@ -40,7 +40,9 @@ questionIds: [hash-sharding-and-resharding, consistent-hash-virtual-nodes, rende
 
 일관된 source snapshot과 그 이후 변경을 재생할 위치를 함께 확보합니다. snapshot 복사 동안 write·delete·재삽입이 생겨도 로그가 보존되어 대상에 이어져야 합니다. 증분 version=12를 먼저 적용했는데 늦은 snapshot version=10이 덮지 않도록 적용 순서 또는 원자 version 조건을 둡니다.
 
-건수만 아니라 값·삭제·참조·원본 version·논리 효과를 대조합니다. 대상이 최종 barrier까지 실제 적용했는지 확인한 뒤 writer·router generation을 전환합니다. 옛 router cache·진행 transaction·재시도는 남을 수 있어 옛 shard가 stale generation 쓰기를 거절하거나 검증된 경로로 안내해야 합니다. 토큰을 라우터에서만 검사하고 저장소는 무조건 쓰면 보호가 약합니다.
+handoff 직전에는 건수만 세지 말고 값·삭제 기록·참조·원본 version·논리 효과를 source와 target에서 대조해, target이 최종 barrier까지 실제로 적용했는지 확인합니다. 그 확인이 끝난 뒤에만 writer와 router generation을 새 값으로 전환하고, 옛 router cache·진행 중 transaction·재시도는 이전 generation을 들고 남을 수 있습니다.
+
+옛 shard와 저장소가 그 generation을 비교해 쓰기를 거절하거나 정해진 경로로 안내해야 하며, 라우터에서만 token을 검사하고 저장소가 무조건 쓰면 오래된 쓰기를 막지 못합니다.
 
 ## Hot Key 분할은 데이터 의미가 허용해야 합니다
 

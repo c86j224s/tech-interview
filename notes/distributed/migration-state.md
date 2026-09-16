@@ -10,7 +10,9 @@ questionIds: [on-demand-data-migration, migration-authorization-change]
 
 ## 첫 접속 두 개가 같은 복사를 동시에 시작할 수 있습니다
 
-사용자가 휴대전화와 웹에서 동시에 접속하면 둘 다 미이전 상태를 읽을 수 있습니다. migration row의 상태·generation을 조건부 변경해 한 작업 ID를 만들고 다른 요청에는 같은 진행 상태 또는 제한된 대기를 제공합니다. 완료 boolean 하나로 복사 중·검증 중·실패·현재 소유자를 표현할 수 없습니다.
+휴대전화와 웹 요청이 같은 migration row를 읽어 둘 다 `not_started`와 같은 generation을 보더라도, 두 요청이 모두 복사를 시작하게 두면 작업이 겹칩니다. 먼저 상태·generation이 아직 그 값인지 조건부로 바꾼 요청만 job ID와 owner를 얻고, 나머지는 저장된 작업의 진행 상태를 읽거나 정한 시간만 기다립니다.
+
+따라서 완료 boolean 하나가 아니라 작업 상태와 job ID·owner·generation을 별도 내구 필드로 둬야 복사 중·검증 중·실패와 현재 소유자를 구분할 수 있습니다.
 
 긴 이전을 첫 HTTP 연결 수명에만 묶으면 사용자가 떠났을 때 복구 근거를 잃습니다. 내구 작업을 독립 소유하고 사용자 요청은 진행·재시도·완료 결과를 조회하게 할 수 있습니다. 첫 접속 지연·대기 상한·레거시 읽기 허용 범위를 명시합니다.
 
@@ -24,7 +26,9 @@ questionIds: [on-demand-data-migration, migration-authorization-change]
 | complete | 권위 전환 세대·검증 결과 | 새 저장소 경로 |
 | needs_repair | 실패 범위·원인·재개 위치 | 명시적 보류·수동/자동 복구 |
 
-원본 ID를 대상 unique key로 사용하더라도 upsert가 항상 안전한 것은 아닙니다. 늦은 복사본이 새 정상 write를 덮지 않도록 source version·migration generation·현재 owner 조건을 검사합니다. 완료 표시만 fenced하고 데이터 쓰기는 무조건 허용하면 대상 내용이 오염될 수 있습니다.
+원본 ID를 대상 unique key로 쓰면 같은 행을 찾을 수는 있지만, upsert 자체가 늦은 복사본을 막아 주지는 않습니다. 예를 들어 migration worker가 읽은 source version과 migration generation이 바뀐 뒤 쓰기를 시도하면, 대상은 source version·migration generation·현재 owner가 아직 일치할 때만 갱신하고 하나라도 다르면 쓰기를 거부하거나 보류합니다.
+
+완료 표시에만 fencing을 걸고 데이터 쓰기는 무조건 통과시키면, 이전 worker의 값이 새 정상 write를 덮어 대상 내용이 오염될 수 있습니다.
 
 ```diagram
 {"title":"복사와 검증과 접근 공개를 별도 전이로 둡니다","caption":"화살표는 정상 전환입니다. 각 단계는 내구 상태·세대 조건을 가지며 완료 공개 직전에 현재 계정·권한을 다시 확인합니다.","rows":[[{"id":"start","label":"원자 시작·작업 세대 확보"}],[{"id":"copy","label":"snapshot·증분 복사"}],[{"id":"verify","label":"값·삭제·참조·권리 검증"}],[{"id":"auth","label":"현재 대표 계정·인가 재확인"}],[{"id":"publish","label":"쓰기 권위·라우팅 전환"}]],"edges":[{"from":"start","to":"copy","label":"단일 작업 소유"},{"from":"copy","to":"verify","label":"실제 반영 위치"},{"from":"verify","to":"auth","label":"데이터 준비"},{"from":"auth","to":"publish","label":"게시 권한 충족"}]}
@@ -32,13 +36,13 @@ questionIds: [on-demand-data-migration, migration-authorization-change]
 
 ## Cursor가 실제 반영보다 앞서면 재개 때 누락됩니다
 
-안정 원본 키로 bounded batch를 읽고 대상 반영과 checkpoint를 같은 가능한 거래에 묶거나 재실행에 안전한 명시 기록을 둡니다. 반영 실패한 batch의 cursor만 전진하지 않습니다. 충돌 행·지원하지 않는 데이터는 보류 집합에 남겨 완료 판정에서 제외합니다.
+안정적인 원본 키 순서로 bounded batch를 읽은 뒤 대상 행을 먼저 반영하고, 그 반영과 checkpoint 저장을 같은 transaction에 묶을 수 있으면 함께 commit합니다. process가 그 전에 죽으면 같은 batch를 다시 읽을 수 있으므로, transaction으로 묶지 못하는 구현은 재실행 때 이미 반영된 batch를 판별할 수 있는 명시 기록을 남깁니다. 반영에 실패한 batch의 cursor는 전진시키지 않고, 충돌 행·지원하지 않는 데이터는 보류 집합에 남겨 complete 판정에서 제외합니다.
 
 원본을 잠깐 멈출 수 있으면 snapshot 뒤 최종 장벽을 단순화할 수 있습니다. 계속 쓰게 하려면 snapshot 이후 log·delete·재삽입을 추적하고 대상이 barrier까지 따라왔는지 확인합니다. 단순 dual-write는 한쪽 실패를 복구할 내구 기록이 필요합니다.
 
 ## 권한은 복사 시작 때와 공개 때 달라질 수 있습니다
 
-이전 중 대표 계정 병합·접근권한 철회·계정 정지가 생길 수 있습니다. 시작 때 A의 권한이 있었다고 새 대상 데이터를 계속 A에 공개해도 되는 것은 아닙니다. 현재 account mapping·security version·tenant·인가를 최종 게시 전 다시 확인하고 달라졌으면 보류·새 권위로 재조정합니다.
+이전 중 대표 계정이 병합되거나 접근 권한이 철회되고 계정이 정지될 수 있습니다. 시작 시점에 A가 허용됐더라도, 최종 공개 직전에 현재 account mapping·security version·tenant·인가를 다시 읽어 같은 대상에 계속 공개해도 되는지 판단해야 합니다. 값이 달라졌으면 공개를 멈추고 새 권위에 맞춰 재조정하며, 시작 당시 A의 권한만으로 새 대상 접근을 승인하지 않습니다.
 
 데이터 값을 옮기는 일과 외부 로그인 자격을 연결하는 일은 다른 증명과 승인입니다. 복사 성공이 새 인증 수단 소유권 증명이 되지 않습니다. 원본에 있던 제재·제한·구매 권리도 함께 대조해 긍정 자산만 옮기고 제한을 빠뜨리지 않습니다.
 

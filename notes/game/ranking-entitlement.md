@@ -10,9 +10,9 @@ questionIds: [ranking-cutoff-rewards, ranking-reward-adjustment-ledger]
 
 ## 화면 순위가 계속 바뀌어도 보상 입력은 봉인해야 합니다
 
-시즌7의 점수를 발생 시각 기준으로 인정하고 마감 뒤 30초까지 받는다고 가정합니다. 그 창 안의 검증된 event와 이후 도착의 폐기/정정 대기 정책을 정합니다. client timestamp만으로 시즌 귀속을 허용하지 않고 server의 검증 가능한 tick·sequence·이벤트 근거를 사용합니다.
+시즌7 점수는 event가 발생한 시각으로 귀속하고, 마감 뒤에는 30초 동안 도착한 event까지 받는다고 가정합니다. 운영 중에는 event의 발생 시각과 수신 시각을 각각 기록한 다음, 30초 창 안에 도착했고 검증된 event는 집계하고 그 뒤 도착한 event는 폐기할지 정정 대기로 둘지 결정합니다. client timestamp만으로 시즌 귀속을 정하지 않고, server가 확인할 수 있는 tick·sequence·이벤트 근거를 함께 읽습니다.
 
-서버마다 “현재 12시”를 보는 것만으로 모든 shard가 같은 입력을 처리한 것은 아닙니다. shard별 마지막 처리 위치·watermark·dedup·부정 검증 상태·규칙 version을 확인하고 `season7,cutoffVersion184` 같은 봉인판을 만듭니다. 한 shard가 실패하면 자동 확정하지 않고 미완료 집계로 재개합니다.
+각 서버가 현재 시각 12시를 가리켜도 모든 shard가 같은 event까지 처리했다는 뜻은 아닙니다. shard별 마지막 처리 위치와 watermark(입력의 시간 진행을 추정하는 표시이며, 그 이후 늦은 사건이 절대 없다는 증명은 아님), 중복 제거(dedup) 상태, 부정 검증 상태, 규칙 version을 모아 `season7,cutoffVersion184` 같은 봉인판을 만든 뒤에만 확정합니다. 한 shard라도 실패하면 자동 확정하지 않고 미완료 집계로 남겨 재개합니다.
 
 ## 잠정 순위와 확정 순위의 의미를 분리합니다
 
@@ -33,7 +33,7 @@ questionIds: [ranking-cutoff-rewards, ranking-reward-adjustment-ledger]
 
 ## 지급 응답을 잃어도 같은 권리 Key를 유지합니다
 
-규칙상 한 번의 시즌 보상이라면 accountId·seasonId·rewardType 등으로 권리를 식별합니다. cutoff version은 왜 지급했는지의 metadata이지 정상 retry마다 다른 권리로 만드는 요소가 아닙니다. 실제 지급 성공 후 완료 표시 전에 죽으면 같은 key로 조회·멱등 재요청해야 합니다.
+시즌 보상을 계정에 한 번만 주는 규칙이라면 `accountId·seasonId·rewardType` 등을 묶어 하나의 권리 key로 삼습니다. cutoff version은 왜 이 권리를 만들었는지를 설명하는 metadata일 뿐, 정상적인 retry마다 새 권리를 만드는 값은 아닙니다. 지급 provider가 성공 응답을 보냈지만 우리 쪽 완료 표시 전에 작업이 중단되면, 새 key를 만들지 말고 같은 key로 지급 상태를 조회한 뒤 멱등 재요청(반복해도 한 번만 반영되도록 한 재요청)을 합니다.
 
 권리 원장과 잔액 변경이 같은 DB면 가능한 같은 transaction으로 묶고 event는 outbox로 연결할 수 있습니다. 다른 시스템이면 한쪽 성공/실패·dedup 보관 기간·외부 조회·대사를 명시합니다. provider가 멱등/조회를 지원하지 않으면 그 한계를 숨기지 않습니다.
 
@@ -41,7 +41,7 @@ questionIds: [ranking-cutoff-rewards, ranking-reward-adjustment-ledger]
 
 원래 보상100에서 정정 후60이면 새 adjustment ID로 −40을 기록할 수 있습니다. 이미 80을 썼다면 단순 과거 snapshot 복원으로 정상 지출을 없애면 안 됩니다. 회수 가능 자산·차액·부채·다음 시즌 조정 등은 게임/운영 정책과 승인·안내에 따라 정합니다.
 
-원래 권리·근거 cutoff·정정 이유·주체·새 계산판·적용 결과를 연결하고 adjustment 재전달은 한 번만 반영합니다. 같은 보상을 새 version마다 다시 지급하는 방식으로 정정하지 않습니다. 회수·외부 지급·원장 사이 부분 실패도 재개/대사합니다.
+정정할 때는 원래 권리와 근거 cutoff, 정정 이유와 주체, 새 계산판, 실제 적용 결과를 하나의 기록으로 연결합니다. 같은 adjustment가 다시 전달되어도 adjustment ID의 처리 기록과 실제 변경을 원자적으로 묶어 한 번만 적용하고, 새 version이 생겼다는 이유로 같은 보상을 다시 지급하지 않습니다. 회수·외부 지급·원장 중 일부만 성공한 부분 실패는 남은 작업을 재개하고 세 영역의 기록을 대사(서로 맞춰 확인)합니다.
 
 ## 마감과 지급의 실패 경계를 시험합니다
 

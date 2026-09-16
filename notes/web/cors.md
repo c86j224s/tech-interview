@@ -10,7 +10,7 @@ questionIds: [cors-preflight, cors-safelisted-request-boundary, cors-preflight-c
 
 ## OPTIONS 성공은 주문 생성 성공이 아닙니다
 
-`https://app.example`에서 `https://api.example`로 JSON POST를 보내면 브라우저가 먼저 OPTIONS를 보낼 수 있습니다. 서버가 이 출처·메서드·헤더 조합을 허용하는지 묻는 **preflight**입니다. OPTIONS가 통과해도 실제 POST의 인증·인가·입력 검사는 별도로 수행되어야 합니다.
+예를 들어 `https://app.example`의 브라우저가 `https://api.example`로 JSON POST를 시작하면, 본문을 보내기 전에 OPTIONS를 보낼 수 있습니다. 이 **preflight**는 출처·요청 메서드·요청 헤더 조합을 서버에 미리 보내 브라우저가 그 조건의 실제 요청을 진행해도 되는지 확인하는 단계입니다. 서버가 OPTIONS를 허용해도 이어지는 실제 POST에서는 인증·인가·입력 검사를 다시 수행해야 합니다.
 
 출처는 scheme·host·port의 조합입니다. 같은 host라도 포트나 scheme이 다르면 교차 출처가 될 수 있습니다. CORS는 브라우저가 집행하는 교차 출처 응답 접근 규칙이지 서버 간 호출을 막는 방화벽이 아닙니다.
 
@@ -40,7 +40,9 @@ Vary: Origin
 
 ## 모든 교차 출처 요청이 preflight를 하지는 않습니다
 
-GET·HEAD·POST 중 일부와 safelisted 헤더·Content-Type 등 조건을 만족하면 실제 요청을 먼저 보낼 수 있습니다. 대표적인 폼 Content-Type은 `application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`입니다. 추가 헤더 값·업로드 방식 등 세부 조건도 있으므로 이 목록만으로 모든 경우를 판정하지 않습니다.
+모든 교차 출처 요청이 preflight를 거치는 것은 아닙니다. GET·HEAD·POST 중 일부 요청이 safelisted 헤더와 `Content-Type` 조건을 함께 만족하면 브라우저는 OPTIONS 없이 실제 요청을 먼저 보낼 수 있습니다.
+
+대표적인 폼 `Content-Type`은 `application/x-www-form-urlencoded`, `multipart/form-data`, `text/plain`입니다. 다만 추가 헤더의 값과 업로드 방식 같은 세부 조건도 함께 판정하므로, 이 목록만으로 모든 경우를 분류하면 안 됩니다.
 
 `application/json`이나 사용자 정의 헤더·PUT·DELETE 등은 보통 preflight 조건과 관련됩니다. OPTIONS가 없었다고 보안 검사가 불필요하거나 서버에 요청이 도착하지 않았다고 가정하면 안 됩니다. 일부 요청은 서버 상태를 바꾼 뒤 브라우저에서 응답 읽기만 차단될 수 있습니다.
 
@@ -67,6 +69,8 @@ CORS 허용이 있어도 SameSite·Secure·브라우저의 제3자 쿠키 제한
 
 ## 실패 지점을 순서대로 확인합니다
 
-브라우저 Network에서 Origin·요청 메서드·헤더·credentials 설정, OPTIONS 응답, 실제 요청 도착 여부를 확인합니다. 서버 로그에는 OPTIONS와 실제 작업의 결과를 따로 남깁니다. 허용·비허용 출처, JSON·폼 요청, 인증 실패, 기존 preflight 캐시와 정책 변경을 테스트합니다.
+문제가 나면 브라우저 Network에서 해당 요청의 `Origin`, 메서드, 요청 헤더와 `credentials` 설정을 먼저 확인하고, preflight를 보낸 경우에는 OPTIONS 응답과 실제 요청이 서버에 도착했는지를 시간순으로 봅니다. 실제 요청이 실행됐는데 응답을 읽지 못했다면 실제 응답의 CORS 헤더를 확인하고, 서버 로그에서도 OPTIONS의 결과와 실제 작업의 결과를 별도 요청으로 나눠 정책 거절·인증 실패·작업은 실행됐지만 응답 접근만 막힌 경우를 구분합니다.
+
+마지막으로 허용·비허용 출처, JSON·폼 요청, 인증 실패, 기존 preflight 캐시와 정책 변경을 각각 재현합니다.
 
 브라우저 콘솔의 오류를 없애려고 모든 출처를 반사하거나 인증을 제거하지 않습니다. 응답 접근 정책과 실제 상태 변경의 보안 검사가 각각 맞는지를 확인해야 합니다.

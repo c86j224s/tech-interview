@@ -20,7 +20,7 @@ questionIds: [lock-free-aba-reclamation, hazard-pointer-publish-recheck, epoch-s
 {"title":"리스트에서 빠진 노드도 독자가 사용할 수 있습니다","caption":"화살표는 노드 수명의 단계입니다. unlink는 새 조회 경로에서 제거하는 일이고 reclaim은 이전 독자가 더 이상 쓰지 않는 것을 확인한 뒤 수행합니다.","rows":[[{"id":"linked","label":"자료구조에 연결됨"}],[{"id":"retired","label":"unlink 후 retired","detail":["옛 독자의 참조 가능"]}],[{"id":"safe","label":"보호 독자 없음 확인"}],[{"id":"free","label":"메모리 회수·재사용"}]],"edges":[{"from":"linked","to":"retired","label":"CAS로 링크 변경"},{"from":"retired","to":"safe","label":"회수 프로토콜"},{"from":"safe","to":"free","label":"안전한 종결"}]}
 ```
 
-retired 목록에 넣기만 해도 안전한 것은 아닙니다. 어떤 독자가 어떤 참조를 가질 수 있는지 확인하는 회수 프로토콜이 필요합니다. 디버그 순회나 통계 조회도 같은 보호를 따라야 합니다.
+노드를 공유 자료구조에서 제거하고 `retired` 목록에 넣었다고 해도, 이미 포인터를 읽은 독자의 사용이 끝났다는 뜻은 아닙니다. 그래서 hazard 슬롯, epoch 읽기 구간, 잠금처럼 어떤 독자가 어떤 참조를 보유하는지 확인한 뒤에만 `free`로 넘어가는 회수 프로토콜이 필요합니다. 디버그 순회와 통계 조회도 노드의 `next`를 읽는다면 같은 보호를 따라야 합니다.
 
 ## Hazard pointer는 게시한 뒤 원본을 다시 봅니다
 

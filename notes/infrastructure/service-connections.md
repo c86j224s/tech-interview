@@ -12,7 +12,9 @@ questionIds: [k8s-service-network, headless-clusterip-selection-boundary]
 
 클라이언트가 api-0으로 HTTP/2 연결 하나를 열고 수천 요청을 보냅니다. api-1을 추가해 Ready로 만들었어도 기존 연결의 스트림이 자동으로 api-1로 이동하지는 않습니다. Service의 backend 선택 단위와 HTTP/2의 요청 다중화 단위가 다르기 때문입니다.
 
-연결 수준 분산은 보통 새 연결을 만들 때 목적지를 선택하고 기존 연결은 해당 backend와 유지합니다. L7 프록시가 요청별로 별도 backend 연결을 선택하는 구조는 또 다른 경로이므로 실제 배치를 확인합니다. kube-proxy·CNI endpoint 갱신은 소켓의 실행 상태를 이주시키는 기능이 아닙니다.
+연결 수준 분산에서는 새 TCP 연결이 만들어질 때 데이터 경로의 구성요소가 backend를 선택하고, 그 소켓이 살아 있는 동안에는 보통 같은 backend로 요청이 갑니다. 반대로 L7 프록시는 HTTP 요청을 본 뒤 한 client 연결 안에서도 요청마다 어느 backend로 보낼지 선택할 수 있으므로, 실제 배치에서 client·Service 경로·프록시 중 누가 이 선택을 맡는지 확인합니다.
+
+EndpointSlice 갱신과 kube-proxy·CNI 데이터 경로의 반영은 이미 열린 TCP 소켓을 다른 Pod로 이주시키는 기능이 아닙니다.
 
 ## 주소 발견과 Backend 선택의 책임을 나눕니다
 
@@ -22,7 +24,9 @@ questionIds: [k8s-service-network, headless-clusterip-selection-boundary]
 | Headless Service | 개별 endpoint 주소의 DNS 발견 | client resolver·balancer 비중 증가 |
 | L7 proxy·mesh | 프록시 주소·프로토콜 경로 | 프록시와 client의 연결·요청 정책 |
 
-일반 selector 기반 Service를 전제로 실제 Pod 라벨·selector·port·targetPort·EndpointSlice 주소와 condition을 확인합니다. DNS가 맞아도 targetPort가 틀리면 연결은 실패합니다. Headless도 모든 구성에서 동일한 DNS 레코드를 자동 생성하는 것은 아니므로 selector·주소 관리·readiness 게시 정책을 확인합니다.
+먼저 일반 selector 기반 Service의 selector가 실제 Pod 라벨과 맞는지 보고, Service의 port가 targetPort로 어떻게 연결되는지 따라간 다음 EndpointSlice의 주소와 condition을 대조합니다. DNS 이름이 해석되어도 targetPort가 틀리면 연결은 실패합니다.
+
+Headless Service에서는 selector 사용 여부와 주소를 누가 관리하는지, readiness endpoint 게시 정책이 무엇인지까지 따로 확인해야 하며 모든 구성에 같은 DNS 레코드가 자동으로 생긴다고 가정하지 않습니다.
 
 ```diagram
 {"title":"새 endpoint는 새 선택에 사용될 수 있습니다","caption":"화살표는 연결 목적지입니다. 기존 client A의 연결은 api-0에 남고 새 client B가 api-1을 선택할 수 있지만 균등 요청 비용은 별도입니다.","rows":[[{"id":"old","label":"기존 연결 A"},{"id":"new","label":"새 연결 B"}],[{"id":"p0","label":"api-0"},{"id":"p1","label":"새 Ready api-1"}]],"edges":[{"from":"old","to":"p0","label":"기존 소켓 유지"},{"from":"new","to":"p1","label":"새 endpoint 선택 가능"}]}
@@ -42,7 +46,9 @@ Headless DNS에 주소가 추가되어도 client가 첫 주소만 고정하거�
 
 ## 종료에서 Endpoint 제외와 기존 요청 정리를 나눕니다
 
-readiness가 false가 되거나 Pod가 terminating으로 표시되면 endpoint 상태가 전달되지만 모든 프록시·client가 같은 순간 적용하지 않습니다. 기존 keep-alive 연결에서 새 요청이 계속 올 수도 있습니다. 앱은 새 작업 수락 차단과 기존 작업 drain을 명시하고 네트워크 전파 시간·grace 예산을 고려합니다.
+종료를 시작하면 readiness를 false로 만들거나 Pod가 terminating으로 표시되는 것만으로 끝났다고 보지 말고, 앱이 새 작업 수락을 차단하면서 기존 작업 drain을 함께 시작합니다. 기존 keep-alive 연결에서는 새 요청이 계속 올 수 있으므로, 새 요청은 거부하고 이미 진행 중인 작업은 drain(끝날 때까지 정리)합니다.
+
+Endpoint 상태가 전파되어도 모든 프록시와 client가 같은 순간에 반영하지 않으므로, 전파 지연과 grace 예산을 고려해 이 경로를 정하고 실제 배치에서 앱이 새 작업을 언제 거부하고 기존 작업을 언제 끝내는지 관측합니다.
 
 고정 preStop sleep 하나만으로 모든 전파가 완료됐다고 증명하지 않습니다. 종료 상태·활성 요청·끝나지 않은 메시지·연결을 관측하고 deadline 뒤에는 재전달·복구가 가능해야 합니다. 실제 버전의 EndpointSlice terminating·serving·ready 처리와 데이터 경로 지원도 확인합니다.
 

@@ -45,7 +45,7 @@ apply마다 메일·결제를 직접 호출하면 replica 수·재시작 재생�
 
 A가 term 4에서 x=1을 적용한 뒤 고립되고 B·C가 term 5에서 x=2를 commit·apply했습니다. 그 성공 뒤 시작한 읽기를 A가 1로 반환하면 선형화 읽기를 위반할 수 있습니다. A의 로컬 leader 플래그나 옛 heartbeat만으로 현재 권위를 증명할 수 없습니다.
 
-ReadIndex 방식은 현재 term의 commit 기준을 확보한 leader가 읽기 요청에 연결된 quorum 확인으로 권위를 확인하고 안전한 read index를 정합니다. 그 위치 이상을 로컬 상태 머신이 apply한 뒤 읽습니다. 안전 index=100인데 apply=97이면 권위가 확인됐어도 기다려야 합니다. 단순 heartbeat 하나를 과거부터 재사용하는 것과 다릅니다.
+ReadIndex는 leader가 현재 term의 commit 기준을 확보한 뒤, 이번 읽기에 연결된 quorum 확인을 받아 자신이 아직 권위가 있는지 확인하고 read index를 정하는 방식입니다. 그 다음 로컬 state machine의 applied index가 read index 이상이 될 때까지 기다린 뒤 값을 읽습니다. 예를 들어 안전 index=100인데 apply=97이면 quorum 확인이 끝났어도 98~100의 적용을 기다려야 하며, 과거 heartbeat 하나를 재사용하는 것과는 다릅니다.
 
 ## Follower도 안전 위치와 로컬 Apply를 연결해야 합니다
 

@@ -28,9 +28,11 @@ questionIds: [throughput-vs-latency, performance-littles-law, performance-amdahl
 
 ## 서버별 P99는 평균으로 합칠 수 없습니다
 
-A 서버의 10ms 요청 1000개와 B 서버의 1000ms 요청 1개를 합친다고 합시다. nearest-rank 방식의 전체 p99는 10ms지만 서버 p99의 단순 평균은 505ms입니다. 요청 수로 가중한 p99 평균도 일반적으로 전체 분위수를 복원하지 못합니다. 분포 정보가 사라졌기 때문입니다.
+A 서버의 10ms 요청 1000개와 B 서버의 1000ms 요청 1개를 합친다고 합시다. 정렬한 전체 표본에서 p99 위치의 값을 택하는 nearest-rank 방식으로는 전체 p99가 10ms이지만, 서버별 p99 숫자만 평균하면 505ms가 됩니다. 요청 수로 가중한 p99 평균도 일반적으로 전체 분위수를 복원하지 못하는데, 각 서버의 원래 분포 정보가 이미 사라졌기 때문입니다.
 
-같은 단위·경계·시간 창의 histogram count를 합친 뒤 분위수를 추정합니다. classic histogram의 누적 bucket과 비누적 bucket을 구분하고, native histogram·summary의 병합·오차 계약을 확인합니다. bucket이 넓으면 p99 추정 오차도 크므로 SLO 주변 해상도와 저장 비용을 맞춥니다. 전체 집계 아래 지역·route별 실패가 숨지 않는지도 봅니다.
+서버별 p99 숫자를 다시 평균내지 말고, 같은 단위·경계·시간 창에서 관측한 histogram의 bucket count를 합친 뒤 그 누적 분포에서 분위수를 추정합니다. classic histogram은 bucket별 count를 누적해 저장하는지 비누적으로 저장하는지 구분해야 하고, native histogram·summary는 병합 방식과 오차 계약이 다를 수 있으므로 사용 중인 저장소의 규칙을 확인합니다.
+
+bucket이 넓을수록 p99 추정 오차가 커지므로 SLO 주변에 필요한 해상도와 저장 비용을 맞추고, 전체 집계 아래 지역·route별 실패가 숨지 않는지도 봅니다.
 
 ```diagram
 {"title":"원래 분포를 합쳐 전체 분위수를 계산합니다","caption":"화살표는 올바른 집계 경로입니다. 각 서버가 이미 계산한 p99 숫자만으로 전체 요청 분포를 복원할 수 없습니다.","rows":[[{"id":"a","label":"A의 지연 bucket·count"},{"id":"b","label":"B의 같은 경계 bucket·count"}],[{"id":"merge","label":"단위·창을 맞춰 count 합산"}],[{"id":"quantile","label":"전체 분포의 p99 추정"}]],"edges":[{"from":"a","to":"merge","label":"요청 수 보존"},{"from":"b","to":"merge","label":"요청 수 보존"},{"from":"merge","to":"quantile","label":"분포에서 계산"}]}

@@ -16,7 +16,9 @@ questionIds: [logging-performance-safety, error-log-rate-sampling, external-corr
 
 ## 비활성 Log도 미리 만든 문자열의 비용은 남습니다
 
-`debug(serializeHugeObject(x))`에서 debug가 꺼져 있어도 인자 평가가 먼저라면 CPU·allocation 비용은 이미 냅니다. level guard·lazy evaluation을 사용하고 stack 수집·직렬화·전송을 구분합니다. 모든 계층이 같은 exception stack을 출력하면 비용과 잡음이 커지므로 원인 계층과 상위 요약의 책임을 나눕니다.
+`debug(serializeHugeObject(x))`처럼 호출하면 debug level이 꺼져 있어도 `serializeHugeObject(x)`가 먼저 평가되어 CPU와 allocation 비용을 냅니다. 그래서 level guard나 lazy evaluation으로 상세 문자열·stack 수집을 실제 기록이 허용될 때만 수행하고, 직렬화와 전송 비용도 따로 봅니다.
+
+모든 계층이 같은 exception stack을 다시 출력하면 비용과 잡음이 함께 커지므로, 원인 계층은 stack을 남기고 상위 계층은 요약만 남기는 식으로 책임을 나눕니다.
 
 | 신호 | 보존 방법 |
 | --- | --- |
@@ -28,7 +30,9 @@ questionIds: [logging-performance-safety, error-log-rate-sampling, external-corr
 
 ## 상세 Sampling과 전체 오류 수를 섞지 않습니다
 
-같은 오류 100만 건 중 stack 10개를 남겨도 총 100만·관측 기간·최초/최근를 별도 집계합니다. 원문 사용자 ID·자유 오류 문자열을 집계 key로 무제한 쓰면 sampler 자체가 포화될 수 있습니다. bounded error code·대표 sample·시간별 상한을 사용합니다. 첫 표본이 꼭 근본 원인이라는 보장은 없어 하위 원인·상위 파생 오류를 연결합니다.
+같은 오류가 100만 건 발생해 stack 10개만 샘플링하더라도, 전체 발생 수 100만은 별도 counter로 세고 관측 기간과 최초·최근 시각도 별도 집계합니다. stack 표본 수를 줄인 것은 발생 빈도를 줄인 것이 아니기 때문입니다.
+
+원문 사용자 ID나 자유 오류 문자열을 집계 key로 무제한 만들면 key 종류가 계속 늘어 sampler 자체가 포화될 수 있으므로, bounded error code와 대표 sample, 시간별 상한을 사용합니다. 첫 표본이 근본 원인이라는 보장은 없으므로 하위 원인과 상위 파생 오류를 연결해 읽습니다.
 
 ```diagram
 {"title":"진단 표본과 필수 감사의 저장 경로를 나눕니다","caption":"화살표는 기록 경로입니다. drop 가능한 비동기 debug queue에 필수 감사의 원자성을 맡기지 않습니다.","rows":[[{"id":"operation","label":"업무 변경·관측 사건"}],[{"id":"diagnostic","label":"bounded 진단 queue·상세 sampling"},{"id":"audit","label":"같은 transaction의 audit/outbox"}],[{"id":"sink","label":"진단 sink·drop 관측"},{"id":"durable","label":"재시도 전송·안정 ID dedup"}]],"edges":[{"from":"operation","to":"diagnostic","label":"최소 메타데이터"},{"from":"operation","to":"audit","label":"필수 기록 함께 commit"},{"from":"diagnostic","to":"sink","label":"명시적 포화 정책"},{"from":"audit","to":"durable","label":"내구 전달"}]}

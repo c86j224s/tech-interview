@@ -23,7 +23,7 @@ questionIds: [kafka-retention-compaction, kafka-tombstone-offline-consumer, kafk
 
 ## Compaction은 Offset을 다시 매기지 않습니다
 
-같은 key의 offset 10=값A, 12=값B, 15=값C에서 옛 값이 정리되면 15만 남을 수 있지만 번호를 10으로 당기지 않습니다. 내부 control record·aborted transaction 필터 등도 앱이 보는 offset의 공백을 만들 수 있습니다. 모든 정수를 처리할 때까지 기다리는 watermark는 잘못된 모델입니다.
+같은 key에 offset 10=값A, 12=값B, 15=값C가 있고 compaction으로 A와 B가 정리되면 C만 남을 수 있지만, C의 offset을 10으로 다시 매기지는 않습니다. 내부 control record나 aborted transaction 필터 때문에 애플리케이션이 받는 offset 숫자 사이에도 빈 곳이 생길 수 있습니다. 따라서 watermark는 모든 정수를 하나씩 처리했는지가 아니라 실제로 전달된 record 순서에서 앞쪽 구간이 어디까지 끝났는지로 계산해야 합니다.
 
 consumer는 실제 전달 순서·position·committed·log start/end를 따르고 별도의 업무 sequence가 필요하면 메시지에 넣습니다. earliest는 남아 있는 가장 오래된 위치이지 서비스의 모든 역사 시작은 아닙니다.
 
@@ -43,7 +43,7 @@ non-null key와 null value의 tombstone은 해당 key 삭제를 나타냅니다.
 
 key가 오랫동안 갱신되지 않아 그 최신 record가 오래된 segment에만 있으면 delete retention이 그 segment를 제거할 수 있습니다. compact 설정이 있다는 이유로 모든 key의 최신 상태가 영구히 남는 원장이라고 보지 않습니다.
 
-정기 snapshot에 source version·partition별 다음 재생 위치를 기록하고 그 이후 필요한 로그가 연속적으로 남는지 확인합니다. snapshot만 만들고 이후 delete·write를 놓치면 재구축은 최신 상태가 아닙니다. old snapshot을 바탕으로 다시 처리하는 외부 효과는 event ID·원장으로 멱등화합니다.
+정기 snapshot에는 source version과 partition별 다음 재생 위치를 함께 기록하고, 그 위치 이후에 필요한 로그가 끊기지 않고 남아 있는지 확인합니다. snapshot을 만든 뒤의 delete·write를 놓치면 snapshot에서 다시 시작해도 최신 상태가 아니므로, snapshot 시점과 재생 시작점을 한 쌍으로 관리해야 합니다. old snapshot에서 외부 효과를 다시 실행할 때는 event ID와 원장으로 멱등화해 재처리 중복을 흡수합니다.
 
 ## 보관 변경도 데이터 정책 변경입니다
 

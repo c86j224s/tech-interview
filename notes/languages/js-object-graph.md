@@ -51,7 +51,7 @@ console.log(source !== copy, source.prefs === copy.prefs); // true, true
 {"title":"새 바깥 객체 두 개가 같은 중첩 객체를 가리킵니다","caption":"화살표는 객체 참조입니다. spread 뒤 루트가 달라도 prefs를 수정하면 두 루트에서 같은 변경을 관찰합니다.","rows":[[{"id":"source","label":"source"},{"id":"copy","label":"spread copy"}],[{"id":"prefs","label":"공유 prefs 객체","detail":["dark = true"]}]],"edges":[{"from":"source","to":"prefs","label":"prefs 참조"},{"from":"copy","to":"prefs","label":"같은 참조 복사"}]}
 ```
 
-spread는 열거 가능한 own 문자열·symbol 키의 값을 읽어 새 객체에 데이터 프로퍼티로 만듭니다. getter가 있다면 복사 시 실행되고 그 반환값을 저장합니다. 원래 접근자 descriptor·읽기 전용 속성·prototype을 그대로 복제하는 것은 아닙니다. getter가 던지면 복사도 실패할 수 있습니다. descriptor 보존이 필요하면 명시적 descriptor API를 검토하되 이것도 외부 자원 소유권을 복제하지는 않습니다.
+spread는 열거 가능한 own 문자열·symbol 키를 읽어 새 객체에 데이터 프로퍼티로 저장합니다. 원본 키가 getter라면 이 읽기 과정에서 getter가 실행되고, 반환된 값이 저장되므로 원래 접근자 descriptor·읽기 전용 속성·prototype이 그대로 복제되지는 않습니다. getter가 예외를 던지면 spread 자체도 실패할 수 있습니다. descriptor 보존이 필요하면 명시적 descriptor API를 검토하되, 그 방법도 외부 파일·연결 같은 자원의 소유권까지 복제하지는 않습니다.
 
 ## Structured clone과 JSON 왕복은 다른 계약입니다
 
@@ -72,7 +72,9 @@ const next = {
 
 변경하지 않은 노드는 구조적으로 공유하고 바뀐 경로만 복사하면 전체 그래프 복사량을 줄일 수 있습니다. 하지만 공유 노드를 나중에 직접 변경하지 않는 규율이 필요합니다. Object.freeze도 기본적으로 얕은 동결이므로 중첩 전체 불변성을 자동 제공하지 않습니다.
 
-proxy 기반 라이브러리는 draft 변경을 추적해 필요한 새 구조를 만들 수 있지만 읽기 trap·경로 추적·freeze·할당 비용이 생깁니다. 깊은 트리의 한 leaf 변경, 넓은 배열의 대량 변경, 읽기만 많은 루프를 구분하고 같은 결과·불변식 아래 비교합니다. 버전·개발/운영 옵션·자동 동결·변경률을 고정하지 않은 속도 수치는 의미가 약합니다. 외부 자원 복사나 동시 writer의 lost update는 이 라이브러리의 자동 해결 범위가 아닙니다.
+Proxy 기반 라이브러리는 draft에 대한 변경을 추적해 필요한 새 구조를 만들 수 있지만, 읽기 trap·경로 추적·freeze·할당 비용이 추가됩니다. 비교할 때는 깊은 트리의 한 leaf만 바꾸는 경우, 넓은 배열을 대량 변경하는 경우, 읽기만 많은 루프를 분리하고 같은 결과와 불변식을 확인합니다.
+
+버전·개발/운영 옵션·자동 동결·변경률을 고정하지 않은 속도 수치는 서로 다른 실행 조건을 섞으므로 의미가 약합니다. 외부 자원 복사나 동시 writer 사이에서 한 변경이 다른 쓰기에 덮이는 lost update까지 이 라이브러리가 자동으로 해결한다고 가정하지 않습니다.
 
 ## Prototype 성능은 깊이만으로 결정되지 않습니다
 

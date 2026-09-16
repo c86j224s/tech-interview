@@ -22,7 +22,9 @@ reactive sequence는 앞 조건을 다시 보며 높은 반응성을 얻지만 �
 {"title":"옛 이동의 성공도 현재 행동과 다르면 적용하지 않습니다","caption":"화살표는 비동기 결과 경로입니다. generation 검사는 늦은 결과 적용을 막지만 실제 worker 종료와 참조 회수는 별도로 확인합니다.","rows":[[{"id":"move","label":"이동 action 8 · path request31"}],[{"id":"flee","label":"위험 발생 · abort · 도주 action9"}],[{"id":"late","label":"request31 늦은 성공"}],[{"id":"gate","label":"현재 action/request 대조"}],[{"id":"discard","label":"불일치 결과 폐기·자원 정리"}]],"edges":[{"from":"move","to":"flee","label":"우선 행동 전환"},{"from":"move","to":"late","label":"계산은 남을 수 있음"},{"from":"late","to":"gate","label":"세대 확인"},{"from":"gate","to":"discard","label":"8≠9"}]}
 ```
 
-abort는 path 취소 요청·자기 예약 해제·timer 해제·animation 전환을 수행합니다. 실제 이동 자원을 아직 옛 action이 사용하면 Cancelling 내부 상태 또는 명시적 소유 이전으로 새 action의 중복 사용을 막습니다. 논리 무효화와 물리 종료는 다르며 해제된 map pointer를 generation 검사로 안전하게 만들 수 없습니다.
+도주 같은 새 행동으로 abort할 때는 path 취소를 요청하고, 옛 action이 잡은 예약과 timer를 해제하며 animation을 전환합니다. 실제 이동 자원을 옛 action이 아직 사용 중이면 `Cancelling` 내부 상태로 종료를 기다리거나 소유권을 명시적으로 이전해 새 action이 같은 자원을 중복 사용하지 않게 합니다.
+
+action generation을 올려 결과를 논리적으로 무효화하는 것과 worker·callback이 물리적으로 종료되어 참조가 회수되는 것은 별개이므로, 해제된 map pointer를 generation 검사만으로 안전하게 만들 수 없습니다.
 
 ## 추적과 도주의 흔들림에는 다른 임계값을 둡니다
 
@@ -41,7 +43,7 @@ abort는 path 취소 요청·자기 예약 해제·timer 해제·animation 전�
 | map 변화 | 지역별 병합·재계산 phase 분산 |
 | 결과 | 현재 generation·profile/version 확인 |
 
-같은 문 변경으로 수천 NPC가 동시에 A*를 시작하지 않게 합니다. low priority도 최소 기회를 주되 만료된 goal은 실행하지 않습니다. 취소된 요청을 장부에서 제거해도 계산이 살아 있으면 worker 예산은 유지합니다. 실패는 원인·backoff·다음 재시도 조건을 반환해 무한 재탐색을 막습니다.
+같은 문 변경이 들어와도 요청을 한꺼번에 실행하지 않고, NPC별 최신 goal만 남겨 옛 의도를 합칩니다. low priority에도 round-robin이나 최소 진행 규칙으로 기회를 주되, 실행 시점에 만료된 goal은 건너뜁니다. 취소된 요청을 장부에서 제거했더라도 실제 계산이 끝나지 않았다면 worker permit과 취소 후 종료 확인을 유지합니다. 실패한 요청은 원인·backoff·다음 재시도 조건을 반환해 무한 재탐색을 막고, map 변화는 지역별 병합과 재계산 phase 분산으로 처리합니다.
 
 ## 반응성과 정리 비용을 같이 검증합니다
 

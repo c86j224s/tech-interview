@@ -22,11 +22,13 @@ questionIds: [ci-dummy-client-integration, packet-replay-versus-state-scenario, 
 | 상태 기반 client | 현재 응답에서 다음 요청·재접속 | server와 같은 client 구현 오류 |
 | 부하 test | 처리율·p99·포화·회복 | 낮은 확률의 업무 의미 오류 |
 
-실제 client와 공통 serializer를 쓰면 편하지만 양쪽이 같은 endian 오류를 공유해 통과할 수 있습니다. 중요한 wire 경계에는 독립 구현·schema·명시적 golden bytes를 둡니다. replay의 원문 token·개인정보·결제 목적지는 제거하고 격리된 test 자격·외부 효과 차단을 사용합니다.
+실제 client와 server가 공통 serializer를 쓰면 테스트 작성은 편해도, 두 쪽이 같은 endian 오류를 함께 내면 잘못된 packet이 통과할 수 있습니다. 그래서 중요한 wire 경계에서는 한쪽과 독립된 구현·schema·명시적 golden bytes를 비교해 직렬화와 경계 byte를 따로 확인합니다. replay 데이터에서 원문 token·개인정보·결제 목적지를 제거하고, 격리된 test 자격과 외부 효과 차단을 적용합니다.
 
 ## 전체 이벤트 순서 대신 필요한 인과만 고정합니다
 
-로그인 성공 L 뒤 행동 승인 A와 환영 알림 W가 와야 하지만 A와 W는 독립이라면 `L<A`, `L<W`만 검사합니다. `[L,A,W]`와 `[L,W,A]`는 모두 유효합니다. 반대로 `[A,L,W]`는 거절해야 합니다. key별 sequence·event ID를 유지하고 기대 다중집합으로 누락·중복 횟수도 검사합니다.
+로그인 성공 L이 먼저 있어야 행동 승인 A와 환영 알림 W를 처리할 수 있지만, A와 W 서로의 순서는 중요하지 않다면 `L<A`, `L<W` 두 선행 조건만 검사합니다. 그래서 `[L,A,W]`와 `[L,W,A]`는 모두 통과시키고, `[A,L,W]`는 거절합니다.
+
+각 key의 sequence와 event ID를 저장해 어떤 사건이 있었는지 확인하고, 기대 다중집합과 실제 사건을 비교해 누락뿐 아니라 `[L,A,A,W]` 같은 중복 횟수도 셉니다. 전체 로그 순서를 하나로 고정하지 않는 이유는 독립 사건의 합법적인 도착 순서를 실패로 처리하지 않기 위해서입니다.
 
 ```diagram
 {"title":"독립 알림의 순서는 허용하고 인과는 유지합니다","caption":"화살표는 반드시 앞서야 하는 관계입니다. A와 W 사이에는 선후 제약이 없지만 L 이전에 오면 실패입니다.","rows":[[{"id":"login","label":"L · 로그인 성공"}],[{"id":"action","label":"A · 행동 승인"},{"id":"welcome","label":"W · 환영 알림"}]],"edges":[{"from":"login","to":"action","label":"필수 선행"},{"from":"login","to":"welcome","label":"필수 선행"}]}

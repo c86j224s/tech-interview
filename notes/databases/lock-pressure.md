@@ -22,7 +22,9 @@ questionIds: [db-lock-escalation, database-lock-resource-diagnosis, database-log
 | InnoDB | performance_schema data_locks·data_lock_waits | record·gap·next-key·격리 |
 | PostgreSQL | pg_locks·pg_stat_activity·blocking 관계 | row/transaction wait·relation·SSI predicate |
 
-SQL Server escalation은 여러 세부 잠금을 table 또는 설정에 따른 HoBT 수준으로 바꾸는 동작일 수 있으며 row→page→table의 필수 계단식 승격이 아닙니다. InnoDB의 gap·next-key는 삽입과 범위 경쟁에 영향을 주며 유일 동등 조건·격리 등에 따라 달라집니다. PostgreSQL SSI의 predicate 정보는 일반적인 blocking range lock과 같은 것으로 설명하지 않습니다.
+예를 들어 SQL Server에서 한 요청이 세부 잠금을 많이 보유하면 escalation으로 table 또는 설정에 따른 HoBT 수준 잠금으로 바뀔 수 있지만, 항상 `row→page→table` 순서로 승격되는 것은 아닙니다. InnoDB에서 잠금 읽기나 변경 중 관찰되는 gap·next-key 잠금은 삽입과 범위 경쟁에 관여하며, 유일 동등 조건과 격리 수준에 따라 실제 범위가 달라집니다.
+
+PostgreSQL SSI에서 보이는 predicate 정보는 일반적인 blocking range lock과 같은 것으로 세지 말고 별도 종류로 관찰합니다.
 
 각 view의 지원 버전·권한·관측 범위를 확인합니다. row lock이 언제나 모든 행마다 view에 같은 형식으로 나타난다고 가정하지 않습니다. 내부 page latch와 transaction lock도 별도 wait 원인입니다.
 

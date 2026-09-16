@@ -10,7 +10,7 @@ questionIds: [java-completablefuture-executor, java-interrupt-cooperation, java-
 
 ## Future를 쓴다고 모든 단계가 전용 Worker에서 실행되지는 않습니다
 
-네트워크 응답을 완료하는 스레드에서 CompletableFuture의 thenApply가 무거운 JSON 변환을 수행하면 그 스레드가 다른 응답을 처리하지 못할 수 있습니다. non-async 단계는 완료를 수행하는 스레드 등에서 실행될 수 있고, 이미 완료된 future에 단계를 붙이면 등록하는 스레드에서 실행될 수도 있습니다. API 이름보다 실제 실행 위치가 중요합니다.
+네트워크 응답을 완료한 스레드가 `CompletableFuture.thenApply`의 무거운 JSON 변환까지 맡으면 그 스레드는 변환이 끝날 때까지 다른 응답을 처리하지 못할 수 있습니다. `non-async` 단계는 future를 완료시키는 스레드 등에서 실행될 수 있고, 이미 완료된 future에 단계를 붙일 때는 단계를 등록한 스레드에서 실행될 수도 있습니다. 따라서 `thenApply`라는 이름만 보지 말고 빠른 완료와 늦은 완료에서 실제 실행 스레드와 대기 시간을 관찰해야 합니다.
 
 async 단계는 명시 executor 또는 기본 비동기 실행 정책을 사용합니다. 기본 CompletableFuture는 일반적으로 common ForkJoinPool을 사용하지만 기본 풀의 병렬성 등에 따른 예외와 하위 타입의 실행 정책을 확인합니다. async가 항상 새 전용 스레드를 만든다는 뜻은 아닙니다.
 
@@ -24,13 +24,13 @@ async 단계는 명시 executor 또는 기본 비동기 실행 정책을 사용�
 | timeout 관련 완료 | Future 상태를 정착 | 원래 I/O 종결과 다름 |
 | 명시 executor의 async 단계 | 실행 위치를 분리 | 큐·활성 수·거절·종료 필요 |
 
-짧은 CPU 변환과 긴 blocking I/O를 같은 공용 풀에 무제한 넣지 않습니다. 별도 executor를 두어도 큐가 무제한이면 대기가 메모리로 이동할 뿐입니다. 결과를 기다리는 부모가 자식과 같은 제한된 풀의 자리를 모두 점유하면 자식 실행 자리가 없어 교착할 수도 있습니다.
+짧은 CPU 변환과 긴 blocking I/O를 같은 공용 풀에 무제한 제출하면, I/O 작업이 worker를 오래 붙잡아 풀의 실행 여력이 부족할 때 CPU 단계가 큐에서 기다릴 수 있습니다. 별도 executor로 나눠도 큐가 무제한이면 실행되지 못한 작업과 그 문맥이 메모리에 계속 쌓일 수 있으므로, 큐·활성 수·거절·종료를 함께 정해야 합니다. 결과를 기다리는 부모 작업이 자식과 같은 제한된 풀의 자리를 모두 차지하면 자식이 실행될 자리가 없어 교착할 수도 있습니다.
 
 ```diagram
 {"title":"Future의 완료와 실제 작업 종결은 별도입니다","caption":"화살표는 상태 관찰 경로입니다. timeout으로 사용자 대기가 끝나도 하위 작업이 계속되면 그 작업 소유자가 자원과 결과를 정리해야 합니다.","rows":[[{"id":"start","label":"하위 I/O 시작"}],[{"id":"timeout","label":"사용자 Future timeout"},{"id":"running","label":"실제 I/O 계속 실행 가능"}],[{"id":"finish","label":"실제 종결 확인·자원 반환"}]],"edges":[{"from":"start","to":"timeout","label":"대기 기한"},{"from":"start","to":"running","label":"별도 실행 수명"},{"from":"running","to":"finish","label":"완료·지원 취소"}]}
 ```
 
-CompletableFuture의 cancel이 임의 계산이나 네트워크를 강제 interrupt한다고 가정하지 않습니다. 실제 작업 핸들·라이브러리의 취소 계약과 연결해야 합니다. 이미 서버 DB가 커밋된 변경은 future의 exceptional completion으로 되돌아가지 않습니다.
+`CompletableFuture.cancel`을 호출해도 임의의 계산이나 네트워크 작업에 강제로 `interrupt`가 전달된다고 가정하지 않습니다. 실제 작업 핸들과 사용 중인 라이브러리의 취소 계약을 연결해야 하며, timeout이나 cancel로 future 상태가 먼저 끝난 것과 하위 작업의 실제 종결은 별도로 확인합니다. 이미 서버나 DB에 커밋된 변경은 future의 exceptional completion으로 되돌아가지 않습니다.
 
 ## Interrupt는 협력적인 종료 신호입니다
 
@@ -42,7 +42,7 @@ Thread.interrupted는 현재 스레드 상태를 읽고 지우며 isInterrupted�
 
 ## 가상 스레드는 DB 연결과 메모리를 늘리지 않습니다
 
-가상 스레드는 지원되는 blocking 경로에서 carrier를 반환하며 많은 대기 작업의 표현 비용을 줄일 수 있습니다. 하지만 10만 요청이 100개 DB 연결을 기다리면 나머지 요청의 문맥·대기 시간·메모리는 남습니다. 수락 수·풀 획득 대기·하위 동시 호출·deadline을 별도로 제한합니다.
+가상 스레드는 지원되는 blocking 경로에서 carrier를 반환하므로 대기 중인 작업을 표현하는 비용은 줄일 수 있습니다. 하지만 10만 요청이 100개 DB 연결을 기다리는 상황에서는 연결을 얻지 못한 나머지 요청의 문맥·대기 시간·메모리가 그대로 남습니다. 따라서 가상 스레드 수를 늘리는 것으로 해결하지 말고 수락 수·풀 획득 대기·하위 동시 호출·deadline을 각각 제한해야 합니다.
 
 CPU 계산은 실제 코어를 사용하므로 가상 스레드 수 증가가 실행 용량을 무한히 늘리지 않습니다. ThreadLocal에 큰 객체를 넣으면 요청별 비용도 커집니다. 플랫폼 스레드 풀의 크기를 그대로 복제하기보다 필요한 하위 자원의 상한을 직접 정합니다.
 

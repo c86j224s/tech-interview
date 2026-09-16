@@ -12,11 +12,11 @@ questionIds: [voxel-occupancy-representation, voxel-static-dynamic-overlay, voxe
 
 물은 수영 가능 agent와 지상 agent에게 다르고 낮은 통로는 작은 몸체만 통과할 수 있습니다. 원본의 재질·고체 부피, 동적 문/객체 점유, 반경·높이·경사·계단·비행 능력을 나눕니다. 하나의 occupied bit는 저장은 작지만 필요한 질의 조건을 잃을 수 있습니다.
 
-조회는 같은 source/profile/overlay version에서 clearance·지지면·부피·이동 능력을 조합합니다. 비행은 발밑 cell뿐 아니라 전체 3D footprint를 검사합니다. cache는 원본·profile·규칙 version에 종속됩니다.
+예를 들어 물 위를 수영할 수 있어도 지상 agent가 그 cell을 걸을 수 있다는 뜻은 아니므로, 조회는 같은 source/profile/overlay version에서 clearance(주변 여유), 지지면, 필요한 부피, 이동 능력을 함께 읽습니다. 비행 agent는 발밑 cell 하나가 비어 있는지만 보지 않고 이동하는 전체 3D footprint를 검사합니다. 이 결과를 cache에 저장한다면 조회에 사용한 원본·profile·overlay·규칙 version에 종속시켜 서로 다른 버전의 결과를 섞지 않습니다.
 
 ## 문이 열려도 문틀과 뒤의 벽은 남습니다
 
-문 자체의 shape가 제거됐다고 같은 cell의 독립 정적 벽을 false로 덮으면 안 됩니다. 독립 고체들의 union이라는 물리 의미에서는 OR가 적절할 수 있지만 물·위험·투명도·agent 능력 같은 다른 의미를 한 boolean에 섞지 않습니다. 삭제는 자기 객체의 contribution만 제거합니다.
+문을 열어 문 shape의 contribution을 제거해도 같은 cell에 문틀이나 뒤 벽의 contribution이 남아 있으면 그 고체를 false로 바꾸지 않습니다. 독립 고체들의 union만 계산하는 층에서는 OR가 적절할 수 있지만, 물·위험·투명도·agent 능력은 별도 의미로 읽고 하나의 boolean에 합치지 않습니다. 삭제할 때는 문 객체가 추가한 contribution만 되돌립니다.
 
 | 층 | 보존할 의미 |
 | --- | --- |
@@ -25,7 +25,7 @@ questionIds: [voxel-occupancy-representation, voxel-static-dynamic-overlay, voxe
 | 파생 이동성 | clearance·높이·경사·source/profile |
 | 질의 결과 | 통과·동적 차단·여유 부족·unknown |
 
-동적 변경마다 정적 압축 block 전체를 재인코딩하지 않도록 overlay를 둘 수 있지만 깊이가 커지면 읽기 비용이 늘어 병합 임계·version 교체를 관리합니다.
+문이나 물체가 자주 바뀌는 동안 정적 압축 block을 매번 다시 인코딩하지 않으려면, 변경된 객체의 contribution을 overlay 층에 따로 기록할 수 있습니다. 조회는 정적 block을 읽은 뒤 overlay를 함께 적용하고, overlay 깊이가 커져 읽기 비용이 늘기 전에 정적 block과 합치는 임계와 version 교체 시점을 관리합니다.
 
 ## 큰 희소 월드에는 Hash Chunk가 중간 선택일 수 있습니다
 
@@ -45,6 +45,6 @@ palette에 다섯 번째 재질을 추가하면 최소 index 폭이 2→3bit로 
 
 ## 새 Block 게시와 옛 Reader 수명을 관리합니다
 
-완성된 새 block을 version과 함께 게시하고 진행 중 ray/path reader가 옛 block을 읽는 동안 유지합니다. 최대 reader 수명은 취소·완료·admission 정책이지 살아 있는 참조를 강제 free할 권리가 아닙니다. 저장 포맷 version과 terrain source version도 구분합니다.
+새 block을 완성한 뒤 version을 붙여 게시해도, 진행 중인 ray/path reader는 잠시 옛 block을 계속 읽을 수 있으므로 그 수명이 끝날 때까지 옛 block을 유지합니다. 최대 reader 수명은 취소·완료·admission 정책으로 정할 값이지, 아직 살아 있는 참조를 강제로 free해도 된다는 뜻은 아닙니다. 저장 포맷 version과 terrain source version은 서로 다른 변경 축으로 기록합니다.
 
 6/26 이웃 조회·임의 query·국소 수정·넓은 ray·복잡한 경계·load/unload·palette 폭 증가를 같은 데이터로 비교합니다. 저장 bytes·resident memory·update/query p99·streaming·retained old blocks를 봅니다. 이 노트는 표현 설계이며 실제 voxel 저장 엔진 benchmark 결과는 아닙니다.

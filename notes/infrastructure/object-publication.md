@@ -24,7 +24,7 @@ questionIds: [object-storage-consistency, object-storage-multipart-upload]
 | 객체 확인 | 최종 version·크기·checksum | 앱 공개 승인 |
 | DB 포인터 전환 | 기대 버전·새 객체 참조 | 옛 URL의 즉시 폐기 |
 
-실패 part만 재전송할 수 있지만 같은 part 번호 교체·최종 목록 순서·최소 크기·제한은 제품 계약을 따릅니다. ETag는 항상 전체 파일 MD5가 아니며 multipart·암호화 등 구성에서 다른 의미일 수 있습니다. part별 checksum과 최종 파일의 길이·조합·지원되는 전체 checksum을 구분합니다.
+예를 들어 part 3만 실패했다면 part 3만 재전송할 수 있지만, complete에는 제품이 요구하는 최종 part 목록과 순서를 제출해야 합니다. 같은 part 번호를 교체할 수 있는지, 최종 목록의 순서·최소 크기·기타 제한은 제품 계약을 먼저 대조합니다. ETag는 multipart·암호화 구성에서 항상 전체 파일 MD5를 뜻하지 않으므로, part별 checksum과 최종 파일의 길이·조합·지원되는 전체 checksum을 따로 확인합니다.
 
 ```diagram
 {"title":"완성된 객체 버전만 공개 포인터로 연결합니다","caption":"화살표는 앱의 공개 순서입니다. 저장소 complete와 DB 전환은 다른 거래이므로 중단 후 각 상태를 조회해 대사할 수 있어야 합니다.","rows":[[{"id":"parts","label":"upload ID의 parts 전송"}],[{"id":"complete","label":"최종 complete·객체 확인"}],[{"id":"validate","label":"크기·checksum·내용 검증"}],[{"id":"pointer","label":"DB 포인터 조건부 전환"}]],"edges":[{"from":"parts","to":"complete","label":"제품의 조합 계약"},{"from":"complete","to":"validate","label":"특정 객체 version"},{"from":"validate","to":"pointer","label":"공개 조건 충족"}]}
@@ -44,7 +44,7 @@ complete가 서버에서 성공했지만 응답이 유실되면 클라이언트�
 
 ## CDN과 URL 수명은 별도로 끝납니다
 
-불변 URL은 같은 키에서 내용이 바뀌는 캐시 혼동을 줄입니다. 하지만 옛 버전 접근을 언제 종료할지·권한 회수·presigned URL 만료·CDN 인증을 별도로 정합니다. 같은 키 덮어쓰기를 유지하면 validator·Cache-Control·무효화 완료·edge 전파를 확인합니다.
+`report/version-8` 같은 불변 키를 URL에 사용하면 같은 키의 내용 교체로 CDN이 옛 바이트를 내놓는 혼동을 줄일 수 있습니다. 그래도 옛 버전 접근을 언제 종료할지·권한 회수·presigned URL 만료·CDN 인증은 별도로 정해야 합니다. 같은 키 덮어쓰기를 유지한다면 제품이 정의한 `validator`와 `Cache-Control`의 의미·설정을 대조하고, 무효화 완료 신호 뒤 edge에서 기대 version의 응답이 실제로 전파됐는지 확인합니다.
 
 업로드 URL은 접수 권한이며 검사 완료·공개 승인은 아닙니다. 미검사 객체는 격리하고 원본·변환본의 공개 정책과 개인정보 보관을 나눕니다. checksum이 맞아도 출처·악성 콘텐츠·자원 사용 안전성이 증명되는 것은 아닙니다.
 

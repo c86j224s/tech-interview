@@ -10,9 +10,9 @@ questionIds: [build-dependency-lockfiles]
 
 ## 같은 Manifest 범위도 다른 날에는 다른 그래프가 될 수 있습니다
 
-manifest의 `^1.2.0`은 하나의 파일이 아니라 허용되는 version 범위를 뜻합니다. 직접 dependency가 고정돼도 그 dependency의 전이 의존이 달라질 수 있습니다. lockfile은 선택된 직접·전이 version과 source·integrity 등 manager가 사용하는 해결 정보를 기록해 같은 그래프를 다시 설치하도록 돕습니다.
+manifest의 `^1.2.0`은 특정 파일 하나가 아니라 설치에 허용하는 version 범위입니다. 직접 dependency의 version을 고정해도 그 package가 다시 요구하는 전이 의존의 선택은 달라질 수 있습니다. lockfile은 직접·전이 dependency에 실제로 선택한 version, source, integrity(받은 내용의 일치 여부를 확인하는 정보) 같은 해결 정보를 기록해 같은 dependency graph를 다시 설치하도록 돕습니다.
 
-패키지 매니저별 lock 의미와 형식은 다릅니다. manager version·설정·registry·platform을 맞추고 npm의 npm ci 같은 잠금 기반 설치 경로로 manifest 불일치를 오류로 드러냅니다. CI 실패를 없애려고 lockfile을 삭제해 다시 해결하면 검토한 입력 자체가 바뀝니다.
+패키지 매니저마다 lockfile의 형식과 ‘잠금 설치’가 확인하는 범위가 다르므로 manager version·설정·registry·platform을 먼저 맞춥니다. 예를 들어 npm에서는 `npm ci`처럼 lockfile을 기준으로 설치하고 manifest와 lockfile이 맞지 않으면 오류로 드러내는 경로를 사용합니다. CI 실패를 없애려고 lockfile을 지우고 다시 해결하면, 검토했던 dependency 입력이 바뀌고 version graph도 달라질 수 있습니다.
 
 ## 그래프 고정과 Binary 재현은 같은 보장이 아닙니다
 
@@ -37,6 +37,6 @@ manifest의 `^1.2.0`은 하나의 파일이 아니라 허용되는 version 범�
 
 ## Clean과 지원 Platform을 실제로 확인합니다
 
-warm cache 설치만 통과하면 registry 가용성·integrity 문제를 놓칠 수 있습니다. 격리된 clean install·지원 OS/architecture·native build·런타임 test를 확인하고 검증한 범위를 적습니다. package rollback도 이미 발생한 DB migration이나 외부 효과를 되돌리지 않습니다.
+warm cache에서만 설치가 통과하면 이미 저장된 package를 다시 써서 registry 가용성이나 integrity 문제를 보지 못할 수 있습니다. 따라서 cache가 비어 있는 격리된 환경에서 지원 OS/architecture별 clean install을 하고, native build와 런타임 test까지 실행한 범위를 기록합니다. package를 이전 version으로 rollback해도 이미 발생한 DB migration이나 외부 효과는 되돌아가지 않으므로, 설치 복구와 데이터·외부 상태 복구를 별도 계획으로 둡니다.
 
 이 노트는 설치 계약 설명이며 현재 작업에서 모든 지원 platform의 무캐시 설치를 새로 실행한 결과는 아닙니다.

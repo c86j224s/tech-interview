@@ -16,13 +16,15 @@ questionIds: [oop-encapsulation, aggregate-cross-object-invariant, mvc-responsib
 
 ## 안내 조회는 실제 변경 조건을 대신하지 않습니다
 
-`canCancel()`이 true였어도 그 다음 요청이 결제를 완료하면 취소 시점 조건이 달라집니다. `cancel()` 내부에서 다시 검사하고 DB 저장에도 expected version·제약을 적용합니다. 객체 하나의 올바른 상태가 두 요청의 lost update를 자동 막지 않습니다. 역직렬화·ORM 복원도 생성자 검증을 우회하지 않도록 검증 경계를 정합니다.
+`canCancel()`이 true를 반환한 직후 다른 요청이 결제를 완료하면, 실제 `cancel()` 시점의 조건은 이미 달라져 있습니다. 따라서 안내 조회 결과를 믿고 저장하지 말고 `cancel()` 내부에서 현재 상태를 다시 검사한 뒤, DB 저장에도 `expected version`과 제약을 함께 적용합니다.
+
+객체 하나가 현재 상태를 올바르게 지켜도 두 요청의 `lost update`는 자동으로 막히지 않습니다. 역직렬화와 ORM 복원이 생성자 검증을 우회할 수 있으므로, 그 경계에서도 같은 검증을 적용할 위치를 정합니다.
 
 ## 여러 객체의 규칙은 더 큰 원자 범위가 필요합니다
 
 A=100, B=50에서 30을 이체할 때 A=70 저장 후 B 증가가 실패하면 합계가 120으로 줄어듭니다. 각각 비음수라는 규칙은 지켜도 합계 150은 깨집니다. 즉시 함께 확정해야 하는 범위를 aggregate 또는 서비스 transaction으로 정하고 저장소의 원자성을 사용합니다.
 
-별도 시스템이라면 로컬 transaction 하나로 묶을 수 없으므로 예약·중간 상태·중복 억제·보상·대사 계약을 정합니다. 모든 관련 객체를 거대한 aggregate에 넣으면 lock 경합·변경 결합이 커질 수 있어 즉시 불변식과 나중에 맞출 수 있는 파생 상태를 구분합니다.
+이체 대상 A와 B가 서로 다른 시스템에 있으면 로컬 transaction 하나로 두 저장을 묶을 수 없습니다. 이 경우 예약이나 중간 상태를 둘지 정하고, 재시도로 같은 작업이 두 번 적용되지 않게 중복을 억제하며, 한쪽만 반영됐을 때 보상과 대사를 어떻게 할지 계약으로 정합니다. 반대로 모든 관련 객체를 하나의 거대한 aggregate에 넣으면 lock 경합과 변경 결합이 커질 수 있습니다. 그래서 즉시 함께 지켜야 하는 불변식과 나중에 맞춰도 되는 파생 상태를 분리합니다.
 
 ```diagram
 {"title":"요청 형식과 업무 규칙과 저장을 분리합니다","caption":"화살표는 호출 흐름입니다. HTTP와 메시지 입력은 같은 업무 명령으로 모이고 transaction·인가 규칙을 어댑터마다 복제하지 않습니다.","rows":[[{"id":"http","label":"HTTP controller"},{"id":"consumer","label":"메시지 consumer"}],[{"id":"service","label":"명령·주체·요청 ID · 서비스"}],[{"id":"domain","label":"도메인 불변식·상태 전이"}],[{"id":"store","label":"원자 저장·version·제약"}]],"edges":[{"from":"http","to":"service","label":"입력 변환"},{"from":"consumer","to":"service","label":"입력 변환"},{"from":"service","to":"domain","label":"인가·업무 처리"},{"from":"domain","to":"store","label":"검증된 변경"}]}

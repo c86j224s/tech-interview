@@ -24,7 +24,7 @@ questionIds: [virtual-memory-page-fault, tlb-page-table]
 {"title":"변환 실패와 접근 실패의 다른 경로","caption":"화살표는 주소 해석 과정입니다. TLB에 없더라도 페이지 테이블이 유효하면 OS의 페이지 폴트 처리 없이 진행할 수 있습니다.","rows":[[{"id":"address","label":"가상 주소 접근","detail":["페이지 번호 + 내부 offset"]}],[{"id":"tlb","label":"TLB 조회","detail":["변환과 권한 캐시"]}],[{"id":"table","label":"페이지 테이블 탐색","detail":["TLB miss 때 수행"]}],[{"id":"memory","label":"유효한 매핑","detail":["변환 저장 후 메모리 접근"]},{"id":"fault","label":"페이지 폴트 처리","detail":["매핑 준비 또는 접근 오류"]}]],"edges":[{"from":"address","to":"tlb","label":"변환 요청"},{"from":"tlb","to":"table","label":"변환 캐시 miss"},{"from":"table","to":"memory","label":"유효·권한 충족"},{"from":"table","to":"fault","label":"즉시 접근 불가"}]}
 ```
 
-TLB hit 경로는 그림의 페이지 테이블 탐색을 생략합니다. 다만 TLB에 저장된 권한이 쓰기를 허용하지 않으면 hit여도 접근 예외가 날 수 있습니다. 따라서 “TLB hit이면 어떤 접근도 성공”도 아닙니다.
+TLB에서 변환을 찾지 못하면 CPU는 페이지 테이블을 다시 확인하고, 유효한 매핑과 권한을 찾으면 그 변환을 사용해 메모리 접근을 계속할 수 있습니다. 이 경우 TLB miss는 있었지만 페이지 폴트가 반드시 발생한 것은 아닙니다. 반대로 TLB hit라도 저장된 권한이 현재 접근을 허용하지 않으면 접근 예외가 날 수 있으므로, “TLB hit이면 어떤 접근도 성공한다”고 해석하면 안 됩니다.
 
 ## 페이지 폴트가 실제로 하는 일을 나눕니다
 

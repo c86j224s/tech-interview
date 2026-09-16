@@ -24,7 +24,7 @@ questionIds: [db-partition-pruning, db-composite-unique-partition]
 | 고객 ID 단독 | 날짜 범위가 없는가 | 많은 partition별 lookup |
 | 지연 입력 | 오래된·닫힌 partition 처리 | 거절·기본 partition·보정 |
 
-날짜 경계는 half-open 범위로 명시하고 업무 시간대를 맞춥니다. 실제 plan에서 제거된·실행한 partition 수와 각 읽기량을 확인합니다. 계획에 파티션 노드가 많아 보여도 runtime pruning이 가능한 엔진이 있으므로 estimated plan만으로 단정하지 않습니다.
+날짜 경계는 `start` 이상 `next_start` 미만처럼 시작을 포함하고 끝을 제외하는 half-open 범위로 계산하고, 두 시각을 업무 시간대 기준으로 맞춥니다. 질의를 실행할 때 estimated plan의 파티션 노드 수만 세지 말고, 실제 실행에서 제거된 파티션과 읽은 파티션의 수·각 읽기량을 함께 비교합니다. runtime pruning을 지원하는 엔진에서는 계획에 많은 파티션 노드가 남아도 실행 시 줄어들 수 있으므로 estimated plan만으로 전체 파티션 탐색이라고 단정하지 않습니다.
 
 ```diagram
 {"title":"파티션 선택 뒤에도 내부 탐색이 남습니다","caption":"화살표는 조회의 두 단계입니다. 날짜 조건으로 9월만 남긴 다음 고객 키 인덱스로 필요한 행을 찾는 모형입니다.","rows":[[{"id":"query","label":"9월의 고객 7 주문"}],[{"id":"partition","label":"9월 파티션 선택"}],[{"id":"index","label":"파티션 내부 고객 인덱스"}],[{"id":"result","label":"필요 행·반환 컬럼"}]],"edges":[{"from":"query","to":"partition","label":"partition pruning"},{"from":"partition","to":"index","label":"다른 달 제외"},{"from":"index","to":"result","label":"행 탐색·lookup"}]}
@@ -32,9 +32,9 @@ questionIds: [db-partition-pruning, db-composite-unique-partition]
 
 ## 날짜를 UNIQUE에 넣으면 유일성 의미가 달라집니다
 
-`UNIQUE(date,id)`는 9월의 id=42와 10월의 id=42를 구분할 수 있습니다. 외부 API가 /orders/42 하나로 식별한다고 약속했다면 이 로컬 조합 제약만으로 충분하지 않습니다. 엔진이 global unique index를 지원하는지, partition key를 포함해야 하는지 실제 버전의 제약을 확인합니다.
+`UNIQUE(date,id)`는 `id` 단독이 아니라 `date`를 포함한 조합을 유일하게 만드는 제약입니다. 예를 들어 9월의 `id=42`와 10월의 `id=42`는 날짜가 달라 서로 다른 조합으로 함께 존재할 수 있지만, 외부 API가 `/orders/42` 하나로 주문을 식별한다면 이 로컬 조합 제약만으로는 부족합니다. 전역 unique index를 지원하는지와 partition key를 제약에 포함해야 하는지는 엔진의 실제 버전에서 확인해야 합니다.
 
-대안은 전역 ID registry에서 예약하거나, 날짜를 포함한 식별자를 외부 계약으로 정하거나, 지원되는 전역 제약을 사용하는 것입니다. registry와 상세 삽입이 같은 DB 거래로 묶일 수 있으면 원자화하고 다른 저장소라면 예약·확정·실패 재개 상태가 필요합니다. UUID의 매우 낮은 충돌 확률도 같은 논리 주문의 중복 제출을 막는 멱등성과는 다릅니다.
+외부 ID `42`를 어디서나 하나의 주문으로 쓰려면, 상세 row를 넣기 전에 전역 ID registry에서 `42`를 예약하거나 날짜를 포함한 식별자로 외부 계약을 바꾸거나 엔진이 지원하는 전역 제약을 사용해야 합니다. registry와 상세 삽입이 같은 DB transaction에 들어가면 예약과 상세 row를 함께 commit하고, 다른 저장소라면 예약·확정·실패 재개 상태를 별도로 남겨야 합니다. UUID의 매우 낮은 충돌 확률은 같은 논리 주문의 중복 제출을 막는 멱등성과 다른 문제입니다.
 
 날짜 수정으로 행이 다른 partition으로 이동하거나 backfill·복구가 과거 partition에 삽입할 때도 같은 유일성 규칙을 지켜야 합니다. 정상 웹 쓰기만 검증하고 관리 import를 제외하면 전역 계약이 깨질 수 있습니다.
 

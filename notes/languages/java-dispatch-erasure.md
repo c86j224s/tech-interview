@@ -37,11 +37,13 @@ main에서 `A a = new B();`를 만든 뒤 `a.f("hi")`는 B:Object를 기대합�
 
 f(String)과 f(Integer)가 있고 `f(null)`을 호출하면 둘 다 적용 가능하지만 서로 더 구체적인 하나가 없어 컴파일 오류가 됩니다. cast로 의도를 드러낼 수 있지만 너무 많은 유사 overload가 API 사용성을 해치는지 검토합니다.
 
-primitive widening·boxing·varargs는 적용 단계가 다릅니다. int를 넘길 때 f(long)과 f(Integer)가 있다면 이름이 비슷해 보이는 래퍼보다 boxing 없는 확장 단계가 먼저 적용될 수 있습니다. 반환 타입만 다른 overload는 만들 수 없습니다. 선택은 컴파일 단계의 규칙이지 실행 시 객체를 보고 임의로 고르는 휴리스틱이 아닙니다.
+`primitive widening`·boxing·varargs는 컴파일러가 적용하는 단계가 서로 다릅니다. 예를 들어 `int` 인수에 `f(long)`과 `f(Integer)`가 모두 있으면 `int→long` widening이 `int→Integer` boxing보다 먼저 적용될 수 있으므로, 이름이 비슷한 래퍼 메서드가 자동으로 선택되는 것은 아닙니다. 반환 타입만 다른 overload는 만들 수 없고, 선택은 실행 중 객체를 보고 고르는 휴리스틱이 아니라 컴파일 단계의 규칙으로 결정됩니다.
 
 ## 제네릭은 컴파일 검사를 제공하고 객체의 모든 타입 인자를 보존하지 않습니다
 
-일반적인 ArrayList<String>과 ArrayList<Integer> 객체의 런타임 클래스는 타입 인자마다 별도 클래스가 되지 않습니다. 타입 변수는 소거 과정에서 Object 또는 경계 타입으로 바뀌고 필요한 cast가 호출 쪽 등에 삽입됩니다. 반면 필드·메서드 선언의 generic signature 메타데이터는 class 파일·reflection에 남을 수 있습니다. 선언 정보와 실제 수신 원소의 유효성은 다릅니다.
+일반적인 `ArrayList<String>`과 `ArrayList<Integer>`는 타입 인자마다 별도 런타임 클래스가 생기지 않고 같은 `ArrayList` 클래스의 객체입니다. 컴파일할 때 타입 변수는 소거되어 `Object` 또는 경계 타입으로 바뀌고, 예를 들어 `strings.get(0)`의 결과를 `String`으로 쓰는 지점에는 필요한 cast가 삽입됩니다.
+
+필드·메서드 선언의 generic signature 메타데이터는 class 파일과 reflection에 남을 수 있지만, 그 선언 정보가 실제로 들어오는 모든 원소의 타입을 런타임에 검사해 주는 것은 아닙니다.
 
 ```java
 java.util.List<String> strings = new java.util.ArrayList<>();
@@ -75,7 +77,9 @@ javap의 bridge·synthetic 표시와 reflection의 isBridge를 통해 작성한 
 
 배열의 공변성과 제네릭의 기본 불공변성을 구분합니다. `Object[] a = new String[1]`은 가능하지만 Integer를 저장하면 ArrayStoreException입니다. 배열은 실제 component type을 알아야 하므로 일반적인 `new List<String>[10]`은 허용되지 않습니다. List<String>의 구체 타입 인자는 런타임 검사에 충분히 남지 않기 때문입니다.
 
-`new List<?>[10]`은 원소 타입을 특정 String 목록으로 주장하지 않는 reifiable 타입이므로 허용됩니다. Object 변수에 대해 `instanceof List<?>`는 가능하지만 `instanceof List<String>`으로 원소 전체를 확인할 수는 없습니다. unchecked cast로 강제한 배열은 heap pollution의 안전성을 자동으로 복구하지 않습니다.
+`new List<?>[10]`은 배열 원소가 어떤 `List`인지만 표현하고 그 안의 타입 인자는 특정하지 않는 reifiable 타입이므로 허용됩니다. `Object` 변수에 대해 `instanceof List<?>`로 List 여부는 검사할 수 있지만, `instanceof List<String>`으로는 원소 전체가 String인지 판별할 수 없어 허용되지 않습니다.
+
+unchecked cast로 배열을 강제하면 실제 원소와 선언한 제네릭 타입이 어긋나는 heap pollution이 발생할 수 있으며, 그 cast만으로 안전성이 자동으로 복구되지는 않습니다.
 
 List<Integer>를 List<Number>로 대입할 수 없는 이유는 Number 목록을 통해 Double을 넣으면 원래 Integer 계약이 깨지기 때문입니다. 읽기에는 `? extends Number`, Integer 쓰기에는 `? super Integer`처럼 허용 연산을 좁힐 수 있습니다. wildcard가 모든 값을 안전하게 넣는 통로는 아닙니다.
 

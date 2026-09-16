@@ -10,7 +10,7 @@ questionIds: [jetstream-ack-redelivery, jetstream-backoff-nak-policy, jetstream-
 
 ## 메시지가 다시 보인다고 옛 Worker가 멈춘 것은 아닙니다
 
-worker A가 40초 DB 작업을 하는데 메시지의 미확인 대기가 30초라면 B가 같은 메시지를 받아 실행할 수 있습니다. A의 프로세스나 DB 호출을 broker가 자동 종료하지 않습니다. 전달 상태의 시간 제한과 실행 독점은 다른 계약입니다.
+worker A가 40초 동안 DB 작업을 하는데 메시지의 미확인 대기 시간이 30초라면, broker는 A가 끝났는지 알 수 없어 B에게 같은 메시지를 다시 전달할 수 있습니다. 이 시간 제한은 전달 상태를 다시 판단하는 기준일 뿐 A의 프로세스나 DB 호출을 중단시키는 타이머가 아니므로, A와 B가 동시에 같은 효과를 시도할 수 있습니다. 따라서 DB 반영처럼 다시 확인할 수 있는 내구 효과를 먼저 확정하고, 그 뒤 ACK 또는 DeleteMessage를 보내며, 재전달은 같은 논리 event ID로 흡수해야 합니다.
 
 JetStream의 AckWait와 SQS의 visibility timeout은 세부가 다르지만 이 한계는 공통입니다. 효과를 내구 반영한 뒤 ACK 또는 DeleteMessage를 하고, 그 사이 실패의 재전달을 같은 논리 event ID로 흡수해야 합니다.
 
@@ -24,7 +24,7 @@ JetStream의 AckWait와 SQS의 visibility timeout은 세부가 다르지만 이 
 | progress ACK | 처리 중임을 알리고 미확인 기한 연장 | 신호 유실·멈춘 worker 가능 |
 | double ACK·AckSync | 서버의 ACK 수신을 추가 확인 | DB commit과 broker ACK의 원자화 아님 |
 
-BackOff가 일반적으로 AckWait를 대체하고 첫 값이 초기 대기에도 영향을 주는 계약과, NAK의 지연이 별도인 점을 실제 server·client 버전에서 확인합니다. MaxDeliver에 도달했다고 원하는 DLQ로 자동 이동한다고 가정하지 않습니다. advisory·원본 ID·오류·시도 이력과 재처리 경로를 설계합니다.
+사용하는 server·client 버전에서 BackOff와 AckWait의 관계를 작은 테스트로 확인합니다. 같은 메시지를 ACK 없이 두고 재전달 시각을 기록해 BackOff의 첫 값이 초기 대기와 이후 간격에 어떻게 적용되는지 비교하고, NAK는 지연 인자를 달리해 별도 간격으로 관찰합니다. MaxDeliver에 도달한 뒤 실제로 원하는 DLQ로 이동하는지 확인한 다음, advisory·원본 ID·오류·시도 이력을 남길 경로와 재처리 경로를 정합니다.
 
 ## SQS Receipt Handle은 수신 시도의 제어값입니다
 

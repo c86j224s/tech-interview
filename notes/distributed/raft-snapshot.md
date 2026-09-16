@@ -23,9 +23,9 @@ snapshot은 키·값만 있는 파일이 아니라 어떤 로그 접두부를 �
 
 ## 생성 중 쓰기가 있어도 한 View를 저장합니다
 
-일부 키는 115, 다른 키는 118의 상태로 복사하면 어떤 로그 위치도 대표하지 않는 snapshot이 될 수 있습니다. 적용을 잠깐 멈추거나 일관된 copy-on-write·불변 view 등 구현이 지원하는 snapshot 경계를 확보합니다. 데이터만 복사하고 dedup은 더 나중 시점으로 읽는 것도 불일치입니다.
+예를 들어 복사 중 한 키가 로그 115, 다른 키가 118을 반영하면 그 snapshot은 어느 로그 위치의 상태인지 설명할 수 없습니다. 따라서 apply를 잠깐 멈추거나, copy-on-write·불변 view로 `state`와 dedup을 같은 경계에서 고정한 뒤 그 view만 복사합니다. 데이터는 115에서 읽고 dedup은 118에서 읽는 식으로 서로 다른 시점을 섞으면 복구 때 요청 재생 결과가 달라질 수 있습니다.
 
-필요한 메모리·디스크·CPU를 foreground 예산과 나누고 생성에 오래 걸리는 동안 새 로그가 얼마나 쌓일지 계산합니다. snapshot 주기가 짧으면 복구 재생은 줄 수 있지만 정상 I/O·복사·메모리 비용이 늘어납니다.
+snapshot 복사에 걸리는 시간이 `T`이고 로그 추가율을 `r`(로그 항목/초)로 두면, 생성 중 약 `r×T`개의 새 로그 항목이 쌓이므로 이를 보관할 suffix 공간과 임시 snapshot 공간을 함께 계산합니다. 필요한 메모리·디스크·복사 CPU·디스크 I/O를 foreground 예산과 비교하고, 초과하면 동시 복사 수나 주기를 낮춥니다. 주기를 짧게 하면 복구 때 재생할 로그는 줄 수 있지만 정상 I/O·복사·메모리 비용은 늘어납니다.
 
 ```diagram
 {"title":"유효한 복구 기준이 게시된 뒤에만 접두 로그를 지웁니다","caption":"화살표는 저장 순서입니다. rename의 원자적 가시성과 전원 장애 내구성을 구분해 데이터·메타데이터·디렉터리의 필요한 저장 계약을 확인합니다.","rows":[[{"id":"view","label":"apply 115의 일관 view"}],[{"id":"temp","label":"임시 snapshot·metadata·checksum"}],[{"id":"durable","label":"필요 데이터 내구화"}],[{"id":"manifest","label":"완성 manifest 원자 게시"}],[{"id":"delete","label":"안전한 접두 로그 정리"}]],"edges":[{"from":"view","to":"temp","label":"같은 기준 복사"},{"from":"temp","to":"durable","label":"검증·flush"},{"from":"durable","to":"manifest","label":"복구 가능한 입력"},{"from":"manifest","to":"delete","label":"대체 기준 확보"}]}
@@ -41,7 +41,9 @@ snapshot은 키·값만 있는 파일이 아니라 어떤 로그 접두부를 �
 
 필요한 접두 로그가 leader에서 정리된 follower는 InstallSnapshot 경로로 따라잡을 수 있습니다. 수신 청크의 snapshot ID·offset·무결성·총 크기를 검사하고 임시 상태에 모은 뒤 완성된 snapshot을 원자적으로 설치합니다. 중간 파일을 곧바로 state machine 읽기 대상으로 쓰지 않습니다.
 
-lastIncludedIndex·term이 follower의 기존 log와 맞는지에 따라 이어 쓸 suffix를 결정하는 프로토콜 규칙을 따릅니다. 무조건 로컬 log 전부를 지우거나 무조건 모든 suffix를 유지하면 안 됩니다. 설치 뒤 applied 위치와 실제 상태가 일치하고 필요한 read index 조건을 만족할 때만 해당 읽기를 허용합니다.
+먼저 follower log에 `lastIncludedIndex`와 같은 index의 entry가 있고 term도 snapshot의 `lastIncludedTerm`과 같은지 비교합니다. 일치하면 그 entry 뒤의 suffix를 유지합니다.
+
+일치하는 경계가 없으면 snapshot과 충돌할 수 있는 기존 log를 버린 뒤 snapshot 이후부터 다시 받습니다. 따라서 로컬 log 전부를 무조건 지우거나 모든 suffix를 무조건 유지하면 안 되며, 설치 뒤 `applied` 위치가 실제 상태가 대표하는 위치와 같고 필요한 read index 조건을 만족할 때만 해당 읽기를 허용합니다.
 
 ## 전송과 재시도는 복제 제어를 굶기지 않아야 합니다
 

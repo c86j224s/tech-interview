@@ -16,7 +16,11 @@ questionIds: [functional-dependency-keys, temporal-email-history-keys, unique-nu
 
 ## 폐포로 결정되는 속성을 계산합니다
 
-R(A,B,C,D)에 A→B, B→C, AC→D가 있다고 합시다. A+는 A로 시작해 B, C를 얻고 AC를 포함하게 되어 D도 얻습니다. 따라서 A는 superkey입니다. A에서 유일한 속성을 제거한 빈 집합이 전체를 결정하지 않으므로 이 가정에서 A는 후보키입니다.
+R(A,B,C,D)에 A→B, B→C, AC→D가 있다고 하겠습니다. A를 알면 어디까지 알아낼 수 있을까요? 이렇게 주어진 속성에서 함수 종속을 반복 적용해 얻는 속성 집합을 **폐포**라고 쓰고 `A+`로 나타냅니다.
+
+처음에는 `{A}`입니다. A→B를 적용하면 `{A,B}`, 이어 B→C를 적용하면 `{A,B,C}`가 됩니다. 이제 A와 C를 모두 알고 있으므로 AC→D도 적용할 수 있습니다. 결과는 `{A,B,C,D}`입니다.
+
+A 하나로 행의 모든 속성을 결정할 수 있으므로 A는 **슈퍼키**입니다. 여기서 불필요한 속성을 더 뺄 수 없는 슈퍼키가 **후보키**입니다. A에서 유일한 속성을 빼면 빈 집합인데, 주어진 종속에는 빈 집합에서 다른 속성을 얻는 규칙이 없습니다. 따라서 이 예에서 A는 후보키입니다.
 
 ```text
 closure(X, dependencies):
@@ -54,11 +58,11 @@ closure(X, dependencies):
 
 ## 같은 문자열의 의미를 엔진과 맞춥니다
 
-대소문자·악센트·Unicode 정규화·공백·로케일과 collation이 같은 이메일 비교를 바꿀 수 있습니다. 표시 원문과 비교용 canonical key를 분리할 수 있지만 이메일 전체를 무조건 소문자화하는 정책이 도메인 요구에 맞는지도 명시적으로 정합니다. 앱과 DB가 서로 다른 규칙이면 사전 검증과 UNIQUE 결과가 다릅니다.
+이메일을 고유 키로 쓸 때는 표시 원문과 비교용 `canonical key`(비교에 사용할 정규화된 값)를 나누고, 대소문자·악센트·Unicode 정규화·공백·로케일을 어떤 규칙으로 처리할지 먼저 정합니다. `collation`은 DB가 문자열의 같음과 정렬을 판단하는 규칙이므로 앱의 사전 검사와 DB의 UNIQUE가 서로 다른 규칙을 쓰면 결과도 달라지며, 이메일 전체를 무조건 소문자화해도 도메인 요구에 맞는지 확인해야 합니다.
 
-NULL의 UNIQUE 처리도 엔진·인덱스 옵션에 따라 다릅니다. PostgreSQL의 기본 distinct NULL과 지원 버전의 NULLS NOT DISTINCT, SQL Server의 unique·filtered index, MySQL의 NULL·generated column 대안 등을 실제 목표 버전에서 확인합니다. nullable 고유 열이 수학적 관계 모델의 후보키와 동일하게 모든 행을 식별한다고 보지 않습니다.
+`NULL`의 UNIQUE 처리와 nullable 열의 후보키 의미는 엔진·인덱스 옵션에 따라 달라서 PostgreSQL의 기본 distinct NULL·지원 버전의 `NULLS NOT DISTINCT`, SQL Server의 unique·filtered index, MySQL의 NULL·generated column 대안을 각각 목표 버전에서 확인해야 합니다. 활성 행에만 유일성을 적용하는 partial·filtered index도 predicate·표현식 지원이 엔진마다 다르므로, 같은 이름의 SQL 문법을 다른 엔진에서 같은 계약으로 보지 않습니다.
 
-활성 행에만 유일성을 적용하는 partial·filtered index의 지원과 predicate·표현식 제약도 다릅니다. 같은 이름의 SQL 문법이 있다고 다른 엔진에서 동등한 계약이 되는 것은 아닙니다.
+NULL을 허용하는 UNIQUE 열을 수학적 관계 모델의 후보키와 동일하게 취급해서는 안 됩니다. UNIQUE 제약이 있어도 모든 행에 식별 가능한 값이 있다는 보장까지 생기지는 않습니다.
 
 ## 이전 전에 충돌 데이터와 동시성을 검증합니다
 

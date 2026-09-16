@@ -22,11 +22,15 @@ POSIX 계열의 전형적 설계는 임시 파일 write→파일 fsync→rename�
 {"title":"검증한 새 파일을 공개하고 이름 변경도 내구화합니다","caption":"화살표는 대표적인 POSIX 계열 절차입니다. OS·filesystem의 실제 계약을 확인해야 하며 rename 한 번이 전원 장애 내구성 전체를 보장하지 않습니다.","rows":[[{"id":"temp","label":"같은 filesystem의 안전한 임시 파일"}],[{"id":"validate","label":"완전 write·형식/내용/권한 검사"}],[{"id":"sync","label":"파일 flush·fsync"}],[{"id":"rename","label":"대상 이름으로 원자 교체"}],[{"id":"directory","label":"부모 directory 내구화"}]],"edges":[{"from":"temp","to":"validate","label":"새 값 준비"},{"from":"validate","to":"sync","label":"유효한 값만"},{"from":"sync","to":"rename","label":"공개"},{"from":"rename","to":"directory","label":"이름 변경 보존"}]}
 ```
 
-열린 이전 file handle은 교체 뒤에도 옛 inode를 읽을 수 있습니다. loader의 재열기·version 적용·error 정책을 별도로 정합니다. writer A와 B가 같은 옛 파일을 기반으로 저장하면 각 rename은 원자적이어도 마지막 쓰기가 앞선 변경을 잃습니다. 버전 확인과 교체 사이까지 보호하는 lock·조건부 저장 계약이 필요합니다. 단순 hash 읽기 후 무보호 rename은 경쟁을 없애지 않습니다.
+reader가 파일을 열어 둔 채 writer가 새 파일을 rename하면, 그 handle은 교체된 파일이 아니라 옛 inode를 계속 읽을 수 있습니다. 그래서 loader가 언제 파일을 다시 열고 어떤 version을 적용할지, 열기에 실패했을 때 어떻게 할지를 별도 계약으로 정합니다.
+
+또 writer A와 B가 같은 옛 내용을 읽은 뒤 각각 rename하면, 두 rename이 원자적이어도 나중에 끝난 쓰기가 앞선 변경을 덮어쓸 수 있습니다. version 확인부터 교체까지 lock·조건부 저장으로 묶어야 하며, hash를 읽고 보호 없이 rename하는 것만으로는 이 경쟁을 없앨 수 없습니다.
 
 ## 여러 파일은 하나의 Manifest로 버전을 가리킬 수 있습니다
 
-A.json·B.json을 각각 rename하면 구A+신B의 중간 조합이 보일 수 있습니다. immutable version directory에 전체를 준비·검증한 뒤 작은 manifest/current pointer를 원자 게시하고 reader는 그 version을 한 번 읽어 사용합니다. 이전 version 정리는 살아 있는 reader·rollback 보관 정책과 함께 합니다. directory 전체의 내구화·게시 실패도 따로 검증합니다.
+구성 묶음이 A.json과 B.json으로 나뉘어 있고 두 파일을 따로 rename하면, reader가 구A+신B 조합을 볼 수 있습니다. immutable version directory에 전체 파일을 준비하고 검증한 다음, 작은 manifest/current pointer 하나만 원자적으로 게시합니다.
+
+reader는 pointer가 가리키는 version을 한 번 정해 그 안의 파일을 사용해야 합니다. 이전 version을 지울 때는 살아 있는 reader와 rollback을 위해 얼마 동안 보관할지 정하고, directory 내구화와 게시 실패도 별도로 확인합니다.
 
 ## Checksum 일치는 누가 만들었는지 말해 주지 않습니다
 

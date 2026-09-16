@@ -10,7 +10,7 @@ questionIds: [python-asyncio-blocking, python-asyncio-taskgroup, python-contextv
 
 ## Async 함수 안의 동기 호출은 이벤트 루프를 붙잡습니다
 
-async def handler 안에서 time.sleep이나 동기 HTTP를 호출하면 그 실행 동안 같은 이벤트 루프의 다른 task도 진행하지 못할 수 있습니다. async는 본문 전체를 자동으로 다른 스레드에 보내는 선언이 아닙니다. 코루틴 객체 생성과 실제 실행도 다릅니다.
+`async def handler`가 호출될 때는 본문이 즉시 실행되지 않고 coroutine 객체가 만들어집니다. 이후 이벤트 루프가 그 coroutine을 실행하는 동안 `time.sleep`이나 동기 HTTP가 호출되면 해당 호출이 끝날 때까지 같은 루프의 다른 task가 진행하지 못할 수 있으므로, `async`라는 선언만으로 본문이 다른 스레드로 이동한다고 생각하면 안 됩니다.
 
 `await asyncio.sleep(...)`처럼 실제로 중단되는 대기는 다른 task에 기회를 줍니다. 그러나 즉시 완료되는 awaitable이나 중단 없이 반환하는 async 함수만 반복하면 await 문법이 있어도 긴 계산이 루프를 점유할 수 있습니다. CPU 작업은 시간 예산 분할 또는 다른 실행 자원을 검토합니다.
 
@@ -23,13 +23,13 @@ async def handler 안에서 time.sleep이나 동기 HTTP를 호출하면 그 실
 | run_in_executor | 호출 시 executor에 제출 | 큐·worker·문맥 전달 |
 | process pool | 별도 주소 공간 계산 | 직렬화·시작·결과 전송 |
 
-asyncio.to_thread를 기다리는 task가 취소되어도 이미 돌아가는 동기 함수는 계속될 수 있습니다. 그 바깥 async semaphore가 즉시 풀리면 새 작업이 들어와 논리 허가 수보다 실제 스레드 작업 수가 많아질 수 있습니다. 허가를 실제 underlying 작업 종결에 묶거나 제한된 executor·제출 큐로 물리 실행 상한을 유지합니다.
+`asyncio.to_thread`를 기다리던 task를 취소해도 이미 스레드에서 실행 중인 동기 함수는 계속될 수 있습니다. 이때 바깥의 async semaphore가 곧바로 반환되면 논리적으로는 허가 수를 지켰어도 실제 스레드 작업 수가 그보다 많아질 수 있습니다. 허가를 실제 underlying 작업이 끝날 때까지 유지하거나 제한된 executor·제출 큐를 사용해 물리 실행 상한을 별도로 둡니다.
 
 외부 변경이 timeout 뒤 성공하면 단순히 결과를 폐기할 수 없는 경우가 있습니다. 같은 논리 요청 ID와 결과 대사를 유지합니다. 취소 가능한 네트워크 client로 바꿔도 서버의 이미 커밋한 거래가 자동 롤백되는 것은 아닙니다.
 
 ## TaskGroup은 관련 Task의 완료와 오류를 소유합니다
 
-Python 3.11+의 TaskGroup은 범위 안에서 만든 task들이 종료할 때까지 기다리는 구조적 동시성 도구입니다. 일반적인 non-cancellation 예외가 나면 다른 task의 취소를 요청하고 종료를 기다린 뒤 예외들을 ExceptionGroup 등으로 전달할 수 있습니다. KeyboardInterrupt·SystemExit 같은 특별한 경우도 있으므로 모든 예외를 같은 집계로 단정하지 않습니다.
+Python 3.11+의 `TaskGroup`은 블록 안에서 만든 task들을 같은 수명으로 묶고, 블록을 빠져나가기 전에 모두 종료할 때까지 기다리는 구조적 동시성 도구입니다. 일반적인 취소 이외의 예외가 하나 나오면 형제 task에 취소를 요청하고 정리를 기다린 뒤 `ExceptionGroup` 등으로 예외를 전달할 수 있습니다. `KeyboardInterrupt`·`SystemExit` 같은 특별한 예외는 같은 방식으로만 처리된다고 단정하지 않습니다.
 
 ```diagram
 {"title":"Task 실패 뒤에도 자식의 정리가 끝나야 범위를 나갑니다","caption":"화살표는 TaskGroup의 실패 처리 개념입니다. 취소는 협력적이며 별도로 만든 detached task나 이미 실행 중인 native·thread 작업까지 자동 종결하는 것은 아닙니다.","rows":[[{"id":"tasks","label":"그룹의 관련 task 실행"}],[{"id":"failure","label":"필수 task의 일반 예외"}],[{"id":"cancel","label":"형제 task 취소·정리 대기"}],[{"id":"report","label":"예외 집계·호출자 전달"}]],"edges":[{"from":"tasks","to":"failure","label":"실패 발생"},{"from":"failure","to":"cancel","label":"수명 범위 종료"},{"from":"cancel","to":"report","label":"실제 task 반환"}]}
@@ -55,7 +55,7 @@ async def handle(user_id):
         user.reset(token)
 ```
 
-process_request는 실제 함수입니다. reset 토큰으로 이전 문맥을 복원하면 중첩 scope도 표현할 수 있습니다. task 생성 시 기본적으로 현재 context를 복사하는 의미와, 값을 넣은 dict 자체를 깊게 복사하는 것은 다릅니다. 같은 가변 dict를 값으로 넣으면 task 사이에 내부 수정이 공유될 수 있습니다.
+`process_request`는 실제 함수라는 전제이며, `reset` 토큰으로 이전 문맥을 복원해야 중첩 scope도 표현할 수 있습니다. task 생성 시 기본적으로 현재 context가 복사되지만, context에 넣은 dict 자체까지 깊은 복사되는 것은 아닙니다. 따라서 같은 가변 dict를 값으로 넣으면 task들이 dict 내부 수정 결과를 공유할 수 있습니다.
 
 ## 실행 경계를 넘을 때 전파 계약을 확인합니다
 

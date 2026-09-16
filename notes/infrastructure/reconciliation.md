@@ -12,7 +12,7 @@ questionIds: [k8s-reconciliation, k8s-observed-generation-conditions, k8s-finali
 
 Deployment replica를 3에서 5로 바꾸는 요청이 성공해도 Pod 두 개가 즉시 서비스하는 것은 아닙니다. API 서버가 원하는 spec을 저장한 뒤 Deployment controller·ReplicaSet controller·scheduler·kubelet·컨테이너 런타임이 각각 상태를 맞춥니다. 이미지 다운로드·볼륨 연결·초기화·readiness가 끝나야 실제 용량이 생깁니다.
 
-조정은 현재 관찰 상태와 원하는 상태의 차이를 반복해서 줄이는 과정입니다. 이벤트 한 번마다 정확히 한 번 실행하는 스크립트가 아니라 재시작·중복 관찰 뒤에도 상태를 다시 읽어 수렴해야 하는 제어 루프입니다.
+조정은 현재 관찰 상태와 원하는 상태의 차이를 줄이도록 현재 상태를 다시 읽고 필요한 작업을 반복하는 과정입니다. 예를 들어 replica를 3에서 5로 바꾼 뒤 controller가 중간에 재시작하거나 같은 이벤트를 두 번 받아도, 현재 Pod 수와 원하는 replica 수의 차이를 다시 계산해 조정해야 합니다. 따라서 이벤트 한 번마다 정확히 한 번 실행하는 스크립트가 아니라 재시작·중복 관찰 뒤에도 상태가 수렴하는 제어 루프입니다.
 
 ```diagram
 {"title":"선언 저장에서 실제 처리 용량까지 여러 단계가 있습니다","caption":"화살표는 개념적 준비 순서입니다. 각 단계는 독립적으로 지연·실패할 수 있어 API 성공만으로 최종 준비를 판정하지 않습니다.","rows":[[{"id":"api","label":"spec 저장"}],[{"id":"controller","label":"ReplicaSet·Pod 목표 조정"}],[{"id":"schedule","label":"노드 배치·볼륨·이미지"}],[{"id":"ready","label":"프로세스 초기화·Ready"}],[{"id":"traffic","label":"endpoint 전파·실제 요청"}]],"edges":[{"from":"api","to":"controller","label":"controller 관찰"},{"from":"controller","to":"schedule","label":"Pod 생성"},{"from":"schedule","to":"ready","label":"kubelet 실행"},{"from":"ready","to":"traffic","label":"서비스 수용"}]}

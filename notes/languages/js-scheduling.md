@@ -18,13 +18,13 @@ console.log('B');
 // 이 예제의 기대 순서: A, B, microtask, timer
 ```
 
-현재 동기 실행이 끝난 뒤 Promise 반응이 처리되고 이후 타이머 작업이 실행될 수 있습니다. 0ms는 즉시 실행 명령이 아니라 최소 대기 요청이며 백그라운드 탭 제한·다른 작업·호스트 스케줄링 때문에 더 늦어질 수 있습니다.
+`console.log('B')`가 먼저 찍히는 이유는 동기 코드가 현재 호출 스택에서 끝날 때까지 큐의 다른 작업이 끼어들지 않기 때문입니다. 그 다음 microtask checkpoint에서 이미 예약한 Promise 반응을 처리하고, 이후에야 timer task를 선택할 기회가 생깁니다. `0ms`는 즉시 실행 명령이 아니라 최소 대기 요청이므로 백그라운드 탭 제한·다른 작업·호스트 스케줄링에 따라 더 늦어질 수 있습니다.
 
 ECMAScript의 Promise job과 브라우저의 이벤트 루프·렌더링, Node의 timer·I/O phase는 서로 다른 계층입니다. 브라우저의 모든 작업을 단일 전역 FIFO 하나로 설명하지 않습니다.
 
 ## Microtask를 비우지 못하면 다음 기회가 늦어집니다
 
-microtask 처리 중 새 microtask를 계속 추가하면 checkpoint가 끝나지 않아 타이머·입력·렌더링 기회가 밀릴 수 있습니다. `await Promise.resolve()`를 반복하면 현재 함수가 잠시 중단되어도 이어지는 작업은 다시 microtask이므로 렌더링을 위한 충분한 양보가 아닐 수 있습니다.
+`queueMicrotask`나 Promise 반응을 처리하는 중에 새 microtask를 계속 넣으면 한 번의 checkpoint가 끝나지 않아 타이머·입력·렌더링 기회가 밀릴 수 있습니다. `await Promise.resolve()`를 반복해도 매번 다음 task로 넘어가는 것이 아니라 이어지는 작업이 다시 microtask에 놓이므로, 긴 작업은 시간 예산에 맞춰 task로 나누거나 Worker로 분리해야 합니다.
 
 ```diagram
 {"title":"짧은 후속 처리와 긴 계산의 경로를 나눕니다","caption":"화살표는 스케줄링 선택입니다. microtask 안 긴 계산도 같은 실행 흐름을 막으며 task 양보나 Worker는 별도의 비용·수명 계약을 가집니다.","rows":[[{"id":"work","label":"현재 JavaScript 작업"}],[{"id":"micro","label":"짧은 microtask 후속 처리"},{"id":"cpu","label":"긴 CPU 작업"}],[{"id":"yield","label":"시간 예산으로 task 양보"},{"id":"worker","label":"Worker에서 계산"}]],"edges":[{"from":"work","to":"micro","label":"짧은 상태 반영"},{"from":"work","to":"cpu","label":"분할 필요"},{"from":"cpu","to":"yield","label":"메인 흐름 유지"},{"from":"cpu","to":"worker","label":"별도 문맥"}]}
@@ -34,7 +34,7 @@ microtask 처리 중 새 microtask를 계속 추가하면 checkpoint가 끝나�
 
 ## Node의 nextTick 순서는 실행 문맥까지 봅니다
 
-CommonJS 최상위 실행에서 nextTick과 Promise를 등록한 경우의 관찰과, ESM 최상위 평가 또는 이미 Promise job 안에서 등록한 경우의 관찰은 다를 수 있습니다. nextTick을 언제나 모든 Promise callback보다 먼저 실행하는 보편 규칙으로 외우지 않습니다. 현재 어떤 큐를 drain 중인지와 다음 호스트 경계가 중요합니다.
+같은 코드를 `.cjs` 최상위에서 실행할 때와 `.mjs` 최상위 평가 또는 이미 Promise job 안에서 실행할 때는, `nextTick`과 Promise를 어느 시점에 등록했는지가 달라져 관찰 순서도 달라질 수 있습니다. 그래서 `nextTick`이 언제나 모든 Promise callback보다 먼저라고 외우지 말고, 지금 Node가 어떤 큐를 drain 중인지와 다음 호스트 경계가 어디인지 함께 기록해야 합니다.
 
 | 비교 문맥 | 고정할 정보 | 관찰 항목 |
 | --- | --- | --- |
@@ -55,7 +55,7 @@ Web Worker는 별도 실행 문맥에서 계산해 메인 스레드 부하를 �
 | ArrayBuffer transfer | 버퍼 detach, 이전 사용 불가 | 소유권 이전·반환 |
 | SharedArrayBuffer | 양쪽이 같은 메모리 접근 | Atomics·동기화·브라우저 보안 조건 |
 
-`worker.postMessage({id, buffer}, [buffer])`로 transfer한 뒤 buffer를 다시 렌더 입력으로 읽는 코드는 소유 계약 위반입니다. 다른 view도 같은 backing buffer를 참조했다면 영향을 받습니다. Worker가 결과를 돌려줄 때 다시 transfer할 수 있지만 송신·수신 어느 쪽이 지금 소유하는지 명확해야 합니다.
+`worker.postMessage({id, buffer}, [buffer])`에서 두 번째 인자는 `buffer`의 소유권을 Worker로 넘기라는 transfer 목록입니다. 전송이 끝나면 송신 쪽 `buffer`는 detach되어 다시 읽을 수 없으므로, 이를 렌더 입력으로 사용하면 소유 계약을 어긴 것입니다. 같은 backing buffer를 가리키는 다른 view도 영향을 받을 수 있고, 결과를 돌려줄 때 다시 transfer할 수 있으므로 매 단계의 현재 소유자를 정해야 합니다.
 
 공유 메모리는 보통의 메시지 복사와 다릅니다. JS Atomics와 SharedArrayBuffer의 호스트 지원·cross-origin isolation 조건을 확인하고, C++의 메모리 순서 문법을 그대로 JS API에 옮기지 않습니다. 일반 객체 필드까지 자동 공유되는 것도 아닙니다.
 

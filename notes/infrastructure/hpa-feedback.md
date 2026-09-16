@@ -16,7 +16,9 @@ HPA는 메트릭을 주기적으로 읽어 목표와 비교하고 대상 workloa
 
 ## 비율 계산의 분모와 단위를 확인합니다
 
-단순화한 기본 계산은 `ceil(currentReplicas × currentMetric / desiredMetric)`입니다. 실제 HPA는 tolerance·누락 지표·초기 Pod·min/max·behavior 제한을 적용하므로 이 식만으로 모든 결과를 예측하지 않습니다.
+단순화한 기본 계산은 현재 replica 수에 현재 측정값과 목표값의 비율을 곱한 뒤 올림하는 `ceil(currentReplicas × currentMetric / desiredMetric)`입니다. 예를 들어 4개 Pod에서 현재 metric이 80이고 목표가 50이면 `4 × 80 / 50 = 6.4`이므로 단순 추천은 `ceil(6.4) = 7`입니다.
+
+실제 HPA는 tolerance·누락 지표·초기 Pod·min/max·behavior 제한을 함께 적용하므로 이 식은 방향과 기본 추천을 이해하는 용도이지 모든 결과를 예측하는 식은 아닙니다.
 
 | 가정 | 계산 | 해석 |
 | --- | --- | --- |
@@ -32,13 +34,13 @@ request는 CPU utilization 분모와 scheduler 배치 기준을 동시에 바꿉
 {"title":"메트릭 감지부터 처리 용량까지의 지연","caption":"화살표는 제어 신호의 전달 순서입니다. 각 지연 동안 backlog가 쌓일 수 있어 warm 용량과 진입 상한이 필요합니다.","rows":[[{"id":"load","label":"실제 수요 증가"}],[{"id":"metric","label":"지표 수집·집계·조회"}],[{"id":"desired","label":"HPA 목표 replica 계산"}],[{"id":"pod","label":"노드·Pod 시작·준비"}],[{"id":"capacity","label":"실제 완료율 증가"}]],"edges":[{"from":"load","to":"metric","label":"관찰 지연"},{"from":"metric","to":"desired","label":"제어 주기"},{"from":"desired","to":"pod","label":"배치·시작 시간"},{"from":"pod","to":"capacity","label":"트래픽·할당 전환"}]}
 ```
 
-metrics pipeline이 30초 늦고 Pod 준비에 40초가 더 걸리면 이 기간을 흡수할 여유가 필요합니다. 평균 CPU는 I/O 대기·hot partition·전역 lock을 대표하지 못할 수 있습니다. queue age·실제 처리율·하위 대기를 같이 보고 적합한 메트릭과 min capacity·bounded queue·빠른 거절을 설계합니다.
+metrics pipeline이 30초 늦고 Pod 준비에 40초가 더 걸린다고 단순히 직렬로 보면, 수요가 늘어난 뒤 실제 용량이 따라오기까지 `30 + 40 = 70초`가 걸릴 수 있으므로 그동안 backlog를 흡수할 여유가 필요합니다. 평균 CPU는 I/O 대기·hot partition·전역 lock을 대표하지 못할 수 있으므로, queue age와 실제 처리율, 하위 시스템 대기를 같은 시간축에서 확인합니다. 그 결과에 맞춰 min capacity·bounded queue·빠른 거절 중 어떤 경계가 필요한지 정합니다.
 
 ## 초기 Pod와 누락 지표는 단순 평균에 그대로 넣지 않습니다
 
 JIT·class loading·cache warmup의 CPU는 정상 요청당 CPU와 다릅니다. HPA의 CPU initialization period·initial readiness delay와 준비되지 않은 Pod의 메트릭 처리 규칙은 Kubernetes 버전·controller 설정을 확인합니다. startup·readiness를 실제 준비와 맞추고 예열을 숨기려 허위 0 메트릭을 보내지 않습니다.
 
-누락 지표를 0 부하로 채우면 잘못 축소할 수 있습니다. HPA는 일부 누락·not-yet-ready 상태에서 scale 방향을 보수적으로 재계산할 수 있어 화면에 보이는 평균과 최종 추천이 다를 수 있습니다. 조건·이벤트·현재 메트릭·추천을 함께 읽습니다.
+누락된 지표를 0 부하로 채우면 실제로는 측정하지 못한 Pod를 한가한 것으로 세어 잘못 축소할 수 있습니다. HPA는 일부 누락이나 `not-yet-ready` Pod가 있을 때 scale 방향을 보수적으로 다시 계산할 수 있으므로, 화면에 보이는 평균만으로 최종 추천을 추정하지 않습니다. 조건·이벤트·현재 메트릭·추천 replica를 같은 시각에 읽어 왜 그 방향이 선택됐는지 확인합니다.
 
 ## 복수 지표와 지표 오류의 정책을 구분합니다
 

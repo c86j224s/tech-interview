@@ -23,7 +23,9 @@ questionIds: [karpenter-consolidation, karpenter-consolidate-after-churn, karpen
 | drift 교체 | 원하는 node 구성과 실제 차이 해소 | 이미지·구성·보안 업데이트·보호 범위 |
 | 강제 장애·interruption | 이미 또는 곧 사라질 용량 복구 | 알림 없는 손실·대체 용량 |
 
-NodePool disruption budget·정책·보호 annotation·grace 설정이 각 원인에 어떻게 적용되는지는 Karpenter 버전별로 확인합니다. consolidateAfter 하나가 drift·만료·Spot 회수까지 모두 같은 방식으로 막는다고 가정하지 않습니다. 실제 NodeClaim의 reason과 이벤트를 봅니다.
+예를 들어 consolidation 후보가 사라지거나 drift 교체가 멈췄다면, 먼저 사용 중인 Karpenter 버전의 계약에서 NodePool disruption budget·정책·보호 annotation·grace 설정이 해당 원인에 어떻게 적용되는지 나누어 확인합니다. 이어서 실제 NodeClaim의 `reason`과 이벤트를 대조해 원인이 consolidation·drift·만료·Spot 회수 중 무엇인지 확인합니다.
+
+`consolidateAfter` 하나가 drift·만료·Spot 회수까지 모두 같은 방식으로 막는다고 가정하지 않고, 그 대기 동작도 버전별 정책 계약으로 확인합니다.
 
 ## 대체 배치와 실제 준비 시간을 확인합니다
 
@@ -37,7 +39,7 @@ PDB는 지원 eviction의 동시 중단을 조절하지만 노드 손실을 막�
 
 ## ConsolidateAfter는 유휴 비용과 반복 예열 비용의 절충입니다
 
-짧은 burst 사이마다 통합하고 다시 늘리면 노드 비용이 줄어 보여도 부팅·이미지·캐시·rebalance가 반복됩니다. 대기 기간을 늘리면 이런 churn을 줄일 수 있지만 유휴 노드 비용을 더 오래 냅니다. 정확히 어떤 변화에서 대기 타이머가 시작·초기화되는지는 버전의 정책 계약을 확인합니다.
+`consolidateAfter`를 짧게 잡고 노드가 통합 조건을 만족하면, 짧은 burst가 끝난 뒤 통합 대상으로 검토될 수 있습니다. 다음 burst에서 다시 노드를 늘리면 부팅·이미지·캐시·rebalance 비용이 반복됩니다. 값을 늘리면 이런 churn을 줄일 수 있지만 수요가 없는 동안 유휴 노드 비용을 더 냅니다. 따라서 부하 주기와 예열 시간을 비용·p99와 함께 비교하고, 대기 타이머가 어떤 변화에서 시작·초기화되는지는 사용 중인 Karpenter 버전의 정책 계약과 실제 이벤트로 확인합니다.
 
 비교 지표는 시간당 인프라 비용뿐 아니라 재스케줄 수·노드 Ready 시간·앱 예열·p99·오류·메시지 재처리량입니다. 부하 주기와 캐시 재생 비용을 함께 측정해 적절한 대기와 최소 용량을 정합니다.
 

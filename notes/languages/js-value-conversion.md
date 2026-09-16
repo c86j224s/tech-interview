@@ -10,7 +10,7 @@ questionIds: [js-equality-coercion, js-objectis-samevaluezero, js-toprimitive-si
 
 ## 빈 문자열이 0과 같아지는 것은 입력 검증이 아닙니다
 
-폼에서 받은 값은 대개 문자열입니다. `'' == 0`은 true이고 `Number('')`도 0입니다. ===로 바꾸면 암묵 비교 변환은 줄지만 빈 문자열·허용 숫자 문법·범위·정밀도 검사가 자동으로 생기지는 않습니다. 먼저 입력의 타입과 의미를 정해야 합니다.
+`input.value` 같은 폼 값은 문자열이므로, 사용자가 빈 칸을 제출하면 `'' == 0`은 `true`이고 `Number('')`는 `0`이 됩니다. 비교 연산자를 `===`로 바꾸면 암묵 변환은 줄지만 빈 문자열·허용할 숫자 문법·범위·정밀도를 대신 검사해 주지는 않으므로, 먼저 입력 타입과 업무 의미를 정합니다.
 
 예를 들어 음수가 아닌 최소 단위 정수 금액만 받는다면 문자열 타입과 빈 값·숫자 문법을 확인한 뒤 Number로 바꾸고 Number.isSafeInteger 및 업무 상한을 검사할 수 있습니다. 소수점 금액은 통화별 최소 단위·반올림·decimal 정책이 추가로 필요합니다.
 
@@ -28,7 +28,7 @@ Set·Map 키의 동일성은 SameValueZero를 사용합니다. Object.is로 구�
 
 ## 객체 변환은 메서드를 실행할 수 있습니다
 
-객체를 원시값으로 바꿀 때 Symbol.toPrimitive가 있으면 hint와 함께 호출됩니다. 반환값은 원시값이어야 합니다. 일반적인 fallback에서는 number hint에 valueOf를 먼저, string hint에 toString을 먼저 시도하고 원시값이 나오지 않으면 다음 방법을 시도합니다. default hint 처리에는 Date 같은 예외가 있으므로 모든 객체가 똑같다고 보지 않습니다.
+`String(value)`, `+value`, `value + 1`처럼 객체를 원시값 문맥에 넣으면 `Symbol.toPrimitive`가 있으면 먼저 `hint`와 함께 실행되고 원시값을 반환해야 합니다. 이 hook이 없을 때의 일반적인 fallback은 number hint에서 `valueOf`를 먼저, string hint에서 `toString`을 먼저 시도하지만, default hint에는 Date 같은 예외가 있습니다. 따라서 한 줄의 비교·덧셈도 메서드 부수 효과나 예외를 실행할 수 있습니다.
 
 ```js
 const trace = [];
@@ -50,7 +50,7 @@ console.log(trace); // ['string', 'number', 'default']
 
 ## Number로 잃은 정수는 BigInt로 되살아나지 않습니다
 
-Number의 안전 정수 범위는 `-(2**53 - 1)`부터 `2**53 - 1`까지입니다. `2**53` 자체처럼 범위 밖에서도 정확히 표현되는 정수가 있지만 모든 인접 정수를 구분할 수 없으므로 safe integer라고 하지 않습니다.
+`Number`는 `-(2**53 - 1)`부터 `2**53 - 1`까지의 정수를 모두 정확히 구분할 수 있어 이 범위를 안전 정수 범위라고 부릅니다. `2**53`처럼 범위 밖에서도 어떤 정수는 정확히 표현되지만, 인접한 모든 정수를 구분할 수 없으므로 safe integer가 아닙니다.
 
 ```js
 const parsed = JSON.parse('{"id":9007199254740993}');

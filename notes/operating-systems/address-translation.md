@@ -24,7 +24,7 @@ questionIds: [paging-segmentation, segmented-paging-translation, asid-pcid-addre
 | 페이징 | 페이지→프레임, 내부 offset 유지 | 테이블·TLB·끝 페이지 내부 낭비 |
 | 세그먼트 내부 페이징 | 논리 범위 검사 뒤 페이지 변환 | 두 단계 관리·권한 결합 |
 
-페이지가 매핑돼 있어도 쓰기·실행이 허용된다는 뜻은 아닙니다. 세그먼트 범위를 통과해도 페이지 매핑이나 권한에서 실패할 수 있습니다.
+세그먼트 범위 검사를 통과했다고 주소 변환이 끝난 것은 아닙니다. 그 뒤 논리 주소를 페이지 번호와 내부 offset으로 나누고, 페이지 번호가 프레임에 매핑되어 있으며 현재 읽기·쓰기·실행 권한이 맞는지 다시 확인해야 합니다. 따라서 세그먼트는 통과했어도 페이지가 없거나 권한이 맞지 않으면 접근이 실패할 수 있습니다.
 
 ```diagram
 {"title":"논리 범위와 페이지 권한을 따로 검사합니다","caption":"화살표는 세그먼트 내부 페이징의 개념 모형입니다. 실제 하드웨어에서 동일한 단계가 모두 그대로 존재한다는 주장은 아닙니다.","rows":[[{"id":"logical","label":"세그먼트 + offset"}],[{"id":"limit","label":"논리 범위·권한 확인"}],[{"id":"page","label":"페이지 번호·내부 offset"}],[{"id":"physical","label":"프레임 매핑·페이지 권한"}]],"edges":[{"from":"logical","to":"limit","label":"영역 선택"},{"from":"limit","to":"page","label":"범위 안"},{"from":"page","to":"physical","label":"변환·보호"}]}

@@ -12,7 +12,9 @@ questionIds: [argocd-sync-waves-hooks, shared-db-migration-owner, gitops-hook-ev
 
 새 앱이 새 컬럼을 읽어야 하므로 migration Job을 먼저 실행한다고 합시다. 컬럼 추가는 구 앱과 공존할 수 있지만 옛 컬럼 삭제나 값 형식의 파괴적 변환은 아직 실행 중인 구 앱을 깨뜨릴 수 있습니다. Argo CD의 순서 제어와 DB 호환성은 별도입니다.
 
-hook phase는 PreSync·Sync·PostSync 등의 단계에 작업을 연결하고, wave는 리소스 적용 순서를 더 나눕니다. phase·wave·리소스 종류·이름·health 처리의 정확한 정렬 규칙과 선택적 sync의 hook 실행 여부는 사용 버전·운영 방식에 맞게 확인합니다. 서로 다른 Application의 wave 숫자만으로 전역 DB 순서가 자동 조정된다고 보지 않습니다.
+예를 들어 같은 Application에서 migration Job을 `PreSync`에, 앱 Deployment를 `Sync`에 연결했다면 실제 배포 기록에서 Job이 완료된 뒤 Deployment가 적용되는지 먼저 대조합니다. `PreSync`·`Sync`·`PostSync` 같은 phase와 wave뿐 아니라 리소스 종류·이름과 health 처리의 정확한 정렬 순서, 선택적 sync에서 hook이 실행되는지를 사용 버전·운영 방식의 규칙과 배포 결과로 확인합니다.
+
+서로 다른 Application의 wave 숫자만으로 전역 DB 순서가 생기지는 않으므로, 공유 DB는 별도 실행 조정 없이는 순서를 보장하지 않습니다.
 
 ## 확장과 축소 사이에 혼합 버전의 시간을 둡니다
 
@@ -24,7 +26,7 @@ hook phase는 PreSync·Sync·PostSync 등의 단계에 작업을 연결하고, w
 | 옛 경로 종료 | 배치·ETL·관리 SQL까지 사용 중단 | 모든 소비자 확인 |
 | 축소 | 더 이상 쓰지 않는 구조 제거 | 별도 승인·복구 경계 |
 
-긴 백필을 짧은 PreSync Job에 모두 넣으면 sync가 오래 걸리고 재시도 부하가 커질 수 있습니다. 구조 준비와 대량 이관을 별도 내구 작업으로 나누고 checkpoint·행 버전·종료 조건을 둡니다. hook 성공이 DDL 존재까지만 증명한다면 백필 검증까지 끝났다고 보고하지 않습니다.
+백필 대상이 많다면 짧은 PreSync Job이 한 번에 모든 행을 처리하지 않도록 구조 준비와 대량 이관을 별도 내구 작업으로 나눕니다. 이관 작업은 처리한 범위와 행 버전 기준을 checkpoint에 기록하고, 중단되면 그 기록을 기준으로 재개하되 경계에서 중복·누락이 없는지 검증합니다. 종료 조건에서는 대상 범위와 처리 결과를 대조해 누락을 찾고, sync를 오래 붙잡는 시간과 재시도 부하를 줄이되 hook 성공이 DDL 존재까지만 증명한다면 백필 검증 완료로 보고하지 않습니다.
 
 ```diagram
 {"title":"배포의 단계 완료와 데이터의 준비를 연결합니다","caption":"화살표는 전환 조건입니다. 실패하면 다음 단계를 막지만 이미 커밋된 DB 변경을 자동으로 되돌리는 것은 아닙니다.","rows":[[{"id":"expand","label":"호환 스키마 확장"}],[{"id":"backfill","label":"재개 가능한 백필·검증"}],[{"id":"switch","label":"구·신 앱 공존·읽기 전환"}],[{"id":"contract","label":"옛 경로 종료 후 축소"}]],"edges":[{"from":"expand","to":"backfill","label":"구조 준비"},{"from":"backfill","to":"switch","label":"데이터 조건 충족"},{"from":"switch","to":"contract","label":"모든 소비자 전환"}]}

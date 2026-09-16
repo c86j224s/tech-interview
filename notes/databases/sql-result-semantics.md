@@ -45,9 +45,9 @@ ORDER BY m.id;
 
 ## NOT EXISTS와 LEFT JOIN도 NULL 의미를 확인합니다
 
-NOT EXISTS의 상관 등호는 NULL과 일치하지 않으므로 outer key가 NULL인 경우 어떤 결과를 원하는지 따로 정합니다. 단순히 NOT IN을 치환하면 언제나 모든 NULL 의미가 같아지는 것은 아닙니다. null-safe equality가 필요하면 엔진의 지원 연산과 도메인 규칙을 사용합니다.
+`NOT EXISTS`의 상관 등호에서 `m.id`가 NULL이면 `o.member_id = m.id`가 TRUE가 되지 않으므로 관련 주문이 없다고 판단되어 `NOT EXISTS`가 참이 될 수 있습니다. NULL을 미배정으로 포함할지는 도메인 규칙으로 정하고, `NOT IN`과 `NOT EXISTS`를 서로 단순 치환해 모든 NULL 의미가 같아진다고 보지 않으며 필요하면 엔진의 null-safe equality 지원을 확인합니다.
 
-LEFT JOIN으로 자식 없는 부모를 보존한 뒤 WHERE에서 `child.status='paid'`를 적용하면 NULL 확장 행이 제외됩니다. 모든 부모를 유지하고 paid 자식만 결합하려는 목적이면 조건을 ON에 두는 등 원하는 결과 집합을 먼저 정합니다. 실행 계획 튜닝으로 이 의미 차이는 고칠 수 없습니다.
+LEFT JOIN으로 자식 없는 부모를 남긴 뒤 WHERE에서 `child.status='paid'`를 적용하면 NULL 확장 행이 제외됩니다. 모든 부모를 유지하고 paid 자식만 결합하려면 조건을 ON에 두어 원하는 결과 집합을 먼저 정해야 하며, 실행 계획 튜닝으로 이 의미 차이를 고칠 수는 없습니다.
 
 ## 순위 함수는 동점과 다음 번호가 다릅니다
 

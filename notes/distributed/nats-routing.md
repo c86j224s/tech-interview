@@ -22,7 +22,7 @@ queue group은 현재 구독자 사이 분배이며 내구 메시지 보관·con
 | orders.> | orders.created, orders.eu.created | orders |
 | tenant-a.prod.> | tenant-a.prod.orders | tenant-b.prod.orders |
 
-`*`는 정확히 한 token, 끝 위치의 `>`는 뒤의 하나 이상 token을 매칭합니다. token에 임의 점·wildcard를 넣는 사용자 ID는 범위를 바꿀 수 있어 내부 ID·허용 문자·인코딩 규칙을 정합니다. routing 이름만으로 보안 격리가 생기지 않으므로 publish·subscribe 권한·account import/export·inbox를 별도로 제한합니다.
+NATS subject는 점으로 나눈 token들의 열입니다. `*`는 정확히 한 token을, 끝 위치의 `>`는 하나 이상의 token을 매칭하므로 wildcard의 포함 범위는 token 수로 결정됩니다. 사용자 ID에 임의의 점이나 wildcard를 넣으면 이 범위가 바뀔 수 있으므로 내부 ID·허용 문자·인코딩 규칙을 정합니다. subject 이름만으로 보안 격리가 생기지 않으므로 publish·subscribe 권한·account import/export·inbox를 별도로 제한합니다.
 
 ```diagram
 {"title":"서비스별 전체 수신과 내부 분배를 함께 만듭니다","caption":"화살표는 한 이벤트의 논리 전달입니다. 각 group은 독립 수신하지만 group 안 모든 인스턴스가 동시에 받는다는 뜻은 아닙니다.","rows":[[{"id":"event","label":"orders.created 이벤트"}],[{"id":"analytics","label":"analytics group","detail":["A1 또는 A2"]},{"id":"notifications","label":"notifications group","detail":["N1 또는 N2"]}]],"edges":[{"from":"event","to":"analytics","label":"분석용 한 전달"},{"from":"event","to":"notifications","label":"알림용 한 전달"}]}
@@ -30,7 +30,7 @@ queue group은 현재 구독자 사이 분배이며 내구 메시지 보관·con
 
 ## Request-reply는 요청 Subject와 응답 Inbox를 연결합니다
 
-요청자는 subject로 요청을 보내고 responder가 reply inbox로 결과를 보내게 합니다. 지원되는 server·client에서 no responders는 그 시점에 해당 요청을 받을 구독자가 없다는 빠른 신호입니다. timeout은 제한 시간 안에 응답이 없었다는 것만 알려 줍니다.
+요청자는 요청 subject와 자신이 만든 reply inbox를 함께 보내고, responder는 그 inbox로 결과를 돌려보냅니다. 지원되는 server·client에서 no responders가 나오면 발행 시점에 그 subject를 받을 구독자가 없었다는 빠른 신호이고, timeout은 정한 시간 안에 응답을 받지 못했다는 결과입니다. timeout만으로는 responder가 받지 못했는지, 처리·DB commit 뒤 응답을 잃었는지 구분할 수 없습니다.
 
 | 결과 | 알 수 있는 것 | 확인할 경계 |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ queue group은 현재 구독자 사이 분배이며 내구 메시지 보관·con
 | 첫 응답 성공 | 한 responder 응답 도착 | 다른 responder 실행 여부 |
 | 늦은 응답 | 끝난 요청의 잔여 결과 가능 | 요청 ID·세대·기한 |
 
-responder가 DB commit 뒤 응답 전에 죽으면 timeout이어도 주문은 남습니다. 같은 논리 요청 ID로 결과를 조회하거나 멱등 재요청해야 합니다. 매 retry마다 새 ID를 만들면 중복 방지 경계를 잃습니다. no responders도 요청된 기능 전체의 영구 부재나 권한 성공을 증명하는 것은 아니므로 오류 경로를 나눠 진단합니다.
+responder가 DB transaction을 commit한 뒤 reply를 보내기 전에 죽으면 requester는 timeout을 보지만 주문은 이미 남아 있습니다. requester는 같은 논리 요청 ID로 기존 결과를 조회하거나 같은 ID로 멱등 재요청해야 하며, retry마다 새 ID를 만들면 같은 업무인지 판별할 경계를 잃습니다. no responders도 요청 기능의 영구 부재나 권한 성공을 증명하지 않으므로, 발행 시점의 구독 부재와 처리·commit·응답 유실을 다른 오류 경로로 진단합니다.
 
 ## 첫 응답만 받아도 여러 실행이 있었을 수 있습니다
 
@@ -49,7 +49,7 @@ request timeout이 responder의 계산·외부 API를 자동 취소하지 않습
 
 ## Inbox 재사용에는 상관 ID와 세대가 필요합니다
 
-client가 inbox를 multiplex하는 방식은 라이브러리 계약을 사용합니다. 수동 구현에서 요청 A의 늦은 응답이 같은 inbox의 새 요청 B로 들어오지 않도록 correlation ID·기한·완료 상태·세대를 확인합니다. timeout 뒤 구독을 정리해도 A의 외부 효과는 남을 수 있습니다.
+client가 하나의 inbox로 여러 요청을 multiplex하는 방식은 사용 라이브러리의 계약을 따릅니다. 수동으로 재사용한다면 요청 A가 timeout된 뒤 같은 inbox를 요청 B가 쓰는 순간을 기준으로, 늦게 도착한 응답의 correlation ID·기한·완료 상태·세대가 B와 맞는지 검사한 뒤에만 반영합니다. A의 구독을 timeout 뒤 정리해도 A가 이미 남긴 외부 효과까지 취소되지는 않습니다.
 
 중복 응답은 단일 완료를 유지하고 큰 payload·동시 request·대기 map·reply 권한에 상한을 둡니다. correlation ID는 메시지 연결 정보이지 인증 증명이 아닙니다. 외부가 고른 reply subject로 민감 데이터를 무조건 보내지 않습니다.
 

@@ -20,7 +20,7 @@ questionIds: [feature-flag-rollout, feature-flag-assignment-unit, feature-rollba
 
 ## Shadow는 두 번째 실제 실행이 아닙니다
 
-레거시가 권위 응답을 만들고 새 경로는 read-only·가상 sink·독립 데이터로 비교합니다. shadow 결제·메일·webhook·쓰기·log egress를 차단해야 합니다. 같은 요청을 관리자 자격으로 새 경로에 복제하는 것은 안전한 비교가 아닙니다.
+실제 결제 요청을 shadow에 그대로 복제하면 새 경로가 결제·메일·webhook·쓰기·log egress까지 실행할 수 있으므로, 비교하는 동안에는 레거시가 권위 응답을 만들도록 둡니다. 새 경로는 read-only로 호출하고, 외부 sink 대신 가상 sink나 독립 데이터를 사용해 결과만 수집합니다. 이때 shadow의 결제·메일·webhook·쓰기·log egress를 각각 차단해야 합니다. 같은 요청을 관리자 자격으로 복제하는 방식은 권한만 바꿀 뿐 외부 효과를 격리하지 못하므로 안전한 비교가 아닙니다.
 
 비결정적 timestamp·순서 차이는 계약상 허용된 범위에서 정규화하고 금액·권한·누락 같은 의미 차이는 유지합니다. 새 결과가 더 좋아 보인다고 자동 채택하지 않고 정한 authority와 승인 절차로 전환합니다.
 
@@ -30,9 +30,13 @@ questionIds: [feature-flag-rollout, feature-flag-assignment-unit, feature-rollba
 
 ## Strangler 전환은 라우팅과 Data Owner를 함께 옮깁니다
 
-진입 router에서 일부 기능·계정부터 새 시스템으로 옮기고 현재 외부 계약을 유지합니다. 상대 DB 직접 조회를 API·event·read model로 바꾸고 batch·관리 도구·복구 procedure의 숨은 접근도 조사합니다. 두 곳 직접 write는 한쪽 성공/실패·역순·중복을 만들므로 한쪽을 source of truth로 하고 다른 쪽은 outbox/CDC 등 재처리 가능한 파생 경로로 둡니다.
+Strangler 전환에서는 진입 router가 먼저 일부 기능이나 계정의 요청만 새 시스템으로 보내고, 그동안 외부 계약은 그대로 유지합니다. 새 시스템이 상대 DB를 직접 읽던 부분은 API·event·read model로 바꾸고, batch·관리 도구·복구 procedure가 같은 DB에 숨어서 접근하는지도 함께 찾습니다.
 
-새 read model의 초기 적재·동시 증분·삭제·순서·대사를 준비한 뒤 마지막 반영 위치를 확인하고 write authority generation을 전환합니다. 같은 계정이 매 요청 무작위로 옛/새 저장소를 권위로 읽지 않게 합니다. 옛 generation writer는 실제 저장 경계에서 거절합니다.
+두 시스템이 직접 write하면 한쪽만 성공하거나 순서가 뒤집히거나 중복 write가 생길 수 있으므로, 한쪽을 source of truth로 정합니다. 다른 쪽에는 outbox/CDC처럼 재처리할 수 있는 파생 경로만 연결해야 전환 중 실패를 다시 반영할 수 있습니다.
+
+read model을 옮길 때는 초기 적재, 동시에 들어오는 증분, 삭제, 순서, 원본과 결과를 대사할 방법을 먼저 준비합니다. 그 다음 마지막 변경이 어느 저장소까지 반영됐는지 확인한 뒤 write authority generation을 전환합니다.
+
+전환 중에도 같은 계정의 요청마다 옛 저장소와 새 저장소가 무작위로 권위가 되면 읽기 결과가 흔들리므로, 그 계정에서는 한 generation의 권위를 고정합니다. 이전 generation writer는 실제 저장 경계에서 거절해 늦게 도착한 쓰기가 옛 owner를 다시 살리지 못하게 합니다.
 
 ## Flag Off 뒤의 Event도 해석해야 합니다
 

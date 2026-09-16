@@ -14,7 +14,7 @@ questionIds: [agent-mcp-authorization]
 
 ## HTTP Token은 의도한 자원에 묶습니다
 
-2026-09-15 확인한 MCP 2026-07-28 인가 명세는 HTTP transport를 대상으로 합니다. 보호 server의 resource metadata로 authorization server를 발견하고 검증된 metadata의 issuer를 요청 기록에 저장합니다. authorization·token 요청 모두에 사용할 MCP server의 canonical URI를 resource로 지정합니다.
+2026-09-15 확인한 MCP 2026-07-28 인가 명세의 적용 대상은 HTTP transport입니다. 보호된 server의 resource metadata에서 authorization server를 찾은 뒤, 검증한 metadata의 issuer를 요청 기록에 저장합니다. authorization 요청과 token 요청 모두에서 resource에는 호출할 MCP server의 canonical URI를 지정합니다.
 
 server는 token이 자신을 intended audience로 발급된 것인지 검증합니다. 다른 API token을 받아 그대로 하위 API로 통과시키는 token passthrough는 정상 위임이 아닙니다. 하위 서비스용으로 적절한 별도 자격·위임 흐름이 필요합니다.
 
@@ -26,7 +26,7 @@ server는 token이 자신을 intended audience로 발급된 것인지 검증합�
 
 PKCE는 code 교환을 verifier에 묶지만 잘못된 issuer·redirect·resource로 자격을 보내는 문제를 전부 해결하지 않습니다. client credential은 발급 issuer별로 저장하고 server가 바뀌었다고 다른 issuer에 재사용하지 않습니다.
 
-확인한 명세에서는 authorization response에 iss가 있으면 저장된 issuer와 비교합니다. metadata가 iss 지원을 광고했는데 응답에 빠지면 거절하고, 광고하지 않았어도 iss가 있으면 비교합니다. 둘 다 없을 때의 호환 경로와 임의 issuer 수용은 다릅니다. 비교 전 임의 host case folding·trailing slash 정규화로 서로 다른 issuer를 합치지 않습니다.
+확인한 명세에서는 authorization response에 iss가 있으면 저장된 issuer와 비교합니다. metadata가 iss 지원을 광고했는데 응답에 iss가 없으면 거절하고, 지원을 광고하지 않았더라도 응답에 iss가 있으면 비교합니다. metadata가 iss 지원을 광고하지 않고 응답에도 iss가 없는 호환 경로를 임의 issuer를 받아들이는 것과 혼동하지 않습니다. 비교하기 전에 임의의 host case folding·trailing slash 정규화로 서로 다른 issuer를 하나로 합치지도 않습니다.
 
 ## Token 전달과 세부 실행 인가를 함께 검사합니다
 

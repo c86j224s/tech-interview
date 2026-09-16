@@ -24,7 +24,7 @@ DB 작업 span이 800ms인데 pool acquire=750ms, query=50ms라면 SQL 최적화
 
 ## On-CPU와 Off-CPU는 서로 다른 시간입니다
 
-CPU sampling은 실행 중인 stack을 보여 주고 off-CPU·block profile·thread dump는 실행하지 못한 위치를 조사하는 데 도움됩니다. off-CPU가 길다고 자동으로 원인 lock을 알아내는 것은 아닙니다. I/O·pool·scheduler runnable 대기·조건 대기 등 구체 신호를 대조합니다.
+CPU sampling은 CPU를 실제로 사용하던 시점의 stack을 보여 주고, off-CPU·block profile·thread dump는 실행하지 못하고 멈춘 위치를 좁히는 데 도움을 줍니다. off-CPU 시간이 길다는 사실만으로 원인이 lock이라고 결정하지 않고, I/O·pool·scheduler runnable 대기·조건 대기 같은 신호를 관련 trace와 자원 지표에 대조합니다. 그래야 긴 대기가 CPU 계산 때문인지 특정 자원을 기다린 것인지 분리할 수 있습니다.
 
 프로세스 평균 CPU가 낮아도 한 event loop나 한 core가 포화일 수 있어 per-core·run queue·loop lag를 봅니다. 여러 thread의 CPU 시간 합은 한 요청의 wall time보다 클 수 있습니다. 짧은 sampling 창·완료된 대기만 기록하는 도구는 현재 긴 대기·드문 경로를 놓칠 수 있으므로 도구의 정의를 확인합니다.
 
@@ -34,7 +34,7 @@ CPU sampling은 실행 중인 stack을 보여 주고 off-CPU·block profile·thr
 
 ## Lock Hold와 Wait는 사건을 다르게 기록합니다
 
-lock ID·작업 ID·호출 stack과 획득 시도·성공·해제 시각을 연결합니다. 여러 thread의 긴 누적 wait는 한 owner의 짧지만 반복적인 hold 또는 한 번의 매우 긴 hold에서 생길 수 있습니다. 기다리는 코드만 고치기보다 owner가 lock 안에서 무엇을 하는지 봅니다.
+한 lock의 wait를 원인과 연결하려면 lock ID·작업 ID·호출 stack에 획득 시도·성공·해제 시각을 붙여 한 타임라인으로 봅니다. 여러 thread에서 wait가 길게 누적돼도 원인은 owner의 짧지만 반복적인 hold일 수 있고, 한 번의 매우 긴 hold일 수도 있습니다. 그래서 기다리는 코드만 고치지 말고 owner가 lock을 잡은 동안 무엇을 하는지 확인합니다.
 
 재진입 lock은 바깥 획득/최종 해제와 깊이를 구분하고 condition wait가 unlock/relock하는 구간을 hold로 잘못 합치지 않습니다. profiling 자체의 타이밍·lock overhead도 측정합니다. 관측을 위해 모든 hot lock에 무거운 문자열 로그를 넣으면 병목을 바꿀 수 있습니다.
 
@@ -58,4 +58,4 @@ head sampling은 시작 때 정해 비용이 낮지만 드문 끝 오류를 놓�
 
 ## 계측이 같은 진단 질문에 답하는지 시험합니다
 
-pool 지연·CPU 계산·긴 lock·batch 인과·clock skew·late span·collector 장애를 합성 환경에서 분리합니다. 동일 부하의 실제 사용자 p99·오류와 관측 overhead를 비교합니다. 현재 작업에서는 운영 trace·profile 수집을 수행하지 않았습니다. 본문은 근거를 연결하는 진단 설계입니다.
+합성 환경에서는 먼저 pool 지연·CPU 계산·긴 lock·batch 인과·clock skew·late span·collector 장애를 각각 만들어 어느 신호가 trace·profile·전체 지표에 나타나는지 분리합니다. 그런 다음 동일 부하에서 실제 사용자 p99·오류와 관측 overhead를 비교해 계측이 지연을 얼마나 바꿨는지 확인합니다. 현재 작업에서는 운영 trace·profile 수집을 수행하지 않았으며, 본문은 근거를 연결하는 진단 설계입니다.

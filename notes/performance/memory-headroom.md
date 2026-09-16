@@ -10,7 +10,9 @@ questionIds: [k8s-oom-throttling, gomemlimit-container-headroom, performance-mem
 
 ## 살아 있지만 느린 프로세스와 종료된 프로세스를 나눕니다
 
-CPU quota가 소진되면 실행이 throttling되어 프로세스는 살아 있어도 요청·GC·heartbeat가 늦어질 수 있습니다. 메모리 cgroup 한도·노드 OOM에서는 프로세스가 죽을 수 있고, kubelet의 node pressure eviction은 또 다른 정책 경로입니다. container 종료 사유·event·node condition·cgroup 지표로 원인을 구분합니다.
+컨테이너에 배정된 CPU quota가 소진되면 실행이 throttling(실행할 CPU 시간이 제한되어 기다리는 상태)되어 프로세스가 살아 있어도 요청·GC·heartbeat가 늦어질 수 있습니다. 메모리 cgroup 한도(컨테이너 메모리를 집계·제한하는 경계)나 노드 OOM이면 프로세스가 죽을 수 있고, kubelet의 node pressure eviction은 노드 여유를 보고 Pod를 내보내는 별도 정책 경로입니다.
+
+container 종료 사유·event·node condition·cgroup 지표를 같은 시각에 대조해야 quota 지연, cgroup 초과, 노드 eviction을 구분할 수 있습니다.
 
 평균 메모리가 limit보다 낮아도 순간 큰 요청·동시 buffer·native allocation이 한도를 넘을 수 있습니다. 사후 한 번의 working set만 보지 말고 peak와 종료 직전의 상태를 수집합니다.
 
@@ -37,7 +39,7 @@ container 한도와 같은 값으로 두면 관리 밖 메모리와 순간 peak�
 
 ## 객체 풀은 할당을 줄이고 보유를 늘릴 수 있습니다
 
-큰 요청 한 번이 32MiB buffer를 풀에 남기면 이후 작은 요청만 있어도 메모리가 유지될 수 있습니다. size class·최대 보관 bytes·큰 항목 비보관·유휴 회수 정책을 둡니다. pool lock·cross-thread 반환·reset CPU·GC scan 비용까지 할당 감소와 비교합니다.
+큰 요청 한 번이 32MiB buffer를 풀에 남기면 이후 작은 요청만 와도 그 큰 메모리가 유지될 수 있으므로, 풀을 쓴다는 이유만으로 RSS가 줄어든다고 보지 않습니다. 크기 구간(size class)별로 보관할 최대 bytes를 정하고, 큰 항목은 풀에 넣지 않거나 유휴 시간 뒤 회수하는 정책을 실제 peak와 함께 비교합니다. 할당 횟수 감소뿐 아니라 pool lock·cross-thread 반환·reset CPU·GC scan 비용이 추가되는지도 측정해야 보유 메모리와 처리 비용의 교환을 판단할 수 있습니다.
 
 반환 시 논리 길이·상태·참조·사용자 데이터·보안 필드를 초기화합니다. 바이트 전체를 지워야 하는지, 다음 write와 정확한 출력 길이만으로 노출을 막을 수 있는지는 비밀 처리와 API 계약에 따라 결정합니다. 이전 사용자의 미사용 buffer 영역을 응답에 노출하지 않습니다. 참조를 남기면 다른 큰 객체도 함께 보유될 수 있습니다.
 

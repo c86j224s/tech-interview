@@ -23,7 +23,9 @@ replica 3, minAvailable=2이고 모두 healthy이면 한 개를 내보낼 여지
 | desiredHealthy | 정책이 요구하는 건강 수 | minAvailable 또는 maxUnavailable |
 | disruptionsAllowed | 현재 허용 가능한 eviction 여유 | 최신 관찰·진행 중 중단 |
 
-policy/v1에서 빈 selector의 의미와 selector 생략을 혼동하지 않습니다. API 버전에 따라 빈 selector 해석이 달랐던 점도 있어 manifest 버전을 고정합니다. 정책 객체가 존재한다고 의도한 세 Pod를 선택한다는 증거는 아닙니다. minAvailable과 maxUnavailable의 수·비율 계산도 Deployment의 반올림 규칙과 무심코 섞지 않습니다. PDB의 비율은 요구 건강 수 또는 허용 중단 수의 올림으로 작은 replica에 큰 영향을 줄 수 있습니다.
+`policy/v1` PDB를 읽을 때는 `selector: {}`를 적은 경우와 selector 필드를 생략한 경우를 먼저 구분하고, 대상 Kubernetes API 버전에서 각각 어떤 Pod 집합을 뜻하는지 확인합니다. 정책 객체가 존재한다는 사실만으로 의도한 세 Pod를 보호한다고 보지 말고, 실제 Pod 라벨과 owner를 selector 결과와 대조합니다.
+
+`minAvailable`과 `maxUnavailable`을 수·비율로 계산할 때는 Deployment의 반올림 규칙을 그대로 가져오지 않으며, PDB 비율이 요구 건강 수 또는 허용 중단 수를 올림하는 방식이라 작은 replica 수에서 결과가 크게 달라질 수 있습니다.
 
 ## Rollout 예산과 Eviction 예산은 다릅니다
 
@@ -35,11 +37,13 @@ Deployment 자체의 롤링 교체는 maxSurge·maxUnavailable로 진행하며 P
 {"title":"예산 회복은 새 Pod의 실제 건강 회복을 기다립니다","caption":"화살표는 자발적 중단 후 대체 경로입니다. Pending과 readiness 실패는 다른 원인이며 숫자만 강제로 늘려 예산을 회복시키지 않습니다.","rows":[[{"id":"evict","label":"예산 안 eviction"}],[{"id":"create","label":"대체 Pod 생성"}],[{"id":"schedule","label":"배치·시작 성공"}],[{"id":"healthy","label":"Ready·healthy 회복"}],[{"id":"budget","label":"다음 중단 여유 회복"}]],"edges":[{"from":"evict","to":"create","label":"목표 replica 조정"},{"from":"create","to":"schedule","label":"자원·영역 조건"},{"from":"schedule","to":"healthy","label":"초기화·probe"},{"from":"healthy","to":"budget","label":"PDB 재관찰"}]}
 ```
 
-예산이 회복되지 않으면 scheduler가 노드를 못 찾는지, 이미지·볼륨에서 막혔는지, 프로세스는 실행됐지만 readiness가 실패하는지 순서대로 좁힙니다. 잘못된 selector가 새 revision을 세지 않는지도 확인합니다.
+예산이 회복되지 않으면 먼저 대체 Pod가 Pending인 이유로 scheduler가 맞는 노드를 찾지 못했는지 확인하고, 다음으로 이미지 pull이나 볼륨 연결에서 막혔는지, 프로세스는 실행됐지만 readiness가 실패했는지를 사건과 상태로 좁힙니다. Pod가 Ready가 된 뒤에도 PDB가 세는 집합이 맞는지, 특히 잘못된 selector가 새 revision을 제외하고 있지 않은지 실제 라벨과 대조합니다.
 
 ## Replica 수와 독립 장애 영역은 다릅니다
 
-세 Pod가 한 노드·한 영역에 있으면 공통 장애로 함께 사라질 수 있습니다. topology spread는 topology key·selector·maxSkew·eligible domain 조건에 따라 분포를 제어하고, anti-affinity는 특정 Pod와 같은 영역에 두지 않는 제약을 표현합니다. required와 preferred의 강도 차이를 정하고 강한 제약이 새 Pod를 Pending으로 남길 수 있음을 인정합니다.
+세 Pod가 한 노드나 한 영역에 몰리면 replica 수가 3이어도 공통 장애로 함께 사라질 수 있으므로, 배치 결과에서 실제 영역을 먼저 확인합니다. topology spread는 topology key로 나눈 영역 사이의 차이를 `maxSkew` 안에 두도록 selector와 eligible domain 조건을 함께 사용하고, anti-affinity는 특정 Pod와 같은 영역(또는 지정된 topology)에 놓지 않는 제약으로 동작합니다.
+
+`required`는 조건을 만족하지 못하면 새 Pod를 배치하지 못하게 하고 `preferred`는 가능한 배치를 선호하는 수준이므로, 강한 제약이 Pending을 만들 수 있는지 자원 여유와 함께 판단합니다.
 
 scheduler의 배치 제약은 이미 실행 중인 Pod를 언제나 자동 재균형하는 기능은 아닙니다. 라벨·노드 추가·revision 변화에서 실제 배치를 확인합니다. selector가 다른 Pod를 세거나 PVC zone 제약이 이동을 막으면 기대한 분산을 얻지 못할 수 있습니다.
 

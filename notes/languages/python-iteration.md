@@ -35,7 +35,7 @@ generator 함수 호출은 generator 객체를 만들고 본문 실행은 next �
 | generator 객체 | 자기 자신인 iterator | 소진하면 끝 |
 | generator factory | 호출마다 새 generator | 원본 데이터가 같다는 조건은 별도 |
 
-iterator는 __next__로 값을 주고 끝에서 StopIteration을 알립니다. iterable 인터페이스만으로 매번 새로운 snapshot을 제공한다는 보장은 없습니다. API가 단일 소비 입력을 받는지 반복 사용을 요구하는지 문서화합니다. 입력을 두 번 읽어야 하면 적절한 물질화·factory·재사용 가능한 자료구조를 요구합니다.
+`iterator`는 `__next__()`로 값을 내놓고 끝에서 `StopIteration`을 일으킵니다. `iterable`은 `iter()`를 호출할 수 있다는 뜻일 뿐 매번 새로운 snapshot을 제공한다는 보장은 아니므로, API가 단일 소비 입력인지 반복 사용을 전제로 하는지 먼저 정합니다. 입력을 두 번 읽어야 하면 물질화·factory·재사용 가능한 자료구조 중 필요한 방식을 요구합니다.
 
 factory가 파일·DB를 다시 읽으면 두 번째 결과가 달라질 수 있습니다. 같은 snapshot의 재생과 단순 재계산은 다릅니다. itertools.tee는 소비자를 나누지만 느린 소비자를 위해 값을 버퍼링하므로 속도 차이가 크면 메모리가 늘 수 있습니다.
 
@@ -55,13 +55,13 @@ print(next(it))    # ready
 print(it.send(3))  # 6
 ```
 
-child의 return 값은 StopIteration.value를 통해 yield from 표현식의 결과가 됩니다. 단순 `for value in child(): yield value`는 이 반환값과 send·throw·close의 위임까지 같은 방식으로 처리하지 않습니다.
+`child`가 `return value * 2`로 끝나면 그 값은 `StopIteration.value`에 담기고, `yield from child()` 표현식의 결과로 `parent`에 돌아옵니다. 반면 `for value in child(): yield value`는 yield된 값만 전달할 뿐 이 반환값과 `send`·`throw`·`close`의 위임을 같은 방식으로 처리하지 않습니다.
 
 ```diagram
 {"title":"Yield From은 하위 Generator와 제어를 주고받습니다","caption":"아래 화살표는 next·send 등 제어 전달, 되돌아오는 화살표는 yield 값과 종료 반환값입니다. 하위 iterator가 지원하는 메서드에 따라 위임 규칙이 적용됩니다.","rows":[[{"id":"caller","label":"호출자"}],[{"id":"parent","label":"parent의 yield from"}],[{"id":"child","label":"child generator"}]],"edges":[{"from":"caller","to":"parent","label":"next·send·throw·close"},{"from":"parent","to":"child","label":"지원 제어 위임"},{"from":"child","to":"caller","label":"yield·종료 결과"}]}
 ```
 
-새 generator에는 먼저 next 또는 send(None)로 첫 yield까지 진입해야 합니다. 처음부터 non-None send를 넣으면 오류입니다. yield from에 던진 예외는 하위의 throw 지원과 규칙에 따라 전달되고, 종료 close는 하위 close가 있으면 정리를 연결합니다. 모든 일반 iterator가 send·throw를 제공하는 것은 아닙니다.
+새 generator는 먼저 `next()`나 `send(None)`을 호출해 첫 `yield`까지 진입해야 하며, 처음부터 non-`None` 값을 `send`하면 오류입니다. `yield from`에 들어온 예외는 하위 iterator가 `throw`를 지원하는지에 따라 전달되고, `close`도 하위에 `close`가 있으면 정리를 연결합니다. 일반 iterator 모두가 `send`·`throw`를 제공하는 것은 아닙니다.
 
 ## 조기 종료에서 자원 책임을 확인합니다
 

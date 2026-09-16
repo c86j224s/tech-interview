@@ -24,13 +24,13 @@ questionIds: [authoritative-server-input, game-input-sequence-gap, client-predic
 
 ## Gap은 입력 의미에 따라 다르게 처리합니다
 
-sequence 10 다음에 12가 오면 11이 영원히 올 것이라고 기다리지 않습니다. item 사용·공격 같은 명령은 누락/중복을 정해진 ACK/retry 계약으로 처리하고, 최신 방향 상태는 정책상 중간 sample을 대체할 수 있습니다. 단, 이동 입력의 duration과 edge-trigger 버튼은 임의 생략하면 의미가 달라집니다.
+sequence 10 뒤에 12가 도착해도 11을 영원히 기다리지 말고, gap을 명령의 종류에 따라 해석합니다. item 사용·공격처럼 한 번의 실행이 의미인 명령은 누락과 중복을 ACK/retry 계약으로 처리하고, 최신 방향 상태는 정한 정책에 따라 중간 sample을 대체할 수 있습니다. 반대로 이동 입력의 duration이나 edge-trigger 버튼은 중간 값을 임의로 버리면 실행 의미가 달라지므로 같은 방식으로 생략하면 안 됩니다.
 
 gap wait 시간·버퍼 수/bytes·허용 미래 번호·sequence wrap/session generation을 정합니다. 상한 밖이면 현재 snapshot과 마지막 확정 입력으로 resync하고 누락 명령을 성공처럼 표시하지 않습니다. 너무 오래된 입력·pause 중 입력의 tick 귀속도 공정한 서버 정책으로 기록합니다.
 
 ## 예측은 확정 상태 이후 입력만 다시 적용합니다
 
-client가 입력 101·102·103을 예측했고 server가 101까지 적용한 상태 S101을 보냈다면, client는 S101로 계산 기준을 바꾸고 102·103만 순서대로 재시뮬레이션합니다. 101을 다시 적용하면 이동·탄약이 중복될 수 있습니다. 이미 보여 준 발사 sound 같은 presentation 효과도 replay에서 중복되지 않게 분리합니다.
+client가 101·102·103을 예측한 뒤 server가 101까지 적용한 상태 `S101`을 보내면, client는 먼저 예측 상태를 `S101`로 되돌리고 아직 확정되지 않은 102·103만 순서대로 재시뮬레이션합니다. 확정 prefix인 101을 다시 실행하면 이동이나 탄약 처리가 중복될 수 있기 때문입니다. 이미 재생한 발사 sound 같은 presentation 효과는 판정용 입력 replay와 분리해 다시 재생되지 않게 합니다.
 
 ```diagram
 {"title":"확정 입력까지 버리고 남은 입력만 재적용합니다","caption":"화살표는 reconciliation 흐름입니다. 시각 보간은 사용자 표시를 부드럽게 할 수 있지만 서버 권위 충돌·자원 결과를 임의로 바꾸지 않습니다.","rows":[[{"id":"predict","label":"client 예측 · 101·102·103"}],[{"id":"ack","label":"server · S101·lastApplied101"}],[{"id":"replay","label":"S101에서 102·103만 replay"}],[{"id":"display","label":"현재 예측 상태·별도 시각 보정"}]],"edges":[{"from":"predict","to":"ack","label":"입력 송신·서버 확정"},{"from":"ack","to":"replay","label":"확정 prefix 제거"},{"from":"replay","to":"display","label":"표현과 판정 분리"}]}
