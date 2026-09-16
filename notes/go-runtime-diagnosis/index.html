@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="ko" data-astro-cid-ju4pidww><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="개념을 아는 것에서, 내 말로 설명하는 것으로. 구두 답변과 핵심 점검 포인트로 연습하는 CS 기술 면접."><meta name="theme-color" content="#f8f7f3"><link rel="icon" type="image/svg+xml" href="/tech-interview/favicon.svg"><title>Go 적체·누수·GC 지연을 구분하는 관측 · 말로 풀어보는 CS</title><script>
       try { const theme = localStorage.getItem('cs-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch {}
     </script><link rel="stylesheet" href="/tech-interview/_astro/Layout.Di9nflxC.css"></head><body data-current-id data-astro-cid-ju4pidww><a class="skip-link" href="#main" data-astro-cid-ju4pidww>본문으로 건너뛰기</a><aside class="ai-content-notice" aria-label="콘텐츠 이용 안내" data-astro-cid-ju4pidww><p data-astro-cid-ju4pidww>이 사이트의 콘텐츠는 AI로 생성되었습니다. <strong data-astro-cid-ju4pidww>AI 모델의 학습·훈련 데이터로 사용하지 마세요.</strong></p></aside><header class="site-header" data-astro-cid-ju4pidww><a class="brand" href="/tech-interview/" aria-label="말로 풀어보는 CS 홈" data-astro-cid-ju4pidww><span class="brand-symbol" aria-hidden="true" data-astro-cid-ju4pidww>cs<span data-astro-cid-ju4pidww>·</span></span><span data-astro-cid-ju4pidww>말로 풀어보는 <b data-astro-cid-ju4pidww>CS</b></span></a><nav aria-label="주요 메뉴" data-astro-cid-ju4pidww><a href="/tech-interview/practice/" data-random data-astro-cid-ju4pidww>질문 연습</a><a href="/tech-interview/library/" data-astro-cid-ju4pidww>전체 목록 <span class="nav-count" data-astro-cid-ju4pidww>1000</span></a><a href="/tech-interview/notes/" aria-current="page" data-astro-cid-ju4pidww>학습 노트</a></nav><button class="theme-toggle" type="button" aria-label="화면 테마 전환" title="화면 테마 전환" data-astro-cid-ju4pidww><span aria-hidden="true" data-astro-cid-ju4pidww>◐</span></button></header><main id="main" data-astro-cid-ju4pidww><header class="notes-intro"><a class="text-link" href="/tech-interview/notes/">← 학습 노트 목록</a><h1>Go 적체·누수·GC 지연을 구분하는 관측</h1><p>G·M·P·대기 프로파일과 alloc·inuse·scan을 나누고 생성 전 상한·GC assist·GOGC·메모리 소프트 한도·풀 비용을 설명합니다.</p><span class="note-topic">언어·런타임 · 원리와 예제로 공부하기</span></header><div class="note-layout"><article class="note-article"><div class="note-body"><h2 id="section-1">Goroutine 수가 늘었다는 사실만으로 원인은 정해지지 않습니다</h2>
-<p>초당 100개 요청이 들어오는데 하위 API의 평균 시간이 0.1초에서 2초로 늘면 안정된 조건에서 진행 중 작업 규모도 약 10개에서 200개로 커질 수 있습니다. 이는 도착률과 체류 시간의 산술 예제이며 무한 과부하에서 안정 상태를 보장하는 공식은 아닙니다. 정상 작업이 느려져 쌓이는 적체와 더 이상 완료할 수 없는 goroutine 누수를 나눠야 합니다.</p>
+<p>초당 100개 요청이 들어오고 각 요청이 하위 API에 머무는 평균 시간이 0.1초라면, 안정적으로 진행 중인 작업 규모는 대략 <code>100 × 0.1 = 10개</code>입니다. 평균 시간이 2초로 늘면 같은 계산이 <code>100 × 2 = 200개</code>가 되어, 정상 작업이 느려진 것만으로도 goroutine 수가 늘 수 있습니다. 이는 도착률과 체류 시간의 산술 예제일 뿐 무한 과부하에서 안정 상태를 보장하는 공식은 아니므로, 정상 작업이 느려 쌓인 적체와 더 이상 완료할 수 없는 goroutine 누수를 나눠 봐야 합니다.</p>
 <p>수신자가 사라졌는데 결과 채널 send에서 영원히 기다리는 goroutine은 종료 경로 문제입니다. 반대로 부하가 끝나면 모두 줄어들어도 피크 메모리·연결이 한도를 넘으면 용량 문제입니다. 누수가 아니라는 이유로 무제한 적체가 안전한 것은 아닙니다.</p>
 <h2 id="section-2">GOMAXPROCS는 전체 스레드 수 상한이 아닙니다</h2>
-<p>G는 goroutine, M은 OS 스레드, P는 Go 코드를 실행하는 데 필요한 런타임 자원입니다. GOMAXPROCS는 동시에 Go 코드를 실행할 P 수를 조정하며 전체 G 수나 syscall·cgo 등을 포함한 모든 M 수의 절대 상한이 아닙니다.</p>
+<p><code>G</code>는 goroutine, <code>M</code>은 OS 스레드, <code>P</code>는 Go 코드를 실행하는 데 필요한 런타임 자원입니다. <code>GOMAXPROCS</code>는 동시에 Go 코드를 실행할 수 있는 <code>P</code>의 수를 조정하므로, 전체 <code>G</code> 수나 syscall·cgo를 수행 중인 <code>M</code>까지 포함한 전체 <code>M</code> 수의 절대 상한은 아닙니다.</p>
 <p>네트워크·채널 대기에서 G가 park되어 다른 G를 실행할 수 있어도 대기 중 스택·버퍼·문맥·연결은 남습니다. blocking syscall·cgo는 다른 스케줄링 비용을 가질 수 있습니다. CPU quota를 넘어 값을 올리면 실행 자원이 늘기보다 throttling·경합이 증가할 수 있으므로 Go 버전의 컨테이너 CPU 인식 기본값과 실제 설정을 확인합니다.</p>
 <h2 id="section-3">현재 스택과 누적 경합은 다른 관측입니다</h2>
 <table>
@@ -41,7 +41,7 @@
 <td>요청 수와 자식 작업 수 구분</td>
 </tr>
 </tbody></table>
-<p>block·mutex 프로파일은 활성화·샘플링 설정이 필요할 수 있습니다. 빈 프로파일은 대기가 없다는 증거가 아닙니다. mutex 프로파일의 잠금 해제 쪽 귀속과 실제 긴 임계 구역을 연결해 원인을 찾습니다. 같은 부하·관찰 창에서 비교하고 프로파일링 자체 비용도 봅니다.</p>
+<p><code>block profile</code>은 동기화 때문에 멈춰 있던 대기의 표본을, <code>mutex profile</code>은 잠금 경합에 기여한 경로를 모아 봅니다. 둘 다 프로파일 활성화와 샘플링 설정이 필요할 수 있고 완료된 대기의 표본 특성도 있으므로, 빈 프로파일만으로 대기가 없다고 결론 내릴 수 없습니다. <code>mutex profile</code>의 잠금 해제 쪽 귀속을 실제 긴 임계 구역과 코드에서 연결해 원인을 찾고, 같은 부하·관찰 창에서 비교하며 프로파일링 오버헤드도 봅니다.</p>
 <h2 id="section-4">생성 전에 막지 않으면 허가 대기자도 쌓입니다</h2>
 <p>모든 요청에 goroutine을 만든 뒤 그 안에서 세마포어를 기다리면 활성 호출은 제한돼도 대기 goroutine은 계속 늘 수 있습니다. 가능하면 생성 전 수락·실행 허가를 제한하고 대기 수·바이트·최대 나이에도 상한을 둡니다. 하위 연결 풀 대기·채널 송신·잠금 대기를 각각 나눕니다.</p>
 <p>취소 신호를 보내는 것만으로 goroutine이 강제 종료되지는 않습니다. 모든 대기 경로가 취소를 관찰하고 부모가 실제 자식 반환을 확인해야 합니다. 요청 이후 지속해야 할 작업은 내구 큐·별도 소유자로 분리합니다.</p>
@@ -51,8 +51,8 @@
 <p>누적 alloc이 크고 inuse가 작으면 임시 객체가 많이 생겼다가 사라졌을 수 있습니다. 같은 관찰 창의 차이·요청당 할당량을 보아야 장수 프로세스의 누적값을 다른 실행과 공정하게 비교할 수 있습니다. inuse가 커지면 캐시·대기 작업·큰 배열의 작은 slice 같은 보유 코드를 조사합니다. profile의 할당 stack만으로 모든 root 참조 경로가 자동 제공되는 것은 아닙니다.</p>
 <p>RSS에는 Go heap뿐 아니라 stack·런타임·native·allocator 여유 등이 포함됩니다. Go가 객체를 회수했다고 OS에 즉시 페이지를 반환하는 것도 아니므로 heap 감소와 RSS 감소를 같은 사건으로 보지 않습니다.</p>
 <h2 id="section-6">GC는 짧은 정지 외에도 CPU와 Assist 비용을 씁니다</h2>
-<p>Go의 추적 GC는 도달 가능한 포인터 그래프를 표시합니다. 같은 100 MiB라도 비포인터 바이트 배열과 작은 포인터 객체가 많은 그래프는 scan 특성이 다릅니다. 작은 임시 할당이 많으면 생존 heap이 작아도 수집과 mark assist 비용이 요청 지연에 영향을 줄 수 있습니다. stop-the-world가 짧다는 이유로 GC 영향을 배제하지 않습니다.</p>
-<p>GOGC를 높이면 대체로 더 큰 heap 목표를 허용해 수집 빈도를 줄일 수 있지만 메모리를 더 사용합니다. GOMEMLIMIT는 런타임 관리 메모리의 소프트 한도이며 프로세스 전체의 절대 상한이 아닙니다. 필요한 생존 데이터가 한도에 가까우면 반복 GC로도 줄지 않아 CPU만 소비할 수 있습니다. 캐시·동시성·버퍼 상한을 먼저 조정할 수 있어야 합니다.</p>
+<p>Go의 추적 GC는 <code>GC root</code>에서 시작해 포인터를 따라가며 도달 가능한 객체를 표시(mark)합니다. 따라서 같은 100 MiB라도 포인터가 없는 큰 바이트 배열과 작은 포인터 객체가 많은 그래프는 따라가야 할 참조 수가 달라 scan 특성이 다릅니다. 작은 임시 할당이 많으면 생존 heap이 작아도 수집 작업의 비용과 요청이 대신 수행하는 <code>mark assist</code> 비용이 요청 지연에 영향을 줄 수 있으므로, stop-the-world가 짧다는 이유만으로 GC 영향을 배제하지 않습니다.</p>
+<p><code>GOGC</code>를 높이면 대체로 더 큰 heap 목표를 허용하므로 수집 빈도는 줄일 수 있지만 메모리를 더 사용합니다. <code>GOMEMLIMIT</code>는 런타임이 관리하는 메모리의 소프트 한도이므로 프로세스 전체의 절대 상한은 아닙니다. 필요한 생존 데이터 자체가 한도에 가까우면 GC를 반복해도 줄지 않아 CPU만 소비할 수 있으므로, 캐시·동시성·버퍼 상한을 먼저 조정할 수 있어야 합니다.</p>
 <p>sync.Pool은 임시 재사용 도구이고 항목이 제거될 수 있으므로 필수 저장소나 고정 용량 풀로 사용하지 않습니다. 재사용률이 낮거나 큰 객체를 오래 보유하면 할당 감소보다 생존 비용이 커질 수 있습니다. 포인터 scan을 줄이겠다며 unsafe 정수 주소에 객체를 숨기지 말고 안전한 인덱스·연속 배열·객체 수 감소를 검토합니다.</p>
 <h2 id="section-7">같은 부하의 대조 실험으로 변경 효과를 확인합니다</h2>
 <p>입력·동시성·CPU quota·메모리 한도를 고정하고 하위 API 지연을 조절한 뒤 부하를 멈춥니다. 작업 수와 메모리가 정책상 정상 범위로 돌아오는지 확인합니다. 그다음 불필요한 할당 제거·풀 적용·GOGC 변경을 한 번에 하나씩 비교합니다.</p>

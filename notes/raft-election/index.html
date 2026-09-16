@@ -4,7 +4,7 @@
 <p>A가 term 4의 leader였지만 B·C가 term 5에서 새 leader를 선출한 뒤 A의 옛 메시지가 도착할 수 있습니다. term은 벽시계가 아니라 비교 가능한 논리 세대이며 정상 프로토콜에서 낮은 term 요청은 현재 권위를 덮지 못합니다. 높은 term을 관찰한 candidate·leader는 필요한 상태를 갱신하고 follower로 내려갑니다.</p>
 <p>A가 고립되어 term 5를 아직 모르면 자신을 leader라고 생각할 수 있습니다. 하지만 현재 과반을 얻지 못하면 새 쓰기를 commit할 수 없습니다. 단순 역할 플래그가 아니라 quorum·로그 규칙이 충돌 확정을 막습니다.</p>
 <h2 id="section-2">투표 응답 전에 약속을 안정적으로 저장합니다</h2>
-<p>한 term에서 한 후보에게만 투표하도록 currentTerm·votedFor를 내구 상태로 유지합니다. vote 응답 후 저장 전에 죽으면 재시작 뒤 다른 후보에게 같은 term의 표를 줄 수 있습니다. 저장을 먼저 하는 순서가 crash/recovery 모델의 안전성에 필요합니다. log 수락 응답도 필요한 내구 기록과 연결해야 합니다.</p>
+<p>투표자는 한 term에서 한 후보에게만 표를 주도록 currentTerm·votedFor를 먼저 내구 저장한 뒤 vote 응답을 보냅니다. 예를 들어 응답을 먼저 보내고 저장 전에 죽으면 재시작 후 votedFor가 비어 있는 것처럼 보여 같은 term의 다른 후보에게도 표를 줄 수 있습니다. 그래서 저장 실패를 성공 응답으로 간주하지 않고, log 수락 응답에도 필요한 내구 기록을 같은 순서로 연결해야 합니다.</p>
 <pre><code class="language-text">on RequestVote(term, candidate, lastTerm, lastIndex):
     if term &lt; currentTerm: reject
     if term &gt; currentTerm: advance term and step down

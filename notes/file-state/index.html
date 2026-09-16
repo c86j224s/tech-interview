@@ -41,7 +41,7 @@
 <p>부모와 자식이 초기 페이지를 공유하다 어느 쪽이 쓰면 필요한 페이지를 복사하는 것이 copy-on-write입니다. 작은 필드 변경도 페이지 단위의 사본을 만들 수 있습니다. 자식 snapshot 작업이 오래 살아 있고 부모의 쓰기율이 높으면 그 기간의 메모리 피크가 커집니다.</p>
 <p>fork 자체에도 페이지 테이블·정지 시간이 들 수 있습니다. RSS 합은 공유 페이지를 중복 셀 수 있어 PSS·공유·private 지표를 함께 봅니다. COW가 있다고 멀티스레드 부모의 잠금·라이브러리 상태를 자식에서 안전하게 사용할 수 있다는 뜻은 아닙니다. fork 뒤 허용된 실행 경로를 별도로 지켜야 합니다.</p>
 <h2 id="section-4">원자 이름 교체와 전원 장애 내구성은 다릅니다</h2>
-<p>새 내용을 임시 파일에 쓰고 같은 파일시스템에서 rename으로 교체하면 독자가 반쪽 내용을 보는 문제를 줄일 수 있습니다. 그러나 write 성공은 디스크 기록 완료가 아니고 rename 성공도 새 이름의 디렉터리 항목까지 모든 장애에서 보존됐다는 뜻은 아닙니다.</p>
+<p>새 내용을 임시 파일에 완전히 쓰고 같은 파일시스템에서 <code>rename</code>으로 대상 이름을 교체하면 독자가 작성 중인 반쪽 파일을 보는 문제를 줄일 수 있습니다. 여기서 <code>rename</code>은 파일 내용과 내구성을 한 번에 확정하는 연산이 아니라, 이름이 어떤 완성 파일을 가리키는지를 바꾸는 단계입니다. 따라서 <code>write</code>나 <code>rename</code>이 성공해도 전원 장애 뒤 데이터와 디렉터리 항목이 보존됐다고 단정할 수 없고, 아래의 flush·fsync와 공개 시점을 따로 지켜야 합니다.</p>
 <pre><code class="language-text">prepare temporary file beside target
 write complete content, handling partial writes
 flush userspace buffers

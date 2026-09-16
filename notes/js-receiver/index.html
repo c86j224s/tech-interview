@@ -8,7 +8,7 @@ console.log(counter.read()); // 7
 try { detached(); } catch (e) { console.log(e.name); } // TypeError
 </code></pre>
 <p>일반 함수의 this는 정의한 객체에 영구 결합되지 않습니다. <code>counter.read()</code>에서는 counter가 receiver이고, strict 함수의 분리 호출 <code>detached()</code>에서는 this가 undefined입니다. 비엄격 함수의 전역 객체 보정에 의존하면 브라우저·Node·모듈 문맥에 따라 예상하지 못한 값을 읽을 수 있습니다.</p>
-<p>call·apply는 해당 한 번의 호출 대상을 지정합니다. bind는 원본을 수정하는 대신 지정한 this와 앞 인자를 기억하는 새 함수를 만듭니다. 일반 호출과 원본이 생성 가능한 경우의 new 호출은 다른 규칙이므로 bind가 모든 호출에서 this를 영구 강제한다고 일반화하지 않습니다.</p>
+<p>call·apply는 한 번의 호출에 사용할 <code>this</code>를 지정하고, 호출이 끝나면 그 설정이 남지 않습니다. <code>bind</code>는 원본을 바꾸지 않고 지정한 <code>this</code>와 앞 인자를 기억하는 새 함수를 만들므로, 이후 일반 호출에서는 그 bound 함수의 설정이 사용됩니다. 다만 원본이 생성자로 호출될 수 있는 함수에서 <code>new</code>를 쓰는 규칙은 일반 호출과 다르므로, bind가 모든 호출에서 <code>this</code>를 영구히 고정한다고 일반화하지 않습니다.</p>
 <h2 id="section-2">화살표는 생성 문맥의 this를 사용합니다</h2>
 <pre><code class="language-js">const box = {
   value: 10,

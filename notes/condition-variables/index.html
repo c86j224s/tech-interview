@@ -76,7 +76,7 @@ closeAndDrain():
     condition.notify_all()
     unlock(mutex)
 </code></pre>
-<p>이 코드는 기한과 작업 도착이 동시에 관찰되면 이미 큐에 있는 작업을 반환하는 정책입니다. 절대 기한 이후에는 어떤 작업도 시작하면 안 되는 API라면 <code>pop</code> 직전에도 기한을 검사해야 합니다. 어느 쪽이든 매번 깰 때마다 새로 5초를 주면 전체 대기가 무한히 늘 수 있으므로 처음 정한 기한을 유지합니다.</p>
+<p><code>closeAndDrain</code>은 이 호출 안에서 큐를 직접 비우는 함수가 아니라 <code>stopping=true</code>를 표시하고 소비자를 깨우는 종료 신호입니다. 소비자는 깨어난 뒤 큐가 비었는지 다시 보고, 작업이 남아 있으면 먼저 꺼내 처리하다가 <code>stopping</code>과 빈 큐가 함께 될 때 <code>closed</code>를 반환합니다. 기한과 작업 도착을 동시에 관찰했을 때 이미 큐에 있는 작업을 반환하는 정책이며, 절대 기한 이후에는 시작하면 안 되는 API라면 <code>pop</code> 직전에도 기한을 검사해야 합니다. 매번 깰 때마다 새로 5초를 주면 전체 대기가 무한히 늘 수 있으므로 처음 정한 기한을 유지합니다.</p>
 <p>예외를 허용하는 실제 언어에서는 잠금 해제를 RAII·<code>finally</code> 등으로 보장하고, 삽입 실패 뒤 성공 알림을 보내지 않습니다. 이 노트는 대기 정확성에 집중하며 큐 용량 제한은 별도입니다. 무한 큐 대신 상한이 필요하면 생산자 측에도 공간 조건과 거절 정책을 추가해야 합니다.</p>
 <h3>Java 객체 monitor의 대기</h3>
 <p>Java의 <code>obj.wait()</code>·<code>obj.notify()</code>·<code>obj.notifyAll()</code>은 해당 obj의 monitor를 소유한 상태에서 호출해야 합니다. <code>synchronized(other)</code> 안에 있다는 이유로 obj의 소유 조건을 만족하지 않습니다. wait는 obj monitor를 놓고 대기한 뒤 다시 획득해 반환하지만, 같은 스레드가 가진 다른 객체의 잠금까지 모두 놓지는 않습니다. 다른 잠금을 가진 채 기다리면 생산자가 그 잠금을 필요로 하는 대기 고리가 생길 수 있습니다.</p>

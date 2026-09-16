@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ko" data-astro-cid-ju4pidww><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="개념을 아는 것에서, 내 말로 설명하는 것으로. 구두 답변과 핵심 점검 포인트로 연습하는 CS 기술 면접."><meta name="theme-color" content="#f8f7f3"><link rel="icon" type="image/svg+xml" href="/tech-interview/favicon.svg"><title>Java GC 도달성·외부 자원·클래스 로더 수명 · 말로 풀어보는 CS</title><script>
       try { const theme = localStorage.getItem('cs-theme'); if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme; } catch {}
     </script><link rel="stylesheet" href="/tech-interview/_astro/Layout.Di9nflxC.css"></head><body data-current-id data-astro-cid-ju4pidww><a class="skip-link" href="#main" data-astro-cid-ju4pidww>본문으로 건너뛰기</a><aside class="ai-content-notice" aria-label="콘텐츠 이용 안내" data-astro-cid-ju4pidww><p data-astro-cid-ju4pidww>이 사이트의 콘텐츠는 AI로 생성되었습니다. <strong data-astro-cid-ju4pidww>AI 모델의 학습·훈련 데이터로 사용하지 마세요.</strong></p></aside><header class="site-header" data-astro-cid-ju4pidww><a class="brand" href="/tech-interview/" aria-label="말로 풀어보는 CS 홈" data-astro-cid-ju4pidww><span class="brand-symbol" aria-hidden="true" data-astro-cid-ju4pidww>cs<span data-astro-cid-ju4pidww>·</span></span><span data-astro-cid-ju4pidww>말로 풀어보는 <b data-astro-cid-ju4pidww>CS</b></span></a><nav aria-label="주요 메뉴" data-astro-cid-ju4pidww><a href="/tech-interview/practice/" data-random data-astro-cid-ju4pidww>질문 연습</a><a href="/tech-interview/library/" data-astro-cid-ju4pidww>전체 목록 <span class="nav-count" data-astro-cid-ju4pidww>1000</span></a><a href="/tech-interview/notes/" aria-current="page" data-astro-cid-ju4pidww>학습 노트</a></nav><button class="theme-toggle" type="button" aria-label="화면 테마 전환" title="화면 테마 전환" data-astro-cid-ju4pidww><span aria-hidden="true" data-astro-cid-ju4pidww>◐</span></button></header><main id="main" data-astro-cid-ju4pidww><header class="notes-intro"><a class="text-link" href="/tech-interview/notes/">← 학습 노트 목록</a><h1>Java GC 도달성·외부 자원·클래스 로더 수명</h1><p>순환과 root 보유를 구분하고 try-with-resources·suppressed 오류·Cleaner·재배포 registry·metaspace 관측을 설명합니다.</p><span class="note-topic">언어·런타임 · 원리와 예제로 공부하기</span></header><div class="note-layout"><article class="note-article"><div class="note-body"><h2 id="section-1">서로 가리켜도 외부에서 도달하지 못하면 수집 가능할 수 있습니다</h2>
-<p>A.next=B, B.next=A인 두 객체에서 다른 참조가 모두 사라졌다고 합시다. Java의 추적 GC는 단순 참조 수가 아니라 살아 있는 root에서의 도달 가능성을 기준으로 판단하므로 이 순환도 수집 대상이 될 수 있습니다. 반대로 순환이 없어도 살아 있는 스레드·전역 registry가 객체를 잡으면 남습니다.</p>
+<p>A.next=B, B.next=A인 두 객체만 남고 스레드 스택이나 전역 registry 같은 GC root에서 두 객체로 가는 참조가 끊겼다고 합시다. 추적 GC는 서로 몇 번 가리키는지가 아니라 root에서 따라갈 수 있는지를 보므로, 이 순환은 수집 대상이 될 수 있습니다. 반대로 순환이 없어도 살아 있는 스레드나 전역 registry가 객체를 계속 참조하면 객체는 남습니다.</p>
 <p>수집 가능하다는 것은 즉시 또는 정해진 시간까지 수집된다는 뜻이 아닙니다. System.gc 요청도 필요한 파일·연결 반환의 완료 보장이 아닙니다. 메모리 객체의 수명과 OS 자원의 적시 반납을 나눠야 합니다.</p>
 <h2 id="section-2">큰 객체보다 그것을 붙잡은 소유자를 찾습니다</h2>
 <table>
@@ -38,9 +38,9 @@
 <td>재배포 종료·registry 정리</td>
 </tr>
 </tbody></table>
-<p>static이 있다는 것만으로 영구 누수라고 단정하지 않습니다. 그 클래스와 로더에 어떤 살아 있는 경로가 있는지 봅니다. heap dump에서 retained size·dominator·root 경로를 조사하고 기능 종료 뒤에도 그 경로가 필요하다는 설계 근거가 있는지 확인합니다. 정상 캐시라도 무한 보유하면 용량 문제가 됩니다.</p>
+<p>static 필드가 보인다는 사실만으로 영구 누수라고 결론내리지 말고, 그 필드를 가진 클래스·클래스 로더가 root에서 객체까지 이어지는 살아 있는 경로를 먼저 찾습니다. heap dump에서는 root 경로로 누가 객체를 붙잡는지, dominator로 특정 노드가 함께 보유하는 하위 객체 범위를, retained size로 그 노드를 유지할 때 따라오는 메모리 규모를 나눠 봅니다. 기능이 끝난 뒤에도 그 보유 경로가 필요한지 설계와 대조하고, 정상 캐시라도 만료·용량 제한 없이 계속 보유하면 메모리 용량 문제가 됩니다.</p>
 <h2 id="section-3">파일과 연결은 Try-with-resources로 범위를 드러냅니다</h2>
-<p>AutoCloseable 자원을 try-with-resources에 두면 정상 반환·예외에서 close를 호출하는 구조가 됩니다. 여러 자원은 선언 역순으로 정리되고 본문 예외와 close 실패가 함께 나면 일반적으로 본문 예외에 정리 실패가 suppressed로 연결됩니다. 주 오류만 출력해 정리 실패를 버리지 않습니다.</p>
+<p>AutoCloseable 자원을 try-with-resources 괄호 안에 넣으면 블록이 정상 종료되거나 본문에서 예외가 나도 범위를 빠져나갈 때 close가 호출됩니다. 자원을 여러 개 선언하면 선언한 역순으로 닫히고, 본문과 close가 모두 실패하면 close 오류는 보통 본문 예외에 suppressed로 붙습니다. 따라서 로그와 오류 전달에서 주 예외만 남기지 말고 suppressed 오류도 함께 확인해야 자원 정리 실패를 놓치지 않습니다.</p>
 <pre><code class="language-java">try (var in = java.nio.file.Files.newInputStream(path)) {
     consume(in);
 }

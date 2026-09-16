@@ -13,7 +13,7 @@
   tokens -= cost
   return Allowed
 </code></pre>
-<p>권위 계산 지점의 monotonic/저장소 시간 계약을 쓰고 여러 host의 벽시계를 무작정 섞지 않습니다. 동시 요청이 같은 남은 token을 보고 각각 허용되지 않게 합니다. 상태 eviction·restart 때 매번 full bucket을 주면 반복 초기화로 전체 허용량이 늘 수 있습니다.</p>
+<p>여러 요청이 같은 bucket 상태를 읽는 순간 각각 남은 token이 충분해 보이더라도, 검사와 차감을 하나의 atomic state update 안에서 끝내 각 요청이 같은 남은 token을 동시에 차감하지 않게 합니다. 시간은 권위 계산 지점의 monotonic/저장소 시간 계약으로 다루고 여러 host의 벽시계를 무작정 섞지 않습니다. 상태가 eviction되거나 restart될 때 매번 full bucket으로 시작하면 초기화가 반복될수록 전체 허용량이 늘 수 있으므로, 그 재시작·상태 유실 정책도 한도 계산에 포함합니다.</p>
 <table>
 <thead>
 <tr>

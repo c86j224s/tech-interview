@@ -44,7 +44,7 @@ with owner.state_lock:
     else:
         apply_result_to_current_state
 </code></pre>
-<p>세대 검사와 변경은 같은 동기화 경계에 둡니다. 검사 뒤 잠금을 풀고 실제 적용하면 그 틈에 취소·새 세대가 시작될 수 있습니다. 세대 번호는 논리 권한을 검사하며 해제된 포인터 접근을 안전하게 만드는 장치는 아닙니다.</p>
+<p>callback이 세대 7인지 확인한 뒤 <code>state_lock</code>을 풀고 결과를 적용하면, 그 사이 세대 8이 시작되거나 객체가 stopping 상태가 될 수 있습니다. 그러면 callback은 살아 있는 객체에 접근하더라도 현재 요청에 속하지 않는 결과를 덮어쓸 수 있습니다. 세대 검사와 상태 변경을 같은 동기화 경계에서 수행하고, 세대 번호는 논리 권한만 판정하게 합니다. 객체가 이미 해제된 포인터를 읽는 문제는 세대 번호로 고칠 수 없으므로 먼저 <code>weak.lock()</code>과 수명 계약을 지켜야 합니다.</p>
 <h2 id="section-5">Atomic root에는 완성된 불변 snapshot을 게시합니다</h2>
 <p>C++20의 <code>std::atomic&lt;std::shared_ptr&lt;const State&gt;&gt;</code>에 완전히 초기화한 State를 release로 store하고 독자가 acquire로 load하는 모형을 생각할 수 있습니다. 독자는 한 번 load한 지역 소유 참조로 관련 필드를 모두 읽습니다. 필드마다 루트를 다시 읽으면 version 7의 routes와 version 8의 index를 조합할 수 있습니다.</p>
 <p>const State라도 내부가 다른 가변 객체를 가리키거나 다른 별칭에서 수정할 수 있으면 깊은 불변성이 아닙니다. 게시 뒤 필요한 전체 데이터가 바뀌지 않는 소유 모델을 지켜야 합니다. atomic shared_ptr가 lock-free라는 보장도 없으므로 비용을 측정합니다.</p>

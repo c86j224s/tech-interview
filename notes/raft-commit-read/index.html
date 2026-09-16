@@ -43,7 +43,7 @@
 <p>합의된 의도와 외부 API 성공은 다른 확정 지점입니다. 외부 제공자가 멱등성을 지원하지 않으면 불확정 상태·대사·수동 복구가 필요할 수 있습니다. Raft가 그 경계까지 exactly-once로 바꾼다고 주장하지 않습니다.</p>
 <h2 id="section-5">고립된 옛 Leader의 로컬 읽기는 최신이 아닐 수 있습니다</h2>
 <p>A가 term 4에서 x=1을 적용한 뒤 고립되고 B·C가 term 5에서 x=2를 commit·apply했습니다. 그 성공 뒤 시작한 읽기를 A가 1로 반환하면 선형화 읽기를 위반할 수 있습니다. A의 로컬 leader 플래그나 옛 heartbeat만으로 현재 권위를 증명할 수 없습니다.</p>
-<p>ReadIndex 방식은 현재 term의 commit 기준을 확보한 leader가 읽기 요청에 연결된 quorum 확인으로 권위를 확인하고 안전한 read index를 정합니다. 그 위치 이상을 로컬 상태 머신이 apply한 뒤 읽습니다. 안전 index=100인데 apply=97이면 권위가 확인됐어도 기다려야 합니다. 단순 heartbeat 하나를 과거부터 재사용하는 것과 다릅니다.</p>
+<p>ReadIndex는 leader가 현재 term의 commit 기준을 확보한 뒤, 이번 읽기에 연결된 quorum 확인을 받아 자신이 아직 권위가 있는지 확인하고 read index를 정하는 방식입니다. 그 다음 로컬 state machine의 applied index가 read index 이상이 될 때까지 기다린 뒤 값을 읽습니다. 예를 들어 안전 index=100인데 apply=97이면 quorum 확인이 끝났어도 98~100의 적용을 기다려야 하며, 과거 heartbeat 하나를 재사용하는 것과는 다릅니다.</p>
 <h2 id="section-6">Follower도 안전 위치와 로컬 Apply를 연결해야 합니다</h2>
 <p>follower는 현재 leader에서 그 읽기에 유효한 read index를 얻고 자신의 applied index가 그 이상인지 확인한 뒤 읽을 수 있습니다. log 수신·저장만 따라잡은 것은 상태 적용 완료가 아닙니다. leader 변경·높은 term·기한 초과·늦은 응답에 요청 문맥을 검증합니다.</p>
 <p>stale follower read는 비용을 줄일 수 있지만 별도 API 계약으로 표시하고 재고·권한 확정에 그대로 사용하지 않습니다. lease read는 quorum 왕복을 줄이는 대신 시계 진행률·정지·선거·임대 불중첩의 추가 가정이 필요합니다. 단조 시계 하나로 분산 lease 안전성이 완성되지는 않습니다.</p>
