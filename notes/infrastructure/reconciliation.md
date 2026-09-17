@@ -8,7 +8,7 @@ questionIds: [k8s-reconciliation, k8s-observed-generation-conditions, k8s-finali
 
 # Kubernetes 선언·관찰·조정·삭제의 상태
 
-## Apply 성공은 원하는 상태를 저장했다는 뜻입니다
+## Apply 성공과 원하는 상태 저장
 
 Deployment replica를 3에서 5로 바꾸는 요청이 성공해도 Pod 두 개가 즉시 서비스하는 것은 아닙니다. API 서버가 원하는 spec을 저장한 뒤 Deployment controller·ReplicaSet controller·scheduler·kubelet·컨테이너 런타임이 각각 상태를 맞춥니다. 이미지 다운로드·볼륨 연결·초기화·readiness가 끝나야 실제 용량이 생깁니다.
 
@@ -18,7 +18,7 @@ Deployment replica를 3에서 5로 바꾸는 요청이 성공해도 Pod 두 개�
 {"title":"선언 저장에서 실제 처리 용량까지 여러 단계가 있습니다","caption":"화살표는 개념적 준비 순서입니다. 각 단계는 독립적으로 지연·실패할 수 있어 API 성공만으로 최종 준비를 판정하지 않습니다.","rows":[[{"id":"api","label":"spec 저장"}],[{"id":"controller","label":"ReplicaSet·Pod 목표 조정"}],[{"id":"schedule","label":"노드 배치·볼륨·이미지"}],[{"id":"ready","label":"프로세스 초기화·Ready"}],[{"id":"traffic","label":"endpoint 전파·실제 요청"}]],"edges":[{"from":"api","to":"controller","label":"controller 관찰"},{"from":"controller","to":"schedule","label":"Pod 생성"},{"from":"schedule","to":"ready","label":"kubelet 실행"},{"from":"ready","to":"traffic","label":"서비스 수용"}]}
 ```
 
-## Generation과 Condition을 같은 시점의 의미로 읽습니다
+## Generation·Condition과 관찰 시점의 의미
 
 | 상태 | 의미 | 의미하지 않는 것 |
 | --- | --- | --- |
@@ -32,25 +32,25 @@ Deployment replica를 3에서 5로 바꾸는 요청이 성공해도 Pod 두 개�
 
 읽기 전용 진단에서는 Deployment→ReplicaSet→Pod→이벤트→EndpointSlice→실제 요청 순서로 멈춘 경계를 찾습니다. Pending이면 자원·affinity·taint·볼륨 topology를 보고, 실행됐는데 Ready가 아니면 초기화·probe·앱 의존성을 봅니다.
 
-## 반복 실행될 외부 작업도 멱등해야 합니다
+## 반복 실행 외부 작업의 멱등성
 
 커스텀 controller가 클라우드 리소스를 만들고 status를 저장하기 전에 죽으면 다음 조정에서 같은 생성을 반복할 수 있습니다. 안정된 외부 ID·요청 키로 기존 결과를 찾고, 상태 기록과 실제 외부 결과를 대사할 수 있어야 합니다. Kubernetes owner reference가 클라우드 API의 중복 생성을 자동 방지하지는 않습니다.
 
 현재 목록을 읽고 필요한 차이만 적용하며, conflict에는 최신 객체를 다시 읽어 계산합니다. 무제한 즉시 재시도는 API 장애를 증폭하므로 backoff·작업 큐 상한·오류 관측을 둡니다. 선언형이라는 말은 외부 부수 효과가 자동 거래가 된다는 뜻이 아닙니다.
 
-## Finalizer는 삭제 전에 남은 책임을 나타냅니다
+## Finalizer와 삭제 전 잔여 책임
 
 삭제 요청 후 deletionTimestamp가 찍혔는데 finalizer가 남으면 객체가 Terminating에 머무를 수 있습니다. 그 finalizer를 처리할 controller, 외부 리소스 ID, controller 권한·연결·로그·정리 상태를 대조합니다. 외부 삭제가 성공했는데 status 반영이 실패한 재시도도 안전해야 합니다.
 
 그냥 finalizer 문자열을 지우면 API 객체는 사라져도 클라우드 리소스·볼륨·데이터가 고아로 남을 수 있습니다. 강제 제거는 실제 정리·데이터 보존·대체 소유자와 승인 근거를 확인한 뒤의 별도 운영 결정입니다. 이 노트는 강제 삭제를 실행하지 않습니다.
 
-## 같은 필드의 원하는 값을 두 주체가 계속 바꾸지 않게 합니다
+## 동일 필드의 manager별 소유권 충돌
 
 GitOps가 replicas=3을 계속 쓰고 HPA가 replicas=5를 쓰면 두 조정자가 서로 되돌릴 수 있습니다. server-side apply의 managedFields에서 어느 manager가 어떤 필드를 관리하는지 확인하고 필드 책임을 나눕니다. apply conflict를 force로 덮는 것은 소유권 이전이지 올바른 설계를 자동 선택하는 기능이 아닙니다.
 
 같은 값을 공유하는 manager·defaulting·mutating webhook·update와 apply의 차이도 실제 객체에서 확인합니다. managedFields는 모든 API 수정자를 막는 보안 잠금이 아니므로 인가와 운영 규칙도 필요합니다. 필드를 diff에서 제외하면 그 필드의 수동 drift까지 숨길 수 있어 별도 감사·상한 검증을 둡니다.
 
-## 관찰 지연과 실패 복구를 단계별로 시험합니다
+## 관찰 지연과 실패 복구의 단계별 시험
 
 테스트 클러스터에서 replica 변경·노드 부족·잘못된 이미지·controller 재시작·외부 정리 실패를 각각 재현합니다. 목표 저장 시각·관찰 세대·Ready·실제 요청 성공 시각을 분리해 수렴 시간을 측정합니다. 삭제·생성 재시도에서는 외부 자원이 중복되거나 사라지지 않는지 확인합니다.
 

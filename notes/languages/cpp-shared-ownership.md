@@ -8,13 +8,13 @@ questionIds: [cpp-shared-pointer-lifetime, cpp-weak-pointer-cycle, weak-lock-log
 
 # Shared Pointer의 수명·필드·논리 세대
 
-## 객체를 살려 두어도 count 증가는 경쟁할 수 있습니다
+## 객체 수명과 count 증가의 동시성
 
 두 콜백이 각자의 shared_ptr 복사본으로 같은 객체를 소유하면 콜백 동안 객체의 강한 참조가 유지됩니다. 그러나 둘이 동시에 일반 정수 count를 증가시키면 데이터 레이스가 될 수 있습니다. 참조 카운트의 동기화는 대상 객체의 필드 접근까지 보호하지 않습니다.
 
 같은 shared_ptr 변수 하나를 여러 스레드가 읽고 교체하는 경우도 별도입니다. 서로 다른 shared_ptr 인스턴스의 제어 블록 공유와 같은 변수에 대한 동시 변경을 혼동하면 안 됩니다.
 
-## 세 층의 안전성을 나눕니다
+## 제어 블록·루트 포인터·대상 객체의 안전성
 
 | 층 | 보호할 것 | 가능한 수단 |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ questionIds: [cpp-shared-pointer-lifetime, cpp-weak-pointer-cycle, weak-lock-log
 
 이미 공유 소유된 this를 또 `shared_ptr(this)`로 감싸지 않고 enable_shared_from_this의 준비된 소유 계약을 따릅니다. 생성자에서 공유 소유가 아직 형성되기 전 shared_from_this를 호출하는 것도 일반적인 안전 패턴이 아닙니다.
 
-## Weak reference는 소유하지 않는 관찰입니다
+## Weak reference의 비소유 관찰
 
 부모가 자식을 강하게 소유하고 자식이 부모를 단지 관찰한다면 역참조에 weak_ptr를 둘 수 있습니다. 둘 다 강하게 소유하면 외부 참조가 사라져도 순환 내부의 강한 수가 남습니다. 객체가 저장한 callback이 다시 객체를 shared_ptr로 캡처하는 고리도 같은 문제입니다.
 
@@ -36,7 +36,7 @@ questionIds: [cpp-shared-pointer-lifetime, cpp-weak-pointer-cycle, weak-lock-log
 
 `expired()`를 확인한 뒤 별도 raw pointer로 접근하면 그 사이 객체가 소멸할 수 있습니다. `lock()`으로 강한 참조를 얻어 성공한 범위에서 사용합니다. 실패는 대상이 사라져도 되는 관찰 관계의 정상 결과로 처리합니다. 반드시 완료해야 할 결제·저장 작업을 화면 객체의 약한 참조에만 맡기면 화면 종료와 함께 일을 잃을 수 있으므로 별도 작업 소유자가 필요합니다.
 
-## 살아 있다는 것과 지금 결과를 적용해도 된다는 것은 다릅니다
+## 객체 수명과 결과 적용 세대
 
 작업 세대 7의 callback이 weak lock에 성공했지만 객체는 이미 세대 8의 요청을 처리 중일 수 있습니다. 메모리는 살아 있어도 세대 7 결과를 덮어쓰면 안 됩니다.
 
@@ -52,7 +52,7 @@ with owner.state_lock:
 
 callback이 세대 7인지 확인한 뒤 `state_lock`을 풀고 결과를 적용하면, 그 사이 세대 8이 시작되거나 객체가 stopping 상태가 될 수 있습니다. 그러면 callback은 살아 있는 객체에 접근하더라도 현재 요청에 속하지 않는 결과를 덮어쓸 수 있습니다. 세대 검사와 상태 변경을 같은 동기화 경계에서 수행하고, 세대 번호는 논리 권한만 판정하게 합니다. 객체가 이미 해제된 포인터를 읽는 문제는 세대 번호로 고칠 수 없으므로 먼저 `weak.lock()`과 수명 계약을 지켜야 합니다.
 
-## Atomic root에는 완성된 불변 snapshot을 게시합니다
+## Atomic root와 완성된 불변 snapshot 게시
 
 C++20의 `std::atomic<std::shared_ptr<const State>>`에 완전히 초기화한 State를 release로 store하고 독자가 acquire로 load하는 모형을 생각할 수 있습니다. 독자는 한 번 load한 지역 소유 참조로 관련 필드를 모두 읽습니다. 필드마다 루트를 다시 읽으면 version 7의 routes와 version 8의 index를 조합할 수 있습니다.
 
@@ -60,13 +60,13 @@ const State라도 내부가 다른 가변 객체를 가리키거나 다른 별�
 
 두 writer가 같은 옛 루트에서 각자 새 상태를 만들어 store하면 뒤 writer가 앞 변경을 잃게 할 수 있습니다. CAS가 실패하면 새 현재 루트에서 재계산하거나 writer를 직렬화합니다. 포인터 교체의 원자성과 read-modify-write의 업무 원자성은 다릅니다.
 
-## 마지막 소유자의 실행 위치도 비용입니다
+## 마지막 소유자 스레드와 소멸 비용
 
 마지막 강한 참조가 사라지는 스레드에서 소멸자가 실행될 수 있습니다. 무거운 소멸이나 특정 executor 전용 자원이 있으면 수명·deleter·종료 순서를 설계합니다. 다른 executor에 정리 작업을 보내려면 그 executor가 실제 정리를 끝낼 때까지 살아 있어야 합니다.
 
 make_shared처럼 객체와 제어 블록을 함께 할당하는 경우 객체 소멸 뒤에도 약한 참조가 제어 블록의 할당을 유지해 저장 공간 반환이 늦어질 수 있습니다. aliasing shared_ptr는 저장 포인터와 소유 객체가 다를 수 있어 get 주소만으로 소유 수명을 추측하지 않습니다.
 
-## 소멸 횟수·상태 세대·동시 변경을 각각 검사합니다
+## 소멸 횟수·상태 세대·동시 변경 검증
 
 외부 참조 제거·순환 해제·weak lock과 소멸 경쟁을 테스트하고 객체 소멸이 한 번인지 확인합니다. 세대 7 callback을 멈춘 뒤 8을 시작해 옛 결과가 적용되지 않는지도 봅니다. snapshot 독자는 한 버전의 불변식만 관찰해야 하고 다중 writer 변경은 정책대로 보존되어야 합니다.
 

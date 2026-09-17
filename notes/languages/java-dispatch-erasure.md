@@ -8,7 +8,7 @@ questionIds: [java-overload-override, java-field-hiding-dispatch, java-null-over
 
 # Java 호출 선택과 제네릭 타입 소거
 
-## 먼저 시그니처를 고르고 나중에 구현을 고릅니다
+## 정적 시그니처 선택과 동적 구현 호출 단계
 
 ```java
 class A {
@@ -33,13 +33,13 @@ main에서 `A a = new B();`를 만든 뒤 `a.f("hi")`는 B:Object를 기대합�
 
 필드는 override되지 않고 숨겨질 수 있습니다. static 메서드도 일반 인스턴스의 동적 override와 다르므로 클래스 이름으로 호출해 의도를 드러냅니다. private 메서드와 생성자도 같은 다형적 override 규칙으로 설명하지 않습니다.
 
-## Null과 변환 단계가 Overload를 모호하게 만들 수 있습니다
+## Null·변환 단계와 Overload 모호성
 
 f(String)과 f(Integer)가 있고 `f(null)`을 호출하면 둘 다 적용 가능하지만 서로 더 구체적인 하나가 없어 컴파일 오류가 됩니다. cast로 의도를 드러낼 수 있지만 너무 많은 유사 overload가 API 사용성을 해치는지 검토합니다.
 
 `primitive widening`·boxing·varargs는 컴파일러가 적용하는 단계가 서로 다릅니다. 예를 들어 `int` 인수에 `f(long)`과 `f(Integer)`가 모두 있으면 `int→long` widening이 `int→Integer` boxing보다 먼저 적용될 수 있으므로, 이름이 비슷한 래퍼 메서드가 자동으로 선택되는 것은 아닙니다. 반환 타입만 다른 overload는 만들 수 없고, 선택은 실행 중 객체를 보고 고르는 휴리스틱이 아니라 컴파일 단계의 규칙으로 결정됩니다.
 
-## 제네릭은 컴파일 검사를 제공하고 객체의 모든 타입 인자를 보존하지 않습니다
+## 제네릭 컴파일 검사와 런타임 타입 소거
 
 일반적인 `ArrayList<String>`과 `ArrayList<Integer>`는 타입 인자마다 별도 런타임 클래스가 생기지 않고 같은 `ArrayList` 클래스의 객체입니다. 컴파일할 때 타입 변수는 소거되어 `Object` 또는 경계 타입으로 바뀌고, 예를 들어 `strings.get(0)`의 결과를 `String`으로 쓰는 지점에는 필요한 cast가 삽입됩니다.
 
@@ -54,7 +54,7 @@ raw.add(1); // unchecked 경고, String 계약 훼손
 
 raw 경고를 suppress한다고 런타임 검사나 안전성이 생기지 않습니다. 외부 경계에서는 List<?>의 실제 원소를 검사하고 검증된 새 컬렉션으로 옮겨 가변 별칭이 나중 잘못된 원소를 넣지 못하게 합니다.
 
-## Bridge가 소거된 부모 호출을 자식 구현에 연결합니다
+## Bridge를 통한 소거된 부모 호출의 자식 구현 연결
 
 ```java
 class Box<T> {
@@ -73,7 +73,7 @@ class TextBox extends Box<String> {
 
 javap의 bridge·synthetic 표시와 reflection의 isBridge를 통해 작성한 overload와 구분할 수 있습니다. 메서드 스캐너가 bridge를 중복 업무 메서드로 등록하지 않는지도 확인합니다. List<String>과 List<Integer>만 다른 매개변수 overload는 둘 다 List로 소거되어 충돌할 수 있습니다.
 
-## 배열은 Runtime 원소 타입을 검사합니다
+## 배열의 Runtime 원소 타입 검사
 
 배열의 공변성과 제네릭의 기본 불공변성을 구분합니다. `Object[] a = new String[1]`은 가능하지만 Integer를 저장하면 ArrayStoreException입니다. 배열은 실제 component type을 알아야 하므로 일반적인 `new List<String>[10]`은 허용되지 않습니다. List<String>의 구체 타입 인자는 런타임 검사에 충분히 남지 않기 때문입니다.
 
@@ -83,7 +83,7 @@ unchecked cast로 배열을 강제하면 실제 원소와 선언한 제네릭 �
 
 List<Integer>를 List<Number>로 대입할 수 없는 이유는 Number 목록을 통해 Double을 넣으면 원래 Integer 계약이 깨지기 때문입니다. 읽기에는 `? extends Number`, Integer 쓰기에는 `? super Integer`처럼 허용 연산을 좁힐 수 있습니다. wildcard가 모든 값을 안전하게 넣는 통로는 아닙니다.
 
-## 컴파일 거절과 실행 Cast 실패를 따로 확인합니다
+## 컴파일 거절과 실행 Cast 실패의 분리 검사
 
 부모·자식 참조와 cast, null 모호성, widening·boxing·varargs를 작은 소스로 컴파일해 선택을 확인합니다. bridge는 bytecode를 검사하고 raw 입력의 실패 위치와 정상 제네릭 호출을 대조합니다. 타입 토큰을 쓰는 직렬화기도 실제 원소를 검증하는지 별도로 시험합니다.
 

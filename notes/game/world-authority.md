@@ -8,11 +8,11 @@ questionIds: [world-partition-handoff, cross-boundary-combat-authority]
 
 # 공간 Handoff의 권위 전환과 경계 전투
 
-## 복사본이 생겼다고 새 Owner가 된 것은 아닙니다
+## 상태 복사와 Owner 권위의 분리
 
 server A의 캐릭터를 B로 복사한 뒤 A와 B가 모두 공격과 보상을 처리하면 중복 효과가 생깁니다. handoff ID는 이번 권위 이전을 식별하고, owner epoch는 소유자 세대를 나타내며 단조롭게 증가합니다. B가 snapshot(한 시점의 상태 복사본)을 받아 예정된 다음 epoch를 준비하는 일과, 그 epoch를 내구 상태에 커밋해 권위를 B로 넘기는 일은 분리합니다. 관찰 replica는 근처 상태를 볼 수 있어도 공격·보상 같은 권위 쓰기 경로가 아닙니다.
 
-## 마지막 입력과 Delta 뒤에 전환점을 둡니다
+## 마지막 입력·Delta 이후의 권위 전환점
 
 | 단계 | 보존할 사실 |
 | --- | --- |
@@ -29,19 +29,19 @@ server A의 캐릭터를 B로 복사한 뒤 A와 B가 모두 공격과 보상을
 {"title":"최종 상태 반영과 내구 권위 Commit을 분리합니다","caption":"화살표는 handoff 단계입니다. B 준비 응답만으로 authority를 바꾸지 않고 실제 저장 지점이 새 epoch만 허용하도록 합니다.","rows":[[{"id":"a","label":"A · 현재 owner g"}],[{"id":"prepare","label":"B 준비 · snapshot g+1 후보"}],[{"id":"drain","label":"A drain·마지막 delta/input"}],[{"id":"commit","label":"내구 cutover · owner B,g+1"}],[{"id":"route","label":"새 routing·옛 epoch 쓰기 거절"}]],"edges":[{"from":"a","to":"prepare","label":"상태 복사"},{"from":"prepare","to":"drain","label":"준비 확인"},{"from":"drain","to":"commit","label":"최종 반영 확인"},{"from":"commit","to":"route","label":"권위 전환점"}]}
 ```
 
-## Fencing은 Router의 믿음이 아니라 저장 경계입니다
+## Fencing과 저장 경계의 권위 검증
 
 A가 “아직 owner”를 확인한 뒤 멈췄다가 cutover 후 쓰면 사전 조회만으로 막지 못합니다. 실제 state/event/보상 저장이 expected epoch를 원자 검사해야 합니다. router cache에는 owner와 epoch를 같이 저장하고 mismatch면 재조회합니다. stable account/character와 권리 key를 유지해 handoff마다 보상을 새로 만들지 않습니다.
 
 cutover 전 B 실패면 A 유지 또는 조정자 재개 정책을, cutover 후 실패면 이미 바뀐 권위를 기준으로 복구를 정합니다. A가 drain 중 죽었다면 기록된 prefix·원장으로 미확인 입력을 찾아 재전달하되 dedup합니다. 단순 timeout을 근거로 양쪽을 owner로 살리지 않습니다.
 
-## 경계 양쪽 전투는 한 캐릭터 Owner만 정해도 끝나지 않습니다
+## 경계 전투의 단일 피해·보상 확정 경로
 
 공격자가 A 서버에 있고 대상이 B 서버에 있을 때, 두 서버가 서로 다른 현재 snapshot(판정에 쓰는 상태 복사본)을 읽고 각각 피해를 확정하면 중복·모순이 생깁니다. 공격 ID, 기준 tick, 양쪽 state/history snapshot, handoff epoch와 피해를 최종 확정할 owner를 정합니다. 공유 판정 영역을 사용하거나 읽기용 snapshot을 조합하더라도 피해·보상 효과를 생성하는 권위 경로는 하나로 제한합니다.
 
 공격이 늦게 도착하면 기록된 tick과 rewind 정책으로 검증한 뒤, 그 공격을 현재 대상 세대와 상태에 적용합니다. 관찰 replica는 damage를 직접 쓰지 않고, 과거 hitbox snapshot(충돌 판정 영역의 상태)의 체력을 현재 state에 덮어쓰지도 않습니다. 같은 공격의 재전달과 서로 다른 접촉은 안정 ID로 구분해 중복 재처리와 별개의 접촉을 혼동하지 않습니다.
 
-## 경계 Hysteresis는 권위 중복 허가가 아닙니다
+## 경계 Hysteresis와 권위 중복의 분리
 
 경계 왕복 때 매틱 이동을 줄이기 위해 완충 구간·최소 유지 시간을 둘 수 있습니다. 폭이 커지면 한 server 부하와 관찰 범위도 커져 입력 보류·handoff 반복률·p99를 비교합니다. 언제나 유효 writer는 계약된 하나여야 합니다.
 

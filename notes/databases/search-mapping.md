@@ -8,7 +8,7 @@ questionIds: [elasticsearch-shard-mapping, elasticsearch-docvalues-inverted-inde
 
 # Elasticsearch Mapping·역색인·Doc Values·Shard
 
-## 정확한 ID와 본문 단어 검색은 같은 표현이 아닙니다
+## 정확 값과 본문 검색 표현의 분리
 
 `mapping`은 필드마다 어떤 타입으로 저장하고 분석·색인·정렬·집계를 허용할지 정하는 색인 스키마입니다. 상품 ID `AB-123`에 `text` analyzer를 적용하면 문자열을 여러 `token`으로 나누어 검색할 수 있으므로 원문 전체와 같은 값인지 확인하는 ID 조회에는 맞지 않을 수 있고, shard(데이터를 나누어 저장하는 단위) 수를 늘려도 이 tokenization 의미는 바뀌지 않습니다.
 
@@ -21,7 +21,7 @@ ID·tenant·분류처럼 정확히 같아야 하는 값은 보통 `keyword`, 본
 | 숫자·시각 범위 | numeric·date | 정밀도·형식·시간대 |
 | 정렬·집계 | 지원 타입 doc values | cardinality·메모리·응답량 |
 
-## 역색인은 Term에서 문서로, Doc Values는 문서에서 값으로 갑니다
+## 역색인과 Doc Values의 조회 방향
 
 `역색인`은 검색어인 `term`에서 그 term을 포함한 문서 ID 목록으로 가는 표라서 검색 후보를 먼저 좁힙니다. `doc values`는 반대로 문서에서 특정 필드의 값을 읽기 쉽도록 저장한 열 지향 표현이라 정렬·집계·스크립트에 쓰입니다. 따라서 같은 필드의 `index` 설정은 검색 후보를 만들 수 있는지, `doc_values` 설정은 문서별 값을 읽을 수 있는지와 관련된 별도 책임입니다.
 
@@ -31,13 +31,13 @@ ID·tenant·분류처럼 정확히 같아야 하는 값은 보통 `keyword`, 본
 
 `text`에 `fielddata`(분석된 text 값을 메모리에 올려 정렬·집계에 쓰는 표현)를 켜면 heap 비용이 커질 수 있습니다. 그래서 정확 값과 집계가 필요하면 `keyword` multi-field처럼 목적에 맞는 표현을 먼저 검토합니다. `index:false`인 일부 타입도 doc values를 이용한 제한된 접근이 가능할 수 있지만 지원 연산과 성능이 같다는 뜻은 아니며, doc values가 모든 필드 타입에 같은 방식으로 존재하는 것도 아니므로 실제 버전 계약을 확인해야 합니다.
 
-## 동적 필드와 큰 집계는 저장·메모리를 키웁니다
+## 동적 필드·대규모 집계의 저장·메모리 비용
 
 사용자 ID를 필드 이름으로 계속 추가하면 mapping 필드 수·cluster state·메모리 관리가 커질 수 있습니다. 허용 schema·dynamic template·적합한 flattened 등의 자료형을 실제 질의 요구와 비교합니다. 타입이 잘못 자동 추론된 뒤 기존 필드 타입을 자유롭게 바꿀 수 있다고 가정하지 않습니다.
 
 고카디널리티 terms 집계·긴 keyword·큰 문서·정렬 후보 수는 coordinator·shard 메모리·CPU에 영향을 줍니다. 단순 전체 문서 수 외에 값 분포·최대 크기·검색 선택도·aggregation bucket 수를 제한하고 측정합니다.
 
-## Shard는 병렬 실행 단위이면서 복구 단위입니다
+## Shard의 병렬 실행·복구 단위 역할
 
 shard가 많으면 일부 작업을 분산할 수 있지만 검색 fan-out·각 shard의 segment·파일 핸들·heap·coordinator 병합 비용이 늘어납니다. 작은 shard를 과도하게 만들면 overhead가 크고 너무 큰 shard는 이동·복구 시간이 길어질 수 있습니다. primary와 replica의 저장·가용성·읽기 비용을 함께 봅니다.
 
@@ -45,7 +45,7 @@ shard가 많으면 일부 작업을 분산할 수 있지만 검색 fan-out·각 
 
 custom routing은 일부 조회 fan-out을 줄일 수 있지만 tenant 편중·hot shard·ID GET 때 같은 routing 필요·삭제 경로 계약이 생깁니다. routing이 데이터 접근 인가를 대신하지도 않습니다.
 
-## Mapping 변경은 새 표현의 의미를 먼저 대조합니다
+## Mapping 변경 시 새 표현의 의미 대조
 
 새 index에 바꾼 mapping으로 대표 문서를 넣고 분석 token·정확 ID·정렬·NULL·집계 결과를 비교합니다. old/new query가 같은 사용자 요구를 만족하는지 확인한 뒤 reindex·동시 쓰기·삭제 추적·alias 전환을 설계합니다.
 

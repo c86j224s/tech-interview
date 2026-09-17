@@ -8,13 +8,13 @@ questionIds: [python-asyncio-blocking, python-asyncio-taskgroup, python-contextv
 
 # Asyncio 실행 양보·TaskGroup·ContextVar 수명
 
-## Async 함수 안의 동기 호출은 이벤트 루프를 붙잡습니다
+## Async 함수의 동기 호출과 이벤트 루프 점유
 
 `async def handler`가 호출될 때는 본문이 즉시 실행되지 않고 coroutine 객체가 만들어집니다. 이후 이벤트 루프가 그 coroutine을 실행하는 동안 `time.sleep`이나 동기 HTTP가 호출되면 해당 호출이 끝날 때까지 같은 루프의 다른 task가 진행하지 못할 수 있으므로, `async`라는 선언만으로 본문이 다른 스레드로 이동한다고 생각하면 안 됩니다.
 
 `await asyncio.sleep(...)`처럼 실제로 중단되는 대기는 다른 task에 기회를 줍니다. 그러나 즉시 완료되는 awaitable이나 중단 없이 반환하는 async 함수만 반복하면 await 문법이 있어도 긴 계산이 루프를 점유할 수 있습니다. CPU 작업은 시간 예산 분할 또는 다른 실행 자원을 검토합니다.
 
-## Thread 분리와 실제 취소를 나눕니다
+## Thread 분리와 실제 취소의 구분
 
 | 방식 | 시작·실행 의미 | 남는 비용 |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ questionIds: [python-asyncio-blocking, python-asyncio-taskgroup, python-contextv
 
 외부 변경이 timeout 뒤 성공하면 단순히 결과를 폐기할 수 없는 경우가 있습니다. 같은 논리 요청 ID와 결과 대사를 유지합니다. 취소 가능한 네트워크 client로 바꿔도 서버의 이미 커밋한 거래가 자동 롤백되는 것은 아닙니다.
 
-## TaskGroup은 관련 Task의 완료와 오류를 소유합니다
+## TaskGroup과 관련 Task 수명·오류 소유
 
 Python 3.11+의 `TaskGroup`은 블록 안에서 만든 task들을 같은 수명으로 묶고, 블록을 빠져나가기 전에 모두 종료할 때까지 기다리는 구조적 동시성 도구입니다. 일반적인 취소 이외의 예외가 하나 나오면 형제 task에 취소를 요청하고 정리를 기다린 뒤 `ExceptionGroup` 등으로 예외를 전달할 수 있습니다. `KeyboardInterrupt`·`SystemExit` 같은 특별한 예외는 같은 방식으로만 처리된다고 단정하지 않습니다.
 
@@ -39,7 +39,7 @@ CancelledError를 무조건 삼키고 계속 실행하면 그룹 종료가 지�
 
 TaskGroup은 입력과 task 수를 자동 제한하지 않습니다. 수천 개 task를 먼저 만들고 semaphore를 기다리게 하면 대기 객체·문맥은 남습니다. bounded 입력·worker 수·바이트·기한을 별도로 제한합니다. 그룹 밖 create_task로 만든 작업도 누가 기다리고 예외를 관찰하는지 명확해야 합니다.
 
-## ContextVar는 한 스레드의 여러 요청 문맥을 분리합니다
+## ContextVar와 요청별 실행 문맥 분리
 
 전역 user=A를 설정한 task가 await한 사이 B가 user=B를 설정하면 A 재개 시 B를 읽을 수 있습니다. thread-local도 둘이 같은 OS 스레드라면 요청별 격리가 아닙니다. ContextVar는 현재 비동기 문맥에 값을 연결해 이 구분을 돕습니다.
 
@@ -57,13 +57,13 @@ async def handle(user_id):
 
 `process_request`는 실제 함수라는 전제이며, `reset` 토큰으로 이전 문맥을 복원해야 중첩 scope도 표현할 수 있습니다. task 생성 시 기본적으로 현재 context가 복사되지만, context에 넣은 dict 자체까지 깊은 복사되는 것은 아닙니다. 따라서 같은 가변 dict를 값으로 넣으면 task들이 dict 내부 수정 결과를 공유할 수 있습니다.
 
-## 실행 경계를 넘을 때 전파 계약을 확인합니다
+## 실행 경계와 문맥 전파 계약
 
 asyncio.to_thread는 현재 contextvars 문맥을 전달하는 API이지만 다른 executor API까지 모두 같은 자동 전파를 한다고 가정하지 않습니다. 명시적인 copy_context 또는 프레임워크 기능을 사용하되 같은 Context 객체의 동시 진입 규칙과 값의 가변성을 확인합니다.
 
 인증 주체는 신뢰된 진입점에서 설정하고 없는 경우 안전하게 실패합니다. 로그 상관 ID 전파가 대상 인가를 대신하지 않습니다. detached 백그라운드 작업이 요청의 큰 데이터·자격을 오래 붙잡지 않도록 독립 수명과 필요한 최소 입력을 선택합니다. 필수 설정·저장소 의존성까지 문맥에 숨기지 않습니다.
 
-## 교차 실행과 종료 지점을 제어해 확인합니다
+## 교차 실행·종료 지점별 문맥·정리 검증
 
 A·B task를 Event로 번갈아 재개해 문맥이 분리되는지, 중첩 set/reset과 취소 finally가 복원되는지 확인합니다. TaskGroup은 동시 예외·cleanup 실패·취소 무시를 분리해 검사합니다. to_thread는 대기 취소 뒤 실제 함수가 끝나는 시점을 별도 이벤트로 확인해야 합니다.
 

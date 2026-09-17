@@ -8,7 +8,7 @@ questionIds: [keda-hpa-role, keda-activation-target-boundaries, keda-scaledjob-s
 
 # KEDA 활성화·Lag·파티션 병렬성의 제어
 
-## CPU가 낮아도 메시지가 오래 기다릴 수 있습니다
+## CPU 지표와 메시지 대기 시간의 불일치
 
 consumer가 DB 응답을 기다리면 CPU는 낮지만 backlog는 늘 수 있습니다. 큐 길이·Kafka lag·메시지 나이 같은 외부 수요 지표가 CPU보다 직접적인 신호일 수 있습니다. 그러나 DB 자체가 병목이면 consumer 증가가 오히려 DB 요청을 더 쌓을 수 있어 실제 처리 경로를 먼저 봅니다.
 
@@ -16,7 +16,7 @@ consumer가 DB 응답을 기다리면 CPU는 낮지만 backlog는 늘 수 있습
 
 따라서 별도 HPA를 추가하거나 같은 workload의 replica 필드를 수동으로 바꾸기 전에 어느 controller가 각 값을 소유하는지 확인합니다.
 
-## Activation과 Target은 서로 다른 문턱입니다
+## Activation threshold와 scaling target의 제어 경계
 
 | 값 | 주된 질문 | 실패 예 |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ scaler의 활성화 조건이 “50을 초과하면 활성”이라면 backlog�
 {"title":"외부 수요를 활성화와 Replica 제어로 나눕니다","caption":"화살표는 일반 ScaledObject의 제어 역할입니다. 대상 workload의 replica 소유자는 충돌 없이 구성하고 별도 수동 HPA를 무작정 추가하지 않습니다.","rows":[[{"id":"source","label":"큐·Kafka 외부 수요"}],[{"id":"keda","label":"KEDA scaler·활성화"}],[{"id":"hpa","label":"HPA target·behavior"}],[{"id":"workload","label":"workload replica·실제 처리"}]],"edges":[{"from":"source","to":"keda","label":"인증된 지표 조회"},{"from":"keda","to":"hpa","label":"외부 메트릭 연결"},{"from":"hpa","to":"workload","label":"수량 조정"},{"from":"keda","to":"workload","label":"0에서 활성화 등"}]}
 ```
 
-## Kafka의 할당 단위가 Consumer 수의 이득을 제한합니다
+## Kafka partition 할당과 Consumer 수의 병렬성 상한
 
 일반 Kafka consumer group에서 한 partition은 한 시점에 한 consumer에게 할당됩니다. partition 4개와 consumer 8개라면 일부는 할당 없이 유휴일 수 있습니다. Pod당 consumer 수가 하나인지 여러 개인지도 구분합니다. KEDA가 Pod를 늘려도 partition 하나가 자동으로 여러 consumer에게 분할되지 않습니다.
 
@@ -41,7 +41,7 @@ scaler의 활성화 조건이 “50을 초과하면 활성”이라면 backlog�
 
 allowIdleConsumers 같은 옵션은 partition 수보다 많은 준비 인스턴스를 허용할 수 있지만 정확한 scaler 조건·버전을 확인합니다. 장애 후 프로세스 시작 시간을 줄일 여지가 있어도 group 조정·할당 지연을 없애지는 않습니다. 유휴 메모리·연결·비용과 실제 failover 이득을 측정합니다.
 
-## Lag의 톱니와 진짜 적체를 구분합니다
+## Lag 톱니와 실제 적체의 구분
 
 consumer가 처리 후 offset을 묶어서 커밋하면 committed offset 기준 lag가 증가하다 한 번에 줄어드는 톱니가 될 수 있습니다. 처리 자체가 매번 멈췄다는 뜻은 아닙니다. 실제 완료율·가장 오래된 미완료 작업·커밋 간격·in-flight를 함께 봅니다.
 
@@ -49,7 +49,7 @@ consumer가 처리 후 offset을 묶어서 커밋하면 committed offset 기준 
 
 확장·축소의 rebalance는 처리 중 레코드·offset·소유권 수명을 바꿉니다. 완료 전 offset을 커밋하지 않고 늦은 결과가 새 소유 상태를 덮지 않게 합니다. 중복 재처리는 업무 멱등 경계로 보호합니다.
 
-## ScaledJob은 단위 작업의 수명 모델입니다
+## ScaledJob과 단위 작업의 수명 모델
 
 예를 들어 연결을 오래 유지하며 여러 메시지를 처리하는 Deployment consumer라면 `ScaledObject`가 replica 수를 조정하고, 수요에 따라 작업 하나를 별도 실행 단위로 만들고 싶다면 `ScaledJob`이 Job을 준비하는 모델입니다. 선택할 때는 연결 재사용과 초기화 비용, 작업 길이와 종료 정책을 비교하되, Job 하나가 특정 메시지 하나를 자동으로 정확히 한 번 예약·처리한다고 가정하지 않습니다.
 
@@ -57,7 +57,7 @@ consumer가 처리 후 offset을 묶어서 커밋하면 committed offset 기준 
 
 진행 중 Job을 어떻게 계수하는지·max replica·스케일링 전략·재시도는 KEDA 버전과 trigger 의미를 확인합니다. visible backlog가 0이어도 실행 중 외부 효과가 남을 수 있으므로 drain·checkpoint·중복 방지가 필요합니다.
 
-## 지표 장애와 Scale 이득을 분리해 검증합니다
+## scaler 지표 장애와 Scale 이득의 독립 검증
 
 scaler의 TLS·권한·group ID·offset 정책·polling을 확인하고 지표 조회 실패를 0 부하로 바꾸지 않습니다. 지원되는 fallback·최소 용량·경보와 제어 소유권을 정합니다. 복구 직후 급격한 증감이 하위 시스템을 압박하지 않는지도 봅니다.
 

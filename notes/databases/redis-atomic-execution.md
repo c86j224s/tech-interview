@@ -8,13 +8,13 @@ questionIds: [redis-pipeline-transaction-lua, redis-multi-queue-runtime-errors]
 
 # Redis 조건부 갱신의 원자 범위
 
-## 재고가 부족한데 왜 줄었을까요?
+## 재고 부족과 조건부 차감의 경쟁 경계
 
 재고가 `1`인 상품을 두 요청이 동시에 주문한다고 해 보겠습니다. 원하는 규칙은 단순합니다. 남은 수량이 주문 수량보다 크거나 같을 때만 차감하고, 그렇지 않으면 거절해야 합니다. 그런데 애플리케이션이 `GET stock`을 한 뒤 값을 확인하고 `DECRBY stock 1`을 보내면, 두 클라이언트가 같은 `1`을 읽고 둘 다 차감할 수 있습니다. 두 번의 `DECRBY`가 각각 적용되므로 최종 재고는 `-1`입니다. 갱신 유실은 `GET`으로 읽은 값을 각 클라이언트가 계산한 뒤 `SET`으로 덮어쓰는 별도의 패턴입니다.
 
 이때 “Redis 명령은 한 번에 하나씩 처리된다”는 설명만으로는 충분하지 않습니다. 여기서 묶어야 하는 것은 명령 하나가 아니라 **읽기 → 조건 판단 → 변경**이라는 업무 흐름입니다. 또 성공 응답을 받았다는 사실, 실행 중 다른 명령이 끼어들지 않았다는 사실, 오류가 났을 때 앞선 변경이 되돌아간다는 사실은 서로 다른 약속입니다.
 
-## 먼저 원자성의 범위를 나눕니다
+## 원자성 범위와 rollback 범위의 구분
 
 이 노트에서 `원자 범위`는 한 Redis 노드의 주 실행 경로에서 다른 클라이언트 명령이 끼어들 수 없는 구간을 뜻합니다. 이는 데이터베이스 transaction의 rollback과 같은 말이 아닙니다. `MULTI/EXEC`는 정해진 명령을 순서대로 격리해 실행하지만 실행 오류가 앞선 쓰기를 되돌리지는 않습니다. Lua도 스크립트 전체를 다른 명령이 관찰할 수 없게 실행하지만, 스크립트 중간에 이미 실행된 쓰기를 런타임 오류가 자동으로 rollback한다고 가정하면 안 됩니다.
 
@@ -25,7 +25,7 @@ questionIds: [redis-pipeline-transaction-lua, redis-multi-queue-runtime-errors]
 - **WATCH를 사용한 클라이언트 판단**: 읽은 키가 바뀌었는지 `EXEC`에서 확인하고, 충돌이면 처음부터 다시 읽습니다.
 - **서버 안 판단**: Lua가 값을 읽고 조건을 검사한 뒤 같은 실행 안에서 변경합니다.
 
-## 네 가지 방법을 같은 문제에 놓습니다
+## Pipeline·MULTI/EXEC·WATCH·Lua 비교
 
 | 방법 | 조건 판단 위치 | 실행 중 다른 명령 | 이 문제에서 남는 실패 책임 | 알맞은 경우 |
 | --- | --- | --- | --- | --- |
@@ -38,7 +38,7 @@ questionIds: [redis-pipeline-transaction-lua, redis-multi-queue-runtime-errors]
 
 `MULTI` 뒤의 명령은 즉시 실행되지 않고 큐에 들어갑니다. `EXEC`는 큐를 순서대로 실행하므로 실행 구간의 격리는 얻지만, `GET`의 결과를 받은 뒤에 `DECRBY`를 큐에서 제거하는 기능은 제공하지 않습니다. 더구나 `WATCH`가 없다면 `MULTI`와 `EXEC` 사이에 다른 클라이언트가 `stock`을 바꿀 수 있습니다.
 
-## 실행 경계를 그림으로 고정합니다
+## Redis 실행 경계와 외부 효과의 분리
 
 ```diagram
 {"title":"조건부 재고 변경의 원자 범위","caption":"화살표는 요청과 실행 결과의 흐름입니다. Lua 구간에서는 경쟁 요청이 대기하지만, 이 범위 밖의 외부 결제나 응답 재전송은 원자적으로 묶이지 않습니다.","rows":[[{"id":"client","label":"주문 클라이언트","detail":["상품 키·요청 수량"]},{"id":"rival","label":"경쟁 요청","detail":["같은 재고를 변경"]}],[{"id":"redis","label":"Redis 서버","detail":["EVAL 수신"]}],[{"id":"logic","label":"짧은 Lua 로직","detail":["읽기 → 검사 → 차감"]}],[{"id":"reply","label":"결과 반환","detail":["성공 또는 거절"]}]],"edges":[{"from":"client","to":"redis","label":"스크립트 호출"},{"from":"rival","to":"redis","label":"동시 명령"},{"from":"redis","to":"logic","label":"원자 실행"},{"from":"logic","to":"reply","label":"상태 반환"}]}
@@ -46,7 +46,7 @@ questionIds: [redis-pipeline-transaction-lua, redis-multi-queue-runtime-errors]
 
 그림에서 `logic` 안의 세 단계가 이 문제의 핵심 경계입니다. Redis는 스크립트가 실행되는 동안 경쟁 요청을 끼워 넣지 않습니다. 반면 주문 서비스가 결제 승인 API를 호출하는 일, 클라이언트가 타임아웃 뒤 재전송하는 일, 새 primary 주소를 찾는 일은 그림 밖입니다. 따라서 Redis 안의 재고 차감이 원자적이어도 전체 주문이 exactly-once가 되는 것은 아닙니다.
 
-## WATCH 방식은 충돌을 실패로 바꿉니다
+## WATCH 충돌과 재시도 실패 처리
 
 Lua를 배포할 수 없거나 읽은 값으로 애플리케이션의 명령을 조립해야 한다면 `WATCH`를 사용합니다. 반드시 같은 연결에서 다음 순서를 지킵니다.
 
@@ -66,7 +66,7 @@ else:
 
 충돌이 없으면 `EXEC`는 명령별 응답 배열을 돌려주고 감시는 끝납니다. 재시도 횟수와 backoff를 제한하지 않으면 핫 키에서 애플리케이션이 Redis를 계속 두드리는 새로운 병목이 생깁니다. `WATCH`는 충돌을 감지할 뿐 충돌 없는 실행을 보장하지도, 무한 재시도가 안전하다는 것을 보장하지도 않습니다.
 
-## Lua에서는 검증을 쓰기보다 먼저 끝냅니다
+## Lua의 쓰기 전 입력 검증과 실패 처리
 
 작은 재고 정책은 서버 안에서 다음처럼 표현할 수 있습니다. 아래는 실행 코드가 아니라 키와 인자의 의미를 드러낸 슈도코드입니다. `KEYS[1]`은 재고 해시이고 `KEYS[2]`는 이 요청만을 위한 기록 키입니다. `ARGV[1]`은 고유 요청 ID, `ARGV[2]`는 양수 주문 수량입니다.
 
@@ -115,7 +115,7 @@ return "accepted"
 
 Lua는 서버의 데이터에 접근할 키를 입력으로 명시하고, 무제한 반복이나 외부 네트워크 호출을 넣지 않아야 합니다. Redis 공식 문서처럼 스크립트는 실행 전체 동안 서버 활동을 막으므로, 원자성을 얻겠다고 큰 컬렉션 순회나 오래 걸리는 업무 로직을 넣으면 짧은 `GET`까지 함께 지연됩니다.
 
-## 오류가 났을 때 무엇이 남는지 확인합니다
+## 실행 오류별 잔여 변경과 재시도 규칙
 
 | 실패 지점 | 관찰되는 결과 | 이미 한 변경의 처리 | 다시 시도할 때의 규칙 |
 | --- | --- | --- | --- |
@@ -128,7 +128,7 @@ Lua는 서버의 데이터에 접근할 키를 입력으로 명시하고, 무제
 
 특히 `MULTI`에서 잘못된 명령이 큐에 들어가지 못한 경우와 `EXEC` 안에서 `WRONGTYPE`이 난 경우를 같은 오류로 뭉개면 안 됩니다. 전자는 Redis가 전체 큐를 거부할 수 있지만, 후자는 오류가 난 명령을 제외한 나머지가 계속 처리됩니다. Redis transaction은 rollback을 제공하지 않으므로, 결과 배열을 확인하지 않고 “실패했으니 아무것도 안 됐겠지”라고 재시도하면 중복 차감이 생길 수 있습니다.
 
-## 직접 확인할 입력과 예상 결과
+## 재고 차감·오류 처리의 실험 입력과 예상 결과
 
 아래 실험은 운영 데이터가 아닌 별도 Redis 인스턴스에서 실행한다고 가정합니다. 아직 실행한 결과가 아니라, 각 입력으로 확인해야 할 예상 관찰입니다.
 
@@ -138,7 +138,7 @@ Lua는 서버의 데이터에 접근할 키를 입력으로 명시하고, 무제
 4. 재고 해시의 `available=1`에 대해 요청 ID `order-7`, 수량 `1`로 Lua 슈도코드와 같은 스크립트를 두 번 호출합니다. 첫 호출은 `accepted`와 `available=0`, 두 번째 호출은 같은 fingerprint의 `accepted`를 반환하며 두 번 차감하지 않아야 합니다. 같은 요청 ID로 수량 `2`를 보내면 `request_id_conflict`가 반환되어야 합니다. 요청 기록에 TTL을 적용한다면 만료 뒤 재시도가 새 주문으로 취급되는 경계도 별도로 확인합니다.
 5. `SET a abc` 후 `MULTI`, `SET marker 1`, `LPOP a`, `EXEC`를 실행합니다. `EXEC` 응답에 `OK`와 `WRONGTYPE`가 함께 나타나고 `marker`가 남는지 확인해 rollback 오해를 제거합니다.
 
-### 공식 문서에서 이어 읽기
+### Redis 트랜잭션·파이프라이닝·Lua 공식 문서
 
 - [Redis Transactions](https://redis.io/docs/latest/develop/using-commands/transactions/): `MULTI/EXEC`, transaction 오류, rollback 부재, `WATCH` 기반 낙관적 잠금
 - [Redis Pipelining](https://redis.io/docs/latest/develop/using-commands/pipelining/): 왕복 시간 감소와 Pipelining 대 Scripting

@@ -8,13 +8,13 @@ questionIds: [browser-rendering-layout, css-containment-content-visibility, web-
 
 # 레이아웃 계산과 화면 이동
 
-## 스타일을 바꾼 뒤 바로 크기를 물으면 계산을 당길 수 있습니다
+## 스타일 변경 직후 기하 읽기와 강제 동기 레이아웃
 
 목록 원소마다 width를 바꾸고 곧바로 `offsetWidth`를 읽는 루프가 있다고 합시다. 브라우저는 보통 변경을 모아 계산하려 하지만, 최신 크기를 반환하려면 앞선 변경을 반영하는 레이아웃을 즉시 수행해야 할 수 있습니다. 이를 수백 번 반복하면 같은 영역을 계속 다시 계산합니다.
 
 **강제 동기 레이아웃**은 변경 뒤 기하 정보가 필요한 순간 계산을 앞당기는 것이고, 이런 읽기·쓰기 교차 반복이 레이아웃 스래싱을 만듭니다. 모든 크기 읽기가 항상 비싼 것은 아니며 무효화된 상태와 호출 순서를 확인해야 합니다.
 
-## 화면을 만드는 단계가 다릅니다
+## 스타일 계산·Layout·Paint·합성 단계
 
 ```diagram
 {"title":"스타일에서 실제 화면까지","caption":"화살표는 개념적 렌더링 단계입니다. 변경 종류·의존 범위·브라우저 최적화에 따라 일부 단계를 재사용할 수 있으며 모든 변경이 전체 파이프라인을 다시 실행하지는 않습니다.","rows":[[{"id":"style","label":"스타일 계산","detail":["DOM · CSS 규칙"]}],[{"id":"layout","label":"Layout","detail":["상자 위치·크기"]}],[{"id":"paint","label":"Paint","detail":["그릴 명령·픽셀 준비"]}],[{"id":"composite","label":"합성","detail":["레이어 조합·표시"]}]],"edges":[{"from":"style","to":"layout","label":"기하 조건"},{"from":"layout","to":"paint","label":"그릴 영역"},{"from":"paint","to":"composite","label":"화면 조합"}]}
@@ -22,7 +22,7 @@ questionIds: [browser-rendering-layout, css-containment-content-visibility, web-
 
 DOM 노드가 모두 레이아웃 상자가 되는 것은 아닙니다. `display:none`은 렌더링에서 제외됩니다. 색 변경은 paint만 필요할 수 있고 크기·폰트 변경은 주변 배치까지 바꿀 수 있습니다. transform·opacity는 합성으로 처리될 가능성이 높지만 항상 비용이 없거나 별도 레이어가 보장되는 것은 아닙니다.
 
-## 읽기와 쓰기를 묶되 의미를 바꾸지 않습니다
+## DOM 읽기·쓰기 배치와 의미 보존
 
 ```text
 # 반복적인 동기 계산을 만들 수 있는 형태
@@ -43,7 +43,7 @@ newWidths = read_all_current_widths(items)
 
 `scroll`·`resize` 이벤트는 한 프레임에 여러 번 올 수 있으므로, 각 이벤트에서 할 일을 다음 화면 갱신 시점에 맞춰 실행하는 `requestAnimationFrame`(rAF) 콜백으로 모을 수 있습니다. 다만 rAF 안에서 다시 쓰기·읽기를 번갈아 하면 같은 강제 레이아웃을 만들 수 있어, 측정과 변경을 각각 묶는 순서를 지켜야 합니다. 서로 다른 컴포넌트가 각자 측정하고 변경하면 컴포넌트 사이의 실행 순서도 조정해야 합니다.
 
-## 독립 영역의 영향 범위를 줄입니다
+## Containment·content-visibility의 영향 범위
 
 `contain`은 레이아웃·크기·페인트 등의 영향을 제한하는 계약입니다. 예를 들어 size containment는 자식 내용으로 부모 크기를 결정하는 의미를 바꿀 수 있습니다. 아무 요소에나 붙이면 자동 높이·위치 기준·겹침의 기대가 달라질 수 있습니다.
 
@@ -58,7 +58,7 @@ newWidths = read_all_current_widths(items)
 
 접근성 트리와 페이지 내 검색·포커스 탐색은 실제 브라우저에서 확인합니다. `auto`와 `hidden`, `display:none`을 같은 숨김으로 취급하지 않습니다.
 
-## 늦게 도착한 이미지와 폰트의 자리를 남깁니다
+## 지연 이미지·폰트의 공간 예약과 레이아웃 이동
 
 이미지의 비율·크기를 모르면 처음에 작은 공간을 만들었다가 로딩 뒤 주변 콘텐츠를 밀 수 있습니다. width·height 또는 반응형 aspect-ratio로 자리를 예약하고 실제 부모 폭에 맞춰 표시합니다. 광고·비동기 카드도 같은 문제입니다.
 
@@ -66,7 +66,7 @@ newWidths = read_all_current_widths(items)
 
 CLS는 예상하지 못한 레이아웃 이동의 사용자 영향을 측정하는 지표이며 모든 위치 변화가 동일하게 집계되는 것은 아닙니다. 단순히 이동 횟수만 세지 말고 브라우저의 layout-shift 근거와 실제 움직인 영역을 확인합니다.
 
-## 사용자 지연과 메모리를 함께 측정합니다
+## 사용자 입력 지연과 메모리 비용의 동시 계측
 
 Performance 기록에서 스타일·Layout·Paint·합성과 긴 JavaScript 작업을 분리합니다. 모든 요소에 `will-change`를 붙이면 레이어·GPU 메모리가 늘어 오히려 느려질 수 있습니다. 미리 지정할 대상과 유지 시간을 제한합니다.
 

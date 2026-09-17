@@ -8,7 +8,7 @@ questionIds: [python-generator-iterator, python-yield-from-control]
 
 # Python Iterator의 소비 상태와 Yield From 제어
 
-## Generator 함수를 호출할 때와 Next를 부를 때가 다릅니다
+## Generator 호출과 Next 호출의 실행 시점
 
 ```python
 def numbers():
@@ -26,7 +26,7 @@ print(list(it))
 
 generator 함수 호출은 generator 객체를 만들고 본문 실행은 next 등으로 값을 요구할 때 시작합니다. generator 객체는 현재 실행 위치와 지역 상태를 보관하는 iterator입니다. 한 번 소진한 객체를 다시 순회하면 처음부터 재생되지 않습니다.
 
-## Iterable이라고 재생 가능한 것은 아닙니다
+## Iterable 재순회와 Iterator 소비 상태
 
 | 대상 | iter 호출 | 재순회 |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ generator 함수 호출은 generator 객체를 만들고 본문 실행은 next �
 
 factory가 파일·DB를 다시 읽으면 두 번째 결과가 달라질 수 있습니다. 같은 snapshot의 재생과 단순 재계산은 다릅니다. itertools.tee는 소비자를 나누지만 느린 소비자를 위해 값을 버퍼링하므로 속도 차이가 크면 메모리가 늘 수 있습니다.
 
-## Yield From은 값 전달뿐 아니라 제어를 위임합니다
+## Yield From의 값 전달·제어 위임
 
 ```python
 def child():
@@ -63,18 +63,18 @@ print(it.send(3))  # 6
 
 새 generator는 먼저 `next()`나 `send(None)`을 호출해 첫 `yield`까지 진입해야 하며, 처음부터 non-`None` 값을 `send`하면 오류입니다. `yield from`에 들어온 예외는 하위 iterator가 `throw`를 지원하는지에 따라 전달되고, `close`도 하위에 `close`가 있으면 정리를 연결합니다. 일반 iterator 모두가 `send`·`throw`를 제공하는 것은 아닙니다.
 
-## 조기 종료에서 자원 책임을 확인합니다
+## 조기 종료와 Generator 자원 수명
 
 generator가 파일·DB 연결을 보유한 채 yield하면 소비자가 다음 값을 요구하기 전까지 그 자원이 남을 수 있습니다. for 루프를 break했다고 모든 임의 iterator의 close가 자동 호출된다고 일반화하지 않습니다. 명시적인 close나 contextlib.closing·자원 범위 API로 조기 종료를 관리합니다.
 
 close는 정지한 generator에 GeneratorExit를 전달해 finally 정리를 진행하게 할 수 있습니다. 정리 중 다시 yield하는 것은 허용된 일반 종료가 아니며 오류가 될 수 있습니다. 실행 중인 generator를 여러 소비자가 동시에 재진입하는 것도 안전한 공유 모델이 아닙니다. 버전별 close 반환값 같은 세부는 해당 Python 계약을 확인합니다.
 
-## 지연 평가가 비동기 실행은 아닙니다
+## 지연 평가와 비동기 실행의 구분
 
 동기 next 안에서 느린 파일 읽기나 긴 계산을 하면 호출자도 그 시간만큼 막힙니다. asyncio 이벤트 루프에서 동기 generator를 순회한다고 자동으로 다른 스레드가 실행하지 않습니다. async iterator나 제한된 실행 분리가 필요할 수 있습니다.
 
 메모리는 전체 목록보다 줄일 수 있지만 프레임의 지역 객체·현재 원소·소비자가 보관한 결과는 남습니다. 무한 입력을 list로 물질화하거나 tee의 느린 소비자를 방치하면 지연 평가의 장점을 잃습니다.
 
-## 소비 순서와 종결 동작을 직접 확인합니다
+## 소비 순서·소진 결과·종결 동작 확인
 
 첫 next 전 부수 효과가 없는지, 일부 소비 뒤 list 결과, 소진 후 빈 결과를 검사합니다. child return 값·send·throw·조기 close의 finally 실행을 따로 확인합니다. 동일 데이터를 다시 읽어야 하는 API에는 factory와 원본 snapshot 버전까지 함께 검증합니다. 이 노트의 출력은 Python 규칙에 따른 기대 결과이며 파일·DB 스트림의 실제 종료 검증은 별도입니다.

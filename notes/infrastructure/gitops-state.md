@@ -8,7 +8,7 @@ questionIds: [argocd-gitops-reconcile, argocd-hpa-field-ownership, argocd-source
 
 # Argo CD의 Drift·Sync·Health와 필드 책임
 
-## Git과 다르다는 것과 앱이 고장났다는 것은 다릅니다
+## Git 선언과 앱 장애의 구분
 
 Git에 replicas=4인데 운영자가 클러스터를 8로 바꾸면 선언과 실제 상태의 drift가 생깁니다. Argo CD가 OutOfSync로 표시할 수 있지만 언제 4로 돌아가는지는 자동 sync·self-heal·일시 중지·필드 제외·적용 정책에 달렸습니다. “GitOps니까 언제나 즉시 덮는다”는 설명은 불충분합니다.
 
@@ -21,7 +21,7 @@ Git에 replicas=4인데 운영자가 클러스터를 8로 바꾸면 선언과 �
 | Health | 리소스별 상태 해석 | 모든 업무 불변식 |
 | 사용자 지표 | 실제 오류·지연·효과 | 선언과 일치 여부 |
 
-## 조회 실패와 잘못된 선언의 실패 위치를 나눕니다
+## Git 조회 실패와 잘못된 선언의 실패 위치
 
 Git 인증·네트워크 오류는 새로운 원하는 상태를 가져오지 못하는 문제입니다. 이미 실행 중인 Pod가 그 즉시 사라진다는 뜻은 아닙니다. 마지막 비교·동기화 revision과 오류를 보며 기존 서비스 상태를 별도로 확인합니다.
 
@@ -31,7 +31,7 @@ Git을 읽은 뒤에도 실패 지점은 순서대로 갈립니다. template 렌
 {"title":"선언 조회와 적용과 실제 기능은 별도 단계입니다","caption":"화살표는 GitOps 전달 경로입니다. self-heal은 잘못된 선언을 올바르게 고치는 기능이 아니라 그 선언으로 수렴시키는 정책입니다.","rows":[[{"id":"git","label":"신뢰한 Git revision 조회"}],[{"id":"diff","label":"렌더·diff·sync 정책"}],[{"id":"apply","label":"Kubernetes 적용"}],[{"id":"health","label":"리소스 Health·Ready"}],[{"id":"user","label":"사용자 요청 검증"}]],"edges":[{"from":"git","to":"diff","label":"원하는 상태"},{"from":"diff","to":"apply","label":"허용된 sync"},{"from":"apply","to":"health","label":"controller 수렴"},{"from":"health","to":"user","label":"업무 결과 확인"}]}
 ```
 
-## HPA가 맡은 Replicas를 두 Controller가 싸우게 하지 않습니다
+## HPA replicas 필드의 Controller 책임
 
 HPA가 `replicas`를 8로 조정했는데 Git 선언이 4로 고정돼 있으면, 한 controller가 늘린 직후 다른 controller가 되돌리는 진동이 생깁니다. autoscaling 정책 자체는 Git에서 관리하되 workload의 `replicas` 필드처럼 HPA가 쓰는 값은 HPA를 실제 권위자로 둘지 결정하고, 그 결정에 맞게 Application의 적용 정책을 구성합니다.
 
@@ -41,13 +41,13 @@ HPA가 `replicas`를 8로 조정했는데 Git 선언이 4로 고정돼 있으면
 
 제외한 replicas의 수동 변경을 Argo diff가 여전히 알려 준다고 기대하지 않습니다. HPA min/max·변경 감사·현재 replica 이상 탐지로 보완합니다. 필드 소유권은 보안 인가를 대신하지 않으므로 누가 수동 patch할 수 있는지도 제한합니다.
 
-## 긴급 변경에는 기록과 종료 시각이 필요합니다
+## 긴급 변경의 기록과 종료 시각
 
 일시적인 증설·설정 완화가 필요하면 변경 주체·이유·범위·만료·복구 책임을 기록하고 Git에 일시 패치나 정식 변경으로 반영합니다. 동기화를 멈추는 경우에도 언제 어떤 revision으로 재개할지 정합니다. self-heal을 영구 끄는 것으로 drift 관리가 해결되지는 않습니다.
 
 재개 전에 실제 클러스터와 Git의 차이를 다시 검토합니다. rollback할 때도 최신 revision 자동 재적용과 경쟁하지 않게 기준을 명확히 합니다. 앱 버전 복귀가 DB·삭제 데이터·회수 자격을 자동 되돌리는 것은 아닙니다.
 
-## 상태 조합을 만드는 테스트로 확인합니다
+## 상태 조합별 동작 테스트
 
 테스트 Application에서 수동 replica 변경, HPA 정상 조정, Git 접근 오류, 렌더 실패, 잘못된 readiness를 따로 재현합니다. OutOfSync와 Healthy가 공존하는 경우, Synced지만 실제 기능이 실패하는 경우도 관찰합니다. 제외한 필드와 제외하지 않은 image의 drift가 예상대로 처리되는지 확인합니다.
 

@@ -8,13 +8,13 @@ questionIds: [k8s-network-policy, k8s-serviceaccount-token]
 
 # Pod의 네트워크 허용과 API 최소 권한
 
-## 연결할 수 있다는 말과 호출할 권한이 있다는 말은 다릅니다
+## 네트워크 도달성과 API 호출 권한
 
 Pod가 Kubernetes API 서버에 TCP 연결할 수 있어도 Secret을 읽을 권한이 있어야 하는 것은 아닙니다. 반대로 RBAC가 좁아도 앱이 인터넷 모든 곳으로 데이터를 보낼 수 있으면 유출 경로가 남습니다. 네트워크 도달 범위와 API 행동 권한은 서로 다른 통제입니다.
 
 NetworkPolicy는 지원하는 네트워크 구현에서 선택된 Pod의 ingress·egress를 제한합니다. ServiceAccount는 workload의 API 신원을 나타내며, 그 신원이 어떤 verb·resource·namespace에 접근하는지는 RBAC 등 인가가 결정합니다.
 
-## 정책이 실제로 어떤 Pod를 격리하는지 먼저 확인합니다
+## NetworkPolicy 대상 Pod와 격리 범위
 
 | 항목 | 의미 | 확인할 점 |
 | --- | --- | --- |
@@ -33,19 +33,19 @@ NetworkPolicy는 지원하는 네트워크 구현에서 선택된 Pod의 ingress
 
 정책 객체 생성 성공은 CNI가 실제 패킷을 제한한다는 증거가 아닙니다. hostNetwork·노드 트래픽·NAT 전후 IP·기존 연결에 새 정책이 적용되는 동작도 구현별로 확인합니다. 기본 정책이 FQDN·HTTP 경로·사용자별 인가를 모두 표현한다고 가정하지 않습니다.
 
-## ServiceAccount에는 필요한 동작만 부여합니다
+## ServiceAccount와 최소 API 권한
 
 앱이 자기 namespace의 ConfigMap 하나를 읽으면 충분한데 cluster-admin을 부여할 이유는 없습니다. 필요한 resource·verb·namespace·가능한 resourceNames를 좁히고, 목록 조회와 단일 이름 조회의 RBAC 제약 차이도 확인합니다. 권한 거절을 만나면 실제 필요한 API를 조사하지 않고 넓은 role을 붙이지 않습니다.
 
 Secret 읽기는 다른 자격을 얻는 간접 권한입니다. Pod 생성·변경 권한도 다른 ServiceAccount를 쓰거나 마운트할 수 있는지에 따라 더 큰 영향을 가질 수 있으므로 직접 동작뿐 아니라 권한 확장 경로를 검토합니다. API를 쓰지 않는 workload에는 자동 토큰 마운트를 불필요하게 제공하지 않습니다.
 
-## 토큰은 회전하는 파일이며 모든 대상의 자격이 아닙니다
+## projected ServiceAccount token의 회전과 audience별 자격 범위
 
 projected ServiceAccount token은 audience·만료·bound object·회전 계약을 가진 파일 자격으로 다뤄야 하며, 앱은 교체된 파일을 다시 읽을 수 있어야 합니다. 앱이 파일을 한 번만 읽어 문자열을 영구 캐시하면 플랫폼이 토큰을 회전해도 오래된 토큰을 보낼 수 있습니다. 긴 연결이나 SDK 내부 캐시가 어느 시점에 새 자격을 사용하는지까지 확인해야 합니다.
 
 `Kubernetes API용 토큰`을 클라우드 API가 자동으로 받아들이는 것은 아닙니다. workload identity 교환을 사용한다면 먼저 신뢰할 issuer·audience·서비스 계정 매핑을 제한하고, 교환 뒤 부여되는 최종 클라우드 권한도 별도로 좁힙니다. 토큰은 이미지·로그·모델 문맥에 복사하지 않습니다. Pod 삭제나 권한 철회가 실제로 어떤 검증 경로에서 언제 거절을 만드는지 제품 계약으로 시험합니다.
 
-## 정책 파일과 실제 거절 결과를 같이 봅니다
+## NetworkPolicy·RBAC 정책과 실제 거절 결과
 
 테스트 namespace에 허용 Pod·비허용 Pod·다른 namespace Pod를 두고 DNS·DB·외부 통신을 각각 검사합니다. 두 정책의 합집합과 라벨 변경도 시험합니다. 정책이 기대대로 보여도 통신이 계속되면 selector·방향·다른 허용 규칙·CNI 지원·우회 경로를 순서대로 조사합니다.
 

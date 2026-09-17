@@ -8,13 +8,13 @@ questionIds: [java-threadlocal-pool, threadlocal-weak-key-value-retention, threa
 
 # ThreadLocal의 요청 격리와 비동기 문맥 전달
 
-## 요청이 끝나도 풀 Worker의 슬롯은 남습니다
+## 요청 종료와 풀 Worker 슬롯 수명
 
 한 worker에서 사용자 A 요청을 처리하며 ThreadLocal에 A를 넣었습니다. 작업이 반환해도 worker는 풀에서 재사용됩니다. 다음 B 요청이 값을 설정하지 않은 경로로 들어오면 A를 읽을 수 있습니다. ThreadLocal은 스레드별 값이지 요청별 자동 격리·삭제 기능이 아닙니다.
 
 큰 객체를 넣으면 메모리 보유 문제가 되고 사용자·테넌트·권한이면 잘못된 인가로 이어질 수 있습니다. 값을 설정한 worker의 finally에서 정리해야 합니다. 다른 스레드가 remove해도 원래 worker 슬롯이 지워지지 않습니다.
 
-## Set과 정리를 같은 실행 범위로 묶습니다
+## ThreadLocal Set과 정리 범위
 
 ```java
 static final ThreadLocal<String> USER = new ThreadLocal<>();
@@ -40,7 +40,7 @@ static void handle(String userId) {
 
 중첩 호출이 같은 ThreadLocal을 덮은 뒤 remove하면 상위 문맥도 사라집니다. 중첩을 지원하는 API는 검증된 scope 객체로 이전 문맥을 복원하거나 명시적 인자로 전달합니다. 없는 상태와 명시적 null을 구분해야 하면 단순 get/set만으로 추측하지 않고 문맥 모델에 표현합니다.
 
-## 약한 Key는 Value의 즉시 회수를 뜻하지 않습니다
+## 약한 Key와 Value 보유 수명
 
 일반적인 OpenJDK의 `ThreadLocalMap`에서 entry는 키를 약한 참조로 들고 value를 강한 참조로 보유할 수 있습니다. 키가 더 이상 다른 곳에서 참조되지 않아 GC가 키를 지워도, 장수 worker의 map에 stale entry가 남아 정리되기 전까지 value는 계속 남을 수 있습니다. 따라서 키가 수집됐다는 사실을 요청 자원이 곧 해제됐다는 계약으로 사용하지 말고, 값을 설정한 요청 범위에서 `remove()`를 실행해야 합니다.
 
@@ -50,7 +50,7 @@ static void handle(String userId) {
 
 정적 키를 쓰더라도 요청 정리가 필요하고, 매 요청 새 키를 만드는 것으로 해결되지 않습니다. value가 재배포된 앱 타입이면 옛 클래스 로더까지 붙잡을 수 있습니다. 힙 덤프에서 실제 root→worker→entry→value 경로를 찾아야 합니다.
 
-## 비동기 전달은 필요한 의미만 옮깁니다
+## 비동기 문맥의 전달 대상과 의미 범위
 
 `InheritableThreadLocal`은 새 자식 스레드를 만드는 순간 부모 값을 상속하는 규칙이며, 이미 만들어진 executor 풀의 worker에 매 요청마다 값을 옮기는 기능이 아닙니다. 다른 executor에 작업을 제출할 때는 필요한 불변 문맥을 명시적으로 캡처합니다. 실행 직전에 설치하고 `finally`에서 이전 값을 복원하는 검증된 전파 기능을 사용하거나, 함수 인자로 전달합니다.
 
@@ -58,7 +58,7 @@ static void handle(String userId) {
 
 가상 스레드는 각 스레드의 슬롯 비용을 없애지 않습니다. 요청당 큰 캐시를 ThreadLocal에 두면 많은 가상 스레드만큼 메모리가 늘 수 있습니다. 필요한 자원은 별도 명시적 풀·수명으로 관리합니다.
 
-## 명시적인 인자는 테스트의 입력을 드러냅니다
+## 명시적 인자와 테스트 입력 의존성
 
 context 인자를 전달하면 함수 의존성이 보이고 두 사용자 테스트를 독립 값으로 실행하기 쉽습니다. ThreadLocal은 깊은 호출 경로의 인자 전달을 줄이지만 설치·정리·비동기 hop이 숨은 전제가 됩니다. 둘을 모든 코드에서 일괄 치환하기보다 인증·거래 같은 핵심 입력은 명시하고 프레임워크 문맥은 좁은 경계에 둡니다.
 

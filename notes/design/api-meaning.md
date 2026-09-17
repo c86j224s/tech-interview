@@ -8,7 +8,7 @@ questionIds: [api-backward-compatibility, api-null-omission-patch, protobuf-fiel
 
 # API 혼합 버전·Patch Presence·Protobuf 번호
 
-## 필드 추가와 상태 의미 추가는 다른 변경입니다
+## 필드 추가와 상태 의미 추가의 호환성 차이
 
 구앱이 `active`와 `closed`만 아는 상태에서 신server가 `status:paused`를 보내면, JSON parser가 문법을 읽는 데는 성공해도 모르는 값을 default(기본값)인 `active`로 해석해 중지된 기능을 실행할 수 있습니다. 따라서 파싱 성공과 업무 의미를 이해한 상태를 별도로 다루고, 구앱이 이 상태를 받았을 때 실제로 어떤 행동을 하는지 확인합니다.
 
@@ -16,7 +16,7 @@ questionIds: [api-backward-compatibility, api-null-omission-patch, protobuf-fiel
 
 엄격 schema·전체 응답 서명·cache key·직렬화 순서에 의존하는 client는 선택 필드 추가에도 실패할 수 있습니다. 기존 선택 입력을 필수로 바꾸거나 기본값·단위를 바꾸는 것은 구조가 비슷해도 의미 변화입니다.
 
-## 수정 요청의 Presence를 값과 분리합니다
+## 수정 요청의 Presence와 값의 분리
 
 수정 요청에서는 값 자체와 presence(그 필드가 요청에 들어왔는지)를 따로 읽습니다. 현재 프로필 `{nickname:"old", tags:["a"]}`에서 `nickname`을 생략하면 `old`를 유지하고, `null`을 명시하면 삭제하며, 빈 문자열은 빈 값으로 저장할지 정책상 오류로 거절할지 정합니다. 생성 때 쓰는 기본값 함수를 patch에도 적용하면 생략된 필드까지 초기화되어 의도하지 않은 삭제가 생길 수 있으므로, 입력에 실제로 들어온 필드만 수정합니다.
 
@@ -36,7 +36,7 @@ JSON Merge Patch를 선택하면 object member(객체 필드)의 `null`은 삭�
 {"title":"혼합 버전에서 실제 행동까지 비교합니다","caption":"화살표는 요청·응답의 검증 조합입니다. schema 파싱 성공뿐 아니라 상태·재시도·서명·cache·사용자 흐름을 확인합니다.","rows":[[{"id":"oldclient","label":"구 client"},{"id":"newclient","label":"신 client"}],[{"id":"oldserver","label":"구 server"},{"id":"newserver","label":"신 server"}],[{"id":"contract","label":"동일 의도·안전한 unknown·결과 검증"}]],"edges":[{"from":"oldclient","to":"newserver","label":"전진 배포"},{"from":"newclient","to":"oldserver","label":"server rollback"},{"from":"oldserver","to":"contract","label":"옛 의미"},{"from":"newserver","to":"contract","label":"호환 의미"}]}
 ```
 
-## Protobuf의 번호는 Wire 식별자입니다
+## Protobuf 필드 번호의 Wire 식별자 역할과 reserved 보존
 
 예전 `int64 amount_cents=3`을 삭제한 뒤 `int64 quantity=3`으로 번호 3을 재사용하면, 과거 메시지에 들어 있던 값 `1000`이 새 의미의 수량 `1000`으로 읽힐 수 있습니다. 두 필드의 wire type(바이너리에서 값을 읽는 형식)이 같으면 파싱까지 성공해 잘못된 의미를 놓치기 쉬우므로, ‘읽혔다’를 ‘호환된다’로 보지 않습니다. 새 의미에는 새 번호를 배정하고, 삭제한 번호와 이름은 `reserved`로 보존합니다.
 
@@ -50,7 +50,7 @@ message Order {
 
 binary unknown field 보존·unknown enum·presence는 언어/runtime/version 경로를 확인합니다. JSON 변환에서는 이름·기본값·unknown 처리 의미가 달라질 수 있어 gateway까지 시험합니다. 새 번호라는 사실만으로 금액 단위와 업무 규칙의 호환성이 보장되지는 않습니다.
 
-## 소비자는 같은 날 모두 갱신되지 않습니다
+## 혼합 버전 소비자와 단계적 갱신 시점
 
 구앱→신server와 신앱→구server를 모두 시험하고 버튼·오류 안내·retry·서명·cache·중복 효과를 확인합니다. 월말 batch·장기 미접속 앱은 짧은 관측 창의 호출 0으로 사라졌다고 할 수 없습니다. 지원 기간·최소 앱 version·폐기 안내·구 endpoint 유지와 제거 근거를 정합니다.
 

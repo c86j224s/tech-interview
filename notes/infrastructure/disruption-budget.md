@@ -8,13 +8,13 @@ questionIds: [k8s-pdb-eviction, pdb-selector-target-verification, pdb-budget-rea
 
 # PDB의 자발적 중단 예산과 장애 영역 용량
 
-## PDB는 노드 전원을 붙잡아 두지 못합니다
+## PDB와 Eviction API의 자발적 중단 보호 범위
 
 PodDisruptionBudget은 주로 Eviction API를 사용하는 자발적 중단에서 동시에 중단할 수 있는 범위를 제한합니다. 노드 전원 장애·OOM·프로세스 crash·강제 삭제처럼 그 승인 경계를 거치지 않는 사건을 막는 방패가 아닙니다. 이미 사라진 Pod를 복구하는 것도 replica controller와 앱의 책임입니다.
 
 replica 3, minAvailable=2이고 모두 healthy이면 한 개를 내보낼 여지가 있습니다. 이미 하나가 Ready가 아니면 예산이 없을 수 있습니다. 그러나 두 개가 같은 노드 장애로 동시에 사라지는 것을 PDB가 예방하지는 못합니다.
 
-## 어떤 집합의 어떤 상태를 세는지 확인합니다
+## PDB 대상 집합과 건강 상태 집계
 
 | 확인 값 | 의미 | 함께 볼 상태 |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ replica 3, minAvailable=2이고 모두 healthy이면 한 개를 내보낼 여지
 
 `minAvailable`과 `maxUnavailable`을 수·비율로 계산할 때는 Deployment의 반올림 규칙을 그대로 가져오지 않으며, PDB 비율이 요구 건강 수 또는 허용 중단 수를 올림하는 방식이라 작은 replica 수에서 결과가 크게 달라질 수 있습니다.
 
-## Rollout 예산과 Eviction 예산은 다릅니다
+## Rollout 예산과 Eviction 예산의 분리
 
 Deployment 자체의 롤링 교체는 maxSurge·maxUnavailable로 진행하며 PDB가 직접 그 교체를 제한하는 것은 아닙니다. 다만 rollout 때문에 Ready가 줄어들면 동시에 수행하는 node drain의 PDB 여유도 줄어듭니다. 두 작업이 같은 서비스에 주는 합산 영향을 봐야 합니다.
 
@@ -39,7 +39,7 @@ Deployment 자체의 롤링 교체는 maxSurge·maxUnavailable로 진행하며 P
 
 예산이 회복되지 않으면 먼저 대체 Pod가 Pending인 이유로 scheduler가 맞는 노드를 찾지 못했는지 확인하고, 다음으로 이미지 pull이나 볼륨 연결에서 막혔는지, 프로세스는 실행됐지만 readiness가 실패했는지를 사건과 상태로 좁힙니다. Pod가 Ready가 된 뒤에도 PDB가 세는 집합이 맞는지, 특히 잘못된 selector가 새 revision을 제외하고 있지 않은지 실제 라벨과 대조합니다.
 
-## Replica 수와 독립 장애 영역은 다릅니다
+## Replica 수와 독립 장애 영역의 차이
 
 세 Pod가 한 노드나 한 영역에 몰리면 replica 수가 3이어도 공통 장애로 함께 사라질 수 있으므로, 배치 결과에서 실제 영역을 먼저 확인합니다. topology spread는 topology key로 나눈 영역 사이의 차이를 `maxSkew` 안에 두도록 selector와 eligible domain 조건을 함께 사용하고, anti-affinity는 특정 Pod와 같은 영역(또는 지정된 topology)에 놓지 않는 제약으로 동작합니다.
 
@@ -47,13 +47,13 @@ Deployment 자체의 롤링 교체는 maxSurge·maxUnavailable로 진행하며 P
 
 scheduler의 배치 제약은 이미 실행 중인 Pod를 언제나 자동 재균형하는 기능은 아닙니다. 라벨·노드 추가·revision 변화에서 실제 배치를 확인합니다. selector가 다른 Pod를 세거나 PVC zone 제약이 이동을 막으면 기대한 분산을 얻지 못할 수 있습니다.
 
-## 남은 영역이 부하를 감당할 여유도 필요합니다
+## 장애 후 잔여 영역의 부하 여유
 
 세 영역의 Pod 하나씩이 평소 용량의 80%를 쓰면 총 수요는 Pod 2.4개 분량입니다. 한 영역을 잃고 두 개만 남으면 각각 120%를 요구해 포화됩니다. 균등 배치는 실패의 상관을 줄이지만 장애 후 처리량을 늘리지 않습니다.
 
 장애 시 최소 용량·새 Pod 준비 시간·다른 영역 node 공급·스토리지 접근·quorum을 함께 계산합니다. PDB·topology·복제·앱 drain은 서로 보완하는 별도 계약입니다. 정상 유지보수만이 아니라 알림 없는 노드 손실에서도 데이터 재처리·세션 복구가 안전해야 합니다.
 
-## 허용·차단·강제 장애를 나눠 검증합니다
+## 허용·차단·강제 장애의 검증 범위
 
 격리 클러스터에서 정상 drain, 이미 하나 unhealthy인 drain, selector 오류, Pending 대체 Pod, 영역 손실을 각각 시험합니다. Eviction 응답과 PDB 상태·Pod 사건·실제 성공 요청 수를 함께 확인합니다. 장애 후 재처리의 중복·누락도 따로 검사합니다.
 

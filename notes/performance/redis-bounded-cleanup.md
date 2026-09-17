@@ -8,13 +8,13 @@ questionIds: [redis-bigkey-scan, redis-scan-cleanup-idempotency]
 
 # Redis Big Key 탐색과 재시작 가능한 정리
 
-## Key 수와 하나의 Key가 소비하는 비용은 다릅니다
+## Key 개수와 단일 Key의 자료구조 비용
 
 key가 100만 개 있는 경우와 field가 100만 개인 hash 하나는 둘 다 수가 커 보여도 비용이 발생하는 지점이 다릅니다. 후자처럼 하나의 key가 큰 자료구조나 값을 담는 경우를 big key라고 하며, 메모리뿐 아니라 그 key를 전체 조회할 때의 응답 bytes·serialize·network·replica 적용·삭제 시간에도 영향을 줍니다. 반대로 hot key는 접근 빈도 문제이므로 작은 값도 hot할 수 있고 큰 값이 반드시 hot한 것은 아닙니다.
 
 운영에서 크기를 찾을 때는 먼저 느린 명령과 명령별 지연을 모은 뒤, 그 명령의 응답 크기와 자료형별 cardinality를 함께 봅니다. 전체 값을 가져오는 HGETALL로 조사하면 조사 자체가 서버와 client를 압박할 수 있으므로, memory usage 표본처럼 일부를 보는 경로를 사용합니다. 이때 MEMORY USAGE의 샘플링 비용과 오차가 자료형·옵션에 따라 달라지므로, 사용한 자료형과 옵션을 기록해 표본 결과를 해석합니다.
 
-## SCAN은 Snapshot이나 페이지 번호가 아닙니다
+## SCAN cursor와 순회 보장 범위
 
 SCAN cursor는 불투명한 순회 상태입니다. `0`에서 시작해 반환 cursor가 `0`이 될 때 한 순회를 마칩니다. 중간 결과가 비어도 cursor가 0이 아니면 끝이 아닙니다. COUNT는 작업량 힌트이지 결과 수·실행 시간·응답 bytes의 엄격한 상한이 아닙니다. 작은 내부 인코딩의 collection은 한 번에 많이 나올 수도 있습니다.
 
@@ -28,7 +28,7 @@ SCAN cursor는 불투명한 순회 상태입니다. `0`에서 시작해 반환 c
 | 발견 후 값 변경 | 현재 version·owner 조건 재검사 |
 | 큰 batch | client bytes·시간 예산도 별도 제한 |
 
-## 발견 시점의 조건으로 나중에 무조건 삭제하지 않습니다
+## 발견 시점 조건과 삭제 직전 현재 상태
 
 정리 A가 `job:7`에서 오래된 version 3을 발견한 다음 B가 version 4로 갱신하면, A가 나중에 실행한 DEL이 새 version 4까지 지울 수 있습니다. GET으로 version을 읽고 DEL을 이어서 보내도 두 명령 사이에 같은 갱신이 끼어들 수 있으므로 경쟁은 사라지지 않습니다.
 
@@ -40,13 +40,13 @@ SCAN cursor는 불투명한 순회 상태입니다. `0`에서 시작해 반환 c
 
 개념적인 원자 구간은 `if current.version == observedVersion and current.expiresAt <= cutoff then UNLINK(key)`입니다. 실제 자료형·누락 필드·version 재사용 방지·기준 시각을 정의해야 합니다. 외부 DB의 최신 권한 상태까지 Redis 스크립트가 원자 확인해 주지는 않습니다.
 
-## UNLINK도 무료 작업은 아닙니다
+## UNLINK와 background 해제 비용
 
 UNLINK는 keyspace에서 제거하고 적절한 해제를 background로 넘겨 긴 동기 해제 부담을 줄일 수 있습니다. 호출·전파·background 해제 CPU·메모리 잔존은 남습니다. lazyfree pending·RSS·replication 지연을 관찰하고 한 번에 너무 많은 key를 넘기지 않습니다. 삭제 응답이 곧 allocator의 OS 메모리 반환 완료라는 뜻은 아닙니다.
 
 큰 collection을 쪼개면 개별 비용을 줄일 수 있지만 만료·일관성·조회 fan-out·key 관리 비용이 늘어납니다. 목적에 맞는 chunking과 크기 상한을 데이터 생성 시점부터 적용합니다.
 
-## 반복 정리는 횟수보다 최종 상태로 확인합니다
+## 반복 정리와 최종 상태 확인
 
 정리 작업을 시작할 때 순회 세대와 대상 topology를 기록하고, 실행 중에는 후보·삭제·변경으로 건너뛴 항목·오류 수·bytes·pause를 같은 작업 단위로 남깁니다. 중단되면 cursor를 snapshot 위치처럼 믿지 않고 다시 훑을 수 있어야 하며, 이때 현재 version·owner·업무 만료 조건을 다시 확인해 새 데이터를 지우지 않는 조건을 유지합니다. commands/s·pipeline 크기·최대 작업 시간·지연 임계로 throttle하고, 운영 peak에서는 작업을 중단할 수 있게 합니다.
 

@@ -8,7 +8,7 @@ questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-proc
 
 # Kafka 소비 offset과 완료 경계
 
-## poll이 끝났다는 말과 일이 끝났다는 말은 다릅니다
+## poll 완료와 애플리케이션 처리 완료의 경계
 
 소비자에서 `poll()`이 레코드 10·11·12를 반환하면 Kafka client의 현재 **position**은 보통 다음에 가져올 위치인 13으로 전진합니다. 그러나 이 순간 DB 반영이나 외부 API 호출까지 끝났다는 뜻은 아닙니다. `poll`은 레코드를 애플리케이션에 전달한 사건이고, 처리는 그 뒤에 시작할 수 있습니다.
 
@@ -20,7 +20,7 @@ questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-proc
 
 Kafka `KafkaConsumer` 공식 Javadoc이 설명하듯, `committed offset`은 마지막으로 처리한 레코드 번호가 아니라 재시작 뒤 다음에 읽을 위치입니다. 그래서 10만 처리했다면 11을 저장하지만, 12를 먼저 끝냈다는 이유로 13을 저장하면 아직 끝나지 않은 10·11을 재시작 뒤 건너뛸 수 있습니다. 따라서 commit 후보는 앞에서부터 끊기지 않고 성공한 구간의 다음 위치여야 합니다.
 
-## 한 번의 poll을 상태표로 펼쳐 보겠습니다
+## 단일 poll의 위치·처리·commit 상태표
 
 아래에서는 P0에 실제 레코드 10·11·12가 연속으로 전달되었다고 가정합니다. `committed=10`은 재시작하면 10부터 다시 받는다는 뜻입니다.
 
@@ -35,7 +35,7 @@ Kafka `KafkaConsumer` 공식 Javadoc이 설명하듯, `committed offset`은 마�
 
 offset 숫자에 공백이 있다고 해서 공백을 처리할 때까지 멈추라는 뜻은 아닙니다. compaction, 제어 레코드, 보관 정리 등으로 실제 전달 레코드가 없는 위치가 있을 수 있습니다. 완료 경계는 “모든 정수”가 아니라 “실제로 전달받은 순서열 중 앞에서부터 성공한 구간”으로 계산해야 합니다.
 
-## 병렬 worker의 완료 watermark를 별도로 둡니다
+## 병렬 worker의 완료 watermark와 commit 경계
 
 poll 스레드와 worker를 분리하면 네트워크 수신과 느린 DB 호출을 격리할 수 있습니다. 대신 파티션마다 제한된 대기열과 완료 상태가 필요합니다. 다음 그림의 핵심은 `position=13`인 consumer가 `watermark=10`인 상태로도 정상일 수 있다는 점입니다. watermark는 다음 commit 후보인 위치를 뜻하며, 여기서는 10이 아직 미완료이므로 그대로입니다.
 
@@ -108,7 +108,7 @@ commitCompleted():
 
 `lastSuccessfulCommit`은 클라이언트가 성공 응답을 확인한 위치입니다. 응답 유실이나 timeout이면 서버에는 commit이 반영됐을 수도 있으므로 실제 group 위치를 10이라고 단정할 수 없습니다. 위 예의 `CommitFailedException`처럼 소유권 관련 오류와 일시적 timeout을 구별하고, 이미 잃은 할당에는 다시 commit하지 않습니다. 새 할당의 세대 값은 이전 할당과 재사용하지 않고, `nextCommit`은 실제 재개 위치로 초기화합니다.
 
-## commit 시점은 중복과 누락의 경계를 만듭니다
+## 외부 효과와 offset commit의 중복·누락 경계
 
 일반적으로 외부 효과를 먼저 확정하고 그 뒤에 offset을 commit하면, 두 단계 사이의 종료에서 같은 레코드가 다시 전달될 수 있습니다. 이것은 누락보다 중복 재처리를 선택한 형태입니다. 같은 DB transaction 안에 `eventId` 처리 기록과 도메인 변경을 넣고 고유 제약으로 재전달을 흡수하면, 재시도는 가능하지만 효과는 한 번만 남길 수 있습니다. 외부 HTTP나 결제 API라면 그 API의 idempotency key 또는 결과 조회가 별도로 필요합니다.
 
@@ -116,7 +116,7 @@ commitCompleted():
 
 이 때문에 관측값도 하나로 합치지 않습니다. client가 받아온 `position`, group에 저장된 `committed`, worker가 완료한 `effect watermark`, 그리고 가장 오래된 미완료 작업의 나이를 각각 기록해야 합니다. commit을 빨리 해 내부 큐에 일이 쌓이면 Kafka lag만 작게 보일 수 있고, commit을 늦게 해도 DB 처리는 이미 끝나 lag가 크게 보일 수 있습니다.
 
-## rebalance는 작업을 취소해 주지 않습니다
+## rebalance와 진행 중 작업의 취소·소유권
 
 소비자 그룹에서 파티션은 한 시점에 한 consumer에게만 할당됩니다. 하지만 그 consumer가 이미 worker에 넘긴 DB 호출이 rebalance와 동시에 자동 취소되는 것은 아닙니다. 새 consumer가 같은 파티션을 받기 전에 옛 worker가 늦게 완료할 수 있으므로, event ID 중복 방지와 도메인 version 조건을 함께 둬야 합니다.
 
@@ -134,7 +134,7 @@ commitCompleted():
 
 `onPartitionsAssigned`에서는 외부에 별도로 보관한 처리 상태가 있다면 새 소유자의 시작 위치와 대조할 수 있습니다.
 
-### Group과 cooperative 이동의 범위를 나눕니다
+### Group과 cooperative rebalance 이동 범위
 
 partition 3개에 같은 group의 consumer 5개라면 일반 할당에서는 최대 3개만 partition을 맡고 나머지는 유휴일 수 있습니다. Pod당 consumer 수가 몇 개인지도 확인합니다. 다른 group은 같은 로그를 자기 offset으로 독립 소비하므로 분석·알림이 각각 모든 레코드를 받아야 하면 group을 분리합니다. group 이름 변경은 새 시작 위치·재생·중복 효과의 변경입니다.
 
@@ -142,7 +142,7 @@ cooperative rebalance는 일부 partition만 단계적으로 넘겨 전체 반�
 
 메모리 큐를 폐기할 때는 원본 보관 범위와 성공 commit이 미완료 작업보다 앞서지 않는지 확인합니다. log start보다 오래된 재개 위치라면 조용히 latest로 보내지 말고 snapshot·재생의 복구 계약으로 처리합니다. topic을 같은 이름으로 재생성하거나 다른 cluster로 옮기면 topic·partition·offset도 영구 업무 ID가 아니므로 이벤트 ID·원본 세대를 유지합니다.
 
-## poll 주기와 큐 상한도 완료 계약의 일부입니다
+## poll 주기·큐 상한·완료 계약
 
 느린 DB 호출을 poll callback 안에서 모두 기다리면 다음 poll 사이가 길어집니다. Kafka 4.3 consumer 설정에서 확인한 `max.poll.interval.ms` 기본값은 300,000ms이며, group-managed consumer가 이 간격을 넘기면 실패한 member로 간주되어 rebalance가 일어날 수 있습니다.
 
@@ -158,13 +158,13 @@ worker는 KafkaConsumer를 직접 만지지 않고 결과만 돌려줍니다. �
 
 poll과 worker를 나눠도 내부 queue를 무한히 키우면 메모리에 미완료 작업이 쌓일 뿐입니다. queue가 가득 차면 해당 파티션을 `pause`해 새 레코드를 덜 받되, consumer thread는 `poll`을 계속 호출해 client의 heartbeat 계약을 지켜야 합니다. `pause`는 해당 파티션의 전달만 조절하며 group에서 나가거나 소유권을 포기하는 동작이 아닙니다. 그래서 멈춘 작업의 실제 나이와 queue에서 가장 오래된 offset을 함께 관측합니다.
 
-## 순서가 필요한 효과는 watermark만으로 부족합니다
+## 순서 의존 효과와 watermark의 한계
 
 완료 watermark가 10에 멈춰 있다는 사실은 10 미만의 commit 경계를 안전하게 지켜 주지만, worker가 11·12의 외부 효과를 이미 먼저 실행했다는 사실을 없애지 않습니다. 예를 들어 10이 잔액을 확인하는 차감이고 11이 환불이라면, 11의 완료를 watermark 뒤에 숨겨도 데이터베이스에는 환불이 먼저 반영될 수 있습니다.
 
 같은 파티션의 기록 순서 자체가 외부 상태 전이 순서여야 한다면 해당 key 작업을 직렬화하거나, 저장소 transaction에서 `expectedSequence`를 검사해 42를 기다리는 43을 보류해야 합니다. watermark는 **offset commit의 누락을 막는 장치**이지, 병렬 worker의 효과 순서를 재배열하는 장치가 아닙니다.
 
-## 직접 확인할 입력과 예상 결과
+## 입력 상태별 예상 broker 위치와 결과
 
 | 실험 입력 | 중단 지점·상태 | 예상되는 broker 위치 | 확인할 결과 |
 |---|---|---|---|
@@ -179,7 +179,7 @@ poll과 worker를 나눠도 내부 queue를 무한히 키우면 메모리에 미
 
 이 입력을 실제로 실행했다고 주장하지 않습니다. 실행할 때는 Kafka committed offset과 애플리케이션 effect watermark를 한 로그에 섞지 말고, 중복·누락·가장 오래된 작업 나이를 별도 기준으로 대조해야 합니다.
 
-## 확인한 공식 문서
+## Kafka 공식 문서와 API 계약
 
 - [Apache Kafka 4.3 KafkaConsumer Javadoc](https://kafka.apache.org/43/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html): `poll`, `position`, committed offset, `commitSync`, offset gap과 처리 후 commit의 의미.
 - [Apache Kafka 4.3 ConsumerRebalanceListener Javadoc](https://kafka.apache.org/43/javadoc/org/apache/kafka/clients/consumer/ConsumerRebalanceListener.html): `onPartitionsRevoked`, `onPartitionsAssigned`, `onPartitionsLost`의 호출 시점과 commit 가능 경계.

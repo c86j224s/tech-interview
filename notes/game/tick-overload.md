@@ -8,13 +8,13 @@ questionIds: [fixed-timestep-catchup, ai-update-frequency-combat-fairness, cross
 
 # 고정 Tick의 Catch-up·과부하·교차 사건 순서
 
-## 한 틱 계산이 주기보다 길면 밀린 일을 더해도 따라잡지 못합니다
+## 틱 계산 시간·주기와 backlog 누적·catch-up 불능
 
 50ms 주기의 서버가 500ms 멈추면 약 10틱이 밀립니다. 정상 계산이 틱당 20ms면 제한된 추가 실행으로 따라잡을 여지가 있지만 60ms면 한 틱을 처리하는 동안 다시 1틱 이상 시간이 지나 backlog가 계속 늘어납니다. 이를 spiral of death라고 부릅니다.
 
 고정 dt는 수치·입력 재현에 도움되지만 실제 wall time과 simulation time이 항상 같게 만들지는 않습니다. 500ms를 큰 dt 한 번으로 계산하면 중간 충돌·입력·cooldown 결과가 달라질 수 있습니다. 누적 시간을 버리면 세계 시간이 느려진다는 다른 변화가 생깁니다.
 
-## 루프의 최대 Step과 CPU 예산을 정합니다
+## 루프 최대 Step과 CPU 예산
 
 ```text
 accumulator += measuredElapsed
@@ -38,7 +38,7 @@ if accumulator still too large:
 | 절대/달력 시각 | 세션·시즌·외부 만료의 정의된 계약 |
 | 원격 tick | owner·epoch·기준 snapshot과 함께 해석 |
 
-## AI 평가를 줄여도 반응성이 자동 보존되지는 않습니다
+## AI 평가 감소와 반응성 보존 조건
 
 전략 목표·장식·먼 NPC 갱신은 늦춰도 되는 작업인지, 공격 입력·충돌·cooldown·자원 차감은 권위 규칙인지 먼저 나눕니다. 과부하 때 AI의 공격·회피 평가를 뒤로 미루면 평가 시점이 달라져 반응 분포 자체가 바뀌므로, 허용 지연을 규칙으로 두고 위험 event는 우선 wake-up합니다. 나머지 NPC 평가는 phase를 나눠 실행하되 각 작업에 최소 진행을 남깁니다.
 
@@ -48,12 +48,12 @@ NPC별 stable phase는 매 tick 모든 NPC를 동시에 평가하지 않고 정�
 {"title":"권위 규칙은 보존하고 허용된 작업만 지연합니다","caption":"화살표는 과부하 판단입니다. 시간 손실과 AI 반응 변화는 기록된 정책이며 숨은 실행 차이로 만들지 않습니다.","rows":[[{"id":"measure","label":"틱 비용·누적 backlog·입력 age"}],[{"id":"budget","label":"max step·CPU budget·과부하 mode"}],[{"id":"critical","label":"순서 보존 전투·자원"},{"id":"optional","label":"허용된 AI/통계 지연"}],[{"id":"record","label":"정책·틱·입력·결과 기록"}]],"edges":[{"from":"measure","to":"budget","label":"지속/순간 구분"},{"from":"budget","to":"critical","label":"불변 규칙"},{"from":"budget","to":"optional","label":"명시적 저하"},{"from":"critical","to":"record","label":"확정 결과"},{"from":"optional","to":"record","label":"생략·반응 변화"}]}
 ```
 
-## 서버끼리 같은 Wall Time을 본다고 같은 전투 Tick은 아닙니다
+## Wall Time과 전투 Tick의 비동일성
 
 서버를 넘나드는 event에는 authority server, owner epoch(그 서버가 권위를 가진 세대), 기준 tick/snapshot, 논리 sequence, event ID를 함께 넣습니다. 수신자는 이 값으로 어느 snapshot에서 event를 읽고 어떤 권위 순서에 적용할지 결정합니다. 늦게 온 event는 bounded reorder로 잠시 순서를 맞출지, 보류·거절·보정할지 정하고, 임의의 도착 순서에 맡기지 않습니다.
 
 handoff 전후 두 server가 같은 피해를 독립 확정하지 않도록 현재 owner를 검사하고 replay는 우연한 thread 도착 순서보다 기록된 확정 순서를 재현합니다. 보관 범위 밖 tick을 임의로 현재 tick과 동일시하지 않습니다.
 
-## 순간 Pause와 지속 과부하를 분리해 시험합니다
+## 순간 Pause와 지속 과부하의 분리 시험
 
 500ms 정지·매틱 60ms·집중 전투·동시 timer·교차 server 지연·복구 뒤 snapshot 수렴을 시험합니다. 처리/폐기 tick·input age·회복 시간·핵심 event 누락·반응 분포·CPU p99를 봅니다. 이 노트는 과부하 설계이며 실제 server pause 실험 결과는 아닙니다.

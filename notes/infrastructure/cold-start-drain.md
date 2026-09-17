@@ -8,7 +8,7 @@ questionIds: [keda-scale-zero, warm-pod-versus-warm-node, queue-visible-inflight
 
 # Scale-to-zero의 첫 처리와 마지막 작업 종료
 
-## 첫 메시지는 Polling 뒤 바로 처리되지 않을 수 있습니다
+## Polling부터 첫 ACK까지의 준비 지연
 
 consumer가 0개일 때 메시지가 도착하면, 먼저 scaler가 이벤트를 감지해 workload 활성화를 요청하고, Pod를 생성한 뒤 노드에 배치해야 합니다. 이어 이미지·앱 초기화·broker 연결·assignment를 거쳐야 첫 처리를 시작할 수 있습니다.
 
@@ -20,7 +20,7 @@ consumer가 0개일 때 메시지가 도착하면, 먼저 scaler가 이벤트를
 
 Pod 상태가 Running으로 바뀌어도 필수 설정을 읽고 broker assignment를 받은 뒤라는 뜻은 아니므로, 메시지를 바로 처리할 준비가 됐다고 세지 않습니다. readiness 실패만으로 pull consumer의 fetch가 자동 중단되지 않는다면, 앱이 초기화와 assignment를 끝낸 뒤에만 소비를 시작하고 종료 신호를 받으면 새 fetch를 먼저 멈추도록 구현합니다. 그래야 종료 중 새 작업이 계속 들어오는 것을 막으면서 실제 처리 준비와 상태 표시를 같은 기준으로 맞출 수 있습니다.
 
-## Warm Node와 Warm Pod가 없애는 비용은 다릅니다
+## Warm Node와 Warm Pod의 제거 비용 차이
 
 | 유지 대상 | 줄일 수 있는 지연 | 남는 비용·지연 |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ warm이라고 이름 붙인 Pod가 실제 Ready·broker 연결 상태가 아니�
 
 허용 메시지 지연이 긴 배치와 즉시 응답해야 하는 사용자 요청은 다른 정책이 필요합니다. 긴 유휴 뒤 첫 메시지와 짧은 반복 burst의 비용을 따로 측정해 최소 용량을 정합니다.
 
-## Visible이 0이어도 진행 중 변경은 남습니다
+## Visible backlog와 in-flight 작업
 
 worker가 큐에서 메시지를 가져간 뒤에는 visible backlog에서 사라져도 DB 쓰기나 외부 효과가 끝나지 않은 in-flight 작업일 수 있습니다. 예를 들어 visible backlog=0인 시점에 축소를 완료하면 아직 확정하지 않은 작업을 끊을 수 있으므로, broker가 in-flight를 어떻게 정의하는지와 지표 지연을 확인하고 ACK 또는 commit이 어느 단계에서 발생하는지 함께 기록합니다.
 
@@ -41,13 +41,13 @@ Kafka에서는 committed lag가 마지막 커밋을 기준으로 하므로 처�
 
 축소 요청이 오면 먼저 새 fetch와 자식 작업 수락을 막고, 이미 시작한 작업은 실제로 끝나면서 효과가 확정될 때까지 기다립니다. grace 안에 끝나면 효과를 확정한 뒤 ACK하고, 끝나지 않으면 checkpoint를 남기거나 안전하게 재전달해 새 worker가 이어서 처리하게 합니다. 효과가 이미 적용됐는지 응답만으로 알 수 없을 때는 같은 논리 키로 조회하고 멱등 처리해야 하며, replica 수를 0으로 만들려고 ACK부터 보내면 그 작업이 재전달되지 않아 누락될 수 있습니다.
 
-## 제어기의 Cooldown과 앱의 Drain은 대체 관계가 아닙니다
+## 제어기 Cooldown과 앱 Drain의 독립 경계
 
 cooldown은 짧은 수요 변동마다 0으로 줄었다 깨어나는 진동을 줄일 수 있습니다. HPA stabilization은 활성 replica 조정의 다른 경계에 작용할 수 있으므로 사용하는 KEDA 구성의 역할을 확인합니다. 어느 창도 앱의 진행 중 작업을 자동으로 완료하거나 보상하지 않습니다.
 
 준비에 40초가 걸리는데 20초 간격 burst마다 완전히 내려가면 매번 cold start를 치를 수 있습니다. 창을 늘리면 비용이 늘지만 반복 예열·rebalance를 줄일 수 있습니다. 이 예는 설계 가정이며 적절한 시간은 실제 분포·SLO·비용으로 정합니다.
 
-## 첫 이벤트와 마지막 실행을 같은 수명으로 관측합니다
+## 첫 이벤트부터 마지막 실행까지의 수명 관측
 
 이벤트 도착·감지·desired 변경·Node Ready·container 시작·assignment·첫 커밋·ACK 시각을 기록합니다. 축소에서는 fetch 중단·마지막 수락·마지막 효과·ACK·프로세스 종료를 분리합니다. 지표 API가 실패할 때도 작은 작업이 영원히 남지 않는 fallback과 경보를 검토합니다.
 

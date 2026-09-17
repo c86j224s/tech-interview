@@ -8,13 +8,13 @@ questionIds: [agent-sandbox-isolation, agent-tool-supply-chain]
 
 # 에이전트 Sandbox와 도구·지침 공급망
 
-## 컨테이너 이름보다 무엇이 열려 있는지 봅니다
+## 컨테이너 이름과 실제 노출 범위
 
 작업 컨테이너에 host home·SSH key·cloud credential·container 관리 socket을 mount하면 격리의 가치가 크게 줄어듭니다. 생성 코드뿐 아니라 저장소 install hook·test script·의존성도 비신뢰 실행에 포함합니다. 위협 모델과 보호 대상에 따라 제한된 container 또는 더 강한 VM/microVM 경계를 선택합니다.
 
 실행 컨테이너에는 필요한 repository만 mount하고, 사용하지 않는 `privilege`와 `system capability`를 제거합니다. secret 파일이 read-only여도 실행 코드가 그 값을 읽어 네트워크로 보낼 수 있으므로, 쓰기 금지만으로 기밀성이 보장되지는 않습니다.
 
-## 실행 중뿐 아니라 반입·반출·재사용도 검사합니다
+## 실행·반입·반출·재사용 통제
 
 | 경계 | 통제 |
 | --- | --- |
@@ -34,13 +34,13 @@ questionIds: [agent-sandbox-isolation, agent-tool-supply-chain]
 
 대화 deadline이 끝나도 자식 process는 남을 수 있습니다. 실제 종료·file/port 정리·budget 반환을 확인하고 원격 효과는 별도 조회합니다. 외부 네트워크를 전부 막으면 필요한 정상 시험도 안 될 수 있으므로 허용 동작이 실제 가능한지 양성 시험을 포함합니다.
 
-## 도구 설명도 행동을 바꾸는 공급망입니다
+## 도구 설명의 공급망 신뢰 경계
 
 조회만 하던 도구의 설명이 어느 날 “먼저 로그를 업로드”로 바뀌거나, `skill` 예제가 새 `shell script`를 실행하게 되면 실행 코드에 diff가 없어도 실제 행동이 달라집니다. 그래서 이름과 `description`, `schema`, `default`, `read-only`·`idempotent` 주석, 참고 자료, script, 의존성을 한 묶음으로 비교합니다. 서명은 누가 배포했는지는 보여 주지만, 그 내용이 안전하거나 현재 과제에 맞는다는 사실까지 증명하지는 않습니다.
 
 package version·hash·소유자·source를 고정하고 필요한 보안 업데이트는 검토·격리 시험·점진 적용합니다. 원격 endpoint가 같은 주소에서 바뀌면 로컬 lockfile만으로 재현되지 않으므로 관측한 정의 hash·지원 version·server identity·계약 시험을 남깁니다.
 
-## 회수는 목록에서 숨기는 것보다 강해야 합니다
+## 도구 회수와 실행기 차단 범위
 
 오래된 세션이 예전에 cache한 도구 `schema`를 갖고 있으면, 최신 목록에서 그 도구를 숨겨도 해당 세션은 그 schema로 계속 호출할 수 있습니다. 긴급 차단은 실행기에서 해당 `version`이나 행동을 거절하고, 자격·진행 중인 `task`·재시도·`cache`를 함께 처리해야 합니다. 이미 외부 효과가 생겼다면 차단만으로 그 효과가 롤백되지는 않습니다. `rollback`할 때는 코드뿐 아니라 `schema`, 설정, `memory`, 오래된 `workflow state`와 새 버전의 호환도 확인합니다.
 

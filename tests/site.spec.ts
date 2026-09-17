@@ -252,6 +252,9 @@ test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크
     for (const link of links) {
       expect((await page.goto(link))?.status()).toBe(200);
       await expect(page.locator('.note-body')).toBeVisible();
+      const sections = await page.locator('.note-body h2').evaluateAll(nodes => nodes.map(node => node.id));
+      const toc = await page.getByRole('navigation', { name: '학습 노트 목차' }).locator('a[href^="#section-"]').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')?.slice(1)));
+      expect(toc).toEqual(sections);
       const source = noteContent.find((note) => link.endsWith(`/notes/${note.data.id}/`))!;
       const diagramCount = (source.content.match(/^```diagram$/gm) || []).length;
       await expect(page.locator('.note-diagram svg')).toHaveCount(diagramCount);

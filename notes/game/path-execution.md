@@ -8,13 +8,13 @@ questionIds: [dynamic-path-revalidation, path-dependency-version-granularity, mo
 
 # 경로의 동적 재검증·Smoothing·목표 세대
 
-## 경로는 계산 당시의 계획이지 도착까지의 보장이 아닙니다
+## 경로 계산 시점의 계획과 도착 전 재검증
 
 A-B-C-D 경로에서 B의 문이 닫히면 현재 위치에서 다음 구간으로 들어가기 전에 멈추거나, 문 상태를 다시 읽어 경로를 재검증합니다. 영구 지형 변화와 다른 NPC가 잠시 길을 차지한 경우는 처리 방식이 다릅니다. 일시 점유에는 대기·예약 갱신·local avoidance(주변 물체와 부딪히지 않도록 짧게 움직임을 조정하는 처리)를 적용할 수 있고, 구조가 바뀌면 재탐색을 적용할 수 있습니다. 이미 위험하다고 확인한 구간은 옛 경로에 들어 있다는 이유로 계속 실행하지 않습니다.
 
 맵 version은 환경, 목표 generation은 현재 의도, agent profile version은 크기·능력·이동 규칙을 나타냅니다. 목표가 바뀌면 맵이 그대로여도 이전 성공 결과는 적용할 수 없습니다. 결과에는 request ID와 이 세 범위를 함께 연결합니다.
 
-## 의존 범위는 중심선보다 넓을 수 있습니다
+## 경로 의존 영역과 중심선·footprint 차이
 
 | 범위 | 이점 | 비용·누락 |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ A-B-C-D 경로에서 B의 문이 닫히면 현재 위치에서 다음 구간으�
 
 의존 영역을 너무 좁게 잡으면 실제 영향을 놓치는 false negative가 되고, 너무 넓게 잡으면 무관한 변경에도 재탐색이 몰립니다. 실행 직전 충돌 검사는 이 의존 범위의 누락이나 과다를 대신 조정하지 못합니다.
 
-## 움직이는 목표는 최신 요청만 남기되 안전 검사를 유지합니다
+## 이동 목표의 최신 generation과 안전 검사
 
 이동 중인 목표를 쫓을 때는 목표 이동 거리, 현재 경로의 유효성, 경과한 틱을 함께 보고 재탐색 시점을 정합니다. NPC별 cooldown은 한 NPC의 연속 요청을 벌리는 제한으로 두고, global worker/queue budget은 모든 NPC가 동시에 사용할 탐색량을 제한합니다. 같은 문 변경으로 생긴 요청은 지역별로 합치거나 stagger(시작 시점을 나눔)하고, 중간 목표 요청은 coalesce(최신 요청 하나로 합침)합니다. 작업이 끝났을 때는 현재 generation에 맞는 결과만 적용합니다.
 
@@ -37,13 +37,13 @@ A-B-C-D 경로에서 B의 문이 닫히면 현재 위치에서 다음 구간으�
 {"title":"늦은 결과도 현재 의도와 실행 가능성을 통과해야 합니다","caption":"화살표는 경로 수명입니다. 검색 성공과 smoothing 성공 뒤에도 현재 generation·지도 조건·다음 구간 충돌 검사가 남습니다.","rows":[[{"id":"request","label":"목표 generation·map/profile snapshot"}],[{"id":"search","label":"bounded 경로 탐색"}],[{"id":"smooth","label":"shortcut·corridor·비용 검증"}],[{"id":"apply","label":"현재 request/version 일치"}],[{"id":"move","label":"짧은 구간 sweep·예약·이동"}]],"edges":[{"from":"request","to":"search","label":"불변 입력"},{"from":"search","to":"smooth","label":"후보 경로"},{"from":"smooth","to":"apply","label":"검증된 후보"},{"from":"apply","to":"move","label":"지금 실행 허가"}]}
 ```
 
-## Smoothing은 새로운 실행 경로를 만드는 변환입니다
+## Smoothing 변환과 새로운 실행 경로 검증
 
 두 waypoint가 서로 보인다고 반경·높이·경사·step·낙하·일방통행을 가진 agent가 지나갈 수 있는 것은 아닙니다. grid shortcut은 선분 전체와 팽창 장애물 또는 shape sweep을 검사합니다. NavMesh funnel은 portal corridor의 꺾임을 줄이지만 profile에 맞게 수축/생성된 통로 폭과 높이·층 연결이 유효해야 합니다.
 
 가장 먼 후보 shortcut이 실패하면 더 가까운 후보를 검사하거나 원래 경로를 유지합니다. 긴 segment는 동적 변화에 취약해 짧은 실행 구간·예약 horizon으로 확정합니다. failure cache도 map/profile version이 바뀌면 재검토합니다.
 
-## 더 짧은 거리가 더 낮은 비용은 아닙니다
+## 경로 거리와 가중 비용의 불일치
 
 원래 우회 거리 10에 단가1이면 비용10입니다. 직선 거리6 중 4가 단가3, 2가 단가1이면 비용14입니다. waypoint 수와 거리만 줄이면 더 비싼 경로가 됩니다. 실제 지형 길이·가중치·경사·선회 비용으로 원래 구간과 비교하고 원래 품질 계약을 만족할 때만 적용합니다.
 

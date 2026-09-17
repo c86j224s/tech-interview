@@ -12,7 +12,7 @@ questionIds: [transactional-outbox, db-outbox-polling-cdc, outbox-claim-lease-re
 
 **트랜잭셔널 아웃박스**(transactional outbox)는 주문 DB와 브로커의 성공을 하나의 원자 연산으로 만드는 기법이 아닙니다. 주문 변경과 “이 이벤트를 나중에 반드시 전달해야 한다”는 outbox 행을 같은 DB 트랜잭션(transaction)으로 확정한 뒤, 별도 Relay가 확정된 행을 읽어 브로커에 보냅니다. 따라서 Relay가 브로커의 ACK를 확인하기 전후에 중단되면 같은 `event_id`가 다시 발행될 수 있고, consumer는 그 ID로 중복 효과를 막아야 합니다. 이 노트는 주문 변경·outbox 저장·Relay 전달까지를 다루며, consumer의 중복 방지 트랜잭션 자체는 범위 밖입니다.
 
-## 보장은 주문 DB의 한 확정에서 시작합니다
+## 주문 DB 확정과 Outbox 보장
 
 주문 완료를 성공으로 인정하는 불변식은 간단합니다.
 
@@ -66,7 +66,7 @@ last_error
 
 여기서 Repository가 트랜잭션을 새로 열거나 먼저 확정하면 그림의 보장이 깨집니다. 반대로 Relay는 주문 트랜잭션을 소유하지 않지만 브로커 `publish`는 담당합니다. Relay는 행을 브로커에 보내는 동안 주문 DB 잠금을 오래 잡지 않고, claim과 완료·재시도 표시처럼 자기 상태를 바꾸는 짧은 트랜잭션만 사용합니다.
 
-## 한 주문의 상태를 끝까지 추적합니다
+## 주문 상태와 이벤트 전달 추적
 
 초기 상태는 다음과 같습니다.
 
@@ -89,7 +89,7 @@ broker:       없음
 
 t1에서 서버가 중단되면 트랜잭션이 되돌려져 주문도 outbox도 남지 않습니다. t2에서 확정한 뒤 서버가 중단되면 주문과 `PENDING` 행이 함께 남고, `lease_until=NULL`인 초기 행도 `next_attempt_at` 조건으로 Relay가 찾을 수 있습니다. t4의 중복 가능성은 Outbox가 실패해서가 아니라 DB 확정과 브로커 ACK를 하나의 원자 경계로 만들 수 없어서 생기는 별도의 사실입니다.
 
-## 실제 처리 순서
+## 주문 전이와 Relay 처리 순서
 
 주문 서비스는 상태 전이의 영향받은 행과 DB가 확정한 새 값을 확인한 뒤 event를 만듭니다. `markDone`이 0행인데도 outbox를 삽입하면 완료되지 않은 주문의 완료 event를 만들게 되므로, INSERT는 성공한 전이 뒤에만 실행합니다. event 본문은 `command`에서 조립하지 않고 `RETURNING` 결과인 `transition`에서 만듭니다.
 
@@ -304,7 +304,7 @@ Relay가 복구되지 않거나 브로커가 오래 장애를 일으키면 `PEND
 
 Outbox가 있다고 해서 모든 확정이 영원히 전달되는 것은 아닙니다. 주문 DB의 내구성, outbox 행의 보존, Relay의 재기동, 브로커의 ACK 확인이 모두 이어져야 합니다. 반대로 브로커의 exactly-once 기능이 있어도 애플리케이션의 `SENT` 표시와 완전히 같은 원자 경계가 된다고 가정하지 않는 편이 안전합니다.
 
-### Polling과 CDC는 전달 위치와 운영 비용이 다릅니다
+### Polling과 CDC의 전달 위치·운영 비용
 
 위 Relay는 outbox의 due 행을 polling합니다. 적절한 status·next_attempt_at 인덱스, 제한된 batch, 빈 polling 주기, claim 세대가 필요합니다. 구성은 직접적이지만 테이블 조회·상태 갱신·잠금·정리 비용을 냅니다. 여러 Relay가 aggregate의 이벤트를 다른 속도로 보내면 created_at 정렬만으로 키별 최종 적용 순서가 보장되지는 않습니다.
 

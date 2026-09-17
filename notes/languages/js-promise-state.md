@@ -8,7 +8,7 @@ questionIds: [js-promise-error-chain, promise-executor-then-throw, promise-rejec
 
 # Promise 체인의 상태 전파와 결과 집계
 
-## Catch가 값을 반환하면 다음 단계는 성공 경로입니다
+## Catch 반환값과 후속 성공 경로
 
 ```js
 const events = [];
@@ -24,7 +24,7 @@ await Promise.resolve('start')
 
 오류를 로그에만 남기고 return 없이 끝낸 catch도 정상적으로 undefined를 반환한 것이므로 이후에는 성공 경로가 됩니다. 복구하지 못했다면 다시 throw하거나 거절된 Promise를 반환해야 호출자가 실패를 관찰합니다.
 
-## Executor와 반응 callback은 실행 시점이 다릅니다
+## Executor와 반응 callback의 실행 시점
 
 Promise 생성자의 executor는 생성 호출 중 동기 실행됩니다. 그 안에서 throw한 예외는 일반적으로 생성된 Promise의 rejection으로 연결되므로 생성자 바깥 동기 try/catch만으로 그 거절을 관찰하지 못합니다. 단, 이미 resolve된 뒤 throw한 경우처럼 Promise가 이미 결정된 조건은 구분합니다.
 
@@ -38,7 +38,7 @@ then callback은 Promise 반응 job으로 나중 실행되고 그 throw는 then�
 | Promise 반환 | 반환한 Promise의 최종 상태 채택 |
 | 내부 Promise 시작만 하고 return 누락 | 내부 작업과 바깥 완료가 분리 |
 
-## 오류 handler는 반환된 체인에서 찾습니다
+## 오류 handler와 반환 체인의 탐색 범위
 
 `then(success, failure)`의 failure는 같은 then의 success가 던진 오류를 받지 않습니다. 그 오류는 **그 then이 반환한 Promise**의 거절이므로 다음 catch가 받습니다. 서로 갈라진 체인 중 하나에 붙인 catch가 다른 가지의 오류까지 자동 처리하지도 않습니다.
 
@@ -48,7 +48,7 @@ then callback은 Promise 반응 job으로 나중 실행되고 그 throw는 then�
 
 finally는 보통 값·오류를 그대로 통과시키면서 정리합니다. 그러나 finally가 throw하거나 거절된 Promise를 반환하면 원래 결과를 새 실패로 대체할 수 있습니다. 정리 실패가 원래 오류를 지우지 않게 원인과 보조 오류를 보존합니다. 동기 try/catch가 나중 job의 오류를 모두 잡는 것은 아니며, async 함수에서는 try 안에서 await해야 해당 rejection을 catch할 수 있습니다.
 
-## 시작 시점과 기다리는 순서는 다릅니다
+## 비동기 작업 시작 시점과 대기 순서
 
 `await jobA(); await jobB();`는 A 완료 뒤 B를 호출합니다. `const a=jobA(); const b=jobB(); await Promise.all([a,b]);`는 두 job 호출을 먼저 수행해 외부 I/O가 겹칠 수 있습니다. Promise.all이 새로운 병렬 스레드를 만드는 것은 아닙니다.
 
@@ -61,13 +61,13 @@ finally는 보통 값·오류를 그대로 통과시키면서 정리합니다. �
 
 결과 상태가 즉시 결정되어도 then 반응은 동기 호출처럼 앞질러 실행되지 않습니다. all의 결과 배열은 완료 순서가 아니라 입력 순서입니다. allSettled는 실패를 해결하지 않고 보여 줄 뿐이며 결과별 후속 정책이 필요합니다.
 
-## 실패 집계는 취소나 롤백이 아닙니다
+## Promise 실패 집계와 취소·롤백의 구분
 
 B가 먼저 실패해 `Promise.all`이 거절되어도, 이미 시작한 A의 fetch나 계산은 계속 실행될 수 있습니다. `Promise.race`로 timeout을 만들면 race는 호출자에게 먼저 도착한 결과를 넘길 뿐이어서 사용자 대기가 끝난 뒤에도 실제 작업이 남을 수 있습니다. 취소를 지원하는 API라면 `AbortSignal` 같은 해당 API의 신호를 A·B에 전달하고, 작업이 실제로 종료됐는지 별도로 관찰합니다. 이미 서버에서 커밋한 변경은 combinator의 거절이나 abort로 되돌아가지 않습니다.
 
 수천 개 함수를 map으로 호출해 이미 Promise를 만든 뒤 작은 그룹으로 기다려도 시작 수는 줄지 않습니다. 아직 시작하지 않은 함수들을 제한된 worker가 꺼내 호출하는 구조로 상한을 둡니다. 활성 수·대기 수·바이트·전체 deadline과 실패 뒤 미시작 작업의 정책을 정합니다.
 
-## 수동 완료 장치로 상태 전이를 확인합니다
+## deferred 기반 Promise 상태 전이 검증
 
 테스트에서는 시간 지연에 기대기보다 외부에서 resolve·reject할 수 있는 deferred 작업을 사용해 B 실패 뒤 A가 계속 남는지, all 결과 순서가 유지되는지 확인합니다. 빈 입력·catch 재throw·finally 실패·중첩 return 누락도 각각 검사합니다.
 

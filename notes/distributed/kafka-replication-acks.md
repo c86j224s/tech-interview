@@ -8,7 +8,7 @@ questionIds: [kafka-acks-isr, kafka-unclean-election-policy]
 
 # Kafka 복제 ACK와 기록 보존 경계
 
-## RF 3이라는 숫자가 곧 세 replica 대기는 아닙니다
+## RF 3과 현재 ISR의 복제 범위
 
 한 파티션(partition)에 복제 계수(**replication factor**, RF)가 3이라고 하겠습니다. 이것은 leader 하나와 follower 둘을 포함해 배치할 사본 수가 세 개라는 뜻입니다. 하지만 세 replica가 항상 현재 복제 성공 집합으로 인정되는 것은 아닙니다. follower 하나가 장애를 겪거나 leader를 따라잡지 못하면 **ISR(in-sync replicas)** 에서 빠질 수 있습니다.
 
@@ -18,7 +18,7 @@ questionIds: [kafka-acks-isr, kafka-unclean-election-policy]
 
 반대로 F1까지 빠져 `ISR={L}`만 남으면 최소 ISR 2를 만족하지 못합니다. 이 설정에서 `acks=all` 생산은 일반적으로 `NotEnoughReplicas` 또는 `NotEnoughReplicasAfterAppend` 계열 오류로 거절됩니다. 가용성을 유지하려고 min ISR을 낮추면 leader 하나만 남은 상태에서도 쓰기가 성공할 수 있지만, 성공 응답 뒤 보존을 맡는 사본 수가 줄어드는 대가를 지게 됩니다.
 
-## 용어를 같은 표에 놓고 비교합니다
+## Kafka 복제 용어 비교
 
 | 항목 | 무엇을 세거나 확인하나요? | 이 예의 값 | 오해하면 안 되는 점 |
 |---|---|---|---|
@@ -39,7 +39,7 @@ Kafka 4.3 topic 설정 문서에서 `min.insync.replicas`는 leader를 포함한
 
 Kafka 4.3 공식 복제 설계 문서는 현재 ISR 전체가 기록을 받아야 파티션 write가 committed가 되고, consumer에는 committed message만 제공된다고 설명합니다.
 
-## 다섯 가지 상태를 숫자로 따라가 보겠습니다
+## 복제 상태별 성공 조건과 보존 경계
 
 다음 표의 “성공”은 producer가 해당 요청에 대해 Kafka의 성공 응답을 받을 수 있는지에 대한 판단입니다. 외부 DB 효과나 장기적인 모든 장애까지 포함한 보장이 아닙니다. 이 설명은 위에서 정한 ELR 비활성 단순 ISR 모델을 기본으로 하며, ELR 활성 상태의 후보 선출은 아래의 별도 문단과 공식 문서 링크를 기준으로 다시 판단합니다.
 
@@ -55,7 +55,7 @@ A에서 min ISR이 2라는 이유로 F2를 무시하고 L과 F1만 기다리는 
 
 ISR이 줄어드는 순간과 leader의 append가 겹치면 `NotEnoughReplicas`와 `NotEnoughReplicasAfterAppend` 중 어느 오류가 돌아오는지에 따라 producer가 관찰한 경계가 달라질 수 있습니다. 두 이름을 같은 실패로 뭉뚱그리지 말고 append 전후의 상태와 broker log를 함께 확인해야 하며, 오류 응답만으로 record가 log에 절대 들어가지 않았다고 단정하지 않습니다.
 
-## acks 값은 서로 다른 기록 확인을 선택합니다
+## acks 값별 기록 확인 범위
 
 `acks=0`은 broker가 받은 뒤의 확인을 기다리지 않습니다. socket buffer에 넘긴 뒤 성공처럼 진행할 수 있지만 receipt나 offset을 확인할 수 없습니다. `acks=1`은 leader가 자기 log에 append한 뒤 응답하고 follower를 기다리지 않으므로, 그 뒤 leader가 장애 나면 아직 복제되지 않은 기록을 잃을 수 있습니다.
 
@@ -69,7 +69,7 @@ Kafka 공식 설계 문서는 filesystem append가 OS page cache에 머물 수 �
 
 topic 설정 문서는 producer의 `acks` 값과 무관하게 consumer가 record를 보기 전에 현재 ISR 전체 복제와 min ISR 조건이 충족되어야 한다고 설명합니다. 따라서 producer가 `acks=1` 응답을 받았다는 것, consumer가 곧 읽을 수 있다는 것, follower가 장애 후에도 그 record를 보존하고 있다는 것은 서로 다른 주장입니다.
 
-## leader 장애 때 보존되는 것은 ‘committed’ 경계까지입니다
+## leader 장애와 ‘committed’ 경계의 보존
 
 leader L이 고장 났을 때 controller는 보통 ISR 안의 replica를 새 leader로 선택합니다. L과 F1이 ISR이었고 성공한 record가 두 곳에 모두 append되어 committed라면, F1이 새 leader가 되어 그 record를 이어갈 수 있습니다.
 
@@ -87,7 +87,7 @@ ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터
 
 이 선택은 “장애 중에도 쓰기를 재개할 것인가”와 “성공했다고 응답한 기록을 잃지 않을 것인가” 사이의 정책입니다. 재생성 가능한 알림 로그라면 가용성을 우선할 여지가 있지만, 금액·재고·권리 원장이라면 unclean election을 쉽게 허용해서는 안 됩니다. 어느 경우든 새 leader의 log와 producer가 성공 응답받았거나 응답을 잃은 record ID를 대조할 복구 절차가 필요합니다.
 
-## 성공 조건은 표로 확인하고 구현 세부는 섞지 않습니다
+## 성공 조건과 구현 경계 분리
 
 이 노트에서는 producer의 `send`와 broker의 leader append를 하나의 의사코드로 합치지 않습니다. producer가 요청을 보내는 경계, leader가 append하는 경계, follower가 복제 진행을 알리는 경계, broker가 ACK를 반환하는 경계를 실제 client·broker 버전에 맞춰 따로 확인해야 합니다.
 
@@ -102,7 +102,7 @@ ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터
 
 이 표에서 `minISR=2`는 현재 ISR에서 두 replica만 골라 기다리라는 뜻이 아닙니다. 먼저 현재 ISR 크기가 최소 2인지 확인하고, 그 현재 집합의 모든 member가 복제했는지를 성공 조건으로 봅니다. 이 구분을 하지 않으면 RF 3·ISR 3에서 한 replica의 ACK를 누락한 채 성공시키는 잘못된 설명이 됩니다.
 
-## 직접 확인할 입력과 예상 결과
+## 입력 상태별 관찰 결과
 
 | 입력 상태 | 관찰할 동작 | 예상 결과 |
 |---|---|---|
@@ -116,7 +116,7 @@ ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터
 
 위 시나리오는 실행한 결과가 아니라 직접 시험할 입력과 예상 기준입니다. 시험할 때 producer 응답, 현재 ISR 변화, 새 leader의 log, consumer visibility를 한 개의 “성공” 숫자로 합치지 않아야 합니다. 특히 외부 DB나 결제 결과는 Kafka의 ACK 범위에 들어가지 않으므로 이 노트의 기록 보존 지표와 분리해서 세어야 합니다.
 
-## 확인한 공식 문서
+## Kafka 공식 문서 근거
 
 - [Apache Kafka 4.3 Design — Replication](https://kafka.apache.org/43/design/design/): RF, leader/follower, ISR 탈락 기준, committed message, ISR leader 선출, unclean election의 보존·가용성 경계. 같은 페이지의 `Don’t fear the filesystem!`와 복제 설명에서 append가 OS page cache에 머물 수 있고 ACK가 매 write의 물리 디스크 `fsync` 확인은 아니라는 경계도 확인했습니다.
 - [Apache Kafka 4.3 Topic Configs](https://kafka.apache.org/43/configuration/topic-configs/): `min.insync.replicas`의 최소 ISR 조건, `acks=all`에서 현재 ISR 전체 ACK, `NotEnoughReplicas` 계열 오류와 consumer visibility. 이 visibility 설명은 Kafka 4.3 topic 설정 문서의 규칙으로 기록했습니다.

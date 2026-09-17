@@ -8,13 +8,13 @@ questionIds: [load-balancer-health-draining, readiness-flapping-hysteresis, adap
 
 # Readiness와 적응형 동시성의 피드백 안정성
 
-## Health 경로 하나가 성공해도 주문 경로는 실패할 수 있습니다
+## Health 경로 성공과 주문 경로 실패
 
 별도 연결로 응답하는 probe는 200인데 실제 주문 DB pool이 고갈됐을 수 있습니다. liveness는 재시작으로 회복할 생존 문제, readiness는 새 일을 수용할 준비의 신호로 구분합니다. 특정 시점의 제한된 검사가 다음 모든 요청 성공을 보장하지 않습니다.
 
 모든 외부 dependency를 readiness에 묶으면 공통 DB 장애에서 모든 instance가 동시에 제외될 수 있습니다. 너무 얕으면 실제 기능 장애를 놓칩니다. 기능별 필수/선택 의존·검사 비용·pool·queue·실제 사용자 성공을 함께 보고 범위를 정합니다.
 
-## Instance 제외가 남은 Instance를 더 아프게 할 수 있습니다
+## Instance 제외와 잔여 Instance 부하 악화
 
 10개 중 3개를 제외하면 같은 유입이 7개에 몰립니다. 부하 때문에 그 7개도 readiness를 잃으면 악순환입니다. 실패 연속 횟수·성공 연속 횟수·복귀 지연·서로 다른 임계값의 hysteresis로 짧은 잡음을 완화할 수 있지만 실제 용량 부족을 긴 임계로 숨기면 사용자 오류만 늦게 보입니다.
 
@@ -24,7 +24,7 @@ cold cache인 새 instance는 가중치를 점진적으로 올릴 수 있습니�
 {"title":"측정 지연이 있는 피드백은 작은 변화로 검증합니다","caption":"화살표는 제어 루프입니다. 한도 변화의 효과가 늦게 관측되므로 같은 옛 측정에 반복 과반응하지 않게 합니다.","rows":[[{"id":"observe","label":"latency·in-flight·queue·오류"}],[{"id":"filter","label":"관측 창·신선도·hysteresis"}],[{"id":"adjust","label":"변경률 제한·최소/최대 한도"}],[{"id":"traffic","label":"실제 유입·작업 완료·회복"}]],"edges":[{"from":"observe","to":"filter","label":"노이즈·지연 확인"},{"from":"filter","to":"adjust","label":"제한된 조정"},{"from":"adjust","to":"traffic","label":"용량 변화"}]}
 ```
 
-## 적응형 한도는 자동으로 안정해지지 않습니다
+## 적응형 한도의 피드백 안정성
 
 동시성 한도를 100에서 200으로 올려도 그 효과가 10초 뒤에 관측된다고 가정합니다. 이때 매초 낮은 지연만 보고 다시 한도를 올리면 이전 조정의 결과가 오기 전에 과부하에 도달할 수 있으므로, 관측 창·smoothing·최소 표본·변경률 상한·cooldown·min/max·안전한 고정 fallback을 함께 둡니다. 지표가 빠졌을 때는 지연 0으로 계산하지 않고 안전한 fallback을 사용합니다.
 
@@ -38,7 +38,7 @@ cold cache인 새 instance는 가중치를 점진적으로 올릴 수 있습니�
 | readiness 복귀 | cold capacity·점진 유입 |
 | 공통 dependency 실패 | 전체 제외의 영향·기능 저하 정책 |
 
-## 전파와 연결 종료를 측정합니다
+## 전파와 연결 종료의 측정
 
 endpoint 제외 시각·마지막 신규 요청·활성 연결·종료 기한을 기록합니다. 고정 sleep 하나로 LB 전파가 끝났다고 증명하지 않습니다. GOAWAY·재연결·cursor·멱등 key 계약으로 진행 중 요청을 보호하고 내부 정리 기한을 외부 유예보다 짧게 둡니다.
 

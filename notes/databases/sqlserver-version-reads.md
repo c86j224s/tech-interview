@@ -8,13 +8,13 @@ questionIds: [sqlserver-rcsi-snapshot, sqlserver-updlock-version-read]
 
 # SQL Server RCSI·Snapshot·잠금 읽기의 시점
 
-## 같은 Transaction의 두 SELECT가 다른 값을 볼 수 있습니다
+## 동일 Transaction의 SELECT별 읽기 시점
 
 RCSI는 READ_COMMITTED_SNAPSHOT 데이터베이스 옵션으로 READ COMMITTED의 일반 읽기에 행 버전을 사용하는 방식입니다. 보통 문장 시작의 커밋된 상태를 기준으로 하므로 같은 거래의 첫 SELECT와 두 번째 SELECT 사이 다른 세션의 commit을 볼 수 있습니다.
 
 SNAPSHOT 격리를 쓰려면 데이터베이스에서 ALLOW_SNAPSHOT_ISOLATION을 허용하고 세션이 SNAPSHOT을 선택해야 하며, 한 거래가 읽기 기준으로 삼은 snapshot을 유지합니다. 다만 그 기준을 BEGIN의 벽시계 시각으로 단정하지 말고, 실제로는 첫 데이터 접근과 거래 명령 순서를 바꾸어 어느 시점의 커밋을 읽는지 확인해야 합니다. 같은 거래가 직접 쓴 값은 일반적으로 자기 읽기에서 보이므로, SNAPSHOT을 ‘항상 시작 당시 값만 보는 격리’라고 설명하면 자기 쓰기와 충돌 처리를 놓치게 됩니다.
 
-## 같은 실행 순서에서 결과를 비교합니다
+## RCSI·SNAPSHOT·잠금 읽기의 동일 실행 순서 비교
 
 아래는 별도로 준비한 테스트 DB에서 dbo.mvcc_demo(id=1,value=100)를 두고 실행하는 T-SQL 순서입니다. RCSI·SNAPSHOT 옵션 변경은 다른 세션에 영향을 줄 수 있어 운영 DB에 그대로 실행하지 않습니다. 이 노트는 옵션을 변경하지 않습니다.
 
@@ -49,7 +49,7 @@ ROLLBACK;
 
 표는 이 한 행 순서와 자기 쓰기 없음의 기대값입니다. 조회 종류·힌트·다른 transaction 상태가 바뀌면 다시 분석해야 합니다.
 
-## Snapshot 읽기 뒤의 갱신 충돌을 따로 시험합니다
+## Snapshot 읽기와 갱신 충돌 경로
 
 A가 snapshot에서 100을 읽은 뒤 B가 120으로 바꾸고 commit한 상태에서 A가 같은 행을 UPDATE하면 SQL Server의 snapshot update conflict로 실패할 수 있습니다. 일반적으로 오류 3960 같은 제품 오류를 드라이버 분류로 처리하고 거래를 정리합니다. 실패한 UPDATE의 옛 계산만 반복하지 말고 새 거래에서 최신 읽기·판단부터 다시 수행합니다.
 
@@ -59,7 +59,7 @@ RCSI가 writer의 모든 잠금을 없애는 것은 아닙니다. 서로 다른 
 {"title":"읽기 기준과 쓰기 승인 조건은 별도입니다","caption":"화살표는 두 세션의 상태 변화입니다. A가 옛 값을 읽을 권한이 있어도 B가 바꾼 현재 행을 옛 판단으로 갱신할 권한까지 생기지 않습니다.","rows":[[{"id":"a","label":"A snapshot에서 100 읽기"}],[{"id":"b","label":"B가 120 commit"}],[{"id":"read","label":"A 일반 읽기는 100"},{"id":"write","label":"A UPDATE는 충돌 가능"}]],"edges":[{"from":"a","to":"b","label":"A 거래 유지"},{"from":"b","to":"read","label":"snapshot 가시성"},{"from":"b","to":"write","label":"현재 쓰기 조정"}]}
 ```
 
-## UPDLOCK은 일반 버전 읽기와 같은 경로가 아닙니다
+## UPDLOCK과 일반 버전 읽기의 경로 차이
 
 `SELECT ... WITH (UPDLOCK)`은 A가 읽은 행을 나중에 갱신하려는 의도를 DB에 알리고 update lock을 요청하는 읽기입니다. 그 잠금은 일반적으로 거래가 끝날 때까지 유지되므로, A가 먼저 확보하면 B의 UPDATE가 같은 행에서 기다릴 수 있고 RCSI가 켜져도 이 명시적 잠금 요청이 없어지지 않습니다.
 
@@ -69,7 +69,7 @@ SNAPSHOT에서 이 힌트를 섞으면 일반 snapshot 읽기처럼 오래된 �
 
 같은 SQL도 SQL Server 버전·DB 옵션·힌트 조합이 달라지면 관찰할 경로가 달라질 수 있으므로, A가 잠금을 얻는 경우와 snapshot을 먼저 읽는 경우를 별도 실행해야 합니다. 각 실행에서 잠금 리소스와 모드, 보유 시간, 실제 plan, 발생 오류를 함께 남겨야 ‘기다림’과 ‘update conflict’를 구분할 수 있습니다. 이 노트의 기대 결과는 위 조건을 갖춘 테스트 DB에서 재현한 뒤에만 특정 환경의 계약으로 사용해야 합니다.
 
-## 줄어든 읽기 대기 대신 Version Store 비용이 생깁니다
+## 읽기 대기와 Version Store 비용의 교환
 
 오래된 snapshot이 남으면 필요한 이전 버전을 보관해야 합니다. 전통적인 tempdb version store와 ADR 구성의 persistent version store 등 버전·설정에 따라 위치와 관측이 달라집니다. 최장 거래·version 생성·정리·디스크·읽기 지연을 함께 봅니다.
 

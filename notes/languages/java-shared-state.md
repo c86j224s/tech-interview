@@ -8,7 +8,7 @@ questionIds: [java-synchronized-volatile, java-volatile-happens-before, atomic-i
 
 # Java Volatile 공개와 복합 연산의 원자 경계
 
-## 값이 보여도 증가 두 번이 보존되지는 않습니다
+## volatile 가시성과 count++ 경쟁
 
 volatile count가 0일 때 A와 B가 각각 0을 읽고 1을 계산해 저장하면 마지막 값은 1입니다. 읽기와 쓰기 각각의 가시성을 확보해도 두 단계 사이의 경쟁은 남습니다. `count++`는 읽기·계산·쓰기를 하나로 묶는 별도 원자 연산이 아닙니다.
 
@@ -21,7 +21,7 @@ volatile count가 0일 때 A와 B가 각각 0을 읽고 1을 계산해 저장하
 
 AtomicInteger라도 `get()`으로 읽은 뒤 `set()`하는 두 호출을 따로 두면 `count++`와 같은 경쟁이 남습니다. 값을 읽고 새 값을 계산해 쓰는 read-modify-write 전체를 `incrementAndGet()` 같은 원자 연산으로 수행하거나, 같은 monitor 안에서 읽기·증가·쓰기를 묶어야 합니다. `LongAdder`는 경합이 큰 통계 집계에서 유리할 수 있지만, 여러 작업이 진행되는 동안 읽은 합계가 즉시 일관되어야 하는지에 따라 적합성이 달라집니다.
 
-## Volatile은 연결되는 쓰기와 읽기 사이의 순서를 만듭니다
+## Volatile 쓰기·읽기와 happens-before 순서
 
 ```java
 int data;
@@ -42,13 +42,13 @@ volatile boolean ready;
 
 따라서 static 데이터를 보호하면서 서로 다른 인스턴스를 잠그면 두 스레드가 같은 monitor를 잡지 않아 하나의 보호 경계가 되지 않습니다.
 
-## 두 Atomic의 합계는 한 번에 읽히지 않습니다
+## 복수 Atomic 값과 일관된 합계 snapshot
 
 A잔액 감소와 B잔액 증가를 각각 atomic으로 수행해도 독자가 그 사이를 읽으면 합계가 달라질 수 있습니다. 같은 잠금으로 두 변경과 필요한 읽기를 묶거나, 두 값을 가진 불변 상태 하나를 AtomicReference CAS로 교체하는 방식이 필요합니다. 독자도 같은 묶음 루트를 한 번 읽어야 합니다.
 
 CAS 갱신 함수는 충돌로 재실행될 수 있으므로 외부 결제·알림 같은 부수 효과를 넣지 않습니다. 성공한 상태 변경 이후의 외부 효과는 별도 멱등·outbox 등의 계약으로 연결합니다. atomic이라는 이름이 DB 거래나 외부 효과의 원자성을 제공하지 않습니다.
 
-## ConcurrentHashMap은 내부 연산 단위를 보호합니다
+## ConcurrentHashMap 연산 원자성과 외부 부수 효과
 
 두 스레드가 `get`으로 같은 키의 부재를 본 뒤 각각 객체를 만들고 `put`하면, map 자료구조는 깨지지 않아도 생성 작업은 두 번 실행됩니다. `putIfAbsent`는 이미 만들어진 값 중 저장할 승자를 원자적으로 정하지만, 메서드 인자로 넘길 객체를 만드는 부수 효과까지 취소하지는 않습니다.
 
@@ -58,7 +58,7 @@ mapping 함수는 짧고 부수 효과가 적게 유지하고 긴 외부 I/O·�
 
 map에 담은 가변 DTO의 필드를 여러 스레드가 수정하는 것은 map 자체 보호와 다릅니다. 원자 value·불변 값 교체·객체 잠금 등을 사용합니다. ConcurrentHashMap의 null 비허용·weakly consistent 순회는 일반 HashMap·전체 snapshot과 같은 계약이 아닙니다. 여러 키 불변식은 더 넓은 경계를 요구합니다.
 
-## 가시성·논리 경쟁·외부 효과를 나눠 시험합니다
+## 가시성·논리 경쟁·외부 효과별 시험
 
 장벽으로 두 읽기가 같은 값을 얻도록 만든 뒤 증가 유실을 보여 주고, 같은 monitor 또는 원자 증가로 바꿔 기대 합계를 확인합니다. 두 필드 snapshot·compute 실패 후 재호출·삭제 재생성·가변 value도 각각 시험합니다. 정상 반복 테스트 통과만으로 Java 메모리 모델의 모든 실행을 증명하지 않습니다.
 

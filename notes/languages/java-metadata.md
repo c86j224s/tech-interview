@@ -8,13 +8,13 @@ questionIds: [java-annotation-retention, java-repeatable-annotation-retention, a
 
 # Java 어노테이션의 보존·조회·증분 생성
 
-## 표시를 붙이는 것과 표시를 읽어 행동하는 것은 다릅니다
+## 어노테이션 부착과 소비자의 조회·행동
 
 @Service라는 어노테이션을 만들었다고 JVM이 자동으로 객체를 등록하는 것은 아닙니다. 어노테이션은 메타데이터이고 컴파일러·annotation processor·프레임워크 같은 소비자가 정해진 시점에 읽어야 동작합니다. 같은 이름의 어노테이션이라도 누가 어느 위치를 읽는지 확인해야 합니다.
 
 @Retention은 어디까지 보존하는지, @Target은 어느 선언·타입 사용 위치에 붙일 수 있는지를 정합니다. 스캔 대상에서 빠졌다는 문제와 바이트코드에 정보 자체가 없다는 문제는 다릅니다.
 
-## 보존 단계와 소비자를 연결합니다
+## Retention 단계와 소비자 연결
 
 | Retention | 보존 | 소비 예 |
 | --- | --- | --- |
@@ -30,7 +30,7 @@ Retention을 생략하면 CLASS입니다. RUNTIME으로 바꿔도 processor가 �
 {"title":"메타데이터와 처리 코드를 같은 단계에 배치합니다","caption":"화살표는 코드가 배포되는 단계입니다. SOURCE 메타데이터로 생성된 코드는 남을 수 있지만 그 어노테이션 자체가 runtime에 남는다는 뜻은 아닙니다.","rows":[[{"id":"source","label":"소스 어노테이션"}],[{"id":"processor","label":"컴파일·Processor","detail":["검사·소스 생성"]}],[{"id":"class","label":"Class 파일 메타데이터"}],[{"id":"runtime","label":"Runtime reflection·스캔"}]],"edges":[{"from":"source","to":"processor","label":"컴파일 입력"},{"from":"processor","to":"class","label":"Retention에 따라 보존"},{"from":"class","to":"runtime","label":"RUNTIME·조회 위치"}]}
 ```
 
-## Repeatable은 컨테이너와 조회 API를 함께 맞춥니다
+## Repeatable 컨테이너와 조회 API의 정합성
 
 같은 선언에 T를 여러 번 붙이면 반복 내용을 담는 컨테이너 TC의 `T[] value()` 형태로 표현될 수 있습니다. 이때 TC의 보존 정책은 T보다 짧을 수 없고, Target·Inherited·Documented 같은 메타데이터도 서로 호환되어야 합니다. 실행 중 반복을 읽는다면 T와 TC가 모두 RUNTIME인지, 반복이 실제로 붙은 선언·타입 사용 위치를 조회하고 있는지 한 단계씩 확인합니다.
 
@@ -38,7 +38,7 @@ Retention을 생략하면 CLASS입니다. RUNTIME으로 바꿔도 processor가 �
 
 동일한 클래스 이름도 서로 다른 class loader에서 로드되면 다른 타입일 수 있습니다. 어노테이션이 존재해도 프레임워크 스캔 범위·클래스 경로·모듈 접근·타입 정체성 때문에 애플리케이션에서 발견하지 못할 수 있습니다. 먼저 일반 reflection·bytecode에서 존재를 확인하고 소비자의 등록 문제를 나눕니다.
 
-## 증분 생성기는 삭제된 입력도 추적해야 합니다
+## 증분 생성기의 삭제 입력 추적
 
 User 어노테이션에서 UserAdapter를 만드는 processor를 생각해 보겠습니다. User를 이름 변경하거나 삭제했는데 옛 UserAdapter가 출력 폴더에 남으면 clean build에서는 실패하고 incremental build에서는 우연히 성공할 수 있습니다. 캐시가 최신 소스 파일만 보아서는 충분하지 않습니다.
 
@@ -46,7 +46,7 @@ User 어노테이션에서 UserAdapter를 만드는 processor를 생각해 보�
 
 출력 파일의 소유자를 기록해 자기 processor의 낡은 결과만 정리합니다. 다른 processor의 파일까지 광범위하게 지우는 것은 올바른 캐시 무효화가 아닙니다. 같은 파일을 두 생성기가 쓰지 않게 하고, 재현 가능한 순서·내용을 유지해 불필요한 rebuild도 줄입니다.
 
-## Clean과 Incremental 결과의 동등성을 확인합니다
+## Clean·Incremental 결과의 동등성 검증
 
 한 번 전체 빌드한 뒤 어노테이션 변경·공통 타입 변경·이름 변경·삭제·processor 옵션 변경을 순서대로 수행합니다. 각 단계의 증분 산출물과 새 디렉터리의 clean 산출물을 비교하고 생성된 코드의 실제 테스트도 실행합니다. 생성 성공만으로 새 API 의미가 맞는 것은 아닙니다.
 
