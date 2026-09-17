@@ -1,12 +1,12 @@
 ---
 id: singleton-publication
-title: Singleton의 생성·공개·변경·종료는 다른 문제입니다
+title: 싱글턴 초기화·공개·수명
 topic: 설계
 summary: 유일한 인스턴스와 전역 가변 상태를 구분하고 언어별 lazy 실패·재진입·안전 공개·이후 동기화·조립 수명·프로세스 범위를 설명합니다.
 questionIds: [singleton-global-state, lazy-initialization-publication-failure]
 ---
 
-# Singleton의 생성·공개·변경·종료는 다른 문제입니다
+# 싱글턴 초기화·공개·수명
 
 ## 객체 하나의 Counter도 증가를 잃을 수 있습니다
 

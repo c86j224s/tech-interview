@@ -1,12 +1,12 @@
 ---
 id: small-write-latency
-title: 작은 TCP 쓰기의 지연을 계층별로 찾기
+title: TCP 소량 쓰기 지연
 topic: 네트워크
 summary: 앱 배치·TLS 레코드·Nagle·지연 ACK·NIC 전송을 분리하고 NODELAY의 지연 이득과 비용을 비교합니다.
 questionIds: [tcp-nagle-delayed-ack, tls-record-tcp-packet-buffering]
 ---
 
-# 작은 TCP 쓰기의 지연을 계층별로 찾기
+# TCP 소량 쓰기 지연
 
 ## send를 호출한 시각은 선로에 나간 시각이 아닙니다
 

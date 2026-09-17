@@ -1,12 +1,12 @@
 ---
 id: sliding-window-maximum
-title: 단조 덱으로 이동 구간 최댓값 구하기
+title: 단조 덱과 이동 구간 최댓값
 topic: 알고리즘
 summary: 만료된 앞 후보와 새 값에 밀린 뒤 후보를 따로 제거하며 길이 K의 구간 최댓값을 선형 시간에 유지합니다.
 questionIds: [algorithm-sliding-window-deque]
 ---
 
-# 단조 덱으로 이동 구간 최댓값 구하기
+# 단조 덱과 이동 구간 최댓값
 
 ## 오래된 큰 값과 새로운 작은 값의 수명이 다릅니다
 

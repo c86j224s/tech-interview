@@ -1,12 +1,12 @@
 ---
 id: iocp-completion
-title: IOCP로 수신 요청을 보내고 완료를 처리하기
+title: IOCP 수신·완료 처리
 topic: 네트워크
 summary: 소켓을 완료 포트에 연결하고 WSARecv의 반환값과 완료 패킷을 처리하는 과정을 C++ 코드로 따라갑니다.
 questionIds: [iocp-completion-key-overlapped, iocp-gqcs-error-contract, gqcs-ex-per-entry-error, iocp-immediate-completion, windows-skip-success-completion, iocp-completion-before-submit-return, iocp-operation-counter-invariants, iocp-generation-not-memory-safety, iocp-user-packet-tagging]
 ---
 
-# IOCP로 수신 요청을 보내고 완료를 처리하기
+# IOCP 수신·완료 처리
 
 **IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 

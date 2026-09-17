@@ -1,12 +1,12 @@
 ---
 id: iocp-send
-title: WSASend로 메시지를 순서대로 보내기
+title: IOCP 비동기 송신
 topic: 네트워크
 summary: 여러 곳에서 만든 응답을 연결별 큐에 모아 보내고, 송신 완료 뒤 버퍼를 정리하는 과정을 따라갑니다.
 questionIds: [iocp-send-order, wsabuf-descriptor-payload-lifetime, send-completion-versus-business-ack]
 ---
 
-# WSASend로 메시지를 순서대로 보내기
+# IOCP 비동기 송신
 
 **IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 

@@ -1,12 +1,12 @@
 ---
 id: schema-cutover
-title: 동시 쓰기 중 컬럼·JSON 표현을 전환하는 방법
+title: 컬럼·JSON 스키마 전환
 topic: 데이터베이스
 summary: 단계별 원본 권위·구버전 쓰기·조건부 백필·충돌 집합·checkpoint·읽기 fallback·옛 표현 종료와 JSON schema의 책임을 설명합니다.
 questionIds: [db-online-schema-migration, backfill-checkpoint-concurrent-write, dual-column-source-of-truth, db-json-schema-evolution]
 ---
 
-# 동시 쓰기 중 컬럼·JSON 표현을 전환하는 방법
+# 컬럼·JSON 스키마 전환
 
 ## 백필이 정상 요청보다 늦게 옛값을 쓰면 안 됩니다
 

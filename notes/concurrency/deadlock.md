@@ -1,12 +1,12 @@
 ---
 id: deadlock
-title: 대기 그래프로 교착 상태 끊기
+title: 교착 상태와 대기 그래프
 topic: 동시성
 summary: 두 계정 잠금과 실행기 고갈의 대기 고리를 그려 보고, 잠금 순서·타임아웃·재시도가 각각 해결하는 범위를 구분합니다.
 questionIds: [deadlock-prevention, try-lock-livelock-fairness, cross-service-executor-deadlock]
 ---
 
-# 대기 그래프로 교착 상태 끊기
+# 교착 상태와 대기 그래프
 
 ## 둘 다 상대가 끝나기만 기다립니다
 

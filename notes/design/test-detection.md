@@ -1,12 +1,12 @@
 ---
 id: test-detection
-title: Red·Property·Mutation으로 테스트 검출력 확인하기
+title: TDD·속성 검사·변이 검사
 topic: 설계
 summary: 의도한 assertion 실패와 환경 실패를 나누고 경계 예제·생성 불변식·shrinking·메타모픽 관계·생존/동등 변이·독립 oracle을 설명합니다.
 questionIds: [tdd-red-green-refactor, testing-property-based, mutation-test-detection-power]
 ---
 
-# Red·Property·Mutation으로 테스트 검출력 확인하기
+# TDD·속성 검사·변이 검사
 
 ## 테스트가 실행됐다는 것과 결함을 잡는 것은 다릅니다
 

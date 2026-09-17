@@ -1,12 +1,12 @@
 ---
 id: virtual-memory
-title: TLB miss와 페이지 폴트 구분하기
+title: TLB와 페이지 폴트
 topic: 운영체제
 summary: 가상 주소가 실제 바이트에 닿는 경로에서 변환 캐시·페이지 테이블·운영체제 개입을 나누고 첫 접근과 메모리 압박을 비교합니다.
 questionIds: [virtual-memory-page-fault, tlb-page-table]
 ---
 
-# TLB miss와 페이지 폴트 구분하기
+# TLB와 페이지 폴트
 
 ## 주소를 읽는 데도 준비가 필요합니다
 

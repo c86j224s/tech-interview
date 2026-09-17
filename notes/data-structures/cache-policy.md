@@ -1,12 +1,12 @@
 ---
 id: cache-policy
-title: 캐시 입장·퇴거·만료 정책 구분하기
+title: 캐시 입장·퇴거·만료 정책
 topic: 자료구조
 summary: 순차 스캔이 LRU를 오염시키는 과정을 따라가며 LFU 감쇠, 크기·비용 기반 입장과 샤드 용량 편중을 설명합니다.
 questionIds: [lru-cache-policy, lfu-aging-popularity-shift, cache-expiry-eviction-priority, sharded-cache-capacity-skew, cache-admission-vs-eviction]
 ---
 
-# 캐시 입장·퇴거·만료 정책 구분하기
+# 캐시 입장·퇴거·만료 정책
 
 ## 한 번 읽은 데이터가 자주 쓰는 값을 밀어냅니다
 

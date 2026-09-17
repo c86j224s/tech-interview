@@ -1,0 +1,24 @@
+---
+interface Branch {
+  id: string;
+  title: string;
+  count: number;
+  entries: { id: string; title: string; summary: string }[];
+  children: Branch[];
+}
+interface Props { node: Branch; currentId?: string; expandedIds?: string[]; depth?: number }
+const { node, currentId = '', expandedIds = [], depth = 0 } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<li class="knowledge-branch">
+  <details id={`knowledge-${node.id}`} open={depth === 0 || expandedIds.includes(node.id)}>
+    <summary><span class="folder-mark" aria-hidden="true">▱</span><span>{node.title}</span><small>{node.count}</small></summary>
+    <ul>
+      {node.entries.map(note => <li class="knowledge-leaf">
+        <a href={`${base}/notes/${note.id}/`} aria-current={currentId === note.id ? 'page' : undefined}>{note.title}</a>
+        {currentId === note.id && <small>현재 문서</small>}
+      </li>)}
+      {node.children.map(child => <Astro.self node={child} currentId={currentId} expandedIds={expandedIds} depth={depth + 1} />)}
+    </ul>
+  </details>
+</li>

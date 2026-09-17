@@ -1,12 +1,12 @@
 ---
 id: transactions
-title: 동시 갱신에서 덮어쓰기를 막는 방법
+title: 동시 갱신과 덮어쓰기 방지
 topic: 데이터베이스
 summary: 재고 두 번 차감이 한 번으로 사라지는 과정을 따라가며 조건부 UPDATE·버전 검사·잠금 읽기의 차이를 이해합니다.
 questionIds: [transaction-and-lost-update, db-optimistic-version-column, db-select-for-update, optimistic-retry-hotkey-abort]
 ---
 
-# 동시 갱신에서 덮어쓰기를 막는 방법
+# 동시 갱신과 덮어쓰기 방지
 
 ## 두 번 팔았는데 재고는 한 번만 줄었다면
 

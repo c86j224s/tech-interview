@@ -1,12 +1,12 @@
 ---
 id: iocp-shutdown
-title: IOCP 서버를 안전하게 종료하기
+title: IOCP 종료 처리
 topic: 네트워크
 summary: 새 요청을 막고 남은 I/O를 회수한 다음 워커와 포트를 닫는 순서를, 취소 API와 함께 설명합니다.
 questionIds: [iocp-cancel-drain, iocp-worker-shutdown, iocp-stop-packets-after-drain, iocp-timeout-loop-versus-stop-packet, shutdown-independent-audit-sink]
 ---
 
-# IOCP 서버를 안전하게 종료하기
+# IOCP 종료 처리
 
 **IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 

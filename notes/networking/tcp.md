@@ -1,12 +1,12 @@
 ---
 id: tcp
-title: TCP 스트림에서 메시지 경계 복원하기
+title: TCP 메시지 프레이밍
 topic: 네트워크
 summary: 길이 헤더가 쪼개지거나 여러 메시지가 한 번에 도착하는 예를 따라가며 증분 파서와 버퍼 수명을 설계합니다.
 questionIds: [tcp-stream-message-framing, ring-buffer-parser-view-lifetime]
 ---
 
-# TCP 스트림에서 메시지 경계 복원하기
+# TCP 메시지 프레이밍
 
 ## 두 번 보냈는데 한 번 읽힐 수 있습니다
 

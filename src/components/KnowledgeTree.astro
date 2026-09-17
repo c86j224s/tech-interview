@@ -1,0 +1,30 @@
+---
+import KnowledgeBranch from './KnowledgeBranch.astro';
+import { knowledgeTree, knowledgePaths } from '../lib/knowledge-tree.mjs';
+const { currentId = '' } = Astro.props;
+const path = knowledgePaths.get(currentId) || [];
+---
+<nav class="knowledge-tree" aria-label="기술 지식 트리">
+  <p class="tree-guide">기술 분야에서 세부 개념으로 펼쳐 보는 문서 분류입니다. 숫자는 하위 문서 수이며, 각 문서는 대표 위치에 한 번 배치됩니다.</p>
+  {path.length > 0 && <p class="knowledge-path" aria-label="현재 문서 경로">{path.map((part, index) => <>{index > 0 && <span aria-hidden="true"> / </span>}<span>{part.title}</span></>)}</p>}
+  <ul class="knowledge-root"><KnowledgeBranch node={knowledgeTree} currentId={currentId} expandedIds={path.map(part => part.id)} /></ul>
+</nav>
+<style is:global>
+  .knowledge-tree{margin:0 0 28px;padding:clamp(14px,3vw,26px);border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:15px;line-height:1.7;min-width:0;overflow-wrap:anywhere}
+  .knowledge-tree .tree-guide{color:var(--muted);font-size:13px;margin:0 0 16px;max-width:72ch}
+  .knowledge-tree .knowledge-path{font-size:13px;color:var(--muted);margin:0 0 14px}
+  .knowledge-tree ul{list-style:none;padding:0 0 0 18px;margin:3px 0;border-left:1px solid var(--line)}
+  .knowledge-tree ul.knowledge-root{padding:0;border:0}
+  .knowledge-tree li{padding:3px 0;min-width:0}
+  .knowledge-tree summary{cursor:pointer;padding:5px 0;font-weight:650;word-break:keep-all}
+  .knowledge-tree summary small{margin-left:10px;font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums}
+  .knowledge-tree .folder-mark{color:var(--accent);margin:0 7px 0 3px}
+  .knowledge-tree .knowledge-leaf{position:relative;padding:5px 0 5px 12px}
+  .knowledge-tree .knowledge-leaf::before{content:'';position:absolute;left:-18px;top:18px;width:23px;border-top:1px solid var(--line)}
+  .knowledge-tree a{color:var(--ink);text-decoration:none;word-break:keep-all;overflow-wrap:anywhere}
+  .knowledge-tree a:hover{text-decoration:underline;color:var(--accent)}
+  .knowledge-tree a[aria-current=page]{color:var(--accent);font-weight:700}
+  .knowledge-tree .knowledge-leaf small{display:inline-block;margin-left:8px;font-size:11px;color:var(--muted)}
+  .knowledge-tree summary:focus-visible,.knowledge-tree a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  @media(max-width:620px){.knowledge-tree{font-size:14px}.knowledge-tree ul{padding-left:12px}.knowledge-tree .knowledge-leaf::before{left:-12px;width:17px}}
+</style>

@@ -1,12 +1,12 @@
 ---
 id: iocp-scheduling
-title: IOCP 워커는 몇 개 만들고 무엇을 맡길까
+title: IOCP 워커 구성
 topic: 네트워크
 summary: 워커 스레드를 직접 구성하고, 연결별 처리 순서와 오래 걸리는 작업을 어디에서 관리할지 살펴봅니다.
 questionIds: [iocp-concurrency-workers, iocp-worker-wakeup-locality, iocp-blocking-offload-queue, iocp-batch-fairness, iocp-offload-connection-order, iocp-short-long-connection-fairness]
 ---
 
-# IOCP 워커는 몇 개 만들고 무엇을 맡길까
+# IOCP 워커 구성
 
 **IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 

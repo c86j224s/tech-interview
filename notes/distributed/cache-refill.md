@@ -1,12 +1,12 @@
 ---
 id: cache-refill
-title: 늦은 캐시 채우기가 최신 값을 덮는 이유
+title: 캐시 지연 갱신과 버전 역전
 topic: 분산 시스템
 summary: DB 갱신 뒤 캐시를 삭제해도 생기는 지연 채우기를 재현하고 버전 장벽·원자 게시·세대 복구의 조건을 구분합니다.
 questionIds: [cache-aside-consistency, cache-cdc-refill-ordering, cache-version-barrier-eviction]
 ---
 
-# 늦은 캐시 채우기가 최신 값을 덮는 이유
+# 캐시 지연 갱신과 버전 역전
 
 ## 삭제가 성공했는데 다시 옛값이 보입니다
 

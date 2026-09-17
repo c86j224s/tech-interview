@@ -1,12 +1,12 @@
 ---
 id: rendering-layout
-title: 레이아웃 반복과 화면 이동 줄이기
+title: 레이아웃 계산과 화면 이동
 topic: 웹
 summary: DOM 쓰기와 기하 읽기의 교차를 분리하고 containment·content-visibility·이미지 공간 예약이 바꾸는 비용을 설명합니다.
 questionIds: [browser-rendering-layout, css-containment-content-visibility, web-layout-shift-reserved-space]
 ---
 
-# 레이아웃 반복과 화면 이동 줄이기
+# 레이아웃 계산과 화면 이동
 
 ## 스타일을 바꾼 뒤 바로 크기를 물으면 계산을 당길 수 있습니다
 

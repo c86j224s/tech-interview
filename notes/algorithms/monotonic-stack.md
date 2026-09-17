@@ -1,12 +1,12 @@
 ---
 id: monotonic-stack
-title: 단조 스택으로 첫 큰 값 찾기
+title: 단조 스택과 다음 큰 원소
 topic: 알고리즘
 summary: 아직 답을 못 찾은 인덱스를 모아 한 번씩 제거하면서 첫 큰 값의 위치와 선형 전체 비용을 증명합니다.
 questionIds: [algorithm-monotonic-stack]
 ---
 
-# 단조 스택으로 첫 큰 값 찾기
+# 단조 스택과 다음 큰 원소
 
 ## 각 위치에서 오른쪽을 다시 훑으면 같은 일을 반복합니다
 

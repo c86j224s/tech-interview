@@ -1,12 +1,12 @@
 ---
 id: login-transaction
-title: OAuth·OIDC 로그인 시도를 하나의 거래로 묶기
+title: OAuth·OIDC 로그인 거래
 topic: 보안
 summary: 브라우저의 시작 세션에서 코드 교환과 ID token 검증까지 따라가며 PKCE·state·nonce·issuer의 서로 다른 결합 대상을 설명합니다.
 questionIds: [oauth-oidc-pkce, oidc-nonce-state-binding]
 ---
 
-# OAuth·OIDC 로그인 시도를 하나의 거래로 묶기
+# OAuth·OIDC 로그인 거래
 
 ## 콜백에 코드가 왔다고 로그인한 사용자가 확정되지는 않습니다
 

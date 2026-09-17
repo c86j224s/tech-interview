@@ -1,12 +1,12 @@
 ---
 id: iocp-foundations
-title: 소켓의 기다림에서 IOCP까지
+title: 소켓 I/O 기초
 topic: 네트워크
 summary: 데이터가 아직 없을 때 스레드가 무엇을 하는지부터 출발해, 버퍼를 맡기는 비동기 I/O와 완료 포트가 필요한 이유를 설명합니다.
 questionIds: [io-readiness-vs-completion, iocp-completion-key-overlapped, iocp-concurrency-workers]
 ---
 
-# 소켓의 기다림에서 IOCP까지
+# 소켓 I/O 기초
 
 채팅 서버에 만 명이 접속해 있다고 해 보겠습니다. 모든 사람이 계속 메시지를 보내지는 않습니다. 대부분의 연결은 조용하고, 일부 연결에서만 데이터가 들어옵니다. 서버는 **아직 데이터가 없는 연결을 어떻게 기다릴 것인가**를 결정해야 합니다. IOCP는 이 문제를 다루는 Windows의 방법 중 하나입니다.
 

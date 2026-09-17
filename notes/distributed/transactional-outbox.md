@@ -1,12 +1,12 @@
 ---
 id: transactional-outbox
-title: Transactional Outbox로 이중 쓰기 실패 다루기
+title: 트랜잭셔널 아웃박스
 topic: 분산 시스템
 summary: 주문 상태 변경과 이벤트 발행 의도를 같은 DB 트랜잭션에 기록해 이중 쓰기 사이의 유실을 없애고, Relay 재발행은 별도 중복으로 다룹니다.
 questionIds: [transactional-outbox, db-outbox-polling-cdc, outbox-claim-lease-recovery]
 ---
 
-# Transactional Outbox로 이중 쓰기 실패 다루기
+# 트랜잭셔널 아웃박스
 
 주문 `o-17`을 `PAID`에서 `DONE`으로 바꾸면서 `OrderCompleted` 이벤트를 발행해야 한다고 하겠습니다. 주문 DB에 먼저 확정하고 브로커에 보내는 순서라면, DB 확정 직후 서버가 꺼질 때 주문은 완료됐지만 이벤트가 사라집니다. 반대로 브로커에 먼저 보내고 주문 변경이 되돌려지면 실제로 완료되지 않은 주문의 완료 이벤트가 나갑니다. 두 저장소의 호출 순서를 바꾸는 것만으로는 이 틈을 없앨 수 없습니다.
 

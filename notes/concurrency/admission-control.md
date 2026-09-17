@@ -1,12 +1,12 @@
 ---
 id: admission-control
-title: 실행 수와 대기열을 함께 제한하기
+title: 동시 실행·대기열 제한
 topic: 동시성
 summary: 처리량이 포화된 DB 앞에서 실행 허가·대기 개수·바이트·기한을 따로 제한하고 거절 뒤 재시도까지 제어합니다.
 questionIds: [bounded-queue-backpressure, queue-budget-from-deadline, weighted-concurrency-permits, performance-littles-law, throughput-vs-latency]
 ---
 
-# 실행 수와 대기열을 함께 제한하기
+# 동시 실행·대기열 제한
 
 ## 기다릴 자리를 늘려도 DB는 빨라지지 않습니다
 

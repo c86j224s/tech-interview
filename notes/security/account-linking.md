@@ -1,12 +1,12 @@
 ---
 id: account-linking
-title: 외부 로그인 신원을 기존 계정에 연결하기
+title: 외부 신원과 계정 연결
 topic: 보안
 summary: 이메일 일치와 소유권 증명을 나누고 issuer·subject 유일성, 시작 세션 바인딩, 연결 이후 세션 재평가를 설명합니다.
 questionIds: [account-linking-proof, account-link-session-binding, account-link-session-reassessment, identity-issuer-subject-key]
 ---
 
-# 외부 로그인 신원을 기존 계정에 연결하기
+# 외부 신원과 계정 연결
 
 ## 이메일이 같다는 이유로 계정을 합치면 안 됩니다
 

@@ -1,12 +1,12 @@
 ---
 id: fencing
-title: 만료된 작업자의 쓰기를 펜싱으로 막기
+title: 펜싱과 이전 작업자 차단
 topic: 분산 시스템
 summary: 임대가 끝난 작업자가 다시 실행되는 순서를 따라가며 단조 토큰·저장소의 원자 검사·중복 요청의 별도 책임을 설명합니다.
 questionIds: [distributed-lock-fencing, fencing-token-persistent-monotonicity, multi-store-fencing-scope, distributed-leader-lease]
 ---
 
-# 만료된 작업자의 쓰기를 펜싱으로 막기
+# 펜싱과 이전 작업자 차단
 
 ## 임대 만료가 프로세스를 멈추지는 않습니다
 

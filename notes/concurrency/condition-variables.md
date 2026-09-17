@@ -1,12 +1,12 @@
 ---
 id: condition-variables
-title: 조건 변수로 공유 큐를 기다리는 방법
+title: 조건 변수와 공유 큐
 topic: 동시성
 summary: 알림을 받고도 큐가 비는 실행 순서에서 출발해 조건식·잠금·대기 진입·종료 수명을 하나의 규칙으로 연결합니다.
 questionIds: [condition-variable-predicate, condition-notify-lock-lifetime, queue-shutdown-drain-discard, monitor-synchronization, hoare-mesa-monitor-signal, java-wait-notify-monitor-owner]
 ---
 
-# 조건 변수로 공유 큐를 기다리는 방법
+# 조건 변수와 공유 큐
 
 ## 깨웠다는 말은 작업을 맡겼다는 말이 아닙니다
 

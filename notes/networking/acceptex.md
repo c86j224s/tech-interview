@@ -1,12 +1,12 @@
 ---
 id: acceptex
-title: AcceptEx로 새 연결 받기
+title: AcceptEx 접속 수락
 topic: 네트워크
 summary: 수락 소켓과 주소 버퍼를 준비한 뒤, 새 연결을 받아 첫 수신으로 이어가는 과정을 설명합니다.
 questionIds: [iocp-acceptex, acceptex-failed-socket-reuse, acceptex-pool-listen-backlog]
 ---
 
-# AcceptEx로 새 연결 받기
+# AcceptEx 접속 수락
 
 **IOCP 읽는 순서:** [수신과 완료](/tech-interview/notes/iocp-completion/) → [접속 수락](/tech-interview/notes/acceptex/) → [워커 구성](/tech-interview/notes/iocp-scheduling/) → [송신](/tech-interview/notes/iocp-send/) → [종료](/tech-interview/notes/iocp-shutdown/)
 

@@ -1,12 +1,12 @@
 ---
 id: singleflight
-title: 같은 캐시 조회를 하나의 작업으로 합치기
+title: Singleflight 중복 조회 병합
 topic: 분산 시스템
 summary: 한 키의 동시 miss를 공유 조회로 합치면서 대기자 취소·실패 재시도·프로세스 범위와 원본 예산을 분리합니다.
 questionIds: [cache-stampede-singleflight, singleflight-waiter-cancellation, cache-outage-origin-admission]
 ---
 
-# 같은 캐시 조회를 하나의 작업으로 합치기
+# Singleflight 중복 조회 병합
 
 ## 천 명이 같은 빈 캐시를 봅니다
 

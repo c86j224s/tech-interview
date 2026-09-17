@@ -1,12 +1,12 @@
 ---
 id: weighted-sampling
-title: 누적 가중치로 선택 확률 만들기
+title: 누적 가중치 표본 추출
 topic: 알고리즘
 summary: 정수 가중치를 구간 길이로 바꾸어 추출하고 복원·비복원·최근 노출 제한이 서로 다른 분포를 만드는 이유를 설명합니다.
 questionIds: [algorithm-weighted-sampling]
 ---
 
-# 누적 가중치로 선택 확률 만들기
+# 누적 가중치 표본 추출
 
 ## 더 자주 나오는 것과 먼저 나오는 것은 다릅니다
 
