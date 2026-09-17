@@ -15,7 +15,7 @@ test('notes contain study sections, unique anchors and valid reverse links', () 
     assert.ok(note.toc.length >= 3);
     assert.equal(new Set(note.toc.map(({ id }) => id)).size, note.toc.length);
     for (const heading of note.toc) assert.ok(note.html.includes(`id="${heading.id}"`));
-    assert.ok(questionsForNote(note).length > 0);
+    if (note.questionIds.length) assert.ok(questionsForNote(note).length > 0);
     assert.ok(note.diagramCount >= 1, `${note.id}: 원리를 설명하는 그림`);
     assert.equal((note.html.match(/<figure class="note-diagram">/g) || []).length, note.diagramCount);
     assert.ok(!note.html.includes('class="language-diagram"'));

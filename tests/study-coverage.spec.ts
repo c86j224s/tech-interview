@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test('학습 범위는 링크 유무와 본문 검토를 분리하고 검색한다', async ({ page }) => {
   await page.goto('notes/');
-  await page.getByRole('link', { name: '전체 학습 범위와 아직 설명이 필요한 주제 →' }).click();
+  await page.getByText('선택 연습 자료', { exact: true }).click();
+  await page.getByRole('link', { name: '기존 질문과 학습 노트의 연결 검토 →' }).click();
   await expect(page).toHaveURL(/\/notes\/coverage\/$/);
   await expect(page.locator('[data-coverage-entry]')).toHaveCount(1000);
   await page.getByRole('searchbox').fill('condition-variable-predicate');

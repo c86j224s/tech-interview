@@ -2,33 +2,55 @@
 import Layout from '../../layouts/Layout.astro';
 import KnowledgeTree from '../../components/KnowledgeTree.astro';
 import { notes, questionsForNote } from '../../lib/notes.mjs';
+import { learningContext } from '../../lib/learning-paths.mjs';
 export function getStaticPaths() { return notes.map((note) => ({ params: { id: note.id }, props: { note } })); }
 const { note } = Astro.props;
 const practice = questionsForNote(note);
+const context = learningContext(note);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Layout title={note.title} page="notes">
   <header class="notes-intro">
-    <a class="text-link" href={`${base}/notes/`}>← 학습 노트 목록</a>
+    <a class="text-link" href={`${base}/notes/`}>← 기술 지식</a>
+    <p class="knowledge-breadcrumb" aria-label="지식 분류">{context.path.map(part => part.title).join(' / ')}</p>
     <h1>{note.title}</h1>
     <p>{note.summary}</p>
-    <span class="note-topic">{note.topic} · 원리와 예제로 공부하기</span>
+    <span class="note-topic">{note.topic} · 원리·구현·운영</span>
+    {note.reviewedAt && <p class="source-date">자료 대조일 <time datetime={note.reviewedAt}>{note.reviewedAt}</time> · 적용 버전과 실행 여부는 본문의 검증 범위에 명시합니다.</p>}
   </header>
   <details class="knowledge-navigation" open={false}>
     <summary>기술 지식 트리</summary>
     <KnowledgeTree currentId={note.id} />
   </details>
+  {context.prerequisites.length > 0 && <nav class="learning-context" aria-label="선행 개념">
+    <h2>선행 개념</h2>
+    <ul>{context.prerequisites.map(item => <li><a href={`${base}/notes/${item.id}/`}>{item.title}</a></li>)}</ul>
+  </nav>}
   <div class="note-layout">
     <article class="note-article"><div class="note-body" set:html={note.html} /></article>
     <nav class="note-toc" aria-label="학습 노트 목차">
-      <h2>이 노트에서 배울 것</h2>
+      <h2>문서 목차</h2>
       <ol>{note.toc.map((entry) => <li><a href={`#${entry.id}`}>{entry.title}</a></li>)}</ol>
-      <a href="#practice-questions">관련 질문으로 연습하기 ↓</a>
+      <a href="#learning-connections">후속·관련 개념 ↓</a>
     </nav>
   </div>
-  <section class="note-practice" id="practice-questions">
-    <h2>배운 내용으로 답해 보기</h2>
-    <p>직접 연결된 질문과 그 질문에서 확장한 심화 문항입니다. 이 노트가 모든 플랫폼의 세부 계약을 대신하지는 않습니다.</p>
-    <ul>{practice.map((question) => <li><a href={`${base}/questions/${question.id}/`}>{question.title}</a></li>)}</ul>
+  <section class="learning-context" id="learning-connections" aria-label="후속·관련 개념">
+    <h2>후속·관련 개념</h2>
+    {context.followups.length > 0 && <><h3>이 개념의 확장</h3><ul>{context.followups.map(item => <li><a href={`${base}/notes/${item.id}/`}>{item.title}</a></li>)}</ul></>}
+    {context.related.length > 0 && <><h3>함께 읽을 문서</h3><ul>{context.related.map(item => <li><a href={`${base}/notes/${item.id}/`}>{item.title}</a></li>)}</ul></>}
+    {context.routes.length > 0 && <><h3>분야별 학습 경로</h3><ul>{context.routes.map(route => <li><a href={`${base}/notes/#path-${route.id}`}>{route.title}</a></li>)}</ul></>}
+    <a href={`${base}/notes/`}>전체 기술 지식</a>
   </section>
+  {practice.length > 0 && <details class="note-practice" id="practice-questions">
+    <summary>선택 연습 · 관련 질문 {practice.length}개</summary>
+    <p>질문은 이해를 확인하는 보조 자료입니다. 학습 경로와 문서의 범위는 질문 수와 독립적입니다.</p>
+    <ul>{practice.map((question) => <li><a href={`${base}/questions/${question.id}/`}>{question.title}</a></li>)}</ul>
+  </details>}
 </Layout>
+<style>
+  .knowledge-breadcrumb,.source-date{font-size:.85rem;color:var(--muted);overflow-wrap:anywhere}
+  .learning-context{margin:1.5rem 0;padding:1.25rem;border:1px solid var(--line);border-radius:.75rem;background:var(--paper)}
+  .learning-context h2{font-size:1.2rem;margin:0 0 .7rem}.learning-context h3{font-size:1rem;margin:1rem 0 .5rem}
+  .learning-context ul{display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;padding-left:1.2rem}.learning-context li{max-width:100%;overflow-wrap:anywhere}
+  .note-practice summary{cursor:pointer;font-weight:650;padding:.6rem 0}
+</style>

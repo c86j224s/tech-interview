@@ -1,17 +1,28 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import KnowledgeTree from '../../components/KnowledgeTree.astro';
-import { notes, questionsForNote } from '../../lib/notes.mjs';
+import { notes } from '../../lib/notes.mjs';
+import { learningPaths } from '../../lib/learning-paths.mjs';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const topics = [...new Set(notes.map((note) => note.topic))];
 ---
-<Layout title="학습 노트" page="notes">
+<Layout title="기술 지식" page="notes">
   <section class="notes-intro">
-    <span class="eyebrow">UNDERSTAND BEFORE YOU ANSWER</span>
+    <span class="eyebrow">PRINCIPLES · IMPLEMENTATION · OPERATIONS</span>
     <h1>기술 지식</h1>
-    <p>하나의 주제를 원리부터 차근차근 공부하는 공간입니다. 그림으로 구조를 보고, 표와 예제·슈도코드로 실제 동작을 따라가 보세요. 현재 {notes.length}개 노트가 있으며, 연결된 질문으로 돌아가 배운 내용을 말로 풀어볼 수 있습니다.</p>
-    <p><a class="text-link" href={`${base}/notes/coverage/`}>전체 학습 범위와 아직 설명이 필요한 주제 →</a></p>
+    <p>기본 개념에서 구현과 운영 판단까지 이어지는 {notes.length}개 지식노트입니다. 분야별 경로로 시작하거나 전체 트리에서 필요한 개념을 찾을 수 있습니다. 질문은 선택 연습이며, 노트의 구성 기준은 기술과 선행 지식입니다.</p>
+    <p>원리와 버전별 API 계약을 구분합니다. 자료 확인일이 있는 문서도 실제 실행 검증을 뜻하지 않으며, 대상 버전·가정·실행 범위는 각 문서의 참고 자료에서 확인할 수 있습니다.</p>
   </section>
+  <section class="learning-paths" aria-label="분야별 학습 경로">
+    <h2>분야별 학습 경로</h2>
+    <p>각 경로는 시작 순서입니다. 모든 API를 한꺼번에 익힐 필요는 없으며, 실행 환경과 목적에 맞는 기술부터 선택할 수 있습니다.</p>
+    <div class="path-grid">{learningPaths.map(route => <details id={`path-${route.id}`} class="path-card">
+      <summary>{route.title}<small>{route.notes.length}개 문서</small></summary>
+      <p>{route.summary}</p>
+      <ol>{route.notes.map(note => <li><a href={`${base}/notes/${note.id}/`}>{note.title}</a></li>)}</ol>
+    </details>)}</div>
+  </section>
+  <h2>전체 지식 트리</h2>
   <KnowledgeTree />
   <h2>문서 목록</h2>
   {topics.map((topic) => <section class="note-practice" aria-label={topic}>
@@ -20,7 +31,19 @@ const topics = [...new Set(notes.map((note) => note.topic))];
       <span class="note-topic">{note.topic}</span>
       <h2><a href={`${base}/notes/${note.id}/`}>{note.title}</a></h2>
       <p>{note.summary}</p>
-      <span class="note-count">{note.diagramCount > 0 && <>그림 {note.diagramCount}개 · </>}연결된 연습 질문 {questionsForNote(note).length}개</span>
+      <span class="note-count">{note.toc.length}개 섹션 · 그림 {note.diagramCount}개{note.reviewedAt && <> · 자료 대조 {note.reviewedAt}</>}</span>
     </article>)}</div>
   </section>)}
+  <details class="note-practice"><summary>선택 연습 자료</summary><p><a class="text-link" href={`${base}/notes/coverage/`}>기존 질문과 학습 노트의 연결 검토 →</a></p><p>이 목록은 질문별 설명 연결을 확인하는 보조 자료이며, 전체 기술 지식의 완성도를 뜻하지 않습니다.</p></details>
 </Layout>
+<style>
+ .learning-paths{margin:2rem 0}.path-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:1rem}
+ .path-card{padding:1rem 1.2rem;border:1px solid var(--line);border-radius:.75rem;background:var(--paper);min-width:0}
+ .path-card summary{font-weight:700;cursor:pointer}.path-card small{display:inline-block;margin-left:.65rem;color:var(--muted);font-weight:400}
+ .path-card p{color:var(--muted);font-size:.9rem;line-height:1.7}.path-card ol{padding-left:1.25rem}.path-card li{margin:.6rem 0;overflow-wrap:anywhere}
+ .path-card:target{outline:2px solid var(--accent);outline-offset:3px}
+</style>
+<script>
+ function openLinkedPath(){const target=document.getElementById(location.hash.slice(1));if(target instanceof HTMLDetailsElement)target.open=true;}
+ openLinkedPath();window.addEventListener('hashchange',openLinkedPath);
+</script>

@@ -233,6 +233,7 @@ test('질문에서 학습 노트의 원리·슈도코드를 읽고 연습으로 
   await page.getByRole('navigation', { name: '학습 노트 목차' }).getByRole('link', { name: '슈도코드', exact: true }).click();
   await expect(page).toHaveURL(/#section-3$/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator('#practice-questions > summary').click();
   await page.locator('#practice-questions a[href$="/quicksort-worst-case/"]').click();
   await expect(page).toHaveURL(/\/questions\/quicksort-worst-case\/$/);
   await page.goto('questions/introsort-depth-fallback/');
@@ -265,7 +266,13 @@ test('모든 학습 노트가 JavaScript 없이도 목차·본문·연습 링크
         await expect(figure.locator('.diagram-text ul')).toBeVisible();
       }
       await expect(page.locator('.note-body code.language-diagram')).toHaveCount(0);
-      await expect(page.locator('#practice-questions a').first()).toBeVisible();
+      await expect(page.getByRole('region', { name: '후속·관련 개념' })).toBeVisible();
+      if (source.data.questionIds?.length) {
+        await page.locator('#practice-questions > summary').click();
+        await expect(page.locator('#practice-questions a').first()).toBeVisible();
+      } else {
+        await expect(page.locator('#practice-questions')).toHaveCount(0);
+      }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       await expect(page.locator('.ai-content-notice')).toHaveCount(1);
     }

@@ -12,14 +12,24 @@ export function loadNotes(directory, catalog) {
     const file = path.join(folder, entry.name);
     return entry.isDirectory() ? files(file) : entry.isFile() && entry.name.endsWith('.md') ? [file] : [];
   });
-  return files(directory).sort().map((file) => {
+  const loaded = files(directory).sort().map((file) => {
     const { data, content } = matter(fs.readFileSync(file, 'utf8'));
     const fail = (reason) => { throw new Error(`${file}: ${reason}`); };
     if (typeof data.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.id) || ids.has(data.id)) fail('학습 노트 ID 오류 또는 중복');
     ids.add(data.id);
     for (const key of ['title', 'topic', 'summary']) if (typeof data[key] !== 'string' || !data[key].trim()) fail(`${key} 누락`);
-    if (!Array.isArray(data.questionIds) || !data.questionIds.length || new Set(data.questionIds).size !== data.questionIds.length
+    data.questionIds ??= [];
+    if (!Array.isArray(data.questionIds) || new Set(data.questionIds).size !== data.questionIds.length
       || data.questionIds.some((id) => !knownQuestions.has(id))) fail('잘못된 연결 문항');
+    for (const key of ['prerequisites', 'related']) {
+      data[key] ??= [];
+      if (!Array.isArray(data[key]) || new Set(data[key]).size !== data[key].length
+        || data[key].some(id => typeof id !== 'string' || id === data.id)) fail(`잘못된 학습 연결: ${key}`);
+    }
+    if (data.reviewedAt !== undefined && (typeof data.reviewedAt !== 'string'
+      || !/^\d{4}-\d{2}-\d{2}$/.test(data.reviewedAt)
+      || Number.isNaN(Date.parse(data.reviewedAt))
+      || new Date(data.reviewedAt).toISOString().slice(0, 10) !== data.reviewedAt)) fail('잘못된 자료 확인일');
     if (!content.trimStart().startsWith(`# ${data.title}\n`)) fail('제목 불일치');
     const body = content.trimStart().slice(content.trimStart().indexOf('\n') + 1).trim();
     const toc = [];
@@ -45,6 +55,24 @@ export function loadNotes(directory, catalog) {
     // Notes are trusted, repository-authored Markdown, not visitor submissions.
     return { ...data, html, toc, diagramCount, file: path.relative(directory, file).split(path.sep).join('/') };
   });
+  const byId = new Map(loaded.map(note => [note.id, note]));
+  for (const note of loaded) {
+    for (const id of [...note.prerequisites, ...note.related]) {
+      if (!byId.has(id)) throw new Error(`${note.file}: 학습 연결 대상 누락: ${id}`);
+    }
+  }
+  const visiting = new Set();
+  const visited = new Set();
+  function visit(note) {
+    if (visiting.has(note.id)) throw new Error(`${note.file}: 선행 개념 순환`);
+    if (visited.has(note.id)) return;
+    visiting.add(note.id);
+    note.prerequisites.forEach(id => visit(byId.get(id)));
+    visiting.delete(note.id);
+    visited.add(note.id);
+  }
+  loaded.forEach(visit);
+  return loaded;
 }
 
 export const notes = loadNotes(path.join(process.cwd(), 'notes'), questions);
