@@ -3,7 +3,7 @@ import { notes } from './notes.mjs';
 // The hierarchy is conceptual, independent of source folders and URL paths.
 const group = (id, title, noteIds = '', children = []) => ({ id, title, noteIds: noteIds.split(/\s+/).filter(Boolean), children });
 export const knowledgeStructure = group('knowledge', '기술 지식', '', [
-  group('computer-science', '컴퓨터 과학', '', [
+  group('computer-science', '컴퓨터 과학', 'computer-science-foundations', [
     group('operating-systems', '운영체제', '', [
       group('processes', '프로세스·스레드', 'execution-boundaries cpu-scheduling'),
       group('memory', '메모리 관리', 'address-translation virtual-memory page-replacement memory-accounting numa'),
@@ -36,7 +36,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       group('sampling', '난수·표본 추출', 'uniform-random fisher-yates reservoir-sampling weighted-sampling'),
     ]),
   ]),
-  group('languages', '프로그래밍 언어', '', [
+  group('languages', '프로그래밍 언어', 'programming-language-foundations', [
     group('cpp', 'C++', 'cpp-move cpp-storage-validity cpp-exception-state cpp-shared-ownership cpp-coroutine-lifetime'),
     group('java', 'Java', '', [
       group('java-types', '타입·객체', 'java-value-contract java-dispatch-erasure java-equality-immutability java-metadata'),
@@ -52,7 +52,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     ]),
     group('go', 'Go', 'go-slice-storage go-interface-values go-map-state go-channel-lifecycle go-request-lifetime go-runtime-diagnosis'),
   ]),
-  group('data-systems', '데이터 시스템', '', [
+  group('data-systems', '데이터 시스템', 'data-system-foundations', [
     group('databases', '데이터베이스', '', [
       group('relational-model', '관계 모델', 'functional-dependencies normalization lossless-decomposition unique-identity'),
       group('sql', 'SQL·조회', 'sql-result-semantics sql-binding relational-fetch keyset-pagination'),
@@ -76,7 +76,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       ]),
     ]),
   ]),
-  group('software-design', '소프트웨어 설계', '', [
+  group('software-design', '소프트웨어 설계', 'software-design-foundations', [
     group('object-design', '객체·의존성', 'invariant-boundaries behavioral-subtyping policy-ports singleton-publication'),
     group('state-design', '상태·데이터 모델', 'pure-state snapshot-lifetime state-correction model-ownership identity-representation calendar-time account-rights-merge'),
     group('api-design', 'API·서비스 계약', 'api-meaning grpc-execution messaging-ownership'),
@@ -84,7 +84,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     group('change-design', '변경·통합', 'config-bundle flag-migration git-integration dependency-lock atomic-file-publication'),
     group('testing', '테스트', 'test-detection controlled-failure protocol-scenarios'),
   ]),
-  group('operations', '인프라·운영', '', [
+  group('operations', '인프라·운영', 'operations-foundations', [
     group('kubernetes', 'Kubernetes', '', [
       group('k8s-workloads', '워크로드·조정', 'reconciliation probe-contracts rollout-capacity stateful-workload'),
       group('k8s-resources', '자원·연결·스토리지', 'resource-budget service-connections configmap-application volume-recovery disruption-budget'),
@@ -98,14 +98,14 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       group('service-performance', '분산 처리 성능', 'hedged-read broker-progress subscriber-budget redis-bounded-cleanup'),
     ]),
   ]),
-  group('security', '보안', '', [
+  group('security', '보안', 'security-foundations', [
     group('identity-security', '인증·계정', 'authentication login-transaction account-linking device-authorization password-verification account-recovery passkey-binding'),
     group('credentials', '세션·자격 관리', 'session-authority refresh-rotation key-rotation secret-delivery'),
     group('transport-security', '통신·서비스 권한', 'tls-trust early-data-replay nats-authorization workload-policy'),
     group('application-security', '입력·웹 보안', 'browser-request-security input-object-boundary http-boundary-validation server-url-fetch'),
     group('data-security', '파일·외부 연동', 'file-publication presigned-capability webhook-intake'),
   ]),
-  group('clients', '웹·모바일', '', [
+  group('clients', '웹·모바일', 'client-foundations', [
     group('web', '웹', '', [
       group('browser', '브라우저·통신', 'browser-navigation cors'),
       group('rendering', '스타일·렌더링', 'css-cascade css-reset rendering-layout hydration'),
@@ -113,14 +113,14 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     ]),
     group('ios', 'iOS', 'view-lifecycle view-coordinates arc-ownership observation-contracts scene-persistence'),
   ]),
-  group('game', '게임 서버', '', [
+  group('game', '게임 서버', 'game-server-foundations', [
     group('simulation', '시뮬레이션·권위', 'simulation-budget tick-overload input-authority world-authority'),
     group('spatial', '공간·충돌', 'spatial-candidates aoi-disclosure continuous-contact rewind-evidence'),
     group('pathfinding', '경로 탐색·행동', 'navigation-clearance astar-frontier jump-point-search path-execution space-time-reservations behavior-lifetime'),
     group('voxels', '복셀', 'voxel-semantics voxel-version-bundle dda-boundaries'),
     group('game-rewards', '랭킹·보상', 'ranking-entitlement'),
   ]),
-  group('ai', '머신러닝·AI 에이전트', '', [
+  group('ai', '머신러닝·AI 에이전트', 'learning-agent-foundations', [
     group('machine-learning', '머신러닝', 'data-splits gradient-descent loss-objective generalization classification-metrics'),
     group('agents', 'AI 에이전트', '', [
       group('agent-execution', '실행 구조', 'agent-runtime agent-execution-loop agent-tool-contract agent-durable-effects'),
