@@ -8,6 +8,10 @@ questionIds: [k8s-probe-contract, probe-dependency-load-amplification, grpc-http
 
 # Kubernetes Probe의 상태와 복구 행동
 
+Kubernetes probe는 애플리케이션의 단일 건강 점수가 아니라 서로 다른 복구 행동을 선택하기 위한 계약입니다. startup은 초기화 경계를, readiness는 트래픽 수용 가능성을, liveness는 재시작이 회복에 도움이 되는 정지를 표현하므로 같은 endpoint를 그대로 재사용할 때의 효과를 먼저 계산해야 합니다.
+
+상태 전이를 `initializing → startup succeeded → ready/not ready`와 `running/stuck`으로 나누면 probe 선택이 명확해집니다. 초기화가 끝나지 않았다는 이유로 liveness가 재시작을 일으키면 정상적인 warm-up이 실패로 증폭되지만, readiness만 실패시키면 컨테이너는 살아 있는 채 새 트래픽을 받지 않을 수 있습니다.
+
 ## 초기화 지연과 재시작 대상 고장
 
 앱이 모델·캐시를 준비하는 데 정상적으로 90초가 걸리는데 liveness가 30초 안에 성공을 요구하면 정상 초기화를 계속 끊을 수 있습니다. probe 실패는 관측값만이 아니라 Kubernetes의 복구 행동과 연결되므로 무엇을 검사하고 어떤 조치를 기대하는지 나눠야 합니다.
@@ -49,6 +53,8 @@ HTTP probe는 지정한 포트·경로·헤더·scheme과 응답 상태로 검�
 built-in gRPC probe는 gRPC health checking protocol을 사용하고 숫자 port·선택적 service 이름 등 지원 필드를 확인합니다. 일반 gRPC client의 TLS·인증·named port 기능을 그대로 제공한다고 가정하지 않습니다. built-in probe와 외부 exec 기반 grpc-health-probe의 timeout·옵션 지원도 다를 수 있습니다. 실제 Kubernetes 버전의 문서와 endpoint를 맞춥니다.
 
 전용 health endpoint는 민감한 진단 데이터를 내보내지 않고 필요한 네트워크 접근만 허용합니다. 인증 실패·포트 오류·앱 비정상을 모두 같은 “다운”으로만 로그에 남기지 않습니다.
+
+검증 연습으로 90초 warm-up, 필수 DB 지연, 선택 의존성 장애, 로컬 event loop 정지를 각각 한 번씩 재현합니다. 예상 결과는 warm-up 동안 불필요한 restart 없음, 필수 DB에서는 Ready 상태에서 제외, 선택 의존성에서는 정의된 degraded 기능만 제한, 로컬 정지에서는 liveness restart가 실제 회복에 기여하는 것입니다. 잘못된 HTTP port와 gRPC service 이름은 앱 고장과 별도 원인으로 기록합니다.
 
 ## Probe 실패별 기대 행동 검증
 

@@ -8,11 +8,17 @@ questionIds: [cors-preflight, cors-safelisted-request-boundary, cors-preflight-c
 
 # CORS preflight와 API 보호의 경계
 
+CORS는 브라우저가 교차 출처 응답을 JavaScript에 노출할지 결정하는 정책이고, 서버의 인증·인가나 CSRF 방어를 대신하지 않습니다. 요청이 실제로 실행되었는지와 브라우저가 응답을 읽었는지를 분리해 시간순으로 추적하는 것이 모든 예제의 기본 모델입니다.
+
 ## OPTIONS preflight와 실제 주문 생성
 
 예를 들어 `https://app.example`의 브라우저가 `https://api.example`로 JSON POST를 시작하면, 본문을 보내기 전에 OPTIONS를 보낼 수 있습니다. 이 **preflight**는 출처·요청 메서드·요청 헤더 조합을 서버에 미리 보내 브라우저가 그 조건의 실제 요청을 진행해도 되는지 확인하는 단계입니다. 서버가 OPTIONS를 허용해도 이어지는 실제 POST에서는 인증·인가·입력 검사를 다시 수행해야 합니다.
 
-출처는 scheme·host·port의 조합입니다. 같은 host라도 포트나 scheme이 다르면 교차 출처가 될 수 있습니다. CORS는 브라우저가 집행하는 교차 출처 응답 접근 규칙이지 서버 간 호출을 막는 방화벽이 아닙니다.
+출처는 scheme·host·port의 조합입니다.
+
+상태 trace는 `fetch → OPTIONS(필요한 경우) → 실제 POST → 서버 인증·인가·작업 → 실제 응답의 CORS 헤더 검사`입니다. OPTIONS가 성공해도 POST가 인증 실패할 수 있고, 반대로 POST가 상태를 바꾼 뒤 응답 헤더가 없어 브라우저 코드만 결과를 읽지 못할 수 있습니다. 이 두 경우를 서버 로그와 브라우저 Network의 요청 ID·시각으로 대조해야 “CORS가 API를 막았다”는 오진을 피할 수 있습니다.
+
+재현 실습은 JSON POST, safelisted form POST, credentials 쿠키 요청, 허용 목록 밖 Origin을 같은 endpoint에 보내는 것입니다. 예상 결과는 JSON POST에는 보통 preflight가 나타나고, safelisted 조건은 OPTIONS 없이 도착할 수 있으며, credentials와 `*` 조합은 허용되지 않는다는 것입니다. 상태 변경 API는 preflight 유무와 무관하게 현재 권한·CSRF 정책을 적용해야 합니다. 같은 host라도 포트나 scheme이 다르면 교차 출처가 될 수 있습니다. CORS는 브라우저가 집행하는 교차 출처 응답 접근 규칙이지 서버 간 호출을 막는 방화벽이 아닙니다.
 
 ## Preflight 정책 확인과 실제 요청 처리
 

@@ -8,6 +8,8 @@ questionIds: [kafka-retention-compaction, kafka-tombstone-offline-consumer, kafk
 
 # Kafka Retention·Compaction·Tombstone의 복구 범위
 
+이 노트는 Kafka 로그를 ‘현재 상태를 다시 만드는 저장소’와 ‘모든 변화의 감사 이력’으로 나누어 설계하는 출발점을 제공합니다. delete retention, compaction, tombstone이 각각 어떤 기록을 지우거나 남길 수 있는지 먼저 살펴보고, consumer offset·log start·snapshot 재생 위치를 함께 관리해야 오래 중단된 소비자와 복구된 cache를 안전하게 판정할 수 있음을 추적합니다.
+
 ## 최신 상태와 변화 이력의 보존 범위
 
 주문이 pending→paid→shipped로 바뀐 모든 사건을 감사하려면 전이를 보관해야 합니다. key별 최신 shipped만 남는 changelog는 현재 상태 복원에 유용하지만 중간 결제·취소 시도를 모두 복원하지 못합니다. 보관 목적을 먼저 정합니다.
@@ -50,3 +52,5 @@ key가 오랫동안 갱신되지 않아 그 최신 record가 오래된 segment�
 retention을 줄이면 중단 소비자의 재개·감사·분쟁·백업 요구를 어길 수 있습니다. 반대로 무기한 보관은 디스크·개인정보 비용을 만듭니다. topic별 목적·최대 재생 창·삭제 승인·restore 경로를 명시합니다. compaction의 CPU·디스크 I/O와 foreground 생산·소비 지연도 관찰합니다.
 
 테스트는 같은 key 반복, compaction 중 순회, tombstone을 놓친 기존 cache, compact+delete의 오래된 최신값, log start 밖 offset과 snapshot 재생을 나눕니다. 현재 작업에서는 실제 Kafka cleaner·retention을 실행하지 않았습니다. 본문은 복구 가능한 상태의 범위를 설명합니다.
+
+재현 연습은 같은 key에 A, B, C를 순서대로 기록하고 tombstone을 추가한 뒤, compaction 전·후의 전달 record와 log start를 비교하는 것입니다. 예상 결과는 남은 최신 값의 offset이 과거 offset으로 재번호화되지 않고, tombstone이 사라진 뒤 오래된 cache를 증분 재생하면 삭제를 놓칠 수 있다는 것입니다. snapshot의 다음 재생 위치가 log start보다 앞서면 그 snapshot은 해당 복구 계약을 만족하지 않으므로 전체 bootstrap 또는 다른 원본이 필요합니다.

@@ -8,6 +8,8 @@ questionIds: [js-event-loop-microtasks, browser-microtask-starvation, node-nextt
 
 # JavaScript 작업 큐와 렌더링 양보·Worker
 
+JavaScript의 실행 순서는 하나의 FIFO 큐가 아니라, 현재 동기 실행을 끝낸 뒤 host가 microtask·task·렌더링·I/O 기회를 조정하는 모델로 이해해야 합니다. Worker를 선택할 때도 UI 차단 시간과 전체 완료 시간, 데이터 소유권을 함께 비교해야 합니다.
+
 ## 0ms 타이머의 호출 스택 비중단
 
 ```js
@@ -18,7 +20,9 @@ console.log('B');
 // 이 예제의 기대 순서: A, B, microtask, timer
 ```
 
-`console.log('B')`가 먼저 찍히는 이유는 동기 코드가 현재 호출 스택에서 끝날 때까지 큐의 다른 작업이 끼어들지 않기 때문입니다. 그 다음 microtask checkpoint에서 이미 예약한 Promise 반응을 처리하고, 이후에야 timer task를 선택할 기회가 생깁니다. `0ms`는 즉시 실행 명령이 아니라 최소 대기 요청이므로 백그라운드 탭 제한·다른 작업·호스트 스케줄링에 따라 더 늦어질 수 있습니다.
+`console.log('B')`가 먼저 찍히는 이유는 동기 코드가 현재 호출 스택에서 끝날 때까지 큐의 다른 작업이 끼어들지 않기 때문입니다.
+
+이 예제의 상태는 sync A→timer 등록→Promise job 등록→sync B→microtask checkpoint→timer task 기회입니다. microtask가 자기 자신을 다시 예약하면 checkpoint가 길어져 입력과 렌더링이 밀릴 수 있습니다. 실제 지연을 진단할 때는 “timer가 늦었다”에서 멈추지 말고 long task, microtask 연쇄 길이, frame interval을 함께 기록합니다. 그 다음 microtask checkpoint에서 이미 예약한 Promise 반응을 처리하고, 이후에야 timer task를 선택할 기회가 생깁니다. `0ms`는 즉시 실행 명령이 아니라 최소 대기 요청이므로 백그라운드 탭 제한·다른 작업·호스트 스케줄링에 따라 더 늦어질 수 있습니다.
 
 ECMAScript의 Promise job과 브라우저의 이벤트 루프·렌더링, Node의 timer·I/O phase는 서로 다른 계층입니다. 브라우저의 모든 작업을 단일 전역 FIFO 하나로 설명하지 않습니다.
 

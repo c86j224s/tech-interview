@@ -8,6 +8,8 @@ questionIds: [game-server-tick-budget, fixed-variable-step-integration, game-tim
 
 # 틱 예산·시간 적분·Timer 위상 분산
 
+실시간 시뮬레이션의 핵심 계약은 시간 진행과 계산 자원이 서로 영향을 준다는 점입니다. 한 틱 안에서 반드시 순서대로 확정할 규칙과 늦춰도 되는 작업을 나누고, 밀린 시간을 따라잡는 상한과 결과가 현재 상태에 적용될 조건을 함께 정해야 합니다.
+
 ## 20Hz의 50ms 틱 예산과 흡수 여유
 
 20Hz는 한 틱이 50ms마다 시작한다는 뜻입니다. 전투 15ms + AI 12ms + 직렬화 8ms = 35ms를 쓰면 남은 15ms는 빈 시간이 아니라 scheduler·GC·shared lock·network/DB 대기와 burst를 흡수할 여유입니다. 평균만 보지 말고 틱 p99·최악 틱·단계별 CPU와 wall time·queue age를 측정해야 하며, 접속자 수가 같아도 한 지역의 투사체/NPC 밀집은 후보 충돌 비용을 크게 키울 수 있습니다.
@@ -47,5 +49,7 @@ NPC가 같은 시각에 생성되어 매 1초마다 갱신되면 만료 시각�
 밀린 callback 전부를 다음 틱에 실행하면 다시 포화됩니다. 회차 누락/합치기 정책·최대 지연·최소 진행을 정하고 만료 시각·실행 시각·중복·skip·가장 오래된 항목을 관측합니다. timer 자료구조가 빨라도 callback 비용을 없애지는 않습니다.
 
 ## 집중 부하의 규칙 보존과 반응성 비교
+
+비교표에는 같은 입력과 seed에서 최종 위치만 적지 말고 각 틱의 입력 적용 시각, 충돌 순서, timer 만료 시각, 폐기된 worker 결과, 틱 p99를 함께 남깁니다. 예측 가능한 결과는 fixed-step의 동일 입력이 같은 simulation 시간선을 재현하는 것이며, 그 조건이 깨지면 적분 방식보다 입력·난수·병렬 적용 순서를 먼저 조사합니다.
 
 동일 입력·seed의 fixed/variable step에서 위치·에너지·충돌·timer와 CPU를 비교합니다. 지역 집중·동시 만료·느린 worker·queue 포화·catch-up 상한을 시험합니다. 이 노트는 simulation 예산 설계이며 실제 게임 server 부하 시험 결과는 아닙니다.

@@ -8,9 +8,13 @@ questionIds: [feature-flag-rollout, feature-flag-assignment-unit, feature-rollba
 
 # Feature Flag·Strangler의 쓰기 권위와 Rollback
 
+Feature flag와 Strangler migration의 기본 모델은 “코드 경로 선택”과 “데이터의 현재 권위”를 분리하는 것입니다. flag는 요청을 어디로 보낼지 바꾸지만 이미 기록된 데이터·event·외부 효과를 되돌리지 않으므로, rollout·write owner·호환 읽기·rollback을 하나의 세대 전환으로 추적해야 합니다.
+
 ## Flag Off와 기존 Paused 데이터 잔존
 
 새 코드가 status=paused를 저장했고 옛 코드가 active/closed만 알면 flag off 뒤에도 오류가 남습니다. flag는 이후 경로를 선택할 뿐 데이터·event·메일·결제를 되돌리지 않습니다. 새 값을 읽을 호환 코드→확장 schema→전환/백필→옛 경로 제거처럼 순서를 준비하고 rollback 가능한 데이터 표현을 먼저 확인합니다.
+
+초기 설계에서 flag 상태, 노출 세대, 데이터 schema 세대, write authority 세대를 별도 필드로 기록하면 장애 원인을 좁히기 쉽습니다. flag off인데도 신 상태가 남아 있다면 라우팅 문제가 아니라 호환 읽기나 백필·보정 문제일 수 있고, 외부 결제가 이미 성공했다면 코드 rollback만으로 그 효과를 취소할 수 없습니다.
 
 ## 배정 단위와 공유 데이터 범위
 
@@ -49,3 +53,5 @@ rollback은 새 데이터의 역표현·옛 read 경로·필요한 증분 반영
 설정 store 장애의 마지막 정상값·local cache·강제 안전값 우선순위를 정하고 여러 service가 한 거래에서 서로 다른 flag를 쓰지 않도록 결정 전달/호환을 관리합니다. 지원 조합을 제한하고 owner·제거 기한을 둡니다. 완전 전환 뒤 옛 endpoint·자격·batch·복구 의존이 사라진 증거를 확인해야 완료입니다.
 
 혼합 cohort·shadow 차이·전환 중 실패·옛 writer·늦은 event·rollback·설정 유실을 시험합니다. 이 노트는 전환 설계이며 실제 서비스 migration을 수행한 결과는 아닙니다.
+
+실패 진단은 먼저 현재 요청의 cohort와 generation, 그 요청이 실제로 실행된 owner, event ID의 처리 여부, 양쪽 저장소의 마지막 대사 지점을 확인하는 순서로 진행합니다. 예상되는 안전한 결과는 같은 계정의 요청이 한 generation에 고정되고, 이전 writer가 늦은 요청을 거절하며, flag off 뒤에도 이미 발행된 event가 계약에 따라 처리되는 것입니다.

@@ -8,6 +8,8 @@ questionIds: [security-deserialization, js-prototype-pollution]
 
 # 파싱한 외부 데이터를 내부 객체로 옮기는 경계
 
+외부 입력을 객체로 파싱하는 일은 값을 읽는 단계일 뿐, 내부 명령이나 권한을 얻었다는 뜻이 아닙니다. 안전한 경계는 제한된 원문을 하나의 해석으로 검증하고 허용 필드만 새 객체로 옮긴 뒤, 대상과 권한을 현재 서버 문맥에서 다시 결정하는 순서로 만들어집니다.
+
 ## JSON 형식과 후속 처리 안전성의 분리
 
 설정 API가 JSON 객체를 받은 뒤 내부 기본 설정에 재귀적으로 병합한다고 합시다. JSON 파싱 자체가 코드를 실행하지 않아도, 병합기가 외부 키를 따라 내부 prototype이나 보안 설정을 수정하면 그 다음 요청의 권한 판단이 바뀔 수 있습니다. 안전성은 파일 확장자보다 데이터가 어떤 동작을 선택하게 되는지에 달려 있습니다.
@@ -29,6 +31,8 @@ questionIds: [security-deserialization, js-prototype-pollution]
 ```diagram
 {"title":"입력 객체를 내부 권한 객체로 그대로 넘기지 않습니다","caption":"화살표는 데이터 변환 순서입니다. 내부 주체·권한 값은 외부 객체의 필드가 아니라 서버 인증 문맥에서 가져옵니다.","rows":[[{"id":"raw","label":"비신뢰 원문 바이트"}],[{"id":"data","label":"제한된 데이터 파싱"}],[{"id":"schema","label":"엄격한 스키마 검증"}],[{"id":"internal","label":"새 내부 객체 생성","detail":["허용 필드 + 서버 인증 문맥"]}]],"edges":[{"from":"raw","to":"data","label":"자원·형식 제한"},{"from":"data","to":"schema","label":"필드 의미 확인"},{"from":"schema","to":"internal","label":"명시적 변환"}]}
 ```
+
+실패를 진단할 때 `raw → parsed → validated → command`의 각 표현을 기록하되 비밀 값은 제거합니다. 파싱은 성공했지만 허용되지 않은 필드가 남았거나, 구조 검증은 통과했지만 principal의 대상 권한이 없거나, 명령 생성 뒤 외부 호출이 증폭되는 경우를 서로 다른 실패로 분류해야 보안 성공률을 과대평가하지 않습니다.
 
 ## Prototype 상속값과 입력의 실제 필드 구분
 

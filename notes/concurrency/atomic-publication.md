@@ -8,11 +8,16 @@ questionIds: [atomics-memory-order, cpp-release-sequence-visibility, atomic-refc
 
 # 원자 플래그의 공개와 객체 수명
 
+공유 메모리 문제는 원자 변수의 존재만으로 풀리지 않습니다. 어떤 쓰기가 어떤 읽기와 연결되는지, 그 사이 객체와 버퍼가 계속 살아 있는지, 한 번의 snapshot을 어디서 끝내는지를 함께 증명해야 합니다.
+
 ## 원자 플래그와 일반 데이터 공개의 동기화 조건
 
 생산자가 result=42를 쓰고 ready=true를 저장한 뒤 소비자가 ready를 읽고 result를 사용한다고 합시다. ready 자체의 원자성만으로 일반 result 접근의 동기화가 생기는 것은 아닙니다. 어떤 쓰기와 읽기를 연결하는지 메모리 모델의 근거가 필요합니다.
 
 C++의 한 번 공개 모형에서 생산자의 release store 값을 소비자의 acquire load가 읽으면, release 앞의 쓰기와 acquire 뒤의 읽기에 happens-before를 만들 수 있습니다. 객체는 두 스레드보다 오래 살아 있고 공개 뒤 result를 다시 바꾸지 않는다는 전제입니다.
+
+
+`result=42`와 `ready=true`를 같은 시각에 썼다는 관찰은 계약이 아닙니다. 소비자가 false를 읽으면 읽기를 진행하지 않고, true를 읽은 경우에만 해당 release와의 연결을 추적해 `result`를 읽습니다. 이 순서를 먼저 그리면 atomic이 값의 찢김을 막는 일과 일반 데이터의 가시성을 연결하는 일이 분리됩니다.
 
 ## Release 쓰기를 읽는 acquire와 동기화 관계
 
@@ -34,6 +39,8 @@ if (ready.load(std::memory_order_acquire)) {
 
 `ready=false`를 읽은 소비자는 아직 `result`를 사용해서는 안 되며, 그 load는 생산자의 `result=42`와 연결되지 않습니다. 나중에 같은 `ready`에서 생산자의 release가 만든 `true`를 acquire로 읽는 경우와, 전혀 다른 atomic을 acquire로 읽는 경우를 구분해야 합니다. `relaxed`는 해당 atomic 자체의 원자성만 유지하므로 이 공개 관계를 자동으로 만들지 않고, 한 CPU에서 값이 보였다는 실험도 모든 허용 실행의 증명은 아닙니다.
 
+재현 연습에서는 소비자 시작을 생산자보다 먼저 두고, `ready`의 load 결과가 false인 경로에서 `use(result)`가 호출되지 않는지 확인합니다. true 경로의 근거는 출력값 하나가 아니라 release/acquire 선택과 객체 수명 전제이며, relaxed로 바꾼 실험이 우연히 42를 출력해도 계약이 생기지 않습니다.
+
 ## Release sequence와 동일 atomic의 수정 순서
 
 C++20 이후 정의를 기준으로, release를 시작으로 이어지는 atomic RMW 연산의 연속된 수정열에서 값을 읽는 acquire는 그 head release와 연결될 수 있습니다. 예를 들어 생산자가 data를 쓰고 flag를 release로 1로 저장하고, 다른 스레드가 relaxed RMW로 1을 2로 바꾼 뒤 소비자가 acquire로 그 2를 읽는 상황입니다.
@@ -47,11 +54,16 @@ C++20 이후 정의를 기준으로, release를 시작으로 이어지는 atomic
 
 중간 RMW를 한 스레드의 모든 일반 쓰기까지 자동으로 공개한다고 확대하지 않습니다. head release 앞 쓰기와 어떤 acquire가 연결되는지가 핵심입니다. 표준 버전별 정의 차이를 확인하고 오래된 설명의 same-thread store 규칙을 섞지 않습니다.
 
+상태 추적은 `data=42 → flag.store(1, release) → flag.fetch_add(1, relaxed) → load(2, acquire)`처럼 동일 atomic의 modification order를 적는 방식이 안전합니다. 중간에 일반 `store`가 들어간 변형을 별도로 시험해 release sequence를 자동으로 이어진다고 가정하지 않습니다. 표준 판본 차이는 이 노트에서 재확정하지 않았습니다.
+
 ## 복수 atomic과 일관된 snapshot 경계
 
 balance와 count를 각각 atomic으로 만들어도 읽는 쪽은 서로 다른 시점의 조합을 볼 수 있습니다. 두 필드의 합계 같은 불변식은 하나의 잠금·불변 snapshot·검증된 복합 연산 등 더 넓은 경계가 필요합니다.
 
 sequence counter를 앞뒤로 읽어 같으면 안전하다고 하더라도 그 사이 일반 비원자 필드에 data race가 있었다면 C++의 undefined behavior를 나중 검사로 없앨 수 없습니다. double buffer도 독자가 읽는 버퍼를 writer가 다시 덮지 않는 소유·회수 규칙이 필요합니다.
+
+
+`balance=100`, `count=1`에서 writer가 balance만 먼저 0으로 바꾸고 reader가 두 atomic을 차례로 읽으면 합계 불변식이 깨진 조합이 가능합니다. 두 값의 일관성이 업무 조건이면 mutex 또는 한 번에 교체하는 불변 snapshot을 선택하고, sequence 검사는 일반 비원자 접근의 data race를 허가하는 장치로 쓰지 않습니다.
 
 ## 참조 카운트와 최초 포인터 공개의 수명 조건
 
@@ -59,8 +71,12 @@ sequence counter를 앞뒤로 읽어 같으면 안전하다고 하더라도 그 
 
 raw pointer를 읽고 나중에 count를 늘리려는 사이 객체가 해제되면 원자 증가 자체도 죽은 메모리 접근입니다. refcount가 원자적이라고 객체 필드의 동시 수정이 안전하지도 않습니다. 마지막 소멸 경로에 필요한 쓰기 가시성과 최초 포인터 공개, 참조 획득의 수명을 따로 증명해야 합니다.
 
+안전한 복사는 이미 strong owner가 `p`를 붙잡고 있을 때만 `count++`가 유효하다는 전제에서 시작합니다. 반대로 raw `p`를 읽은 직후 마지막 owner가 소멸하면, reader가 수행할 원자 증가 대상 자체가 사라질 수 있습니다. weak lock, 보호된 root, 잠금 같은 “승격 전 보호”가 필요한 이유를 이 두 타임라인으로 설명할 수 있습니다.
+
 ## 버퍼 재사용과 세대별 소유권
 
 ready를 false로 되돌린 뒤 같은 버퍼를 다시 채우면 소비자가 이전 true를 보고 읽는 중일 수 있습니다. 단일 게시 예의 불변성을 잃는 것입니다. 세대 번호만 추가하지 말고 독자가 끝난 시점과 writer의 재사용 허가를 연결합니다.
 
 검증에는 소비자 선행·생산자 지연·여러 소비자·반복 게시·회수 경합을 넣고 TSan 등 도구를 보조로 사용합니다. 특정 CPU에서 문제가 안 보였다는 이유로 relaxed를 허용하지 않습니다. 요구 처리량을 잠금이나 안전한 라이브러리가 충족하면 약한 메모리 순서의 복잡성을 먼저 추가할 필요는 없습니다.
+
+재현할 때 writer가 세대 1을 게시하고 reader가 절반만 읽은 순간 세대 2를 같은 주소에 쓰도록 멈춥니다. generation 비교는 잘못된 세대를 식별할 수 있지만 reader가 실제로 버퍼를 놓았다는 증명은 아니므로, `reader_done` 또는 소유권 반환까지 재사용을 금지해야 합니다. 현재 내용은 이 경계를 설계·검증하는 안내이며 특정 TSan 실행 결과는 아닙니다.

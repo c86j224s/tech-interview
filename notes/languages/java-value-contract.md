@@ -8,6 +8,8 @@ questionIds: [java-boxing-null, java-unboxing-promotion-order, java-absence-opti
 
 # Java 래퍼 숫자·Unboxing·부재 표현
 
+이 노트는 Java의 래퍼 숫자를 값처럼 읽다가 참조 비교·null unboxing·숫자 승격·부재 의미를 놓치는 경계를 설명합니다. 식을 읽을 때 먼저 정적 타입과 필요한 변환을 적고, 그 다음 null·equals·Optional의 도메인 계약을 확인합니다.
+
 ## 래퍼 숫자의 참조 동일성과 == 비교 조건
 
 int와 Integer 사이를 오갈 때 컴파일러가 boxing·unboxing을 자동으로 넣을 수 있지만, 두 Integer에 `==`를 쓰면 먼저 값이 아니라 참조가 같은지 비교합니다. 그래서 `127`처럼 일부 상수 표현식의 boxing에서 참조 공유가 보장되는 값은 숫자 비교처럼 보일 수 있습니다. 더 큰 값의 참조 공유는 구현이 확장할 수 있으므로 “128 이상이면 반드시 다른 참조”라고 단정하지 말고, 숫자를 비교할 때는 기본형 변환이나 `equals`의 타입 계약을 의도에 맞게 선택합니다.
@@ -21,7 +23,7 @@ System.out.println(n == null); // true
 // n == 0 은 unboxing 중 NullPointerException
 ```
 
-실행문은 main 같은 메서드 안에 놓습니다. `n == null`은 참조 비교이고 `n == 0`은 숫자 비교를 위해 n의 기본형 값을 필요로 합니다. null을 자동으로 0으로 바꾸지 않습니다.
+실행문은 main 같은 메서드 안에 놓습니다. `n == null`은 참조 비교이고 `n == 0`은 숫자 비교를 위해 n의 기본형 값을 필요로 합니다. null을 자동으로 0으로 바꾸지 않습니다. 실행 추적은 `Integer n=null → n==null`에서는 참조 비교가 끝나지만, `n==0`에서는 비교를 위해 unbox하는 순간 예외가 발생하는 순서입니다. 따라서 `==`의 결과만 외우기보다 컴파일러가 어느 피연산자를 기본형으로 변환하는지 확인해야 합니다.
 
 ## 산술식 피연산자 변환과 unboxing 실패 지점
 
@@ -35,7 +37,7 @@ System.out.println(n == null); // true
 | Integer(1).equals(Long(1)) | 서로 다른 래퍼 타입 | false |
 | map.get(key) + 1 | 부재값 unboxing 가능 | 먼저 누락 정책 필요 |
 
-표의 Integer(1)·Long(1)은 값 개념을 뜻하며 실제 코드는 valueOf 등을 사용합니다. Objects.equals는 null 안전성만 제공하므로 범위·형식·숫자 타입 통일은 따로 해야 합니다. boxing을 반복하는 합산 코드는 객체 할당·참조 교체 비용을 만들 수 있어 원시형이 적합한지 실제 할당 프로파일로 확인합니다.
+표의 Integer(1)·Long(1)은 값 개념을 뜻하며 실제 코드는 valueOf 등을 사용합니다. Objects.equals는 null 안전성만 제공하므로 범위·형식·숫자 타입 통일은 따로 해야 합니다. 실무 선택은 “null이면 실패인가, 정상 부재인가, 0인가”를 API 반환형과 오류 채널에 먼저 표현하는 것입니다. `map.get(key)+1` 같은 식은 map 부재와 저장된 null을 같은 unboxing 실패로 만들 수 있으므로 `containsKey`·명시적 결과 타입·도메인 오류 중 하나를 선택합니다. boxing을 반복하는 합산 코드는 객체 할당·참조 교체 비용을 만들 수 있어 원시형이 적합한지 실제 할당 프로파일로 확인합니다.
 
 ## 0·정상 부재·조회 실패의 결과 구분
 
@@ -55,4 +57,4 @@ nullable `Integer`를 반환하는 API는 호출자가 `null`인지 먼저 분�
 
 ## 컴파일 타입과 실행 오류의 분리 확인
 
-래퍼-래퍼·래퍼-기본형·null·서로 다른 래퍼·조건식·overload의 작은 예를 만들어 컴파일 타입과 결과를 대조합니다. Optional에 값이 있을 때와 없을 때 기본값 함수 호출 횟수를 검사합니다. 기본 PATH의 javac는 JDK를 찾지 못했지만, 이후 Homebrew OpenJDK 21.0.12.1을 찾아 `scripts/VerifyJavaStudy.java`로 상수 boxing·null unboxing·다른 래퍼 equals·지연 기본값 예제를 확인했습니다. 모든 overload·조건식·외부 DB 부재 변환까지 실행한 것은 아닙니다.
+래퍼-래퍼·래퍼-기본형·null·서로 다른 래퍼·조건식·overload의 작은 예를 만들어 컴파일 타입과 결과를 대조합니다. Optional에 값이 있을 때와 없을 때 기본값 함수 호출 횟수를 검사합니다. 기본 PATH의 javac는 JDK를 찾지 못했지만, 이후 Homebrew OpenJDK 21.0.12.1을 찾아 `scripts/VerifyJavaStudy.java`로 상수 boxing·null unboxing·다른 래퍼 equals·지연 기본값 예제를 확인했습니다. 모든 overload·조건식·외부 DB 부재 변환까지 실행한 것은 아닙니다. 추가 검증에서는 컴파일 경고와 실제 예외 위치를 함께 기록하고, `orElse`의 기본값 함수가 값 존재 시에도 호출되는지 부수 효과 카운터로 확인합니다. 이 범위 밖의 overload·조건식 결과는 별도 작은 예제로 확정해야 합니다.

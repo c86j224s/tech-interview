@@ -8,11 +8,17 @@ questionIds: [distributed-tracing-boundaries, profiling-cpu-offcpu, lock-hold-ve
 
 # 분산 Trace와 On·Off CPU의 대기 근거
 
+지연 원인을 찾는 출발점은 “느린 span”의 이름이 아니라 요청 wall time이 어느 대기와 실행 구간으로 구성되는지입니다. 전체 지표로 대표 요청을 고르고 trace로 critical path를 복원한 뒤, profile과 pool·lock·queue 지표를 대조해야 CPU 계산과 자원 대기를 구분할 수 있습니다.
+
 ## DB Span 내부의 pool acquire 대기 시간
 
 DB 작업 span이 800ms인데 pool acquire=750ms, query=50ms라면 SQL 최적화만으로 큰 개선을 얻기 어렵습니다. trace는 호출 이름을 붙인 그림보다 실제 대기·자원 획득·실행·결과 decode를 구분할 때 유용합니다.
 
-필수 하위 호출 A=100ms, B=300ms가 병렬이면 두 시간을 단순 합산해 400ms 병목이라고 보지 않습니다. 응답을 결정하는 critical path·join 대기·순차 후속 작업을 따라야 합니다. 가장 긴 span도 CPU 계산이 아니라 외부 대기일 수 있습니다.
+필수 하위 호출 A=100ms, B=300ms가 병렬이면 두 시간을 단순 합산해 400ms 병목이라고 보지 않습니다.
+
+상태를 숫자로 따라가면 요청 800ms 중 pool acquire 750ms, query 50ms라면 query 튜닝의 최대 효과는 제한적이고 pool 포화·연결 수·상위 queue를 먼저 조사해야 합니다. A와 B가 병렬이면 critical path는 대략 더 긴 B와 join 이후 작업으로 구성되며, trace parent 합계가 wall time과 같지 않을 수 있습니다. lock wait가 길면 기다린 stack뿐 아니라 owner의 hold 구간에서 외부 I/O나 스케줄 정지를 확인합니다.
+
+재현 실습은 pool 대기, CPU busy loop, 긴 lock hold, late span을 각각 만든 뒤 RED 지표·trace·CPU/off-CPU profile의 예상 신호를 표로 남기는 것입니다. tail sampling으로 느린 trace를 골랐더라도 그 표본의 오류율을 전체 오류율로 사용하지 않고, 전체 histogram과 별도로 비교해야 합니다. 응답을 결정하는 critical path·join 대기·순차 후속 작업을 따라야 합니다. 가장 긴 span도 CPU 계산이 아니라 외부 대기일 수 있습니다.
 
 | 구간 | 필요한 관측 | 다른 원인과 구분 |
 | --- | --- | --- |

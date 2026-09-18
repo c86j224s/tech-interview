@@ -8,6 +8,8 @@ questionIds: [python-asyncio-blocking, python-asyncio-taskgroup, python-contextv
 
 # Asyncio 실행 양보·TaskGroup·ContextVar 수명
 
+asyncio 코드는 “비동기처럼 보이는 문법”보다 실제로 이벤트 루프가 언제 양보하고, 취소가 어느 실행 경계까지 도달하며, 요청 문맥과 가변 상태가 어디까지 공유되는지를 추적해야 합니다. 이 노트는 coroutine 생성, task 실행, thread·process 경계, 구조적 수명과 ContextVar를 같은 실행 trace에서 구분합니다.
+
 ## Async 함수의 동기 호출과 이벤트 루프 점유
 
 `async def handler`가 호출될 때는 본문이 즉시 실행되지 않고 coroutine 객체가 만들어집니다. 이후 이벤트 루프가 그 coroutine을 실행하는 동안 `time.sleep`이나 동기 HTTP가 호출되면 해당 호출이 끝날 때까지 같은 루프의 다른 task가 진행하지 못할 수 있으므로, `async`라는 선언만으로 본문이 다른 스레드로 이동한다고 생각하면 안 됩니다.
@@ -68,3 +70,5 @@ asyncio.to_thread는 현재 contextvars 문맥을 전달하는 API이지만 다�
 A·B task를 Event로 번갈아 재개해 문맥이 분리되는지, 중첩 set/reset과 취소 finally가 복원되는지 확인합니다. TaskGroup은 동시 예외·cleanup 실패·취소 무시를 분리해 검사합니다. to_thread는 대기 취소 뒤 실제 함수가 끝나는 시점을 별도 이벤트로 확인해야 합니다.
 
 기본 CPython 3.9.6에서는 TaskGroup을 SKIP했고, 이후 설치된 Homebrew CPython 3.14.7로 `scripts/verify-python-study.py`를 실행해 형제 task 취소·finally 정리·ExceptionGroup의 ValueError를 확인했습니다. 두 버전에서 ContextVar 교차 task 분리도 확인했습니다. 동시 다중 실패·to_thread의 실제 잔여 작업·외부 I/O 취소는 이 실행 범위에 포함하지 않았습니다.
+
+현상 진단에서는 먼저 이벤트 루프에 주기적으로 실행되는 heartbeat를 두고 blocking 호출 동안 heartbeat가 멈추는지 확인합니다. 이어 task 취소 시 바깥 coroutine은 끝났지만 `to_thread`의 함수 종료 이벤트가 나중에 오는지 분리해 기록합니다. 전자는 실행 양보 부족이고 후자는 취소가 underlying 작업을 중단하지 못한 것이므로 semaphore 반환 시점을 같은 것으로 취급하면 안 됩니다.

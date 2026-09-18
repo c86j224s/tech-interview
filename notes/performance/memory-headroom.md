@@ -8,6 +8,8 @@ questionIds: [k8s-oom-throttling, gomemlimit-container-headroom, performance-mem
 
 # 컨테이너 OOM·GC 여유·객체 풀의 실제 수명
 
+이 노트는 메모리 문제를 하나의 ‘heap 사용량’으로 뭉개지 않고 CPU throttling, cgroup 종료, node eviction, Go runtime 관리량, native 여유, pool 보유 수명으로 분해합니다. 먼저 프로세스가 느려진 것과 죽은 것을 구분하고, 컨테이너 예산 안에서 runtime 목표와 순간 peak 여유를 나눈 뒤, buffer가 실제로 반환 가능한 시점을 추적합니다.
+
 ## 프로세스 생존·지연과 종료·eviction의 구분
 
 컨테이너에 배정된 CPU quota가 소진되면 실행이 throttling(실행할 CPU 시간이 제한되어 기다리는 상태)되어 프로세스가 살아 있어도 요청·GC·heartbeat가 늦어질 수 있습니다. 메모리 cgroup 한도(컨테이너 메모리를 집계·제한하는 경계)나 노드 OOM이면 프로세스가 죽을 수 있고, kubelet의 node pressure eviction은 노드 여유를 보고 Pod를 내보내는 별도 정책 경로입니다.
@@ -54,3 +56,5 @@ I/O callback이 아직 buffer를 읽는데 사용자 timeout으로 풀에 반환
 CPU throttling이 GC·요청 처리를 늦춰 살아 있는 buffer 수를 늘리면 메모리 peak가 2차로 증가할 수 있습니다. OOM 재시작은 cache cold·retry·readiness 변화를 만듭니다. 먼저 메모리 peak와 CPU 부하를 분리한 뒤 조합 상황을 시험합니다.
 
 pool 없음/있음, 작은/큰 객체, burst 후 회복, 취소·중복 반환·동시 대여를 비교합니다. 현재 작업에서는 container OOM·throttling·pool 부하 실험을 실행하지 않았습니다. 본문은 예산과 수명 진단 설계입니다.
+
+재현 연습은 32MiB buffer 하나를 pool에 반환한 뒤 작은 요청만 반복하고, pool 보관 전후의 live heap·RSS·cgroup current/peak를 비교하는 것입니다. 예상 결과는 할당 횟수는 줄어도 큰 buffer가 남아 RSS가 유지될 수 있다는 것이며, timeout 직후 buffer를 반환하도록 바꾸면 callback과 새 대여자가 같은 메모리를 만질 수 있어 수명 오류가 드러난다는 것입니다. CPU quota를 낮춘 조합에서는 처리 지연으로 동시 buffer가 늘어 peak가 2차로 커질 수 있으므로 CPU와 메모리 실험을 분리한 뒤 함께 측정합니다.

@@ -8,11 +8,13 @@ questionIds: [jetstream-ack-redelivery, jetstream-backoff-nak-policy, jetstream-
 
 # JetStream·SQS 재전달과 실행 중 효과의 수명
 
+이 노트는 broker가 전달 완료를 판단하는 신호와 worker가 남긴 외부 효과의 수명을 분리합니다. JetStream과 SQS의 세부 API를 같은 것으로 만들지 않으면서도, 재전달·응답 유실·중복 효과를 하나의 시간축과 저장 경계로 추적합니다.
+
 ## 메시지 재전달과 기존 Worker의 실행 지속
 
 worker A가 40초 동안 DB 작업을 하는데 메시지의 미확인 대기 시간이 30초라면, broker는 A가 끝났는지 알 수 없어 B에게 같은 메시지를 다시 전달할 수 있습니다. 이 시간 제한은 전달 상태를 다시 판단하는 기준일 뿐 A의 프로세스나 DB 호출을 중단시키는 타이머가 아니므로, A와 B가 동시에 같은 효과를 시도할 수 있습니다. 따라서 DB 반영처럼 다시 확인할 수 있는 내구 효과를 먼저 확정하고, 그 뒤 ACK 또는 DeleteMessage를 보내며, 재전달은 같은 논리 event ID로 흡수해야 합니다.
 
-JetStream의 AckWait와 SQS의 visibility timeout은 세부가 다르지만 이 한계는 공통입니다. 효과를 내구 반영한 뒤 ACK 또는 DeleteMessage를 하고, 그 사이 실패의 재전달을 같은 논리 event ID로 흡수해야 합니다.
+JetStream의 AckWait와 SQS의 visibility timeout은 세부가 다르지만 이 한계는 공통입니다. 효과를 내구 반영한 뒤 ACK 또는 DeleteMessage를 하고, 그 사이 실패의 재전달을 같은 논리 event ID로 흡수해야 합니다. 시간 순서는 `t0 receive(A) → t30 visibility 만료/재전달(B) → t35 A DB commit → t40 B inbox 경쟁 → t41 A ACK 유실`처럼 엇갈릴 수 있습니다. 그러므로 broker의 in-flight 상태만 보고 중복이 없다고 판단하지 말고, inbox unique·효과 원장·최종 ACK를 독립 관측합니다.
 
 ## JetStream Timeout·명시 실패·진행 신호의 구분
 
@@ -28,7 +30,7 @@ JetStream의 AckWait와 SQS의 visibility timeout은 세부가 다르지만 이 
 
 ## SQS Receipt Handle과 메시지·이벤트 ID의 구분
 
-ReceiveMessage의 receipt handle은 그 수신 시도의 삭제·visibility 변경에 사용합니다. 재수신하면 새 handle이 생기므로 메시지 ID·업무 event ID와 같은 것으로 쓰지 않습니다. 오래된 handle로 삭제했을 때 성공 응답이 실제 최신 수신을 제거하는 보장인지 제품 계약을 확인하고 최신 수신 handle을 사용합니다.
+ReceiveMessage의 receipt handle은 그 수신 시도의 삭제·visibility 변경에 사용합니다. 재수신하면 새 handle이 생기므로 메시지 ID·업무 event ID와 같은 것으로 쓰지 않습니다. 오래된 handle로 삭제했을 때 성공 응답이 실제 최신 수신을 제거하는 보장인지 제품 계약을 확인하고 최신 수신 handle을 사용합니다. 실무에서는 receipt handle을 작업 시도 레코드에 묶고, 재수신 때 새 시도와의 관계를 기록합니다. 오래된 handle의 삭제 결과를 추측하지 말고 공급자 공식 계약과 작은 격리 큐 시험으로 확인하며, 삭제 응답 성공도 DB commit과 동일한 transaction이라고 표현하지 않습니다.
 
 Standard 큐는 visibility 안에서도 중복 가능성을 완전히 배제하는 독점 계약으로 보지 않습니다. 긴 작업은 지원 한도 안에서 visibility를 연장할 수 있지만 연장 실패·전체 처리 한도·worker pause를 고려합니다. timeout을 길게 하면 정상 중복은 줄 수 있어도 죽은 worker의 복구가 늦습니다.
 
@@ -52,4 +54,4 @@ SQS FIFO의 message group은 순서 범위입니다. 한 group의 느린 작업�
 
 AckWait 또는 visibility 초과, 연장 유실, DB commit 후 중단, ACK/Delete 응답 유실, MaxDeliver·DLQ, FIFO hot group을 각각 시험합니다. 전달 시도 수와 최종 원장 효과 수·메시지 나이·in-flight·오류·재생 가능 기간을 비교합니다.
 
-현재 작업에서는 JetStream·SQS API나 재전달 시험을 실행하지 않았습니다. 본문은 제품별 신호와 외부 효과의 경계를 설명하며 외부 exactly-once를 주장하지 않습니다.
+현재 작업에서는 JetStream·SQS API나 재전달 시험을 실행하지 않았습니다. 본문은 제품별 신호와 외부 효과의 경계를 설명하며 외부 exactly-once를 주장하지 않습니다. 검증 결과는 `delivery attempts`, `effect commits`, `duplicate suppressions`, `DLQ count`, `oldest message age`처럼 서로 다른 계수로 남겨야 하며, 효과 수가 하나라고 해서 전달 시도가 하나였다고 해석하지 않습니다.

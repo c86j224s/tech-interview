@@ -8,9 +8,13 @@ questionIds: [load-balancer-health-draining, readiness-flapping-hysteresis, adap
 
 # Readiness와 적응형 동시성의 피드백 안정성
 
+Health와 적응형 동시성은 모두 “현재 상태를 측정해 다음 요청을 조절하는 제어 문제”입니다. probe가 성공했다는 사실, 새 요청을 받을 용량, 이미 실행 중인 작업의 수명은 서로 다른 상태이므로 하나의 boolean으로 합치면 장애 때 오판합니다.
+
 ## Health 경로 성공과 주문 경로 실패
 
-별도 연결로 응답하는 probe는 200인데 실제 주문 DB pool이 고갈됐을 수 있습니다. liveness는 재시작으로 회복할 생존 문제, readiness는 새 일을 수용할 준비의 신호로 구분합니다. 특정 시점의 제한된 검사가 다음 모든 요청 성공을 보장하지 않습니다.
+별도 연결로 응답하는 probe는 200인데 실제 주문 DB pool이 고갈됐을 수 있습니다.
+
+상태 trace를 예로 들면 probe=200, 주문 pool 사용=100/100, queue=120일 때 instance는 생존하지만 주문을 더 받을 준비가 되지 않은 상태입니다. 이때 readiness를 무조건 유지하면 새 유입이 queue를 키우고, 모든 dependency를 readiness에 묶으면 공통 DB 장애에서 전체가 동시에 빠집니다. 기능별 필수 경로와 수락 한도를 함께 정의해야 어느 신호를 바꿀지 결정할 수 있습니다. liveness는 재시작으로 회복할 생존 문제, readiness는 새 일을 수용할 준비의 신호로 구분합니다. 특정 시점의 제한된 검사가 다음 모든 요청 성공을 보장하지 않습니다.
 
 모든 외부 dependency를 readiness에 묶으면 공통 DB 장애에서 모든 instance가 동시에 제외될 수 있습니다. 너무 얕으면 실제 기능 장애를 놓칩니다. 기능별 필수/선택 의존·검사 비용·pool·queue·실제 사용자 성공을 함께 보고 범위를 정합니다.
 

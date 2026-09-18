@@ -14,6 +14,10 @@ questionIds: [graceful-shutdown, shutdown-child-admission-race, streaming-reques
 
 readiness를 내리는 것만으로 모든 유입이 즉시 사라지지 않습니다. endpoint 전파·기존 keep-alive·HTTP/2 stream·message fetch·scheduler·백그라운드 자식 생성은 다른 경로입니다.
 
+Graceful shutdown의 핵심은 종료 신호를 보내는 일이 아니라 신규 작업이 더 이상 등록되지 않는 경계를 먼저 닫고, 그 경계 안에 들어온 작업의 자원 수명을 끝까지 기다리는 일입니다. HTTP와 메시지 소비자, 스케줄러, 장기 스트림은 서로 다른 유입 경로이므로 같은 플래그만으로는 drain을 증명할 수 없습니다.
+
+경쟁 trace는 `A가 Running을 읽음 → 종료자가 Draining으로 전환하고 active=0을 확인함 → A가 active를 증가시킴`입니다. 이 interleaving을 허용하면 종료자는 pool을 닫았는데 A가 뒤늦게 pool을 사용합니다. 등록 lock 또는 CAS 안에서 상태 확인과 active 증가를 묶으면 A는 등록을 확정하거나 거절받는 한 가지 결과만 가집니다. 재현 시험에서는 HTTP keep-alive, consumer의 fetch 직전, scheduler child 생성, stream 재접속을 각각 종료 경계에 걸쳐 넣고 등록 수·실행 수·자원 사용 중인 수가 같은 작업 집합을 가리키는지 기록합니다.
+
 ## 수락 검사와 active Counter 증가의 원자성
 
 `A`가 `stopping=false`를 읽은 뒤 멈추는 사이 종료자가 `stopping=true`와 `active=0`을 확인하고 pool을 닫으면, `A`가 나중에 `active`를 올리고 닫힌 pool을 사용할 수 있습니다. 따라서 상태 검사와 작업 등록은 별도의 두 단계가 아니라 같은 lock 또는 예상값을 비교해 한 번에 바꾸는 CAS protocol 안에서 처리합니다.

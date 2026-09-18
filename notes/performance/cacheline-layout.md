@@ -8,6 +8,8 @@ questionIds: [cpu-cache-false-sharing, cache-readonly-sharing-versus-writes, fal
 
 # Cache Line 공유·AoS·SoA의 접근 비용
 
+메모리 배치 최적화는 자료구조 이름보다 실제 접근과 쓰기 소유권을 설명하는 일에서 시작합니다. 같은 변수를 함께 쓰는 true sharing, 다른 변수가 같은 cache line을 쓰는 false sharing, 읽기만 공유하는 경우를 분리하고, 배치 변경의 이득을 footprint와 결과 정확성까지 포함해 측정해야 합니다.
+
 ## 독립 카운터와 동일 Cache Line의 소유권 이동
 
 코어 A가 `counter[0]`, 코어 B가 `counter[1]`만 쓰더라도 두 주소가 같은 cache line에 있으면, 한 코어가 쓸 때 다른 코어의 line 복사본을 무효화하고 소유권을 다시 가져오는 일이 반복될 수 있습니다. 논리적으로 다른 변수가 coherence 단위인 cache line을 함께 써서 생기는 이 현상을 **false sharing**이라고 합니다.
@@ -22,6 +24,8 @@ atomic 증가라면 그 메모리 접근 자체는 C++ data race가 아니어도
 | 독립 변수 같은 line에 writer | false sharing | 불필요한 line 소유권 이동 |
 | 같은 line을 읽기만 | read-only sharing | cache miss·대역폭·NUMA, 쓰기 무효화와 다름 |
 | 분리 line·각자 쓰기 | 독립 쓰기 후보 | 더 큰 footprint·최종 합산 |
+
+두 카운터의 논리 값이 같아지는지만 보면 false sharing을 놓칩니다. 같은 작업량에서 주소를 line 경계 밖으로 분리했을 때 wall time·coherence 이벤트가 함께 줄고 결과가 유지되는지 비교해야 하며, 줄지 않으면 miss 원인을 용량·NUMA·배치 불균형으로 계속 열어 둡니다.
 
 ## Cache Miss와 false sharing의 원인 구분
 
@@ -50,6 +54,8 @@ pointer 배열은 객체 이동을 줄일 수 있지만, 포인터를 따라가�
 SoA에서 삭제 후 마지막 원소를 옮기면 모든 필드 배열의 같은 인덱스가 같은 객체를 가리켜야 합니다. ID→index 매핑·generation·외부 핸들 무효화·비동기 참조를 함께 갱신합니다. 성능을 위해 배열만 바꾸고 원래 소유·동시성 규칙을 놓치면 데이터가 섞입니다.
 
 배치별 worker partition도 두 worker가 인접 원소 line을 나눠 쓰는 경계에서 false sharing을 만들 수 있습니다. 작업 단위·chunk 크기·읽기/쓰기 패턴과 데이터 배치를 함께 검토합니다.
+
+선택은 microbenchmark의 단일 평균이 아니라 대표 입력의 결과 일치, throughput, p99, memory footprint를 함께 놓고 합니다. 예를 들어 padding으로 시간이 줄어도 메모리 증가가 캐시 용량을 넘어 전체 입력에서 역전될 수 있으므로, 작은 배열과 실제 규모 배열을 같은 배치·thread placement로 반복해야 합니다.
 
 ## 결과 일치와 하드웨어 근거 비교
 

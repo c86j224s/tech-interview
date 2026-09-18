@@ -8,6 +8,8 @@ questionIds: [io-readiness-vs-completion, windows-epoll-porting, epoll-oneshot-r
 
 # 준비 통지와 완료 통지의 버퍼 소유권
 
+비동기 I/O를 안전하게 이식하려면 API 이름보다 통지의 의미와 버퍼의 소유권을 먼저 고정해야 합니다. readiness는 작업 기회이고 completion은 맡긴 작업의 결과라는 차이에서 부분 I/O, 재무장, 취소, 수명 규칙이 이어집니다.
+
 ## 준비 통지와 맡긴 읽기의 완료 결과
 
 epoll의 읽기 준비 알림은 지금 논블로킹 recv를 시도할 수 있다는 신호입니다. 이미 사용자 버퍼에 원하는 메시지가 들어왔다는 뜻은 아닙니다. IOCP의 완료는 앞서 버퍼와 작업을 제출한 I/O의 결과입니다. 완료된 바이트·오류와 제출한 작업의 수명을 처리해야 합니다.
@@ -18,6 +20,8 @@ epoll의 읽기 준비 알림은 지금 논블로킹 recv를 시도할 수 있�
 | --- | --- | --- |
 | 준비 | 감시 → 준비 → recv/send 시도 | 반환값으로 진행·EOF·재대기 판단 |
 | 완료 | 버퍼·작업 제출 → I/O 진행 → 결과 | 해당 작업 결과와 참조 종결 |
+
+epoll에서 `EPOLLIN`을 받았다는 상태는 nonblocking `recv`를 시도할 기회일 뿐이며, 반환값 양수·0·EAGAIN·오류가 실제 다음 상태를 결정합니다. 반대로 IOCP 완료는 앞서 제출한 특정 OVERLAPPED 작업의 결과이므로, 두 모델의 공통 어댑터는 “알림 수신”과 “버퍼에 기록된 바이트”를 같은 callback으로 포장하지 않습니다.
 
 ## Edge-triggered 읽기와 EAGAIN 이전 중단
 
@@ -44,11 +48,15 @@ processReadable(connection):
 {"title":"예산 종료와 EAGAIN은 다른 재개 경로입니다","caption":"화살표는 논블로킹 읽기 이후의 실행 선택입니다. 읽을 데이터가 남을 수 있는 예산 종료는 자체 재스케줄링으로 이어져야 합니다.","rows":[[{"id":"read","label":"준비 알림 후 recv"}],[{"id":"budget","label":"처리 예산 소진","detail":["EAGAIN 미도달"]},{"id":"empty","label":"EAGAIN","detail":["현재 읽을 데이터 없음"]}],[{"id":"local","label":"자체 ready 큐"},{"id":"kernel","label":"다음 준비 알림 대기"}]],"edges":[{"from":"read","to":"budget","label":"공정성 양보"},{"from":"read","to":"empty","label":"읽기 소진"},{"from":"budget","to":"local","label":"다시 실행"},{"from":"empty","to":"kernel","label":"새 준비 필요"}]}
 ```
 
+ET 연습에서는 한 번에 세 frame을 넣고 byte budget을 한 frame으로 제한합니다. EAGAIN 전에 양보하면 local-ready에 다시 넣어 세 frame을 모두 읽어야 하며, EAGAIN을 받으면 커널 대기로 돌아갑니다. 송신도 partial write offset을 보존하고 output queue가 비었을 때만 EPOLLOUT를 제거합니다.
+
 ## Oneshot 재무장과 연결 상태 소유권
 
 EPOLLONESHOT은 알림 뒤 해당 등록을 재무장할 때까지 비활성화하는 기능입니다. worker가 연결을 처리하고 남은 송신·읽기 상태를 갱신한 뒤 rearm과 소유권 반환을 일관된 규칙으로 수행해야 합니다. rearm 직후 다른 worker가 실행될 수 있으므로 옛 worker가 이후 무보호로 상태를 계속 바꾸면 안 됩니다.
 
 한 가지 구조는 연결 잠금 아래에서 최종 상태·관심 이벤트를 정하고 rearm한 뒤 더 이상 그 상태를 수정하지 않고 잠금을 놓는 것입니다. 새 worker도 같은 잠금을 얻어 처리합니다. rearm 전에 데이터가 새로 도착하거나 종료가 시작되는 경우, rearm API 실패와 FD 재사용도 처리해야 합니다. 남은 local-ready 작업과 커널 재무장을 중복 실행자로 만들지 않습니다.
+
+ONESHOT worker는 처리 중 연결 상태의 유일한 소유자로 두고, 마지막 interest mask를 계산한 뒤 `MOD` rearm을 수행합니다. rearm 실패·close 경쟁·FD 번호 재사용을 generation token으로 구분하며, rearm 호출이 이전 worker의 이후 상태 수정 권한을 연장하지 않는다는 불변식을 둡니다.
 
 ## 완료 기반 I/O와 제출 시점부터의 버퍼·작업 참조
 
@@ -56,14 +64,20 @@ EPOLLONESHOT은 알림 뒤 해당 등록을 재무장할 때까지 비활성화�
 
 준비 모델도 recv 후 파서에 버퍼 view를 넘겼다면 그 소비가 끝날 때까지 메모리를 유지해야 합니다. 커널이 더 안 쓴다는 사실과 사용자 파서가 더 안 쓴다는 사실은 다릅니다. 공통 어댑터는 EOF·부분 진행·재대기·실패를 명시하고 read-ready와 read-complete를 같은 모호한 성공 콜백으로 숨기지 않습니다.
 
+커널이 버퍼를 더 쓰지 않는 시점과 parser가 view를 놓는 시점은 다를 수 있습니다. 따라서 operation reference, kernel completion, parser completion을 별도 카운터로 두고 둘 다 끝날 때 pool에 반환합니다. 취소 요청이나 close 반환만으로 이 카운터를 0으로 만들지 않습니다.
+
 ## io_uring 작업별 완료와 자원 반환 규칙
 
 SQ 제출·CQ 완료를 사용해도 링 크기와 실제 in-flight·버퍼 개수의 상한은 필요합니다. 제출 실패·완료 수집 지연·overflow 기능은 커널과 opcode·설정에 따라 확인해야 합니다. user_data로 작업을 식별하더라도 메모리 소유권이 자동 생기지는 않습니다.
 
 일반 버퍼·registered buffer·provided buffer의 대여·반환 시점은 다를 수 있습니다. multishot·zero-copy처럼 한 CQE가 항상 최종 자원 사용 종료를 뜻하지 않는 연산도 있어 opcode별 완료 플래그·추가 notification을 따라야 합니다. cancel 요청의 완료와 원래 작업의 완료를 각각 식별하고 한 번만 정리합니다.
 
+SQE 제출 수, 실제 실행 수, CQE 수집 수를 서로 다른 지표로 기록합니다. multishot·zero-copy처럼 CQE 하나가 최종 자원 반환을 의미하지 않을 수 있으므로 opcode별 flags와 후속 notification을 보고 상태를 전이하며, ring 크기만큼 in-flight를 무제한으로 만들지 않습니다.
+
 ## 플랫폼 이식과 공통 상태 머신 입력 비교
 
 부분 읽기·부분 쓰기·복수 프레임·EOF·EAGAIN·취소·늦은 이벤트·FD 또는 주소 재사용을 같은 상위 계약 테스트로 비교합니다. 준비 통지 제거가 이미 실행 중인 콜백까지 멈추는 것은 아니며 세대 번호도 해제된 메모리를 되살리지 않습니다.
 
 실제 Windows·Linux 실행은 해당 OS에서 검증해야 합니다. 이 노트는 공통 설계 경계이며 모든 커널·provider·opcode를 실행해 확인한 결과가 아닙니다. API 이름 치환보다 진행성·공정성·수명 불변식을 맞추는 것이 이식의 핵심입니다.
+
+공통 계약 테스트의 입력은 partial read/write, 여러 frame, EOF, EAGAIN, cancel, late event, FD/address reuse입니다. Linux·Windows에서 API 호출 순서가 달라도 상위 상태가 `readable`, `in-flight`, `completed`, `closing`, `released`로 같은 의미를 가지는지 비교해야 하며, 이 노트는 두 OS 실행을 완료한 결과가 아닙니다.

@@ -8,9 +8,13 @@ questionIds: [cpp-move-semantics, cpp-forwarding-reference-category, cpp-allocat
 
 # C++ 값 범주와 실제 이동 비용
 
+C++의 이동을 이해하려면 표현식의 값 범주, 선택된 오버로드, 타입이 실제로 수행하는 자원 이전을 차례로 추적해야 합니다. `std::move`라는 표기만으로 비용이나 원본 상태가 결정되지 않으며, `const`, forwarding, `noexcept`, allocator와 예외 보장이 함께 이동 가능성을 제한합니다.
+
 ## std::move의 값 범주 변환과 실제 이동
 
-큰 문자열 source를 target으로 옮기려 `std::move(source)`를 썼다고 합시다. 이 함수는 source를 이동 가능한 값 범주인 xvalue로 변환할 뿐입니다. 실제 생성자·대입 연산자가 무엇을 하는지는 타입과 오버로드 선택에 달렸습니다. 이 표현식만 평가했다고 원본 버퍼가 비워지지 않습니다.
+큰 문자열 source를 target으로 옮기려 `std::move(source)`를 썼다고 합시다. 이 함수는 source를 이동 가능한 값 범주인 xvalue로 변환할 뿐입니다. 실제 생성자·대입 연산자가 무엇을 하는지는 타입과 오버로드 선택에 달렸습니다. 세 가지를 분리해 기록하면 판단이 빨라집니다. `std::move(source)`의 표현식 타입은 xvalue인지, 실제 호출된 생성자·대입 연산자가 이동인지, 이동 뒤 source에 허용된 연산이 무엇인지가 각각의 질문입니다. 관찰용 타입에 복사·이동 생성자 로그를 넣고 `const` lvalue, non-const lvalue, temporary를 호출하면 이 세 층이 섞이지 않습니다.
+
+이 표현식만 평가했다고 원본 버퍼가 비워지지 않습니다.
 
 `const std::string source`에 move를 적용하면 const가 남습니다. 일반적인 `std::string&&` 이동 생성자는 const rvalue를 받을 수 없어 해당 구성에서는 `const std::string&` 복사가 선택됩니다. 이동 연산이 없을 때 복사로 이어지는 경우와, 명시적으로 삭제된 이동 오버로드가 최적 후보여서 컴파일 오류가 나는 경우도 구분해야 합니다.
 
@@ -68,3 +72,7 @@ vector가 새 저장소를 확보한 뒤 기존 원소 세 개를 옮긴다고 �
 관찰용 타입으로 const 이동 요청, lvalue forwarding, rvalue forwarding, vector capacity 경계를 시험합니다. 복사 가능·불가능과 noexcept 여부를 바꾸고 이동·복사·할당 수를 따로 기록합니다. allocator가 다른 이동 대입에서는 어느 allocator가 해제하는지도 추적합니다.
 
 이동 후 원본의 유효성·self-move 계약·예외 주입 뒤 컨테이너 상태도 검사합니다. `scripts/verify-cpp-study.cpp`를 Apple Clang 21.0.0, C++20, ASan·UBSan으로 실행해 lvalue·rvalue·const·forwarding 선택을 확인했습니다. noexcept 원소 두 개를 vector 재할당으로 옮긴 작은 예에서는 복사 0회·이동 2회를 관찰했습니다. allocator 불일치·던지는 이동·self-move의 실패 경로는 이 실행에서 시험하지 않았으며 이 관찰을 모든 컨테이너 계약으로 일반화하지 않습니다.
+
+작은 검증 행렬로 이동 생성자가 `noexcept`인 경우와 아닌 경우, 복사 가능 여부, vector capacity가 꽉 찬 경우를 조합해 이동·복사 횟수와 예외 뒤 상태를 비교합니다. 기대 결과는 `noexcept` 이동이 가능한 vector에서는 이동 경로가 선택될 가능성이 높지만, 그 사실을 모든 컨테이너·allocator 조합의 보장으로 확대하지 않는 것입니다.
+
+이 노트는 이동·복사 의미와 비용을 설명합니다.

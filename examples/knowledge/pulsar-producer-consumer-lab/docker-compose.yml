@@ -1,0 +1,19 @@
+services:
+  pulsar:
+    image: apachepulsar/pulsar:4.2.4
+    command: ["bin/pulsar", "standalone", "--advertised-address", "127.0.0.1"]
+    ports:
+      - "127.0.0.1:6650:6650"
+      - "127.0.0.1:8080:8080"
+    environment:
+      PULSAR_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+    volumes:
+      - pulsar-data:/pulsar/data
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8080/admin/v2/brokers/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    init: true
+volumes:
+  pulsar-data:

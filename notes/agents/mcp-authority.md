@@ -8,9 +8,13 @@ questionIds: [agent-mcp-authorization]
 
 # MCP 토큰의 대상·발급자·실행 권한
 
+이 노트의 기본 모델은 자격을 세 층으로 나누는 것입니다. authorization server는 토큰을 발급하고, MCP server는 그 토큰이 자기 자원을 대상으로 하는지와 실행 권한을 검사하며, host는 사용자가 실제로 승인한 행동과 외부 전송 범위를 통제합니다. 어느 한 층의 성공을 다른 층의 승인으로 바꾸지 않아야 토큰 혼동과 권한 우회를 추적할 수 있습니다.
+
 ## 로그인 성공과 도구별 실행 승인
 
 문서 read token이 있어도 delete scope나 다른 tenant 문서의 소유권은 없을 수 있습니다. host는 사용자 행동 승인·외부 전송 범위를, server는 token validity·scope·대상 접근을 검사합니다. 모델이 제안한 tenant ID를 인가 근거로 사용하지 않습니다.
+
+실패를 진단할 때는 먼저 HTTP 401인지 403인지, 토큰의 issuer·audience·만료와 요청의 resource가 일치하는지, 마지막으로 tool 인자에 대한 사용자·tenant·소유권 검사가 통과했는지 순서대로 분리합니다. 예를 들어 유효한 read token으로 delete를 호출하면 인증 성공 뒤 실행 인가에서 멈춰야 하며, 다른 tenant ID를 인자에 넣었다고 권한이 생겨서는 안 됩니다. 이 순서는 재인가가 필요한 문제와 모델 입력을 거절해야 하는 문제를 구분하게 합니다.
 
 ## HTTP Token의 resource 지정과 intended audience 검증
 
@@ -39,6 +43,8 @@ PKCE는 code 교환을 verifier에 묶지만 잘못된 issuer·redirect·resourc
 | 하위 API | 그 API에 맞는 자격·원래 위임 범위 |
 
 token을 URL query·model 문맥·일반 로그에 넣지 않습니다. scope challenge는 현재 작업에 필요한 권한 설명이지 사용자 동의입니다. 기존 scope와 새 요구를 고려해 적절히 재인가하거나 중단하며 반복 횟수를 제한합니다. 401·403·만료·정책 거절을 모두 같은 무한 retry로 처리하지 않습니다. 거절을 다른 연결·다른 agent로 우회하지 않습니다.
+
+재현 연습은 같은 요청을 (1) 토큰 없음, (2) 만료 토큰, (3) 올바른 issuer지만 다른 audience, (4) 올바른 토큰이지만 scope 부족, (5) 다른 tenant 대상으로 나눠 보내는 것입니다. 예상 결과는 각각 인증 요구, 401, audience 검증 실패, 403 또는 scope challenge, 대상 소유권 거절입니다. 이 노트의 범위에서는 실제 authorization server 연동을 실행하지 않았으므로 결과 코드는 배포한 server 계약으로 확정해야 합니다.
 
 ## STDIO와 HTTP OAuth 실행 경계
 

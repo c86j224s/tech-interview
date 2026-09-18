@@ -8,6 +8,8 @@ questionIds: [java-synchronized-volatile, java-volatile-happens-before, atomic-i
 
 # Java Volatile 공개와 복합 연산의 원자 경계
 
+Java 동시성에서 가시성, 원자성, 일관성은 서로 다른 계약입니다. 이 노트는 한 필드의 공개부터 여러 필드와 map 내부 객체의 복합 변경까지 상태가 어떻게 관찰되는지 추적하여, volatile이나 concurrent라는 표지만으로 해결되지 않는 경쟁을 구분합니다.
+
 ## volatile 가시성과 count++ 경쟁
 
 volatile count가 0일 때 A와 B가 각각 0을 읽고 1을 계산해 저장하면 마지막 값은 1입니다. 읽기와 쓰기 각각의 가시성을 확보해도 두 단계 사이의 경쟁은 남습니다. `count++`는 읽기·계산·쓰기를 하나로 묶는 별도 원자 연산이 아닙니다.
@@ -43,6 +45,7 @@ volatile boolean ready;
 따라서 static 데이터를 보호하면서 서로 다른 인스턴스를 잠그면 두 스레드가 같은 monitor를 잡지 않아 하나의 보호 경계가 되지 않습니다.
 
 ## 복수 Atomic 값과 일관된 합계 snapshot
+자료구조 선택은 한 값의 증가인지 여러 필드의 불변식인지부터 나눕니다. 단일 카운터에는 원자 증가가 맞을 수 있지만, 잔액 두 개의 합계와 일관된 snapshot이 필요하면 같은 monitor 또는 한 객체를 CAS로 교체해야 하며, 외부 side effect는 성공 상태 이후의 별도 전달 계약으로 분리합니다.
 
 A잔액 감소와 B잔액 증가를 각각 atomic으로 수행해도 독자가 그 사이를 읽으면 합계가 달라질 수 있습니다. 같은 잠금으로 두 변경과 필요한 읽기를 묶거나, 두 값을 가진 불변 상태 하나를 AtomicReference CAS로 교체하는 방식이 필요합니다. 독자도 같은 묶음 루트를 한 번 읽어야 합니다.
 
@@ -59,6 +62,7 @@ mapping 함수는 짧고 부수 효과가 적게 유지하고 긴 외부 I/O·�
 map에 담은 가변 DTO의 필드를 여러 스레드가 수정하는 것은 map 자체 보호와 다릅니다. 원자 value·불변 값 교체·객체 잠금 등을 사용합니다. ConcurrentHashMap의 null 비허용·weakly consistent 순회는 일반 HashMap·전체 snapshot과 같은 계약이 아닙니다. 여러 키 불변식은 더 넓은 경계를 요구합니다.
 
 ## 가시성·논리 경쟁·외부 효과별 시험
+실패를 진단할 때는 “값이 보이지 않았다”, “값은 보였지만 두 단계가 겹쳤다”, “map은 안전했지만 value가 변했다”를 구분합니다. 각각 volatile 게시, 원자 read-modify-write 또는 monitor, 불변 value·객체 잠금의 시험으로 연결해야 한 가지 통과 결과를 다른 보장으로 과장하지 않습니다.
 
 장벽으로 두 읽기가 같은 값을 얻도록 만든 뒤 증가 유실을 보여 주고, 같은 monitor 또는 원자 증가로 바꿔 기대 합계를 확인합니다. 두 필드 snapshot·compute 실패 후 재호출·삭제 재생성·가변 value도 각각 시험합니다. 정상 반복 테스트 통과만으로 Java 메모리 모델의 모든 실행을 증명하지 않습니다.
 

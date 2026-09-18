@@ -8,6 +8,8 @@ questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-proc
 
 # Kafka 소비 offset과 완료 경계
 
+Kafka consumer에서는 받은 위치, 외부 효과가 끝난 위치, broker에 선언한 재시작 위치가 서로 다를 수 있습니다. 이 차이를 파티션별 상태로 추적해야 병렬 처리와 rebalance 뒤에도 누락과 중복을 정확히 설명할 수 있습니다.
+
 ## poll 완료와 애플리케이션 처리 완료의 경계
 
 소비자에서 `poll()`이 레코드 10·11·12를 반환하면 Kafka client의 현재 **position**은 보통 다음에 가져올 위치인 13으로 전진합니다. 그러나 이 순간 DB 반영이나 외부 API 호출까지 끝났다는 뜻은 아닙니다. `poll`은 레코드를 애플리케이션에 전달한 사건이고, 처리는 그 뒤에 시작할 수 있습니다.
@@ -19,6 +21,9 @@ questionIds: [kafka-partition-offset, kafka-consumer-group, kafka-rebalance-proc
 - `committed`: 소비자 그룹에 저장한 다음 읽을 위치입니다. offset 13을 commit한다는 것은 **offset 13 미만의 필요한 처리가 끝났다고 선언**하고, 재시작 뒤 13부터 재개하겠다는 의미입니다. offset 13 자체를 처리했다는 뜻은 아닙니다.
 
 Kafka `KafkaConsumer` 공식 Javadoc이 설명하듯, `committed offset`은 마지막으로 처리한 레코드 번호가 아니라 재시작 뒤 다음에 읽을 위치입니다. 그래서 10만 처리했다면 11을 저장하지만, 12를 먼저 끝냈다는 이유로 13을 저장하면 아직 끝나지 않은 10·11을 재시작 뒤 건너뛸 수 있습니다. 따라서 commit 후보는 앞에서부터 끊기지 않고 성공한 구간의 다음 위치여야 합니다.
+
+
+`poll`이 10·11·12를 반환하면 position은 13이지만, 11·12의 DB 작업이 끝나도 10이 미완료면 안전한 commit 후보는 여전히 10입니다. position은 client의 다음 수신 위치, processed는 서비스의 효과 완료, committed는 재시작 경계라는 세 이름을 로그 필드에도 그대로 사용합니다.
 
 ## 단일 poll의 위치·처리·commit 상태표
 
@@ -34,6 +39,8 @@ Kafka `KafkaConsumer` 공식 Javadoc이 설명하듯, `committed offset`은 마�
 | 10·11·12 모두 성공 후 `commitSync({P0:13})` 실패 | 13 | 외부 효과는 완료 | 10 | 13을 성공 checkpoint로 기록하지 않고, 재시작 시 10부터 재전달 가능하게 둡니다. |
 
 offset 숫자에 공백이 있다고 해서 공백을 처리할 때까지 멈추라는 뜻은 아닙니다. compaction, 제어 레코드, 보관 정리 등으로 실제 전달 레코드가 없는 위치가 있을 수 있습니다. 완료 경계는 “모든 정수”가 아니라 “실제로 전달받은 순서열 중 앞에서부터 성공한 구간”으로 계산해야 합니다.
+
+표를 실행할 때 `committed=10`을 “10을 처리했다”가 아니라 “재시작 시 10부터 다시 읽는다”로 읽습니다. 10의 외부 효과 뒤 프로세스가 죽으면 중복 전달이 정상적인 at-least-once 경계이므로 event ID 고유 제약 또는 외부 API idempotency key가 예상 결과에 포함됩니다.
 
 ## 병렬 worker의 완료 watermark와 commit 경계
 
@@ -108,6 +115,8 @@ commitCompleted():
 
 `lastSuccessfulCommit`은 클라이언트가 성공 응답을 확인한 위치입니다. 응답 유실이나 timeout이면 서버에는 commit이 반영됐을 수도 있으므로 실제 group 위치를 10이라고 단정할 수 없습니다. 위 예의 `CommitFailedException`처럼 소유권 관련 오류와 일시적 timeout을 구별하고, 이미 잃은 할당에는 다시 commit하지 않습니다. 새 할당의 세대 값은 이전 할당과 재사용하지 않고, `nextCommit`은 실제 재개 위치로 초기화합니다.
 
+10이 실행 중이고 11·12가 완료된 경우 watermark는 10에 머뭅니다. 10이 끝나는 순간 delivered order의 앞에서부터 10·11·12를 제거하며 다음 위치 13을 만들 수 있습니다. 이 계산은 commit 누락을 막지만 11·12의 효과 선행을 막지 않으므로 순서 의존 key는 직렬화나 expectedSequence 조건이 필요합니다.
+
 ## 외부 효과와 offset commit의 중복·누락 경계
 
 일반적으로 외부 효과를 먼저 확정하고 그 뒤에 offset을 commit하면, 두 단계 사이의 종료에서 같은 레코드가 다시 전달될 수 있습니다. 이것은 누락보다 중복 재처리를 선택한 형태입니다. 같은 DB transaction 안에 `eventId` 처리 기록과 도메인 변경을 넣고 고유 제약으로 재전달을 흡수하면, 재시도는 가능하지만 효과는 한 번만 남길 수 있습니다. 외부 HTTP나 결제 API라면 그 API의 idempotency key 또는 결과 조회가 별도로 필요합니다.
@@ -115,6 +124,8 @@ commitCompleted():
 반대로 offset을 먼저 commit하고 DB를 바꾸면 consumer가 성공했다고 선언한 뒤 프로세스가 죽을 때 외부 효과가 영구히 빠질 수 있습니다. `enable.auto.commit=true`인 상태의 주기적 자동 commit도 애플리케이션 처리 완료를 확인해 주는 장치가 아닙니다. 수동 완료 경계를 설계한다면 자동 commit을 끄고 명시적인 commit 위치를 관리해야 합니다.
 
 이 때문에 관측값도 하나로 합치지 않습니다. client가 받아온 `position`, group에 저장된 `committed`, worker가 완료한 `effect watermark`, 그리고 가장 오래된 미완료 작업의 나이를 각각 기록해야 합니다. commit을 빨리 해 내부 큐에 일이 쌓이면 Kafka lag만 작게 보일 수 있고, commit을 늦게 해도 DB 처리는 이미 끝나 lag가 크게 보일 수 있습니다.
+
+DB 변경과 event ID 처리를 같은 transaction에 넣을 수 있으면 commit 전 재전달을 한 번의 효과로 흡수할 수 있습니다. offset을 먼저 저장하는 변형은 프로세스 종료 한 번으로 영구 누락이 될 수 있으므로, 자동 commit과 애플리케이션 완료를 같은 신호로 기록하지 않습니다.
 
 ## rebalance와 진행 중 작업의 취소·소유권
 
@@ -134,6 +145,7 @@ commitCompleted():
 
 `onPartitionsAssigned`에서는 외부에 별도로 보관한 처리 상태가 있다면 새 소유자의 시작 위치와 대조할 수 있습니다.
 
+generation 5 작업의 늦은 완료가 generation 6의 새 owner 상태를 덮지 않도록 소유 thread에서 세대를 검사합니다. 그러나 이미 호출된 DB 효과를 세대 검사만으로 되돌릴 수는 없으므로 event ID 멱등성과 저장소 version 조건이 여전히 필요합니다.
 ### Group과 cooperative rebalance 이동 범위
 
 partition 3개에 같은 group의 consumer 5개라면 일반 할당에서는 최대 3개만 partition을 맡고 나머지는 유휴일 수 있습니다. Pod당 consumer 수가 몇 개인지도 확인합니다. 다른 group은 같은 로그를 자기 offset으로 독립 소비하므로 분석·알림이 각각 모든 레코드를 받아야 하면 group을 분리합니다. group 이름 변경은 새 시작 위치·재생·중복 효과의 변경입니다.
@@ -158,11 +170,15 @@ worker는 KafkaConsumer를 직접 만지지 않고 결과만 돌려줍니다. �
 
 poll과 worker를 나눠도 내부 queue를 무한히 키우면 메모리에 미완료 작업이 쌓일 뿐입니다. queue가 가득 차면 해당 파티션을 `pause`해 새 레코드를 덜 받되, consumer thread는 `poll`을 계속 호출해 client의 heartbeat 계약을 지켜야 합니다. `pause`는 해당 파티션의 전달만 조절하며 group에서 나가거나 소유권을 포기하는 동작이 아닙니다. 그래서 멈춘 작업의 실제 나이와 queue에서 가장 오래된 offset을 함께 관측합니다.
 
+worker queue가 가득 차면 pause하되 consumer thread는 poll을 호출해 heartbeat와 callback 처리를 계속합니다. pause는 해당 partition의 전달을 늦출 뿐 group 탈퇴가 아니며, queue bytes·oldest task age·max.poll.interval 초과 여부를 동시에 관찰해야 진짜 정체를 판단합니다.
+
 ## 순서 의존 효과와 watermark의 한계
 
 완료 watermark가 10에 멈춰 있다는 사실은 10 미만의 commit 경계를 안전하게 지켜 주지만, worker가 11·12의 외부 효과를 이미 먼저 실행했다는 사실을 없애지 않습니다. 예를 들어 10이 잔액을 확인하는 차감이고 11이 환불이라면, 11의 완료를 watermark 뒤에 숨겨도 데이터베이스에는 환불이 먼저 반영될 수 있습니다.
 
 같은 파티션의 기록 순서 자체가 외부 상태 전이 순서여야 한다면 해당 key 작업을 직렬화하거나, 저장소 transaction에서 `expectedSequence`를 검사해 42를 기다리는 43을 보류해야 합니다. watermark는 **offset commit의 누락을 막는 장치**이지, 병렬 worker의 효과 순서를 재배열하는 장치가 아닙니다.
+
+10이 잔액 차감이고 11이 환불인 예에서 11의 DB 효과가 먼저 끝나도 watermark가 10이면 commit만 안전할 뿐 업무 순서는 깨질 수 있습니다. 따라서 watermark를 순서 보장 장치로 설명하지 않고 key 직렬화 또는 저장소 조건부 적용을 선택합니다.
 
 ## 입력 상태별 예상 broker 위치와 결과
 
@@ -179,9 +195,13 @@ poll과 worker를 나눠도 내부 queue를 무한히 키우면 메모리에 미
 
 이 입력을 실제로 실행했다고 주장하지 않습니다. 실행할 때는 Kafka committed offset과 애플리케이션 effect watermark를 한 로그에 섞지 말고, 중복·누락·가장 오래된 작업 나이를 별도 기준으로 대조해야 합니다.
 
+각 행은 broker 위치와 애플리케이션 효과를 별도 판정합니다. commitSync 응답 timeout은 broker가 저장하지 않았다고 단정하지 않으며, 성공 checkpoint의 확정 여부와 외부 효과의 중복 대사를 별도 로그로 남깁니다. 이 표의 상태는 실행 전에 세운 예측이며 실제 Kafka 실행 결과가 아닙니다.
+
 ## Kafka 공식 문서와 API 계약
 
 - [Apache Kafka 4.3 KafkaConsumer Javadoc](https://kafka.apache.org/43/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html): `poll`, `position`, committed offset, `commitSync`, offset gap과 처리 후 commit의 의미.
 - [Apache Kafka 4.3 ConsumerRebalanceListener Javadoc](https://kafka.apache.org/43/javadoc/org/apache/kafka/clients/consumer/ConsumerRebalanceListener.html): `onPartitionsRevoked`, `onPartitionsAssigned`, `onPartitionsLost`의 호출 시점과 commit 가능 경계.
 - [Apache Kafka 4.3 Consumer Configs](https://kafka.apache.org/43/configuration/consumer-configs/): `max.poll.interval.ms`, `enable.auto.commit`, `max.poll.records`의 동작.
 - [Apache Kafka 4.3 KafkaConsumer Javadoc — Method summary](https://kafka.apache.org/43/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html#thread-safety): `KafkaConsumer`가 thread-safe하지 않다는 계약과 consumer method를 한 thread에서 호출해야 하는 경계.
+
+공식 Javadoc의 적용 버전과 client 설정을 함께 읽어야 합니다. 특히 `committed`는 다음 읽을 위치이고 consumer method는 thread-safe하지 않다는 계약을 코드 구조의 전제로 삼되, 이 노트는 Kafka broker·client를 이 환경에서 실행해 검증한 결과가 아닙니다.

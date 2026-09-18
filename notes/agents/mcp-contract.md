@@ -8,6 +8,8 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 
 # MCP 역할·기본 요소·리비전별 실행 계약
 
+이 노트의 기본 모델은 “무엇을 할 수 있는가”와 “누가 실제 실행을 허가하는가”를 분리하는 것입니다. host가 사용자와 정책을 대표하고, client가 프로토콜 상태를 운반하며, server가 기능과 자료를 제공하더라도, 호출 제안·접수·작업 완료는 서로 다른 상태입니다. 아래에서는 이 경계를 따라 도구를 고르고, 추가 입력이나 연결 단절이 생겼을 때 어떤 ID와 권한을 다시 확인할지 판단합니다.
+
 ## 표준 연결과 모델 판단·인가의 책임 경계
 
 **host**는 사용자·모델·정책·문맥을 관리하는 앱, **client**는 host 안에서 server와 프로토콜을 주고받는 역할, **server**는 도구·자료·템플릿을 제공하는 역할입니다. 이슈 조회 server를 연결하면 client는 요청과 응답을 연결하고 host는 필요한 도구를 모델에 보여 줄 수 있습니다. 호출 제안 뒤에도 host 승인·예산과 server의 대상 인가가 남습니다.
@@ -15,6 +17,8 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 예를 들어 한 host가 server A에서 이슈 원문을 읽었다고 해서 그 내용을 server B의 요청에 자동으로 붙여 보낼 권한이 생기지는 않습니다. A와 B의 연결별 자격, 데이터 출처, 장애 상태, 마감 시각(`deadline`)을 서로 구분해 다뤄야 합니다. server 안에 LLM이 들어 있어도 외부 API가 곧바로 목표를 다른 에이전트에 위임하는 프로토콜이 되는 것은 아닙니다.
 
 ## tools·resources·prompts의 역할·사용 목적과 인가 경계
+
+실제 요청을 추적할 때는 `discover → 목록에서 후보 선택 → schema 검증 → host 승인 → server 인가 → 결과 해석`을 별도 사건으로 기록합니다. 목록에 도구가 보였다는 사실은 호출 권한이 아니고, resource URI를 읽었다는 사실도 그 내용을 다른 server로 전송할 권한이 아닙니다. 이 순서를 로그의 상태로 남기면 “검색은 됐지만 호출이 거절됨”과 “호출은 성공했지만 원문을 문맥에 넣지 않음”을 구분할 수 있습니다.
 
 | 요소 | 역할·예 | 주의점 |
 | --- | --- | --- |
@@ -61,6 +65,8 @@ questionIds: [agent-mcp-roles, agent-mcp-primitives, agent-protocol-versioning, 
 `tasks/cancel`은 server에 보내는 협력적 요청일 뿐 실제 종결을 보장하지 않으므로, 알림을 놓치면 다시 조회해 상태를 확인해야 합니다. task 핸들만 알고 있는 다른 주체가 결과를 읽거나 취소하지 못하도록 조회·변경 모두에 인가를 적용합니다.
 
 ## 혼합 버전·실패 경로 검증 시나리오
+
+실패를 진단할 때는 먼저 지원 revision과 capability 교집합을 확인하고, 다음으로 요청 ID의 재사용 여부와 논리 idempotency key를 확인한 뒤, 마지막으로 server가 실제 외부 효과를 남겼는지 조회합니다. 입력 대기 상태에서 재시작했다면 새 요청을 성공으로 간주하지 말고 outstanding input key와 task 상태를 먼저 대조합니다. 이 판단은 명세 문서와 계약을 확인하는 절차이며, 이 세션에서 실제 MCP 호환 조합을 실행한 결과는 아닙니다.
 
 명세·SDK·확장 version을 따로 고정하고 구/신 client×server, unsupported capability, 접수 응답 유실, 입력 대기 재시작, 결과 만료, 권한 철회를 시험합니다. 지원하지 않는 기능은 명시적으로 거절하거나 별도 job API·제한된 동기 경로로 전환합니다.
 

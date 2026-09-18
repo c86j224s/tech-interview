@@ -16,6 +16,10 @@ questionIds: [argocd-sync-waves-hooks, shared-db-migration-owner, gitops-hook-ev
 
 서로 다른 Application의 wave 숫자만으로 전역 DB 순서가 생기지는 않으므로, 공유 DB는 별도 실행 조정 없이는 순서를 보장하지 않습니다.
 
+배포 도구의 실행 순서는 애플리케이션이 혼합 버전으로 실행되는 동안에도 데이터가 호환된다는 사실을 대신 보장하지 않습니다. migration은 스키마 확장, 데이터 준비, 읽기·쓰기 전환, 축소를 서로 다른 완료 조건으로 나누고 각 조건의 증거를 남겨야 합니다.
+
+배포 중 실제 상태를 `schema=expanded, backfill=40%, app={old,new}, readMode=old`처럼 분리해 기록하면 hook 성공을 과대해석하기 어렵습니다. DDL 커밋 뒤 Job 응답이 끊긴 경우 다음 실행은 Job Pod의 종료 코드가 아니라 schema 원장과 실제 컬럼·제약을 대조해야 합니다. 연습에서는 백필 40%에서 중단하고 sync controller를 재시작해 checkpoint 뒤 범위만 처리하되 경계 행이 중복·누락되지 않는지 확인합니다. hook이 성공했어도 백필 완료 증거가 없으면 전환 단계로 이동시키지 않습니다.
+
 ## 확장·백필·전환·축소와 혼합 버전 구간
 
 | 단계 | DB·앱 상태 | 다음 단계의 근거 |

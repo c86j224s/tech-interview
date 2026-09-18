@@ -1,0 +1,15 @@
+{
+  "executedAt": "2026-09-18",
+  "status": "PASS_WITH_PLATFORM_LIMITS",
+  "environment": "macOS 27 arm64; Node 26.8.2 / Python 3.9.6 / Apple toolchain as applicable",
+  "workingDirectory": "examples/knowledge/os-foundations-lab",
+  "commands": [
+    "python3 scheduler_lab.py --test"
+  ],
+  "executed": "5 scheduler model tests",
+  "notRun": [
+    "Linux kernel scheduler",
+    "perf/cgroup/swap"
+  ],
+  "details": "docs/practical-knowledge-review.md"
+}

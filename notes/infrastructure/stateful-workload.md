@@ -8,6 +8,8 @@ questionIds: [k8s-pod-deployment-statefulset, statefulset-headless-member-discov
 
 # StatefulSet의 안정 식별자와 클러스터 시작
 
+StatefulSet은 Pod에 안정적인 ordinal·네트워크 이름·PVC 연결을 제공하는 Kubernetes 관리 방식이지, 데이터베이스의 복제나 리더 선출 자체가 아닙니다. 따라서 `db-0`이라는 이름을 찾은 사건, 프로세스가 시작된 사건, 로그를 복구한 사건, 클라이언트 요청을 받아도 되는 사건을 분리해야 합니다. 이 노트는 그 상태를 따라가며 순차 시작 정책이 합의 quorum과 충돌하는 지점을 설명합니다.
+
 ## Pod 이름 재사용과 메모리 상태 비보존
 
 Deployment의 API Pod가 죽어 다른 이름의 Pod로 교체되어도 같은 요청을 처리하면 역할을 대체할 수 있습니다. StatefulSet의 db-0은 재생성 뒤 ordinal 이름과 연결된 저장소를 유지하는 데 도움이 됩니다. 하지만 프로세스 메모리·현재 리더·최신 로그까지 자동으로 보존되는 것은 아닙니다.
@@ -25,6 +27,8 @@ Pod는 컨테이너들을 함께 배치하고 네트워크·볼륨을 사용할 
 
 ## Ordinal DNS의 발견 식별자와 실행 권한 분리
 
+시작 상태는 `DNS 발견 → 현재 endpoint 접속 → 인증서·세대 확인 → 로그/멤버십 검증 → 프로토콜 가입 → readiness`로 기록합니다. `db-0`이 DNS로 풀렸다는 것만으로 leader 권한을 주면, 같은 이름으로 재생성된 옛 세대가 새 클러스터에 쓰는 문제가 생깁니다. 준비 전 endpoint를 bootstrap에 공개하더라도 일반 트래픽 readiness와는 별도 조건으로 둡니다.
+
 db-0의 안정적인 DNS 이름은 멤버를 찾는 데 유용하지만 현재 주소·Ready·인증서·로그 세대·합의 멤버십은 별도로 확인해야 합니다. 같은 이름으로 새 프로세스가 떴어도 옛 로그를 가진 replica가 바로 leader가 되어도 되는 것은 아닙니다.
 
 Headless Service의 endpoint 공개는 readiness 및 publishNotReadyAddresses 같은 설정에 영향을 받습니다. bootstrap에서 준비 전 멤버 발견이 필요할 수 있지만, 준비 전 주소를 게시했다고 일반 사용자 요청까지 처리 가능하다는 뜻은 아닙니다. DNS negative cache·TTL·client resolver가 생성 직후 이름 발견을 늦출 수 있습니다.
@@ -34,6 +38,8 @@ Headless Service의 endpoint 공개는 readiness 및 publishNotReadyAddresses �
 ```
 
 ## 순차 시작과 Quorum Readiness의 순환 대기
+
+구체적으로 3개 중 2개 quorum을 readiness에 요구하면서 OrderedReady가 앞 ordinal의 Ready를 기다리면 `db-0 시작 → db-1 미시작 → quorum 미충족 → db-0 Ready 불가`가 반복됩니다. 이때 Parallel을 선택하더라도 앱의 bootstrap·기존 로그 복구·사용자 트래픽 허가 조건을 별도로 확인해야 하며, readiness를 임의로 true로 바꾸는 것은 교착을 숨길 뿐 데이터 안전성을 만들지 않습니다.
 
 OrderedReady 정책에서 db-0이 Ready가 되어야 db-1을 시작하는데, db-0의 readiness가 3개 중 2개 quorum을 요구한다고 합시다. 두 번째 Pod가 시작되지 않아 첫 번째가 영원히 Ready가 되지 않는 순환 대기가 생길 수 있습니다.
 

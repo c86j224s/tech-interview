@@ -8,11 +8,15 @@ questionIds: [dependency-injection-boundaries, solid-dependency-inversion, polic
 
 # 정책 소유 포트·의존성 주입·Composition Root
 
+경계 설계의 기준은 interface가 몇 개인지가 아니라 정책이 어떤 업무 보장을 요구하는지입니다. 정책은 저장 기술이나 SDK의 예외를 알아야 하는 대신 성공·충돌·불확정 같은 도메인 결과를 받아야 합니다. Composition Root는 이 계약을 구현과 자원 수명에 연결하되, 요청별 문맥과 프로세스 공유 자원을 섞지 않습니다.
+
 ## 생성자 주입과 DIP의 정책 의존 방향
 
 CheckoutService의 생성자에 PostgresClient를 넣는 것만으로는 결합이 사라지지 않습니다. 정책 코드가 여전히 SQL 문법·driver 예외·transaction 타입을 처리하면, 호출 대상만 밖에서 바꿔 끼웠을 뿐 기술 세부사항을 알고 있기 때문입니다. **DI**는 필요한 상대를 밖에서 전달하는 조립 방식이고, **DIP**는 고수준 정책이 요구하는 추상 계약을 중심으로 소스 의존을 바꾸는 설계입니다.
 
 정책이 `PaymentRecordStore`라는 port를 사용하고 PostgreSQL adapter가 그 port를 구현하게 할 수 있습니다. 런타임에는 정책이 adapter를 호출해도 소스 import 방향은 adapter→정책 port가 됩니다. 시작점이 양쪽을 알아 연결하는 것은 정상입니다.
+
+호출 흐름을 `결제 승인 요청→원격 결과 대기→recordOnce→재시도 또는 조회`로 적어 보면 port가 단순 저장소인지 업무 경계인지 드러납니다. `recordOnce`가 반환할 수 있는 충돌·불확정 상태를 생략하면 호출자는 같은 결제를 다시 보내거나 이미 성공한 결과를 실패로 표시할 수 있습니다.
 
 ## Port의 업무 보장과 원자 계약
 
@@ -42,6 +46,8 @@ CheckoutService의 생성자에 PostgresClient를 넣는 것만으로는 결합�
 Composition Root에서 만든 공유 DB/HTTP pool·logger와 각 요청의 인증 문맥을 별도로 보관합니다. 요청 주체를 process singleton 한 곳에 저장한 상태에서 두 요청이 동시에 처리되면, 한 요청의 문맥이 다른 요청과 섞일 수 있습니다. 정책이 service locator에서 전역 구현을 다시 찾으면 생성자에 드러난 의존성이 사라지므로, 필요한 port와 자원을 명시적으로 주입합니다.
 
 pool 생성 후 worker 생성에 실패했다면 이미 만든 pool만 회수합니다. 종료 때는 새 유입 차단→진행 작업 종료→pool close→남은 진단 flush처럼 의존자가 자원보다 먼저 정리되게 합니다. logger도 이미 닫힌 뒤 destructor가 호출하지 않도록 소유 순서를 정합니다. 테스트마다 새 객체 그래프를 만들면 전역 reset의 병렬 경쟁을 줄일 수 있습니다.
+
+진단 순서는 먼저 정책의 반환 결과와 원장 상태를 확인하고, 그 다음 adapter의 호출 횟수와 예외 매핑을 확인하는 것입니다. fake에서 중복 호출이 한 번만 저장되는지 시험한 뒤, real adapter 계약 시험에서 unique constraint·timeout·부분 성공을 별도로 재현해야 fake의 편리한 동작을 실제 보장으로 오해하지 않습니다.
 
 ## 구현 교체와 동일 계약 유지
 

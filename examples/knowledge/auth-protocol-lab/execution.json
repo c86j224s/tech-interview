@@ -1,0 +1,18 @@
+{
+  "executedAt": "2026-09-18",
+  "status": "PASS_WITH_PLATFORM_LIMITS",
+  "environment": "macOS 27 arm64; Node 26.8.2 / Python 3.9.6 / Apple toolchain as applicable",
+  "workingDirectory": "examples/knowledge/auth-protocol-lab",
+  "commands": [
+    "npm ci --ignore-scripts",
+    "npm test"
+  ],
+  "executed": "8 Node test groups, loopback mock only",
+  "notRun": [
+    "real provider",
+    "TLS",
+    "resource server",
+    "distributed persistence"
+  ],
+  "details": "docs/practical-knowledge-review.md"
+}

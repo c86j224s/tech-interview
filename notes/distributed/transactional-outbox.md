@@ -14,9 +14,11 @@ questionIds: [transactional-outbox, db-outbox-polling-cdc, outbox-claim-lease-re
 
 ## 주문 DB 확정과 Outbox 보장
 
+Outbox의 실무 선택 기준은 “두 저장소에 같은 순간 원자적으로 쓰기”가 아니라 “업무 DB의 확정 사실과 전달 의도를 함께 보존할 수 있는가”입니다. 브로커 전달이 늦어도 허용되는 비동기 경계라면 적합하지만, 소비자까지 한 트랜잭션으로 묶어야 하는 즉시 응답 계약을 자동으로 해결하지는 않습니다.
+
 주문 완료를 성공으로 인정하는 불변식은 간단합니다.
 
-> `orders.state = DONE`으로 확정된 모든 전이는 해당 전이를 설명하는 outbox event도 같은 확정에 가져야 합니다.
+> `orders.state = DONE`으로 확정된 모든 전이는 해당 전이를 설명하는 outbox event도 같은 확정에 포함되어야 합니다.
 
 따라서 `orders`의 상태를 바꾸는 UPDATE와 `outbox_events` INSERT는 같은 DB 연결과 같은 트랜잭션을 사용해야 합니다. UPDATE 결과가 0행이면 전이가 일어나지 않은 것이므로 outbox event도 만들지 않습니다. 이미 완료된 주문을 다시 완료하는 명령을 no-op으로 볼지 충돌로 볼지는 서비스 계약의 문제지만, 새 완료 전이를 만들지 않는다는 점은 같습니다.
 
@@ -283,6 +285,8 @@ Relay.quarantine(claimed, error):
 
 따라서 Relay의 안전한 기본값은 안정적인 `event_id`를 가진 최소 한 번 전달이며, consumer는 그 ID를 처리 기록과 실제 효과에 함께 사용해야 합니다. 그 consumer 트랜잭션의 상세 설계는 이 노트의 범위가 아닙니다.
 
+운영에서 확인할 선택지는 polling과 CDC 중 어느 쪽이 더 “정확한가”가 아니라, 재개 위치를 잃었을 때 재동기화할 수 있는지, outbox 보존 기간이 충분한지, consumer가 중복을 흡수할 수 있는지입니다. 이 중 하나라도 없으면 `SENT` 상태를 exactly-once 완료로 표시하지 말고 전달·적용 단계를 분리합니다.
+
 ## 중단 지점별 실패 표
 
 | 중단 지점 | 주문 DB | Outbox | 브로커 | 복구와 경계 |
@@ -328,3 +332,5 @@ CDC 중단으로 원본 로그가 쌓이면 공간·재개 가능 위치·최대
 8. 재시도 표시가 `PENDING`으로 바뀔 때 `lease_owner`와 `lease_until`이 NULL인지 확인하고, `next_attempt_at`이 지난 뒤 다시 claim되는지 확인해야 합니다.
 
 이 확인은 “event가 언젠가 나갔다”만 보지 않습니다. DB가 확정한 전이 결과를 event에 사용했는지, 주문과 outbox가 함께 확정되는지, 초기 `PENDING`이 실제로 선택되는지, ACK 불명확성과 Relay 재시도를 어떻게 다루는지, 옛 소유자의 늦은 쓰기를 거절하는지를 각각 확인해야 Transactional Outbox의 실제 보장 범위를 정확히 설명할 수 있습니다.
+
+예상 결과는 DB commit 직후 Relay가 꺼져도 `DONE`과 `PENDING`이 함께 남고, ACK 뒤 표시 전 중단에서는 같은 `event_id`가 재발행되는 것입니다. 반대로 `SENT` 선기록 후 publish 실패는 재시도할 행을 잃으므로 실패 시험에서 반드시 유실로 판정해야 합니다.

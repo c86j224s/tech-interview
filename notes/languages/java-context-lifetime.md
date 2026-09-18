@@ -14,6 +14,10 @@ questionIds: [java-threadlocal-pool, threadlocal-weak-key-value-retention, threa
 
 큰 객체를 넣으면 메모리 보유 문제가 되고 사용자·테넌트·권한이면 잘못된 인가로 이어질 수 있습니다. 값을 설정한 worker의 finally에서 정리해야 합니다. 다른 스레드가 remove해도 원래 worker 슬롯이 지워지지 않습니다.
 
+ThreadLocal은 요청이라는 논리 단위가 아니라 현재 실행 중인 스레드에 값을 붙입니다. 스레드 풀이 그 스레드를 재사용하고 executor 경계를 넘으면 이 차이가 누출·메모리 보유·잘못된 문맥 전파로 나타나므로 설치와 제거의 경계를 명시해야 합니다.
+
+단일 worker trace는 `A가 USER=A 설정 → A 작업 종료에서 remove → B가 USER를 설정하지 않은 경로 실행`이며 B는 null 또는 명시된 초기값을 읽어야 합니다. 반대로 중첩 scope에서 `A → B → A 복원`을 요구한다면 하위 scope의 단순 remove만으로는 부족하고 이전 값을 저장해 복원해야 합니다. 연습에서는 작업을 다른 executor로 옮긴 뒤 자동 전달을 기대하지 말고 capture·install·restore 또는 명시적 인자 중 하나를 선택해 결과를 비교합니다. 실제 heap dump를 만들지 않은 상태에서는 weak key가 value를 언제 해제하는지 실행 결과로 단정하지 않습니다.
+
 ## ThreadLocal Set과 정리 범위
 
 ```java

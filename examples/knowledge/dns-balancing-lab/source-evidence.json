@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-09-18",
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc1034.html#section-3.6",
+      "quote": "The TTL describes how long a RR can be cached before it should be discarded.",
+      "applicability": "DNS simulator의 TTL cache 만료 모델의 기본 개념입니다. 실제 resolver의 모든 cache 정책을 구현했다는 뜻은 아닙니다.",
+      "date": "RFC 1034, November 1987, Internet Standard"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9113.html#section-5",
+      "quote": "A stream is an independent, bidirectional sequence of frames exchanged between the client and server within an HTTP/2 connection.",
+      "applicability": "한 연결에 여러 HTTP/2 stream이 공존할 수 있고 요청별 연결 수와 요청 동시성이 다르다는 설명에 적용합니다.",
+      "date": "RFC 9113, June 2022, Proposed Standard"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9113.html#section-5.1.2",
+      "quote": "A peer can limit the number of concurrently active streams using the SETTINGS_MAX_CONCURRENT_STREAMS parameter.",
+      "applicability": "실습의 maxStreams 제한과 capacity 초과 시 새 연결을 여는 모델의 근거입니다. 실제 SETTINGS frame 교환은 구현하지 않습니다.",
+      "date": "RFC 9113, June 2022, Proposed Standard"
+    },
+    {
+      "url": "https://nginx.org/en/docs/http/ngx_http_upstream_module.html#upstream",
+      "quote": "By default, requests are distributed between the servers using a weighted round-robin balancing method.",
+      "applicability": "NGINX upstream의 기본 weighted RR 개념을 proxy-weighted trace와 비교합니다. NGINX 프로세스를 실행하지 않았습니다.",
+      "date": "NGINX official documentation, version applicability not stated on page, checked 2026-09-18"
+    },
+    {
+      "url": "https://nginx.org/en/docs/http/ngx_http_upstream_module.html#least_conn",
+      "quote": "a request is passed to the server with the least number of active connections, taking into account weights of servers",
+      "applicability": "NGINX least_conn의 active connection·weight 기준을 proxy-least 모델에 적용합니다. tie 시 weighted RR라는 공식 문구도 있으나 이 작은 simulator의 tie-break는 결정성을 위해 backend id입니다.",
+      "date": "NGINX official documentation, least_conn introduced 1.3.1 and 1.2.2, checked 2026-09-18"
+    },
+    {
+      "url": "https://nginx.org/en/docs/http/ngx_http_upstream_module.html#server",
+      "quote": "max_fails and fail_timeout ... consider the server unavailable",
+      "applicability": "NGINX passive failure detection은 실제 통신 실패를 기준으로 하며 DNS address answer와 별도라는 설명의 근거입니다. 실습은 health probing·passive failure를 구현하지 않습니다.",
+      "date": "NGINX official documentation, checked 2026-09-18"
+    },
+    {
+      "url": "https://nginx.org/en/docs/http/ngx_http_upstream_module.html#resolve",
+      "quote": "monitors changes of the IP addresses that correspond to a domain name of the server",
+      "applicability": "DNS address change와 upstream state update를 별도 층으로 설명합니다. DNS 응답 자체가 backend health routing을 한다고 주장하지 않습니다.",
+      "date": "NGINX official documentation; resolve availability notes include 1.5.12 and 1.27.3, checked 2026-09-18"
+    },
+    {
+      "url": "https://docs.haproxy.org/3.2/configuration.html#1.1",
+      "quote": "the server-facing connection is reusable by any request from any client",
+      "applicability": "HAProxy connection reuse가 request distribution과 별도 상태라는 설명에 적용합니다. supplied manual excerpt에서 balance algorithm과 DNS health details는 확인하지 못했습니다.",
+      "date": "HAProxy 3.2 configuration documentation, dated 2026-08-27 in supplied source, checked 2026-09-18"
+    },
+    {
+      "url": "https://docs.haproxy.org/3.2/configuration.html#1.1",
+      "quote": "it processes all the requests in parallel",
+      "applicability": "incoming HTTP/2 multiplexing과 연결 하나의 요청 수가 연결 수와 같지 않다는 비교에 적용합니다. 실제 HAProxy 실행은 하지 않았습니다.",
+      "date": "HAProxy 3.2 configuration documentation, checked 2026-09-18"
+    }
+  ],
+  "unknowns": [
+    "실제 authoritative DNS, recursive resolver, OS/runtime cache, NGINX, HAProxy, TCP/TLS, HTTP/2 frames와 active/passive health checks는 실행하지 않았습니다.",
+    "HAProxy 3.2 supplied documentation excerpt에서 balance roundrobin, leastconn, weight, resolvers와 health-check 정의의 본문을 확인하지 못했습니다. 해당 항목은 NGINX 공식 문서와 모델의 명시적 abstraction으로 제한합니다.",
+    "DNS 반환 순서는 resolver·provider·client 구현에 따라 다를 수 있으며 이 simulator의 순환 선택은 교육용 결정 규칙입니다.",
+    "least-connections는 실제 연결 수가 아니라 simulator에서 active request를 연결 수의 대리값으로 사용합니다.",
+    "HTTP/2 maxStreams는 SETTINGS 교환이 아닌 입력 capacity이며, TCP head-of-line blocking과 stream scheduling은 모델링하지 않습니다."
+  ]
+}

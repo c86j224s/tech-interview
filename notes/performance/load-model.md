@@ -8,6 +8,8 @@ questionIds: [load-test-realism, observability-coordinated-omission, production-
 
 # 운영을 닮은 부하·Coordinated Omission·Soak
 
+부하 시험의 첫 결정은 목표 숫자(TPS)가 아니라 어떤 사용자를 모델링하는지입니다. 고정 동시 사용자라면 응답이 느려질 때 도착도 줄어드는 closed-loop가 자연스러울 수 있고, 외부 수요가 계속 들어오는지 보려면 예정 시각을 가진 open-loop가 필요합니다. 측정값은 생성기가 실제로 보낸 양과 서버가 받은 양을 분리해야 하며, 달성하지 못한 목표율을 서버 처리량으로 해석하지 않습니다.
+
 ## 인기 Key 편중과 원본 DB 비용
 
 테스트가 한 상품만 조회하면 cache hit가 높아 좋은 TPS가 나올 수 있습니다. 운영은 긴 꼬리 key·큰 payload·쓰기·다양한 tenant·만료·재시작이 섞입니다. 요청 수만 맞추면 CPU·memory·DB·network 비용은 다를 수 있습니다.
@@ -48,6 +50,8 @@ open-loop에서도 generator CPU·network·connection이 포화되면 실제 발
 예열이 끝나 cache가 정한 한도에 수렴하거나 큰 buffer가 pool에 남으면 RSS(프로세스가 실제로 점유한 resident memory)가 유지될 수 있습니다. 반대로 callback·FD·thread·goroutine·미완료 요청이 계속 쌓여 실제 누수가 생길 수도 있으므로, 같은 부하를 오래 유지한 뒤 자원별 증가를 따로 봅니다. 큰 요청 한 번 이후 작은 요청만 보내는 구간, 부하 종료 뒤의 회수, 재시작 뒤의 초기 상태를 나눠 보면 pool 보유와 계속 살아 있는 참조를 구분하기 쉽습니다.
 
 GC 뒤에도 살아 있는 heap live와 그 객체를 계속 도달 가능하게 만드는 retained 참조, pool 보유량·FD·queue·thread·RSS를 시간축으로 함께 기록합니다. GC 후 RSS가 줄지 않았다는 사실만으로 누수라고 하지 않고, 반대로 RSS가 안정됐다는 이유만으로 모든 자원 누수가 없다고 확정하지 않습니다. 증가한 객체나 핸들을 어떤 owner가 계속 참조하는지 자원별 변화에서 실제 경로를 찾아야 합니다.
+
+예상 결과를 검증하려면 같은 시간 창에서 예정 도착 수, 실제 발송 수, 서버 수신 수, 성공 완료 수, timeout 수를 비교합니다. open-loop 생성기가 포화되어 실제 발송 수가 목표보다 낮으면 p99가 좋아 보여도 서버 용량의 증거가 아니며, 그 실험은 생성기 용량 측정으로 분류해야 합니다.
 
 ## 최대 순간 TPS와 지속 가능한 성공 지표
 

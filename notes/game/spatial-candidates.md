@@ -8,6 +8,8 @@ questionIds: [collision-broad-narrow-phase, collision-grid-aabb-tree-choice, col
 
 # 공간 후보의 보수성·Grid·AABB Tree·계층 전환
 
+공간 인덱스의 정확성 기준은 빠르게 찾는 것이 아니라 실제로 충돌할 쌍을 후보에서 빠뜨리지 않는 것입니다. 한 tick의 이동 범위와 객체의 생명주기·layer·형상 시점을 먼저 고정한 뒤, 그 보수적 집합을 grid나 tree로 줄이고 마지막에 정밀 판정을 적용합니다.
+
 ## 후보 축소와 실제 충돌 누락의 구분
 
 n개 물체의 모든 쌍은 n(n−1)/2입니다. broad phase는 AABB·원 등 보수 경계로 가능성 있는 쌍을 추리고 narrow phase는 실제 캡슐·박스·mesh·trigger·접촉 규칙을 검사합니다. broad phase false positive는 추가 비용이지만 false negative는 정밀 단계가 복구할 수 없는 누락입니다.
@@ -40,6 +42,8 @@ cell side s, 반경 R이면 각 축에서 `[floor((x-R)/s), floor((x+R)/s)]` 범
 물체가 움직이지 않아도 collision mask나 활성 상태가 바뀌면, 이전에는 제외했던 쌍이 새 후보가 됩니다. layer별 index/filter를 쓰는 경우에는 그 상태 변경을 index에 반영한 뒤 query가 새 layer를 읽게 해야 합니다. 갱신 중 snapshot이 갈리면 같은 tick의 위치·형상·layer를 함께 읽거나, 옛 후보와 새 후보를 보수적으로 둘 다 유지하고 최종 단계에서 하나의 일관된 정책으로 판정합니다.
 
 삭제·ID 재사용에는 generation, 메모리 접근에는 참조 보호가 필요합니다. version을 읽으려 이미 해제된 pointer에 접근하는 것은 안전하지 않습니다.
+
+진단 시 한 tick의 위치·AABB·layer·활성 상태에 버전을 붙이고, query가 읽은 버전을 기록하면 후보 누락을 분리하기 쉽습니다. 전수 정밀 판정의 쌍이 index 후보에 없으면 cell 계산 오류인지, swept bound 누락인지, layer snapshot 불일치인지, 전환 중 한 level만 조회한 것인지 순서대로 확인합니다.
 
 ## 승격·강등 전환과 후보 누락 방지
 

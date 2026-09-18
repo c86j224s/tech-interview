@@ -1,0 +1,154 @@
+# Apache Pulsar 4.2.4: one metadata store, three bookies, and two connected brokers.
+# This file is intentionally self-contained; do not combine it with docker-compose.yml.
+services:
+  zookeeper:
+    image: apachepulsar/pulsar:4.2.4
+    command: ["bin/pulsar", "zookeeper"]
+    environment:
+      PULSAR_MEM: "-Xms128m -Xmx256m -XX:MaxDirectMemorySize=128m"
+    ports:
+      - "127.0.0.1:2181:2181"
+    volumes:
+      - zk-data:/pulsar/data/zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/2181'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+  metadata-init:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    command:
+      - bash
+      - -c
+      - >-
+        bin/pulsar initialize-cluster-metadata
+        --cluster local-cluster
+        --zookeeper zookeeper:2181
+        --configuration-store zookeeper:2181
+        --web-service-url http://broker-1:8080
+        --broker-service-url pulsar://broker-1:6650
+    restart: "no"
+
+  bookie-1:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      metadata-init:
+        condition: service_completed_successfully
+    command: ["bin/bookkeeper", "bookie"]
+    environment:
+      BOOKIE_CONF: /pulsar/conf/bookie.conf
+      BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+    volumes:
+      - bookie-1-data:/pulsar/data/bookkeeper
+      - ./conf/bookie-1.conf:/pulsar/conf/bookie.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/3181'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+  bookie-2:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      metadata-init:
+        condition: service_completed_successfully
+    command: ["bin/bookkeeper", "bookie"]
+    environment:
+      BOOKIE_CONF: /pulsar/conf/bookie.conf
+      BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+    volumes:
+      - bookie-2-data:/pulsar/data/bookkeeper
+      - ./conf/bookie-2.conf:/pulsar/conf/bookie.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/3181'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+  bookie-3:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      metadata-init:
+        condition: service_completed_successfully
+    command: ["bin/bookkeeper", "bookie"]
+    environment:
+      BOOKIE_CONF: /pulsar/conf/bookie.conf
+      BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=256m"
+    volumes:
+      - bookie-3-data:/pulsar/data/bookkeeper
+      - ./conf/bookie-3.conf:/pulsar/conf/bookie.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/3181'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+  broker-1:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      metadata-init:
+        condition: service_completed_successfully
+      bookie-1:
+        condition: service_healthy
+      bookie-2:
+        condition: service_healthy
+      bookie-3:
+        condition: service_healthy
+    command: ["bin/pulsar", "broker", "--config", "/pulsar/conf/broker.conf"]
+    environment:
+      PULSAR_MEM: "-Xms512m -Xmx768m -XX:MaxDirectMemorySize=384m"
+    ports:
+      - "127.0.0.1:6650:16650"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - broker-1-data:/pulsar/data
+      - ./conf/broker-1.conf:/pulsar/conf/broker.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8080/admin/v2/brokers/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+  broker-2:
+    image: apachepulsar/pulsar:4.2.4
+    depends_on:
+      metadata-init:
+        condition: service_completed_successfully
+      bookie-1:
+        condition: service_healthy
+      bookie-2:
+        condition: service_healthy
+      bookie-3:
+        condition: service_healthy
+    command: ["bin/pulsar", "broker", "--config", "/pulsar/conf/broker.conf"]
+    environment:
+      PULSAR_MEM: "-Xms512m -Xmx768m -XX:MaxDirectMemorySize=384m"
+    ports:
+      - "127.0.0.1:6651:16650"
+      - "127.0.0.1:8081:8080"
+    volumes:
+      - broker-2-data:/pulsar/data
+      - ./conf/broker-2.conf:/pulsar/conf/broker.conf:ro
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:8080/admin/v2/brokers/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    init: true
+
+volumes:
+  zk-data:
+  bookie-1-data:
+  bookie-2-data:
+  bookie-3-data:
+  broker-1-data:
+  broker-2-data:

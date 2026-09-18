@@ -8,11 +8,15 @@ questionIds: [aoi-interest-management, aoi-incremental-boundary-check, aoi-large
 
 # AOI 공개 정책·증분 경계·Snapshot 순서
 
+이 노트는 AOI를 단순한 거리 필터가 아니라 후보 생성, 관계·권한 판정, 필드별 공개, 버전 있는 전송이 이어지는 상태 수렴 문제로 다룹니다. 공간 index가 후보를 찾는 데 성공해도 공개 권한을 부여한 것은 아니며, 생성·증분·삭제의 세대 순서가 어긋나면 숨겨야 할 상태가 다시 나타날 수 있습니다.
+
 ## 근접 객체와 필드별 공개 정책의 분리
 
 위치·외형은 주변에, 체력은 전투 참여자에게, inventory·숨은 목표는 허용 주체에게만 공개할 수 있습니다. **AOI**는 전송 최적화이면서 누가 어느 시점에 무엇을 볼 수 있는지의 규칙입니다. client가 화면에서 숨겨도 이미 받은 비밀을 회수할 수 없습니다.
 
 수신자를 판정할 때 같은 instance인지 구분하고, 거리·시야·지형·팀/파티·전투 관계를 함께 적용합니다. 따라서 가까운 객체라는 이유만으로 모든 필드가 공개되는 것이 아니라, 공개 대상과 필드를 각각 판단합니다. 보상·전투 결과처럼 거리 밖에서도 필요한 event는 위치 최신성 stream과 섞지 않고 별도의 전달·복구 계약으로 보냅니다.
+
+AOI 판정의 선행 조건은 수신자·객체가 동일한 world와 instance에 속하는지, 그리고 필드별 권한의 권위가 어디에 있는지 정하는 것입니다. 공간 후보는 “검토해야 할 객체” 목록일 뿐 허가 목록이 아니며, 한 번 공개된 비밀은 client의 렌더링 상태를 지워도 회수되지 않습니다.
 
 ## 공간 Index와 보수적 후보 생성
 
@@ -25,6 +29,8 @@ questionIds: [aoi-interest-management, aoi-incremental-boundary-check, aoi-large
 | 필드 | 각각의 공개 권한 |
 | event | 별도 대상 자격·내구 전달 필요 |
 | 송신 | snapshot/version·budget·누락 표시 |
+
+실행 흐름은 `index query → 후보 dedup → 정확한 형상 거리/시야 → 관계 권한 → 필드 선택` 순서입니다. 큰 객체의 중심만 query하면 표면이 반경에 닿는 경계 사례를 누락하므로 extent를 포함한 보수적 후보를 만든 뒤 정확한 검사에서 제거합니다. 이 순서를 바꾸어 index 결과를 곧바로 송신하면 false positive가 정보 공개로 바뀔 수 있습니다.
 
 ## Cell 이동 외 AOI 관계 변화
 
@@ -46,6 +52,10 @@ questionIds: [aoi-interest-management, aoi-incremental-boundary-check, aoi-large
 
 필수/선택 snapshot 필드를 나누면 선택값 미도착을 확정 default로 오해하지 않도록 표현합니다. 위치 stream은 중간 update를 합쳐 최신값으로 갈 수 있어도 보상 event는 같은 방식으로 버릴 수 없습니다.
 
+객체 하나를 `generation=4, snapshot version=20`으로 생성한 뒤 version 21, 22를 적용하는 추적을 기준으로 합니다. 19는 버리고 23이 먼저 오면 snapshot 부재 정책에 따라 보관·재요청·resync 중 하나를 선택해야 합니다. generation 5가 시작된 뒤 generation 4의 늦은 update를 적용하지 않는 조건이 없으면 삭제된 객체가 옛 상태로 되살아납니다.
+
 ## Hotspot 송신량과 공개 누락의 동시 관리
 
 객체 중요도·갱신 주기·bytes·queue 상한을 정하고 권위 전투 규칙과 송신 품질 저하를 분리합니다. 경계 왕복·큰 boss·teleport·팀 변경·동적 문·재정렬·늦은 삭제를 전수 기준과 비교합니다. 후보/query 시간·사용자별 p99 bytes·churn·재동기화·미공개 정보 누출을 검사합니다. 이 노트는 AOI 설계이며 실제 multiplayer 전송 실험 결과는 아닙니다.
+
+선택 기준은 후보 계산 비용, 사용자별 송신 budget, 필수 event의 전달 의미를 분리하는 것입니다. 위치 update는 최신값으로 합칠 수 있지만 보상 event는 누락을 허용할 수 없으므로 같은 queue 정책을 적용하지 않습니다. 검증에서는 전수 AOI와 증분 diff의 집합 차이, generation 역전, 권한 철회 지연, 사용자별 p99 bytes를 함께 비교합니다.

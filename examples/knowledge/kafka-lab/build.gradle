@@ -1,0 +1,48 @@
+plugins {
+    id 'application'
+}
+
+group = 'lab.kafka'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+def kafkaVersion = '4.3.1'
+
+dependencies {
+    implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"
+    testImplementation platform('org.junit:junit-bom:5.13.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'lab.kafka.InboxWorker'
+}
+
+tasks.register('runAdmin', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'lab.kafka.TopicAdmin'
+}
+
+tasks.register('runProducer', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'lab.kafka.ProducerMain'
+}
+
+tasks.register('printRuntimeClasspath') {
+    doLast {
+        println sourceSets.main.runtimeClasspath.asPath
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}

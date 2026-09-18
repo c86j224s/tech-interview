@@ -8,6 +8,8 @@ questionIds: [db-skip-locked-queue]
 
 # SKIP LOCKED 작업 획득과 Lease·세대·공정성
 
+작업 큐의 핵심은 짧은 DB 행 잠금과 오래 걸리는 실제 작업의 실행권을 분리하는 데 있습니다. 잠금은 후보를 동시에 고르는 순간만 보호하고, 커밋된 claim·lease·generation이 트랜잭션 밖에서도 현재 worker를 식별하도록 만들어야 중단·재획득·늦은 완료를 설명할 수 있습니다.
+
 ## 잠금 행 건너뛰기와 FIFO·기아의 한계
 
 worker A가 작업 1을 잡고 오래 실행하는 사이 B가 SKIP LOCKED로 작업 2·3을 가져갈 수 있습니다. 즉시 lock 경합을 줄이지만 엄격한 FIFO·기아 방지·정확히 한 번 실행을 보장하는 기능은 아닙니다. 서로 독립적인 작업을 분배하는지, 같은 계정의 선행 변경을 기다려야 하는지 먼저 정합니다.
@@ -43,7 +45,8 @@ execute claimed jobs outside the transaction
 
 ## Lease 만료와 옛 Worker 종료의 분리
 
-worker A가 멈춘 사이 lease가 만료되어 B가 같은 job을 `generation=8`로 다시 claim했다고 합시다. A의 `generation=7` 완료 요청은 `job_id`, `owner`, `generation=7`, `state='running'`을 `WHERE`에 넣은 조건부 UPDATE로 보내고, 반환된 영향 행 수가 0이면 `done`으로 바꾸지 않습니다. 영향 행 수가 1일 때만 현재 세대의 완료가 적용되므로, A의 늦은 쓰기가 B의 상태를 덮지 않습니다.
+worker A가 멈춘 사이 lease가 만료되어 B가 같은 job을 `generation=8`로 다시 claim했다고 합시다. A의 `generation=7` 완료 요청은 `job_id`, `owner`, `generation=7`, `state='running'`을 `WHERE`에 넣은 조건부 UPDATE로 보내고, 반환된 영향 행 수가 0이면 `done`으로 바꾸지 않습니다. 상태를 시간순으로 적으면 `A: pending,g=7 → running,g=7 → lease 만료`, `B: running,g=8`, `A 완료 UPDATE: 0행`입니다. 여기서 0행은 A의 작업이 실제로 아무 효과도 내지 않았다는 뜻이 아니라, 현재 job 상태에 대한 A의 기록 권한이 없어졌다는 뜻입니다. 따라서 효과 저장소의 멱등 키·fencing 결과와 job UPDATE 결과를 함께 대사해야 합니다.
+
 
 ```diagram
 {"title":"재획득 뒤 옛 세대의 완료는 거절합니다","caption":"화살표는 완료 요청입니다. DB 상태 조건은 job 기록을 보호하고 외부 효과의 중복은 별도 멱등·펜싱 경계에서 보호해야 합니다.","rows":[[{"id":"old","label":"옛 worker · 세대 7"},{"id":"new","label":"현재 worker · 세대 8"}],[{"id":"record","label":"job 현재 generation=8"}],[{"id":"result","label":"세대 8 조건만 완료 적용"}]],"edges":[{"from":"old","to":"record","label":"7 완료 조건 불일치"},{"from":"new","to":"record","label":"8 완료 조건 일치"},{"from":"record","to":"result","label":"원자 UPDATE"}]}
@@ -59,4 +62,6 @@ ORDER BY가 있어도 잠긴 행을 건너뛰므로 엄격한 FIFO가 아닙니�
 
 ## Claim·효과·완료 사이의 중단 지점
 
-테스트에서 A가 첫 행을 잠근 동안 B가 다음 행을 받는지 확인합니다. claim 직후 종료·lease 만료·A의 늦은 완료·효과 성공 후 기록 실패를 각각 재현해 최종 effect 수와 job 세대가 맞는지 봅니다. 현재 작업에서는 실제 DB의 SKIP LOCKED 동시 실행을 시험하지 않았습니다. 본문은 내구 실행권 설계입니다.
+테스트에서 A가 첫 행을 잠근 동안 B가 다음 행을 받는지 확인합니다. claim 직후 종료·lease 만료·A의 늦은 완료·효과 성공 후 기록 실패를 각각 재현해 최종 effect 수와 job 세대가 맞는지 봅니다. 실제 검증에서는 두 worker를 동시에 시작해 A가 첫 후보의 transaction을 잡은 동안 B가 다음 후보를 받는지 확인하고, claim commit 전·후를 강제 종료합니다. 그다음 lease 만료 후 옛 generation 완료와 외부 효과 후 완료 기록 실패를 재현해, 최종 job 상태만이 아니라 외부 effect 수까지 예상한 멱등 결과와 일치하는지 봅니다.
+
+현재 작업에서는 실제 DB의 SKIP LOCKED 동시 실행을 시험하지 않았습니다.

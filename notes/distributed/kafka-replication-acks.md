@@ -8,6 +8,8 @@ questionIds: [kafka-acks-isr, kafka-unclean-election-policy]
 
 # Kafka 복제 ACK와 기록 보존 경계
 
+이 노트에서 먼저 고정할 질문은 “누가 record를 받았는가”와 “어떤 장애 뒤에도 record를 이어갈 사본이 있는가”를 분리하는 것입니다. RF는 배치할 사본 수, ISR은 현재 동기화된 집합, `acks`는 producer 응답을 기다리는 범위이므로 숫자가 같아 보여도 의미가 다릅니다. 이후 장애 추적에서는 producer 응답, broker의 ISR·leader 변화, consumer 가시성을 각각 별도 사건으로 기록합니다.
+
 ## RF 3과 현재 ISR의 복제 범위
 
 한 파티션(partition)에 복제 계수(**replication factor**, RF)가 3이라고 하겠습니다. 이것은 leader 하나와 follower 둘을 포함해 배치할 사본 수가 세 개라는 뜻입니다. 하지만 세 replica가 항상 현재 복제 성공 집합으로 인정되는 것은 아닙니다. follower 하나가 장애를 겪거나 leader를 따라잡지 못하면 **ISR(in-sync replicas)** 에서 빠질 수 있습니다.
@@ -86,6 +88,8 @@ ELR은 Kafka 4.0부터 사용할 수 있고, 새 클러스터에서는 4.1부터
 그러므로 “모든 ISR 장애 뒤에는 stale replica를 unclean election으로 올리는 경우만 있다”는 말은 이 노트처럼 ELR이 꺼져 있고 해당 replica가 ELR에도 없는 경우에만 적용됩니다.
 
 이 선택은 “장애 중에도 쓰기를 재개할 것인가”와 “성공했다고 응답한 기록을 잃지 않을 것인가” 사이의 정책입니다. 재생성 가능한 알림 로그라면 가용성을 우선할 여지가 있지만, 금액·재고·권리 원장이라면 unclean election을 쉽게 허용해서는 안 됩니다. 어느 경우든 새 leader의 log와 producer가 성공 응답받았거나 응답을 잃은 record ID를 대조할 복구 절차가 필요합니다.
+
+응답이 timeout이거나 연결이 끊겼다면 producer 입장에서는 성공 여부가 불확정일 수 있습니다. 이때 재시도 횟수만으로 결과를 판단하지 말고 record key·partition·offset과 broker log, consumer visibility를 대조해야 합니다. 대조가 끝나기 전에는 외부 업무 효과를 중복 적용하지 않도록 producer 멱등성과 업무 effect key를 별도로 설계합니다.
 
 ## 성공 조건과 구현 경계 분리
 

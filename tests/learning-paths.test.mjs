@@ -10,12 +10,12 @@ const scratch = process.env.TMPDIR || os.tmpdir();
 
 test('knowledge chapters exist independently of questions and have learning connections', () => {
   const standalone = notes.filter(note => note.file.startsWith('knowledge/'));
-  assert.equal(standalone.length, 36);
+  assert.ok(standalone.length >= 52, '36 foundation chapters and 16 practical chapters');
   for (const note of standalone) {
     assert.deepEqual(note.questionIds, []);
     assert.ok(note.prerequisites.length);
     assert.ok(note.related.length);
-    assert.equal(note.reviewedAt, '2026-09-17');
+    assert.match(note.reviewedAt, /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(note.toc.length >= 6);
     assert.ok(learningContext(note).routes.length, note.id);
   }

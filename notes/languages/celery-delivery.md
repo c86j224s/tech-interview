@@ -8,9 +8,13 @@ questionIds: [python-celery-retries, celery-visibility-late-ack-interaction]
 
 # Celery 실행·ACK·재전달과 업무 멱등성
 
+Celery 작업의 상태는 예약, worker 실행, 함수 반환, result backend 기록, broker ACK, 업무 DB 효과로 나뉩니다. 한 상태가 성공했다고 다른 저장소의 변경까지 원자적으로 성공한 것은 아니므로, 전달 보장과 업무 멱등성을 별도 설계해야 합니다.
+
 ## 함수 완료와 Broker 확인의 구분
 
-worker가 포인트를 DB에 지급한 뒤 ACK 전에 종료되면 broker가 같은 작업을 다시 전달할 수 있습니다. 반대로 실행 전에 ACK한 설정에서 worker가 죽으면 broker는 이미 처리된 메시지로 보아 다시 보내지 않을 수 있습니다. 예약·실행·함수 반환·result backend 상태·ACK·DB 효과를 분리해야 합니다.
+worker가 포인트를 DB에 지급한 뒤 ACK 전에 종료되면 broker가 같은 작업을 다시 전달할 수 있습니다.
+
+구체적인 추적은 task P 실행→DB +10 commit→ACK 전 worker 종료→broker 재전달→두 번째 실행입니다. 같은 task ID라도 self.retry는 물리 실행을 여러 번 만들 수 있고, 다른 task ID라도 같은 지급 권리를 가리킬 수 있습니다. 그러므로 `task_id`를 효과 키로 무조건 사용하지 말고 업무 권리 키와 시도 ID를 분리한 뒤, DB unique와 원장 transaction으로 결과를 결정합니다. 반대로 실행 전에 ACK한 설정에서 worker가 죽으면 broker는 이미 처리된 메시지로 보아 다시 보내지 않을 수 있습니다. 예약·실행·함수 반환·result backend 상태·ACK·DB 효과를 분리해야 합니다.
 
 Celery는 작업 실행과 재시도 도구이며 모든 외부 변경을 정확히 한 번으로 만드는 거래 관리자가 아닙니다. task state가 SUCCESS라고 외부 모든 저장소가 한 원자 경계로 확정된 것도 아닙니다.
 

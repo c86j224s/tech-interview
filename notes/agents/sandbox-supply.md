@@ -8,6 +8,8 @@ questionIds: [agent-sandbox-isolation, agent-tool-supply-chain]
 
 # 에이전트 Sandbox와 도구·지침 공급망
 
+Sandbox는 코드를 가두는 이름이 아니라 입력·자격·실행·산출물·수명 각각에 허용 범위를 정하는 집행 경계입니다. 따라서 먼저 무엇이 신뢰된 원본이고 어떤 외부 효과를 금지할지 정한 다음, 컨테이너 격리가 실제 host와 원격 작업까지 어디에 적용되는지 추적해야 합니다. 이 구분이 있어야 “실행이 성공했다”와 “안전하게 반영할 수 있다”를 혼동하지 않습니다.
+
 ## 컨테이너 이름과 실제 노출 범위
 
 작업 컨테이너에 host home·SSH key·cloud credential·container 관리 socket을 mount하면 격리의 가치가 크게 줄어듭니다. 생성 코드뿐 아니라 저장소 install hook·test script·의존성도 비신뢰 실행에 포함합니다. 위협 모델과 보호 대상에 따라 제한된 container 또는 더 강한 VM/microVM 경계를 선택합니다.
@@ -15,6 +17,8 @@ questionIds: [agent-sandbox-isolation, agent-tool-supply-chain]
 실행 컨테이너에는 필요한 repository만 mount하고, 사용하지 않는 `privilege`와 `system capability`를 제거합니다. secret 파일이 read-only여도 실행 코드가 그 값을 읽어 네트워크로 보낼 수 있으므로, 쓰기 금지만으로 기밀성이 보장되지는 않습니다.
 
 ## 실행·반입·반출·재사용 통제
+
+예를 들어 trial-1이 허용된 소스만 읽고 `result.tar`를 만들었더라도, 반입기가 이름만 보고 압축을 풀어 executable을 실행하면 실행 경계가 host로 확장됩니다. 반대로 trial-1의 cache를 trial-2가 그대로 읽으면 trial-1의 비밀이나 오염된 의존성이 재사용됩니다. 예상되는 안전한 결과는 “파일 목록·형식·크기 검사를 통과한 데이터만 별도 반영되고, cache는 신뢰된 항목만 선택적으로 공유됨”입니다.
 
 | 경계 | 통제 |
 | --- | --- |
@@ -35,6 +39,8 @@ questionIds: [agent-sandbox-isolation, agent-tool-supply-chain]
 대화 deadline이 끝나도 자식 process는 남을 수 있습니다. 실제 종료·file/port 정리·budget 반환을 확인하고 원격 효과는 별도 조회합니다. 외부 네트워크를 전부 막으면 필요한 정상 시험도 안 될 수 있으므로 허용 동작이 실제 가능한지 양성 시험을 포함합니다.
 
 ## 도구 설명의 공급망 신뢰 경계
+
+선택 기준은 격리 강도만이 아니라 정상 작업에 필요한 네트워크·파일·자원 범위와 회수 가능성입니다. 도구를 도입할 때는 먼저 read-only 계약 시험을 통과시키고, 변경 전후 schema와 실제 outbound 관측을 비교한 뒤, 문제가 생기면 실행기에서 version·행동을 거절할 수 있어야 합니다. 진단 시 코드 diff가 없다는 이유로 의미 변경을 제외하지 않습니다.
 
 조회만 하던 도구의 설명이 어느 날 “먼저 로그를 업로드”로 바뀌거나, `skill` 예제가 새 `shell script`를 실행하게 되면 실행 코드에 diff가 없어도 실제 행동이 달라집니다. 그래서 이름과 `description`, `schema`, `default`, `read-only`·`idempotent` 주석, 참고 자료, script, 의존성을 한 묶음으로 비교합니다. 서명은 누가 배포했는지는 보여 주지만, 그 내용이 안전하거나 현재 과제에 맞는다는 사실까지 증명하지는 않습니다.
 

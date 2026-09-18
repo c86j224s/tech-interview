@@ -8,6 +8,8 @@ questionIds: [argocd-gitops-reconcile, argocd-hpa-field-ownership, argocd-source
 
 # Argo CD의 Drift·Sync·Health와 필드 책임
 
+Argo CD 상태를 읽을 때는 먼저 원하는 상태를 가져왔는지, 그 다음 실제 리소스와 비교했는지, 마지막으로 리소스가 준비됐는지를 순서대로 확인합니다. Git 조회 실패는 새 의도를 모르는 상태이고, OutOfSync는 차이를 발견한 상태이며, Healthy는 리소스 관찰 결과일 뿐 업무 성공의 증명이 아닙니다. 이 순서를 지키면 “Synced인데 장애”와 “OutOfSync지만 서비스는 아직 동작”을 같은 원인으로 진단하지 않게 됩니다.
+
 ## Git 선언과 앱 장애의 구분
 
 Git에 replicas=4인데 운영자가 클러스터를 8로 바꾸면 선언과 실제 상태의 drift가 생깁니다. Argo CD가 OutOfSync로 표시할 수 있지만 언제 4로 돌아가는지는 자동 sync·self-heal·일시 중지·필드 제외·적용 정책에 달렸습니다. “GitOps니까 언제나 즉시 덮는다”는 설명은 불충분합니다.
@@ -46,6 +48,8 @@ HPA가 `replicas`를 8로 조정했는데 Git 선언이 4로 고정돼 있으면
 일시적인 증설·설정 완화가 필요하면 변경 주체·이유·범위·만료·복구 책임을 기록하고 Git에 일시 패치나 정식 변경으로 반영합니다. 동기화를 멈추는 경우에도 언제 어떤 revision으로 재개할지 정합니다. self-heal을 영구 끄는 것으로 drift 관리가 해결되지는 않습니다.
 
 재개 전에 실제 클러스터와 Git의 차이를 다시 검토합니다. rollback할 때도 최신 revision 자동 재적용과 경쟁하지 않게 기준을 명확히 합니다. 앱 버전 복귀가 DB·삭제 데이터·회수 자격을 자동 되돌리는 것은 아닙니다.
+
+예상 결과를 “배포 성공” 하나로 기록하지 않고 source fetch, render, diff, apply, health, 사용자 오류를 각각 적습니다. 예를 들어 Git fetch 실패는 새 revision을 적용하지 못한 사건이고, 잘못된 readiness는 apply 이후 health 실패이며, HPA replicas drift는 필드 책임 정책을 점검할 사건입니다.
 
 ## 상태 조합별 동작 테스트
 

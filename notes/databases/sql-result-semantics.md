@@ -8,6 +8,9 @@ questionIds: [db-null-three-valued-logic, db-exists-vs-join, db-window-function-
 
 # SQL NULL·존재 조회·Window 순위의 결과 의미
 
+SQL 결과는 문법을 읽는 즉시 직관으로 확정되지 않습니다. NULL은 참·거짓과 다른 UNKNOWN을 만들고, JOIN은 자식 수만큼 행을 늘리며, window 함수는 행을 줄이지 않은 채 순위를 붙입니다. 작은 입력을 손으로 먼저 계산하면 쿼리 튜닝 전에 결과 의미가 맞는지 검증할 수 있습니다.
+기본 계산의 순서는 `NULL`이 섞인 비교를 먼저 UNKNOWN으로 평가하고, 마지막에 WHERE가 TRUE만 통과시키는 것입니다. 예를 들어 값이 `2, 1, NULL`인 세 행에 `x NOT IN (1, NULL)`을 적용하면 세 행 모두 통과하지 않습니다. 이 입력을 작은 임시 집합으로 재현하면 COALESCE로 의미를 숨기지 않고 원인을 확인할 수 있습니다.
+
 ## WHERE의 FALSE·UNKNOWN 제외와 NULL 의미
 
 SQL의 NULL은 알 수 없거나 없는 정보를 표현하며 일반적인 등호 비교에 UNKNOWN을 만들 수 있습니다. `x = NULL` 대신 IS NULL로 부재를 검사합니다. WHERE는 TRUE인 행만 남기므로 FALSE와 UNKNOWN이 모두 제외됩니다.
@@ -77,6 +80,8 @@ ORDER BY department_id, score DESC, id ASC;
 ```
 
 PARTITION BY는 원래 행을 부서별 계산 집합으로 나누며 GROUP BY처럼 행을 줄이는 것이 아닙니다. window ORDER BY는 계산 순서이지 최종 출력 순서 보장이 아니므로 마지막 ORDER BY를 둡니다. QUALIFY 지원이 없는 엔진은 위처럼 바깥 쿼리에서 필터합니다. NULL 점수의 순서·혼합 방향·큰 부서의 정렬 메모리와 spill은 제품별로 확인합니다.
+
+검증 표에는 최소한 부모 한 행에 자식 0·1·3건, 비교 열 NULL, 빈 subquery, 동점 점수 2건을 넣습니다. 예상 행 수와 각 열의 NULL 여부를 먼저 적은 뒤 실제 결과를 비교하면 “중복 제거가 필요하다”와 “존재 판정이 필요하다”를 구분할 수 있습니다. window 결과는 계산용 ORDER BY와 최종 표시용 ORDER BY를 별도로 확인합니다.
 
 ## NULL·빈 집합·중복·동점별 기대 결과 행
 

@@ -8,6 +8,9 @@ questionIds: [nats-core-jetstream, jetstream-durable-consumer, jetstream-retenti
 
 # JetStream Stream·Consumer·Retention·복제의 경계
 
+메시징 시스템을 선택할 때는 “전달됐다”를 누구의 관찰로 정의하는지부터 고정해야 합니다. 연결된 subscriber에게 보낸 실시간 이벤트, stream에 저장된 원본, consumer가 처리하고 ACK한 상태, 외부 DB에 반영된 효과는 각각 다른 경계입니다. 아래에서는 발행부터 재생·복제·복구까지 그 경계를 따라갑니다.
+한 주문 이벤트의 상태를 `publish 호출 반환→stream PubAck→consumer 전달→외부 DB commit→consumer ACK`으로 적으면 각 확인의 의미가 달라집니다. PubAck까지만 확인한 생산자는 소비 처리를 보장하지 않고, consumer ACK만 확인한 서비스도 외부 DB commit과 자동으로 원자 결합되지 않습니다.
+
 ## Core NATS 실시간 전달과 JetStream 내구 재생
 
 연결된 subscriber에게 현재 발행한 이벤트를 실시간으로 전달하는 것이 Core NATS의 기본 범위입니다. subscriber가 끊긴 동안의 메시지를 나중에 다시 읽는 내구 재생은 기본 계약에 들어 있지 않습니다. 다음 snapshot으로 현재 위치를 다시 맞출 수 있는 알림이라면 단순한 선택일 수 있지만, 반드시 처리해야 하는 주문 사건에는 보관과 재전달 경로가 필요합니다.
@@ -46,6 +49,8 @@ batch timeout·부분 수신·client 취소 때 받은 메시지와 미수신 �
 replicas=3 stream은 정상 프로토콜에서 통신 가능한 과반으로 변경을 확정하도록 구성할 수 있어 하나 손실을 견딜 여지가 있습니다. 두 replica를 잃으면 하나가 데이터를 갖고 있어도 일반 쓰기가 멈출 수 있습니다. 같은 host·rack·zone의 공통 장애면 사본 숫자만큼 독립성이 생기지 않습니다.
 
 한 replica만 느리고 과반이 빠른 경우와 과반이 느린 경우는 PubAck 지연·장애 여유가 다릅니다. 실제 leader·replica lag·quorum 응답·재동기화·디스크·network를 관찰합니다. stream과 consumer 상태의 복제 설정도 따로 확인합니다. memory storage·file storage·fsync·OS page cache는 다른 복구 조건입니다.
+
+재현 시나리오는 broker가 저장한 뒤 PubAck만 버리고, 생산자가 같은 message ID로 조회·재시도하는 경우입니다. 예상 결과는 저장 결과가 확인되면 새 메시지를 만들지 않는 것이며, dedup window 밖의 재시도는 별도 원장 멱등성 없이는 중복을 막지 못한다는 것입니다. 이 작업에서는 broker 실행을 하지 않았으므로 설정·버전별 동작은 운영 환경에서 확인해야 합니다.
 
 ## PubAck 유실과 저장 결과 불확정성
 

@@ -8,6 +8,8 @@ questionIds: [rate-limiting-algorithms, rate-limit-weighted-request-cost]
 
 # Rate·Burst·가중 비용·동시성 제한
 
+제한을 고를 때는 먼저 보호할 자원을 하나씩 적습니다. 요청 빈도는 rate/burst가, 동시에 살아 있는 실행은 concurrency가, 이미 쌓인 대기는 queue limit이 담당합니다. 예를 들어 토큰이 충분해도 DB 연결이 모두 사용 중이면 실행 permit에서 막혀야 하며, 토큰을 다시 채우는 동안 무제한으로 대기시키면 queue가 별도 장애 지점이 됩니다.
+
 ## 분당 한도와 임의 구간 한도
 
 고정 minute window에서 12:00:59에 100개, 12:01:00에 100개를 허용하면 각 분의 한도는 지켰지만 2초에 200개가 몰립니다. 고정 구간 정산에는 설명이 쉬워도 부드러운 유입 제한과 같지 않습니다. sliding log는 실제 최근 구간을 볼 수 있지만 timestamp 저장·정리 비용이 들고 sliding counter는 근사 방식의 오차를 정의해야 합니다.
@@ -36,6 +38,8 @@ under one atomic state update:
 | weighted cost | 요청별 추정 부담 | 자원별 실제 hard limit |
 | concurrency limit | 살아 있는 실행 수/비용 | 대기 queue 상한 |
 | queue limit | 대기 수·bytes·age | 과부하 거절·만료 |
+
+예를 들어 처음 B=20, r=10/s에서 cost=7 요청 세 개가 거의 동시에 오면 그 사이 재충전이 없으면 정확히 두 개가 허용되고 토큰 6개가 남습니다. 세 번째 요청의 비용 7은 남은 6보다 크므로 거절되거나 대기해야 합니다. 측정에서는 허용 건수만 세지 말고 요청별 cost, 남은 token, queue 대기, 실행 permit 점유 시간을 함께 기록해야 token 제한과 실제 자원 고갈을 구분할 수 있습니다.
 
 ## 대형 요청의 Token 비용과 무한 대기 방지
 

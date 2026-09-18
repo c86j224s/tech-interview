@@ -8,7 +8,11 @@ questionIds: [git-merge-rebase, git-conflict-resolution-verification, git-reflog
 
 # Git Merge·Rebase·복구와 의도 보존
 
+Git의 이력 연산은 파일 내용을 바꾸는 작업인 동시에 commit의 부모 관계와 식별자를 바꾸는 작업입니다. 따라서 “최종 파일이 같아 보이는가”와 “어떤 이력을 공유하고 어떤 변경을 되돌릴 수 있는가”를 나누어 확인해야 합니다. 아래에서는 merge·rebase·revert를 선택하고, 충돌 해소와 잘못된 rebase 뒤에 원래 의도를 보존했는지 검증하는 순서를 설명합니다.
+
 ## 동일 파일 결과와 commit 조상 관계
+
+상태를 작은 그래프로 따라가면 선택이 쉬워집니다. `A-B`와 `A-C-D`가 있을 때 merge는 두 부모를 가진 `M`을 만들고, rebase는 `B` 위에 새 `C′-D′`를 만듭니다. `main=A`처럼 한 branch가 다른 branch의 조상이면 fast-forward가 가능하므로 새 merge commit이 필요하지 않습니다. 내용 비교만으로는 이 세 경우의 협업 비용과 복구 지점을 구분할 수 없습니다.
 
 main이 A-B, feature가 A-C-D라면 merge는 B와 D를 부모로 갖는 M을 만들 수 있습니다. rebase는 B 위에 C·D의 변경을 재적용해 C′·D′를 만듭니다. 부모가 달라지므로 내용이 비슷해도 commit ID가 달라집니다. main이 아직 A면 D로 fast-forward할 수 있어 merge가 항상 새 commit을 만드는 것은 아닙니다.
 
@@ -17,6 +21,8 @@ main이 A-B, feature가 A-C-D라면 merge는 B와 D를 부모로 갖는 M을 만
 ```
 
 ## 공유 이력의 선형성보다 우선하는 협업 계약
+
+실무 선택은 공유 여부와 외부 효과를 함께 봅니다. 개인 branch의 미공유 patch series는 rebase가 유용하지만, 이미 리뷰어가 가져간 branch라면 merge나 새 branch가 추적 비용을 줄일 수 있습니다. 이미 배포된 파일 변경을 취소할 때는 revert를 고려하되, DB·메일·결제처럼 Git 밖에서 발생한 효과는 별도 보정 절차로 다뤄야 합니다.
 
 아직 공유하지 않은 개인 branch는 rebase로 정리할 수 있지만 다른 작업자가 기준으로 가져간 commit을 재작성하면 그들의 조상과 pull 기준이 달라집니다. 보호 branch·리뷰·팀 정책을 따릅니다. force-with-lease는 예상한 원격 ref가 바뀌었는지 검사하는 보호이지 재작성의 협업 비용이나 의미 충돌을 없애는 허가가 아닙니다.
 

@@ -8,6 +8,8 @@ questionIds: [db-unique-constraint-race, db-upsert-conflict-semantics, soft-dele
 
 # 고유 이름의 경쟁·UPSERT·복구·전역 예약
 
+이 문제의 실무 기준은 “사용 가능해 보이는가”가 아니라 “최종 커밋 시점에 동일성 범위에서 하나만 남는가”입니다. 사전 조회는 입력 오류를 빠르게 안내하는 보조 경로이고, 최종 UNIQUE 충돌은 정상적인 경쟁 결과로 분류해 처리해야 합니다. 충돌 응답을 만들 때는 이름 문자열이 아니라 검증된 요청 주체와 멱등 기록을 기준으로 기존 결과 재사용 여부를 판단합니다.
+
 ## 사전 조회와 최종 UNIQUE 경쟁
 
 가입 요청 A와 B가 같은 정규화 이름을 조회하고 둘 다 없다고 읽은 뒤 삽입할 수 있습니다. 사전 SELECT는 사용자에게 빠른 안내를 줄 수 있지만 최종 유일성 보장이 아닙니다. 동일성 범위에 맞는 DB UNIQUE·고유 인덱스가 실제 쓰기에서 한 상태만 허용해야 합니다.
@@ -30,6 +32,8 @@ questionIds: [db-unique-constraint-race, db-upsert-conflict-semantics, soft-dele
 ```diagram
 {"title":"고유 충돌은 재시도와 다른 사용자의 경쟁을 나눕니다","caption":"화살표는 충돌 후 판단입니다. 동일 논리 요청임을 검증한 경우만 기존 결과를 재사용하며 이름 일치만으로 계정을 반환하지 않습니다.","rows":[[{"id":"insert","label":"DB 고유 충돌"}],[{"id":"retry","label":"검증된 동일 요청"},{"id":"other","label":"별도 사용자·새 요청"}],[{"id":"result","label":"저장된 결과 재사용"},{"id":"reject","label":"이름 충돌 거절"}]],"edges":[{"from":"insert","to":"retry","label":"멱등 문맥 일치"},{"from":"insert","to":"other","label":"소유·요청 불일치"},{"from":"retry","to":"result","label":"재전달"},{"from":"other","to":"reject","label":"기존 주체 보호"}]}
 ```
+
+예상 결과를 확인하는 작은 경쟁 시험은 A와 B가 같은 정규화 이름을 동시에 제출하도록 하고, 최종적으로 한 행만 생성되며 한 요청은 분류된 충돌을 받는지 보는 것입니다. 누적 효과를 검증할 때는 같은 effect key를 재전달해 값이 한 번만 변하는지 별도로 측정해야 합니다. UNIQUE 성공과 업무 효과의 한 번 실행은 같은 보장이 아닙니다.
 
 ## UPSERT와 업무 멱등성
 

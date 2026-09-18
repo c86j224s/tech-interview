@@ -8,6 +8,8 @@ questionIds: [grpc-rest-contracts, grpc-domain-error-retry-semantics, grpc-strea
 
 # gRPC 계약·업무 오류·스트림 Backpressure
 
+RPC 선택은 직렬화 형식의 취향보다 호출 계약, 오류 의미, 스트림 수명, 처리 예산을 정하는 일입니다. 특히 전송 계층의 flow control이 애플리케이션 작업의 backpressure를 자동으로 만들어 주지는 않으므로, payload가 도착한 뒤 어디에 얼마나 쌓이고 언제 다시 읽는지를 끝까지 연결해 봐야 합니다.
+
 ## 코드 생성과 gRPC 고유 기능의 구분
 
 gRPC는 service method·message schema에서 여러 언어의 client/server 코드를 만들고 unary·streaming·deadline을 일관되게 다루기 좋습니다. REST는 JSON이라는 형식 자체가 아니라 HTTP 자원 의미를 활용하는 설계이고 OpenAPI 코드 생성도 가능합니다. 수동 JSON 대 자동 생성이라는 비교보다 소비자 환경·streaming·계약 운영을 봅니다.
@@ -39,6 +41,8 @@ HTTP/2의 bytes 수신 조절은 전송 단계의 흐름 제어일 뿐, 앱이 �
 ```
 
 큰 메시지 하나와 작은 메시지 천 개는 다른 비용이므로 수·bytes·동시 실행을 함께 제한합니다. stream 수가 많으면 stream별 제한의 합이 service 총량을 넘지 않게 합니다. 포화에서는 read를 늦추거나 명시적으로 거절하고 전체 deadline·취소를 하위에 전파합니다.
+
+예를 들어 수신 한도가 32MiB여도 이미 역직렬화한 10MiB 메시지 네 개가 앱 queue에 있고 worker가 모두 DB를 기다리면, 전송 창이 줄어드는 것만으로 heap과 DB 대기가 줄어들지는 않습니다. 관찰할 값은 HTTP/2 window와 별도로 queue의 메시지 수·bytes, 역직렬화 후 메모리, worker/DB permit, 취소된 작업 수이므로 병목이 어느 계층인지 분리해 진단합니다.
 
 ## 장기 연결과 부하 분산·종료 단위
 

@@ -38,11 +38,16 @@ IPv4 sockaddr_in이 16바이트인 예에서는 주소 영역 각각 최소 32�
 
 ## AcceptEx 반환값과 완료 통지의 구분
 
+한 수락 작업은 `제출 전 context 확보 → AcceptEx 호출 → 즉시 완료 또는 pending → IOCP 완료 통지 → 성공/실패 정리`로 추적합니다. `TRUE`와 `ERROR_IO_PENDING`은 모두 설정에 따라 완료 워커의 처리 대상이 될 수 있지만, 제출자와 완료자가 같은 작업을 두 번 마무리하지 않도록 소유권을 한 번만 넘기는 규칙이 필요합니다.
+
 AcceptEx는 BOOL을 반환합니다. TRUE는 즉시 완료, FALSE일 때 WSAGetLastError의 ERROR_IO_PENDING은 정상 접수 후 진행 중입니다. 다른 즉시 오류와 구별해야 합니다. 비동기 완료의 바이트 수는 완료 통지에서 얻으며 동기용 출력 변수가 나중에 자동 갱신된다고 가정하지 않습니다.
 
 기본 IOCP 통지 모드에서는 즉시 TRUE에도 완료 패킷을 받을 수 있으므로 두 경로에서 동시에 처리하지 않습니다. 제출 전에 작업·연결 참조를 예약하고, 명시적인 통지 모드에 맞는 한 종결 경로를 둡니다. AcceptEx는 듣기 핸들에 제출한 작업이고 이후 새 소켓의 WSARecv는 다른 작업 맥락입니다.
 
 ## AcceptEx 성공 후 context 설정과 소켓 준비
+
+실패를 좁힐 때는 먼저 `kind=Accept`인지 확인하고 bytes=0을 EOF로 해석하지 않습니다. 다음으로 `SO_UPDATE_ACCEPT_CONTEXT`, 주소 추출, IOCP 연결, 첫 WSARecv 제출 중 어느 단계에서 실패했는지 기록합니다. 한 단계가 실패해 수락 연결을 닫더라도 이미 제출된 다른 I/O의 completion 수명이 끝났다고 가정하지 않는 것이 핵심입니다.
+
 
 ```text
 onAcceptComplete(context, result):
@@ -140,6 +145,8 @@ if (setsockopt(op->accepted, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
 서버가 먼저 환영 메시지나 프로토콜 안내를 보내야 하는데 AcceptEx에 초기 수신을 요구하면, client도 server의 첫 메시지를 기다려 양쪽이 멈출 수 있습니다. 0으로 수락을 끝낸 뒤 인증 전 연결에 별도 첫 메시지 기한을 두는 구성이 이해하기 쉽습니다. 초기 수신을 묶는 최적화를 선택했다면 `SO_CONNECT_TIME`으로 연결됐지만 아직 데이터가 없는 수락 슬롯을 관찰하는 방법도 있습니다. 기한 초과로 수락 소켓을 닫아도 작업 컨텍스트는 실패 완료 회수까지 유지합니다.
 
 ## 참고 문서와 직접 검증 시나리오
+
+검증 결과에는 제출 반환값, `WSAGetLastError`, 완료 바이트, 완료 key와 `OVERLAPPED` kind, 소켓 종료 시점을 함께 남깁니다. 특히 수신 길이 0 구성에서는 연결 직후 완료 bytes=0이 정상이라는 예상과, 실제 첫 WSARecv에서 FIN/RST를 어떻게 관찰했는지를 분리해 기록해야 합니다.
 
 [Microsoft AcceptEx 문서](https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nf-mswsock-acceptex)에서 초기 수신 0의 의미, 주소 공간, 반환값과 context 설정을 확인했습니다. 해당 페이지의 예제 조각을 모든 오류·pending 경로가 완성된 운영 서버로 간주하지 않습니다.
 

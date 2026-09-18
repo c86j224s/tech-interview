@@ -8,6 +8,8 @@ questionIds: [behavior-tree-running, behavior-tree-action-oscillation, npc-path-
 
 # Behavior Tree Running·Abort·경로 서비스 예산
 
+Behavior Tree의 `Running`은 단순한 중간 반환값이 아니라 비동기 요청·timer·예약·callback을 가진 행동이 다음 평가까지 살아 있다는 뜻입니다. 새 행동을 선택할 때는 논리적으로 옛 결과를 무효화하는 일과 실제 자원을 회수하는 일을 별도로 추적해야 합니다.
+
 ## Running 상태의 자원 소유권과 다음 틱까지의 수명
 
 Behavior Tree node는 Success·Failure 외에 Running을 반환할 수 있습니다. 이동 node가 Running일 때 경로 요청·timer·animation·예약·callback이 살아 있습니다. 상위 위험 조건이 도주를 선택했다고 이전 이동이 자동 종료되지 않습니다.
@@ -46,5 +48,7 @@ action generation을 올려 결과를 논리적으로 무효화하는 것과 wor
 같은 문 변경이 들어와도 요청을 한꺼번에 실행하지 않고, NPC별 최신 goal만 남겨 옛 의도를 합칩니다. low priority에도 round-robin이나 최소 진행 규칙으로 기회를 주되, 실행 시점에 만료된 goal은 건너뜁니다. 취소된 요청을 장부에서 제거했더라도 실제 계산이 끝나지 않았다면 worker permit과 취소 후 종료 확인을 유지합니다. 실패한 요청은 원인·backoff·다음 재시도 조건을 반환해 무한 재탐색을 막고, map 변화는 지역별 병합과 재계산 phase 분산으로 처리합니다.
 
 ## 행동 반응성과 자원 정리 비용 검증
+
+예상 결과를 먼저 적어 두면 세대 검사와 취소 완료를 혼동하지 않을 수 있습니다. 이동 8의 경로가 도주 9로 전환된 뒤 도착하면 위치·blackboard는 현재 행동 정책을 따라야 하고, worker가 실제로 종료되지 않았다면 permit·map 참조·callback은 아직 회수 대상으로 남아 있어야 합니다.
 
 이동 중 도주·abort 직후 완료·서버 종료·목표 연속 변경·shared service 포화·진동 조건을 시험합니다. 현재 action의 위치/예약이 옛 callback으로 바뀌지 않는지, 최대 대기·폐기 결과·snapshot 수명·회피 반응·틱 비용을 확인합니다. 이 노트는 행동 수명 설계이며 실제 Behavior Tree 엔진 실험 결과는 아닙니다.

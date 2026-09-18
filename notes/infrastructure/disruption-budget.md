@@ -8,11 +8,15 @@ questionIds: [k8s-pdb-eviction, pdb-selector-target-verification, pdb-budget-rea
 
 # PDB의 자발적 중단 예산과 장애 영역 용량
 
+PDB는 장애를 없애는 설정이 아니라 특정 중단 경로에서 동시에 잃을 수 있는 Pod 수를 조정하는 정책입니다. 보호 대상, 현재 Ready 상태, 대체 Pod를 배치할 독립 영역과 잔여 용량을 함께 봐야 하며, 숫자가 맞아도 공통 노드 장애나 readiness 실패를 막지는 못합니다.
+
 ## PDB와 Eviction API의 자발적 중단 보호 범위
 
 PodDisruptionBudget은 주로 Eviction API를 사용하는 자발적 중단에서 동시에 중단할 수 있는 범위를 제한합니다. 노드 전원 장애·OOM·프로세스 crash·강제 삭제처럼 그 승인 경계를 거치지 않는 사건을 막는 방패가 아닙니다. 이미 사라진 Pod를 복구하는 것도 replica controller와 앱의 책임입니다.
 
 replica 3, minAvailable=2이고 모두 healthy이면 한 개를 내보낼 여지가 있습니다. 이미 하나가 Ready가 아니면 예산이 없을 수 있습니다. 그러나 두 개가 같은 노드 장애로 동시에 사라지는 것을 PDB가 예방하지는 못합니다.
+
+상태 추적은 `selector 결과 집합→Ready 대상→삭제 진행 대상→currentHealthy·desiredHealthy→disruptionsAllowed` 순서로 합니다. replica가 세 개라는 선언만으로 여유를 계산하지 않고, 한 Pod가 NotReady이면 같은 minAvailable 설정에서도 eviction 여유가 줄어드는지 실제 상태 객체와 대조합니다.
 
 ## PDB 대상 집합과 건강 상태 집계
 
@@ -52,6 +56,8 @@ scheduler의 배치 제약은 이미 실행 중인 Pod를 언제나 자동 재�
 세 영역의 Pod 하나씩이 평소 용량의 80%를 쓰면 총 수요는 Pod 2.4개 분량입니다. 한 영역을 잃고 두 개만 남으면 각각 120%를 요구해 포화됩니다. 균등 배치는 실패의 상관을 줄이지만 장애 후 처리량을 늘리지 않습니다.
 
 장애 시 최소 용량·새 Pod 준비 시간·다른 영역 node 공급·스토리지 접근·quorum을 함께 계산합니다. PDB·topology·복제·앱 drain은 서로 보완하는 별도 계약입니다. 정상 유지보수만이 아니라 알림 없는 노드 손실에서도 데이터 재처리·세션 복구가 안전해야 합니다.
+
+진단에서 eviction 거절만 보면 PDB가 고장 났다고 결론 내릴 수 없습니다. 대상 집합이 비었는지, 대체 Pod가 Pending인지, readiness가 실패했는지, 다른 drain이 이미 예산을 사용했는지를 사건 시간순으로 확인해야 합니다. 강제 삭제는 예산을 통과한 성공 사례가 아니라 보호 경계를 우회한 별도 결과로 기록합니다.
 
 ## 허용·차단·강제 장애의 검증 범위
 

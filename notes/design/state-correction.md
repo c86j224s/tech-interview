@@ -8,6 +8,8 @@ questionIds: [retry-safe-state-machine, terminal-state-correction-transition]
 
 # 상태 전이 Guard·불확정 효과·정정 원장
 
+상태 머신은 현재 이름을 바꾸는 표가 아니라, 사건을 받아 허용된 전이와 외부 효과의 책임을 결정하는 기록 모델입니다. `state`, `version`, `logical operation ID`를 따로 두면 동시성 충돌, 같은 의도의 재시도, 외부 효과의 결과 불확정을 서로 다른 문제로 진단할 수 있습니다.
+
 ## Enum 상태 이름과 Guard 전이 조건
 
 `PENDING·RUNNING·DONE` 같은 enum은 저장할 수 있는 이름만 정합니다. 예를 들어 두 요청이 동시에 `PENDING`을 읽으면, 둘 다 외부 결제를 시작하지 못하도록 막는 규칙은 별도로 필요합니다. 현재 상태·사건·주체·금액·version·논리 작업 ID를 함께 보고 전이 guard를 판단하며, 배송 완료 뒤 취소 요청처럼 반품으로만 허용되는 사건은 `CANCELLED` 값이 있어도 그 값으로 덮지 않습니다.
@@ -19,6 +21,8 @@ WHERE id = :id AND state = 'PENDING' AND version = :expected;
 ```
 
 영향 행 0은 무조건 실패나 무조건 retry가 아닙니다. 최신 상태가 이미 같은 논리 요청으로 완료됐는지, 다른 요청과 충돌했는지, 금지 전이인지 조회합니다. version은 신선도, 작업 ID는 같은 의도의 반복을 식별하므로 서로 대체하지 않습니다.
+
+두 요청이 같은 PENDING을 읽는 trace를 그리면 둘 다 “실행 가능”처럼 보이지만, 조건부 UPDATE는 한 요청만 1행을 바꾸고 다른 요청은 0행을 반환해야 합니다. 두 번째 요청은 즉시 재시도하기보다 최신 상태에서 같은 logical ID의 완료 여부, 다른 작업의 충돌, 금지 전이를 구분해야 중복 외부 실행을 막을 수 있습니다.
 
 ## 외부 결과의 불확정 상태
 
@@ -37,9 +41,13 @@ WHERE id = :id AND state = 'PENDING' AND version = :expected;
 {"title":"확정 결과와 불확정 효과의 복구를 구분합니다","caption":"화살표는 허용 가능한 처리 흐름의 예입니다. timeout을 무조건 실패로 바꾸지 않고 조회·대사 뒤 새 사실을 기록합니다.","rows":[[{"id":"pending","label":"PENDING · 조건부 실행권"}],[{"id":"running","label":"RUNNING · 내구 의도·논리 key"}],[{"id":"known","label":"확인된 성공/실패"},{"id":"unknown","label":"불확정 · 조회·대사"}],[{"id":"correction","label":"필요 시 별도 정정 ID·원장"}]],"edges":[{"from":"pending","to":"running","label":"state/version guard"},{"from":"running","to":"known","label":"권위 결과 확인"},{"from":"running","to":"unknown","label":"응답 유실·중단"},{"from":"known","to":"correction","label":"새 정정 사건"},{"from":"unknown","to":"correction","label":"대사 후 필요한 보정"}]}
 ```
 
+의도 기록 직후 crash, 외부 성공 직후 local commit 전 crash, 외부 timeout 후 실제 성공의 세 지점을 나누어 봅니다. 첫 경우에는 호출하지 않았을 가능성이 높고, 둘째와 셋째는 새 ID로 재호출할 수 없습니다. 원래 logical ID로 조회한 결과가 성공·실패·미확정 중 무엇인지에 따라 원장 기록과 제한된 재시도를 선택합니다.
+
 ## Owner 세대와 옛 Worker의 늦은 쓰기
 
 lease로 작업을 회수할 때는 새 owner의 `generation`을 올리고, 완료 저장 시 그 세대가 아직 기대값과 같은지 검사합니다. 이전 worker가 늦게 깨어나 완료를 저장해도 expected generation이 맞지 않으면 그 쓰기를 거절할 수 있습니다. 그러나 이미 외부로 보낸 결제는 이 검사로 취소되지 않으므로 외부 idempotency·조회·지원되는 fencing(이전 owner의 쓰기를 막는 장치)이 별도로 필요하며, lease 만료 자체를 process 종료의 증거로 보면 안 됩니다.
+
+worker W1이 generation 4를 소유하다 lease가 만료되고 W2가 generation 5를 얻은 상태에서 W1의 완료가 도착하는 trace를 사용합니다. 저장 조건이 generation=4라면 W1의 늦은 쓰기는 거절되어야 하지만, 외부 provider에 이미 전달된 효과는 그대로일 수 있습니다. 따라서 DB guard의 성공만으로 외부 효과의 취소나 exactly-once를 추론하지 않습니다.
 
 ## DONE 이후 정정·환불·재개의 별도 전이
 
@@ -47,6 +55,10 @@ lease로 작업을 회수할 때는 새 owner의 `generation`을 올리고, 완�
 
 운영자 도구도 직접 enum 수정으로 guard를 우회하지 않고 동일한 명령·인가·감사 경로를 사용합니다. 상태와 알림 event를 함께 남겨야 하면 같은 transaction의 outbox/감사 기록으로 연결하고 전달 중복은 consumer에서 관리합니다.
 
+DONE을 CANCELLED로 덮어쓰면 원래 성공 사실과 새 환불 사실의 순서를 잃습니다. 정정 ID를 별도 사건으로 기록하면 현재 잔액, 원래 거래, 환불 근거를 함께 조회할 수 있고 같은 정정 요청의 재전송은 한 번만 적용할 수 있습니다.
+
 ## 금지 전이와 늦은 효과 시험
 
 state×event 표에서 금지 조합을 먼저 실행하고, 동시 승인/취소·같은 작업 반복·외부 성공 후 crash·lease 인계·중복 정정·정정과 늦은 완료를 각각 재현합니다. 각 재현 뒤 오류 코드만 보지 말고 원장에 남은 사실, 불확정 상태 체류, 중복 결제 부재를 확인합니다. 이 노트는 상태 설계이며 실제 외부 결제 API 실험 결과는 아닙니다.
+
+각 시험의 예상 결과를 상태 이름뿐 아니라 원장 행 수, logical ID별 효과 수, 현재 version, 운영자 감사 기록으로 적습니다. 특히 취소가 먼저 반환된 뒤 늦은 외부 성공이 도착하는 경우, UI 응답과 권위 원장이 다른 사실을 어떻게 표시할지까지 확인해야 상태 테스트가 실제 사용자 문제를 포착합니다.

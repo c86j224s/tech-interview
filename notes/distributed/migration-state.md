@@ -8,9 +8,15 @@ questionIds: [on-demand-data-migration, migration-authorization-change]
 
 # 온디맨드 데이터 이전의 세대·검증·공개 권한
 
+데이터 이전은 복사 코드보다 권위가 언제 바뀌는지와 오래된 작업이 새 데이터를 덮지 못하는지가 핵심입니다. 상태, generation, cursor, 권한 버전을 내구 기록으로 두고 “복사 완료”와 “사용자에게 새 저장소를 공개해도 됨”을 별도의 판단으로 다룹니다.
+
 ## 동시 첫 접속과 migration 작업 단일 소유권
 
 휴대전화와 웹 요청이 같은 migration row를 읽어 둘 다 `not_started`와 같은 generation을 보더라도, 두 요청이 모두 복사를 시작하게 두면 작업이 겹칩니다. 먼저 상태·generation이 아직 그 값인지 조건부로 바꾼 요청만 job ID와 owner를 얻고, 나머지는 저장된 작업의 진행 상태를 읽거나 정한 시간만 기다립니다.
+
+구체적으로 두 요청이 generation 8의 `not_started`를 읽었을 때 한 요청만 조건부 갱신으로 generation 9·job `m1`을 얻어야 합니다. lease가 만료된 뒤 새 worker가 generation 10을 얻으면, 살아 있던 옛 worker의 source version 8 쓰기는 대상에서 거부되어야 합니다. 이 trace를 로그에서 `account → generation → owner → batch cursor` 순서로 확인하면 중복 복사와 stale overwrite를 구분할 수 있습니다.
+
+선택 기준은 작은 데이터의 짧은 복사는 요청 내 동기 처리도 가능하지만, 재시작·입력 대기·권한 변경·여러 batch가 있으면 독립 내구 job이 필요하다는 것입니다. 장애 진단에서는 먼저 대상 행의 version과 cursor가 함께 전진했는지, 그 다음 권위 라우팅과 현재 인가 버전이 일치하는지 확인하고, 어느 한쪽의 성공 boolean만으로 완료를 선언하지 않습니다.
 
 따라서 완료 boolean 하나가 아니라 작업 상태와 job ID·owner·generation을 별도 내구 필드로 둬야 복사 중·검증 중·실패와 현재 소유자를 구분할 수 있습니다.
 

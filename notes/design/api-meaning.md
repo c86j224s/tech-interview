@@ -8,6 +8,8 @@ questionIds: [api-backward-compatibility, api-null-omission-patch, protobuf-fiel
 
 # API 혼합 버전·Patch Presence·Protobuf 번호
 
+호환성은 바이트나 JSON 문법을 읽는 데서 끝나지 않고, 혼합 버전의 소비자가 같은 안전한 업무 행동을 하는지까지 포함합니다. 따라서 필드의 존재 여부와 값, wire 번호와 의미, 모르는 상태를 만났을 때의 행동을 각각 추적해야 합니다.
+
 ## 필드 추가와 상태 의미 추가의 호환성 차이
 
 구앱이 `active`와 `closed`만 아는 상태에서 신server가 `status:paused`를 보내면, JSON parser가 문법을 읽는 데는 성공해도 모르는 값을 default(기본값)인 `active`로 해석해 중지된 기능을 실행할 수 있습니다. 따라서 파싱 성공과 업무 의미를 이해한 상태를 별도로 다루고, 구앱이 이 상태를 받았을 때 실제로 어떤 행동을 하는지 확인합니다.
@@ -51,6 +53,8 @@ message Order {
 binary unknown field 보존·unknown enum·presence는 언어/runtime/version 경로를 확인합니다. JSON 변환에서는 이름·기본값·unknown 처리 의미가 달라질 수 있어 gateway까지 시험합니다. 새 번호라는 사실만으로 금액 단위와 업무 규칙의 호환성이 보장되지는 않습니다.
 
 ## 혼합 버전 소비자와 단계적 갱신 시점
+
+작은 상태 표를 만들어 구 client→신 server, 신 client→구 server, rollback 직후 재시도 순서에서 파싱 결과와 실제 버튼·권한·재시도 결과를 각각 기록하면 문법 호환과 행동 호환을 구분하기 쉽습니다. 특히 `paused`를 모르는 구 client가 `active`로 계속 진행하는지, `quantity=4`가 과거 번호 재사용 없이 거절·무시되는지를 예상 결과와 대조합니다.
 
 구앱→신server와 신앱→구server를 모두 시험하고 버튼·오류 안내·retry·서명·cache·중복 효과를 확인합니다. 월말 batch·장기 미접속 앱은 짧은 관측 창의 호출 0으로 사라졌다고 할 수 없습니다. 지원 기간·최소 앱 version·폐기 안내·구 endpoint 유지와 제거 근거를 정합니다.
 

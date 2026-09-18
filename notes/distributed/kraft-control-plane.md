@@ -21,6 +21,10 @@ controller 수를 늘린다고 주문 topic의 replication factor가 늘어나�
 | consumer group | assignment·offset | rebalance·committed·poll |
 | 외부 앱 | 처리 원장·업무 효과 | inbox·outbox·version·사용자 결과 |
 
+Kafka KRaft를 설명할 때는 metadata를 결정하는 controller quorum과 사용자 record를 복제하는 broker partition을 먼저 분리해야 합니다. 두 경로가 서로 다른 로그·권위·장애 지표를 가지므로 한쪽의 정상이나 장애를 다른 쪽의 성공·실패로 바로 해석하지 않습니다.
+
+장애 trace를 세 노드 controller quorum과 세 broker partition으로 나누어 봅니다. controller 한 노드가 사라져도 2/3 quorum이 유지되면 metadata 변경은 계속될 수 있지만, partition leader가 사라졌을 때는 ISR과 leader 선출 정책이 별도 판정을 합니다. 반대로 controller 과반이 먼저 사라지면 기존 leader의 데이터 경로가 잠시 응답하더라도 새 배치·leader 선택이 막힐 수 있습니다. 연습에서는 metadata API latency·quorum lag와 produce p99·ISR lag를 같은 부하에서 따로 기록해 어느 경로가 병목인지 진단합니다.
+
 ## Controller 과반 손실과 Data Leader 손실의 영향
 
 controller quorum이 동작하지 않거나 과반을 구성할 수 없어도 이미 leader·metadata·연결을 가진 broker의 기존 데이터 요청은 한동안 처리될 수 있습니다. 그러나 topic 변경·broker 등록·새 leader 선택 같은 제어 작업은 막힐 수 있습니다.

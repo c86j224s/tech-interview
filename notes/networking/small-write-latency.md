@@ -8,6 +8,8 @@ questionIds: [tcp-nagle-delayed-ack, tls-record-tcp-packet-buffering]
 
 # TCP 소량 쓰기 지연
 
+소량 쓰기 지연은 한 API 호출의 지연이 아니라 앱 프레임, TLS record, TCP 송신 큐, ACK, 상대 앱 처리라는 여러 경계의 합성 결과입니다. 따라서 옵션을 바꾸기 전에 같은 payload·RTT·연결 조건에서 각 경계의 시각을 기록해야 Nagle 문제와 단순한 앱 또는 TLS buffering을 구분할 수 있습니다.
+
 ## send 호출 시각과 선로 전송 시각
 
 앱이 헤더와 본문을 작은 두 쓰기로 보냈는데 상대 응답이 일정 시간 늦는다고 합시다. Nagle과 지연 ACK의 상호작용일 수 있지만, 앱의 flush·TLS 버퍼·이벤트 루프 정체도 비슷한 결과를 만들 수 있습니다. 먼저 어느 계층에 바이트가 머물렀는지 나누어야 합니다.
@@ -25,7 +27,11 @@ Nagle은 확인되지 않은 데이터가 남은 상황의 작은 쓰기를 모�
 | 3 | ACK 수신 또는 다른 전송 조건 충족 | ACK 전송 |
 | 4 | 본문 송신 | 프레임 완성 후 앱 처리 |
 
-이 표는 가능한 상호작용이지 모든 작은 메시지가 같은 ms만큼 지연된다는 프로토콜 보장이 아닙니다. MSS·ACK 패턴·OS 구현·다른 대기 조건이 영향을 줍니다.
+이 표는 가능한 상호작용이지 모든 작은 메시지가 같은 ms만큼 지연된다는 프로토콜 보장이 아닙니다.
+
+예를 들어 `write(header)=t0`, TLS flush=`t1`, 첫 segment 전송=`t2`, ACK=`t3`, 본문 전송=`t4`, 상대 앱 처리=`t5`를 기록하면 `t1-t0`는 앱/TLS 지연이고 두 번째 쓰기가 준비된 시각부터 ACK로 송신이 풀리는 시각까지가 Nagle·ACK 상호작용 후보입니다. ACK 이후의 `t4-t3`만으로 전체 대기를 설명할 수는 없습니다. `TCP_NODELAY` 후 `t4`가 당겨지지 않으면 원인은 다른 계층일 가능성이 큽니다. 반대로 지연이 줄면서 segment 수와 CPU가 증가하면 지연과 처리 비용 사이의 trade-off를 확인한 것입니다.
+
+재현 실습은 헤더·본문 분할, 앱 단일 배치, NODELAY의 세 조건을 동일 연결 수와 메시지 간격으로 비교하는 것입니다. 예상 결과는 TCP 수신 경계가 앱 write 경계와 일치하지 않으며, 모든 조건에서 수신기는 length prefix 같은 프레이밍으로 부분 수신을 누적 처리해야 한다는 것입니다. MSS·ACK 패턴·OS 구현·다른 대기 조건이 영향을 줍니다.
 
 ```diagram
 {"title":"한 메시지가 지나가는 여러 버퍼","caption":"화살표는 바이트의 전달 경로입니다. 각 단계의 경계는 일대일이 아니며 한 앱 write가 한 TLS record·TCP segment가 된다고 가정하지 않습니다.","rows":[[{"id":"app","label":"앱 프레임·flush"}],[{"id":"tls","label":"TLS 레코드·암호화"}],[{"id":"tcp","label":"TCP 송신 큐","detail":["Nagle · 창 · pacing"]}],[{"id":"nic","label":"NIC·실제 경로","detail":["offload · 세그먼트 전송"]}]],"edges":[{"from":"app","to":"tls","label":"write 호출"},{"from":"tls","to":"tcp","label":"암호화 바이트"},{"from":"tcp","to":"nic","label":"송신 가능 시점"}]}

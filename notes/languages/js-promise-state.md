@@ -8,6 +8,8 @@ questionIds: [js-promise-error-chain, promise-executor-then-throw, promise-rejec
 
 # Promise 체인의 상태 전파와 결과 집계
 
+Promise는 작업을 실행하는 스레드가 아니라, 비동기 결과의 상태와 후속 반응을 연결하는 값입니다. 생성자의 executor는 생성 시점에 실행되고, `then`·`catch` 반응은 나중 job으로 실행되며, callback의 반환·throw가 다음 Promise의 상태를 만듭니다. 이 모델을 먼저 잡아야 오류 복구, 병렬 시작, 취소, 조합자의 성공 조건을 혼동하지 않습니다.
+
 ## Catch 반환값과 후속 성공 경로
 
 ```js
@@ -25,6 +27,8 @@ await Promise.resolve('start')
 오류를 로그에만 남기고 return 없이 끝낸 catch도 정상적으로 undefined를 반환한 것이므로 이후에는 성공 경로가 됩니다. 복구하지 못했다면 다시 throw하거나 거절된 Promise를 반환해야 호출자가 실패를 관찰합니다.
 
 ## Executor와 반응 callback의 실행 시점
+
+실행 순서를 작은 trace로 확인할 수 있습니다. `new Promise(resolve => { log(1); resolve(); log(2); })`는 생성 중 `1,2`를 기록하고, 그 뒤에 붙인 `then`은 현재 동기 호출이 끝난 후 실행됩니다. executor 안의 계산이 다른 스레드로 이동한 것은 아니며, `then` callback에서 throw한 오류는 그 callback이 만든 새 Promise의 rejection입니다.
 
 Promise 생성자의 executor는 생성 호출 중 동기 실행됩니다. 그 안에서 throw한 예외는 일반적으로 생성된 Promise의 rejection으로 연결되므로 생성자 바깥 동기 try/catch만으로 그 거절을 관찰하지 못합니다. 단, 이미 resolve된 뒤 throw한 경우처럼 Promise가 이미 결정된 조건은 구분합니다.
 
@@ -62,6 +66,8 @@ finally는 보통 값·오류를 그대로 통과시키면서 정리합니다. �
 결과 상태가 즉시 결정되어도 then 반응은 동기 호출처럼 앞질러 실행되지 않습니다. all의 결과 배열은 완료 순서가 아니라 입력 순서입니다. allSettled는 실패를 해결하지 않고 보여 줄 뿐이며 결과별 후속 정책이 필요합니다.
 
 ## Promise 실패 집계와 취소·롤백의 구분
+
+선택 기준은 “호출자에게 언제 실패를 알릴지”와 “이미 시작한 작업을 실제로 멈출 수 있는지”입니다. `Promise.race` timeout은 전자만 바꾸고, `AbortSignal`은 API가 협조할 때만 후자를 바꿉니다. 서버에 이미 커밋된 효과는 Promise combinator의 rejection으로 취소되지 않으므로, 업무 변경에는 멱등 키·보상·상태 조회가 별도로 필요합니다.
 
 B가 먼저 실패해 `Promise.all`이 거절되어도, 이미 시작한 A의 fetch나 계산은 계속 실행될 수 있습니다. `Promise.race`로 timeout을 만들면 race는 호출자에게 먼저 도착한 결과를 넘길 뿐이어서 사용자 대기가 끝난 뒤에도 실제 작업이 남을 수 있습니다. 취소를 지원하는 API라면 `AbortSignal` 같은 해당 API의 신호를 A·B에 전달하고, 작업이 실제로 종료됐는지 별도로 관찰합니다. 이미 서버에서 커밋한 변경은 combinator의 거절이나 abort로 되돌아가지 않습니다.
 

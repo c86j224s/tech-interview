@@ -1,0 +1,58 @@
+:root {
+  color-scheme: light;
+  --ink: #152238;
+  --muted: #506176;
+  --canvas: #f4f7fb;
+  --surface: #ffffff;
+  --line: #d8e1ed;
+  --accent: #1f5eff;
+  --accent-soft: #e8efff;
+  --warning: #a34700;
+  --warning-soft: #fff1e7;
+  --danger: #a61936;
+  --shadow: 0 12px 30px rgba(21, 34, 56, .08);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 2rem 1rem 4rem; color: var(--ink); background: var(--canvas); line-height: 1.55; }
+.lab-shell { width: min(100%, 62rem); margin: 0 auto; }
+.lab-header { margin-bottom: 1.5rem; }
+.eyebrow { margin: 0 0 .35rem; color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .12em; }
+h1, h2, h3 { line-height: 1.15; }
+h1 { max-width: 14ch; margin: 0 0 .75rem; font-size: clamp(2.1rem, 7vw, 4.5rem); letter-spacing: -.05em; }
+h2 { margin: 0; font-size: 1.25rem; }
+.lab-header > p:last-child { max-width: 50rem; margin: 0; color: var(--muted); }
+.lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.lab-card { min-width: 0; margin-bottom: 1rem; padding: clamp(1rem, 3vw, 1.5rem); background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
+.lab-card__heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.toolbar { display: flex; flex-wrap: wrap; gap: .6rem; margin-block: 1rem; }
+.button { min-height: 2.75rem; padding: .55rem .85rem; border: 1px solid transparent; border-radius: .65rem; font: inherit; font-weight: 750; cursor: pointer; }
+.button:focus-visible, .accordion__trigger:focus-visible { outline: 3px solid #ffbf47; outline-offset: 3px; }
+.button--primary { color: #fff; background: var(--accent); }
+.button--secondary { color: var(--ink); background: var(--surface); border-color: var(--line); }
+.button--danger { color: #fff; background: var(--danger); }
+.badge { padding: .2rem .55rem; color: var(--accent); background: var(--accent-soft); border-radius: 99rem; font-size: .8rem; font-weight: 800; white-space: nowrap; }
+.accordion { --accordion-color: var(--ink); border: 1px solid var(--line); border-radius: .75rem; overflow: hidden; }
+.accordion--dense { --accordion-color: #293b58; }
+.accordion--warning { --accordion-color: var(--warning); background: var(--warning-soft); }
+.accordion__heading { margin: 0; }
+.accordion__trigger { display: flex; width: 100%; align-items: center; justify-content: space-between; padding: 1rem; color: var(--accordion-color); background: transparent; border: 0; font: inherit; font-weight: 800; text-align: left; cursor: pointer; }
+.accordion__trigger::after { content: " · computed"; color: var(--muted); font-size: .72rem; font-weight: 500; }
+.accordion--dense .accordion__trigger { padding-block: .55rem; }
+.accordion__icon { font-size: 1.4rem; }
+.accordion__panel { padding: 0 1rem 1rem; border-top: 1px solid var(--line); }
+.accordion__content { margin: 1rem 0 0; }
+.status { margin: 1rem 0 0; color: var(--muted); font-size: .92rem; }
+.trace { min-height: 6rem; margin: 0; padding-left: 1.5rem; color: var(--muted); }
+.trace li { padding: .25rem 0; }
+.trace li::marker { color: var(--accent); font-weight: 800; }
+.metrics { display: grid; gap: .7rem; margin: 0; }
+.metrics > div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .6rem 0; border-bottom: 1px solid var(--line); }
+.metrics dt, .metric-label { color: var(--muted); font-size: .85rem; }
+.metrics dd, .metrics strong { max-width: 65%; margin: 0; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; text-align: right; }
+.metrics--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.metrics--wide > div { display: grid; align-content: start; gap: .35rem; padding: .75rem; background: var(--accent-soft); border: 0; border-radius: .75rem; }
+.metrics--wide strong { max-width: 100%; text-align: left; }
+.diagnostic { min-height: 4rem; margin: 1rem 0 0; padding: .8rem; color: #5e1725; background: #fff2f4; border: 1px solid #e6a1ae; border-radius: .65rem; white-space: pre-wrap; }
+code { padding: .1rem .25rem; background: var(--canvas); border-radius: .25rem; }
+@media (max-width: 44rem) { .lab-grid, .metrics--wide { grid-template-columns: 1fr; } body { padding-block: 1.25rem 3rem; } }

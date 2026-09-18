@@ -10,6 +10,8 @@ questionIds: [js-event-listener-cleanup, js-abortcontroller-lifetime, shared-abo
 
 ## 화면 제거와 Window callback 수명
 
+브라우저 작업의 수명은 화면 인스턴스, 네트워크 요청, timer·observer 같은 외부 root, 결과를 적용할 현재 세대로 나눕니다. DOM이 사라졌다는 한 가지 사건으로 이 네 층이 모두 종료되지는 않습니다.
+
 화면을 열 때마다 window에 resize listener를 등록하고 닫을 때 DOM만 제거했다고 합시다. window는 여전히 callback을 참조하고 callback의 closure는 화면 상태를 참조할 수 있습니다. 화면을 여러 번 열면 이벤트 한 번에 여러 callback이 실행되고 필요 없는 객체도 남을 수 있습니다.
 
 모든 listener가 반드시 누수라는 뜻은 아닙니다. 도달할 수 없는 DOM과 callback만 서로 참조한다면 GC 대상이 될 수 있습니다. 중요한 것은 window·timer·외부 구독 같은 장수 root에서 더 이상 필요 없는 상태로 이어지는 경로입니다.
@@ -47,6 +49,8 @@ AbortSignal에 묶은 listener는 정리되지만 timer는 별도라 직접 정�
 
 controller는 abort한 뒤 초기 상태로 되돌아가지 않습니다. 새로운 요청 수명에는 새 controller를 만듭니다. signal을 전달하지 않았거나 관찰하지 않는 후속 CPU 계산·캐시 작업까지 자동 중단되지 않습니다.
 
+작업을 시작할 때는 화면 세대별 controller를 두고, 화면 전체를 닫을 때만 그 controller를 abort하며, 독립적으로 살아야 하는 저장 작업에는 별도 controller를 둡니다. 그 뒤에도 결과 적용 직전 세대 검사를 남겨야 합니다. abort는 협력적 신호이지 이미 실행된 함수의 롤백 명령이 아닙니다.
+
 ## 공유 AbortSignal과 작업 수명 범위
 
 A와 B가 같은 `AbortSignal`을 쓰다가 B만 진행 중인 상태에서 abort해도, 이미 본문까지 읽은 A의 완료 데이터나 외부 효과가 지워지지는 않습니다. A 결과를 보존할지 화면 계약에 따라 버릴지는 별도로 정하고, `Promise.all`의 한 번의 거절만 보지 말고 작업별 상태를 기록하거나 `allSettled`로 완료·실패를 함께 모읍니다.
@@ -68,3 +72,5 @@ JavaScript가 한 번에 한 실행 흐름으로 동작해도 `await`에서 멈�
 mount·unmount를 반복한 뒤 이벤트 한 번의 callback 수와 활성 timer·구독 수를 확인합니다. heap snapshot의 retained path로 장수 root를 찾아 정상 캐시와 불필요한 참조를 구분합니다. 즉시 GC 실행이나 메모리 수치 한 번만으로 누수 유무를 확정하지 않습니다.
 
 테스트 서버에서 헤더 전·본문 중·커밋 후 응답 유실을 따로 제어하고, 취소 뒤 새 화면 결과가 덮이지 않는지 확인합니다. 이 노트는 소유·취소 설계이며 실제 주문 서버의 롤백 동작이나 전체 누수 실험을 수행한 결과는 아닙니다.
+
+예상 결과는 A 요청의 본문 처리가 완료된 뒤 화면이 닫혀도 받은 데이터 자체는 되돌아가지 않지만, 현재 세대가 아니므로 UI에는 적용되지 않는 것입니다. 반대로 서버 commit 뒤 응답만 abort하면 서버 주문은 남을 수 있으므로 결과 조회나 같은 논리 요청 ID의 멱등 재시도가 필요합니다.

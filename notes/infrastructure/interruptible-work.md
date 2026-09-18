@@ -8,17 +8,23 @@ questionIds: [karpenter-spot-interruption, spot-notification-loss-recovery, spot
 
 # Spot·Job 중단의 Checkpoint와 단일 효과
 
+이 노트는 중단 알림을 복구의 전제조건이 아니라 최적화된 정리 기회로 취급합니다. 실제 복구 가능성은 알림의 도착 여부가 아니라 내구 checkpoint, 재실행 시 같은 논리 작업을 식별하는 키, 늦은 worker의 쓰기를 막는 소유권 전환에 달려 있습니다.
+
 ## 중단 알림과 작업 생존 보장의 분리
 
 Spot 중단 통지가 도착하면 새 작업 수락을 멈추고 진행 중인 작업을 checkpoint하거나 끝낼 시간을 확보할 수 있습니다. 하지만 통지 경로가 실패하거나 남은 시간이 부족할 수 있으므로, 통지가 전혀 없는 갑작스러운 노드 손실에서도 같은 작업을 재전달해 복구하는 경로가 필요합니다. Karpenter의 interruption 처리와 node drain은 앱의 원장과 메모리 세션을 자동으로 복원하지 않으므로, 복구 가능한 상태를 별도로 내구 저장해야 합니다.
 
 heartbeat timeout, Node 상태, broker 재전달, 중단 이벤트는 각각 다른 경로에서 작업 손실을 알려 주므로 하나의 신호만 확정 증거로 사용하지 않습니다. heartbeat timeout은 옛 worker가 죽었다는 뜻이 아니라 통신만 끊긴 상태일 수도 있어, 새 owner가 작업을 맡을 때 세대 번호를 비교하고 이전 owner의 늦은 쓰기를 막는 fencing을 적용해야 합니다.
 
+중단 알림은 “지금 정리할 시간이 있을 수 있음”을 알려 주는 신호이고, heartbeat·broker 재전달은 “현재 owner가 계속 책임지는지 불확실함”을 알려 주는 신호입니다. 새 owner가 작업을 맡을 때 lease나 generation을 갱신하고 옛 owner의 늦은 checkpoint·효과를 거절해야 두 신호가 서로 다른 순서로 도착해도 안전합니다.
+
 ## Job 성공 상태와 외부 효과의 분리
 
 Pod가 DB에 포인트를 지급하고 exit 0·Job 완료가 관찰되기 전에 노드가 사라지면 다시 실행될 수 있습니다. restartPolicy에 따라 같은 Pod의 컨테이너 재시작 또는 새 Pod 시도가 생길 수 있고, Job의 backoffLimit·activeDeadlineSeconds·실패 정책은 실행 수명을 다룹니다. 외부 지급을 정확히 한 번으로 만들지는 않습니다.
 
 논리 작업 ID는 제출할 때 한 번 만들고 Job 재시도에서도 그대로 전달해야 합니다. 예를 들어 worker가 재시도마다 새 UUID를 만들면 같은 지급을 두 작업으로 보아 중복 처리할 수 있으므로, 처리 마커·원장 변경·결과를 같은 DB 거래로 확정합니다. 외부 API를 호출해야 한다면 그 API에는 별도 멱등 키와 결과 조회 계약을 사용하고, CronJob의 동시 실행 정책만으로 모든 중복 제출이나 외부 효과가 사라진다고 가정하지 않습니다.
+
+재실행 추적은 제출 시 만든 논리 작업 ID가 모든 Pod 시도에 같은지부터 확인합니다. `effect key`를 DB marker와 업무 원장 변경에 같은 거래로 묶으면 첫 시도가 효과 후 죽고 두 번째 시도가 다시 들어와도 두 번째는 이미 처리된 경계를 식별할 수 있습니다. Job complete나 exit 0은 이 외부 효과의 정확히 한 번을 대신 증명하지 않습니다.
 
 ## Checkpoint의 안전한 확정 위치 의미
 
@@ -33,6 +39,8 @@ Pod가 DB에 포인트를 지급하고 exit 0·Job 완료가 관찰되기 전에
 ```diagram
 {"title":"재개 위치와 효과의 확정 경계를 맞춥니다","caption":"화살표는 반복 배치의 실행 순서입니다. 다음 배치 전에 확정 위치를 내구 기록하고 응답 유실 시 같은 작업 키로 실제 결과를 확인합니다.","rows":[[{"id":"load","label":"안전 checkpoint 읽기"}],[{"id":"work","label":"범위 작업·멱등 효과"}],[{"id":"commit","label":"효과·진행 위치 확정"}],[{"id":"next","label":"다음 범위 또는 완료"}]],"edges":[{"from":"load","to":"work","label":"같은 입력·버전"},{"from":"work","to":"commit","label":"원자 경계"},{"from":"commit","to":"next","label":"내구 성공 확인"}]}
 ```
+
+250개까지 효과가 반영되었지만 checkpoint가 200인 상태를 재개할 때, 201~250을 단순히 건너뛰면 유실 위험이 있고 무조건 새 효과로 다시 적용하면 중복 위험이 있습니다. 따라서 재개 범위는 effect key로 멱등 확인하고, checkpoint·marker·효과가 같은 원자 경계인지에 따라 복구 절차를 정합니다. 입력 snapshot이 달라졌다면 같은 cursor라도 같은 작업이 아니므로 version도 비교해야 합니다.
 
 ## 기록 주기와 비용·복구 지연의 균형
 
@@ -55,3 +63,5 @@ checkpoint에는 입력 snapshot·cursor·스키마 버전·논리 작업 ID·�
 ## 알림 유무·Commit 위치별 재개 검증
 
 테스트 환경에서 통지 있음·없음·대체 capacity 없음·효과 후 checkpoint 전 중단·ACK 전 중단·중복 Job을 나눕니다. 재개 위치·최종 효과 수·유실 범위·복구 시간·핵심 SLO를 확인합니다. 현재 작업에서는 Spot·Kubernetes Job 중단을 실행하지 않았으며 본문은 내구 실행과 용량 설계입니다.
+
+최소 판정표에는 통지 도착/미도착, 효과 전·후, checkpoint 전·후, ACK 전·후, 중복 Job을 행으로 둡니다. 각 행에서 최종 효과 수가 논리 작업 수와 일치하는지, 재개 위치가 안전 경계인지, 옛 owner의 쓰기가 거절되는지 확인합니다. 실제 Spot·Kubernetes 환경을 이 작업에서 실행하지 않았으므로 공급 지연이나 grace 기간 수치는 검증 결과로 제시하지 않습니다.

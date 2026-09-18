@@ -8,6 +8,8 @@ questionIds: [event-time-watermark, stream-state-checkpoint, scheduler-missed-ru
 
 # 스트림 Watermark·Checkpoint와 정기 회차 복구
 
+스트림 처리는 사건이 발생한 시간, 시스템이 그 사건을 본 시간, 아직 오지 않은 사건이 없다고 추정하는 시간을 서로 다른 상태로 다룹니다. watermark와 checkpoint를 함께 이해해야 늦은 데이터의 정정과 장애 복구를 같은 집계의 두 문제로 섞지 않게 됩니다.
+
 ## 늦은 사건의 대기 기한과 정정 정책
 
 10:00~10:01의 매출을 집계하는데 10:00:50 사건이 10:01:20에 도착할 수 있습니다. event time은 사건에 부여한 발생 시각이고 processing time은 실제 처리 시각입니다. 네트워크·재시도·clock skew 때문에 둘은 다릅니다.
@@ -38,6 +40,8 @@ partition별 watermark의 최소를 사용하면 하나의 멈춘 source가 전�
 엔진이 `barrier`를 사용한다면 각 입력 경계가 state snapshot과 함께 처리될 때까지 맞추는(aligned) 방식인지, 진행 중인 channel state까지 함께 저장하는(unaligned) 방식인지에 따라 복구 때 필요한 입력이 달라집니다. 어떤 엔진이 barrier·channel state·aligned·unaligned snapshot을 지원하는지는 구현 계약을 확인해야 하며, source offset을 모든 partition을 관통하는 하나의 시간 번호로 취급하면 안 됩니다.
 
 복구 기준에는 window state·timer·dedup뿐 아니라 serializer·계산 버전의 호환 정보도 포함될 수 있으므로, 하나라도 빠졌을 때 재시작 결과가 같은지 확인해야 합니다.
+
+복구 예를 수치로 쓰면, snapshot의 합계에는 offset 100까지 반영됐는데 재개 위치만 91로 저장되면 91~100을 다시 더해 중복됩니다. 반대로 합계에는 90까지만 반영됐는데 재개 위치가 101이면 91~100의 효과를 빠뜨립니다. 따라서 재시작 후 기대 결과는 “state와 다음 offset이 같은 처리 경계를 가리키는가”로 판정해야 합니다.
 
 ## 내부 Exactly-once와 외부 Sink의 경계
 

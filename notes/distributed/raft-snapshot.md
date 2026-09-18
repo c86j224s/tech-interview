@@ -8,11 +8,13 @@ questionIds: [raft-snapshot-compaction, raft-snapshot-applied-log-boundary]
 
 # Raft Snapshot의 적용 위치와 내구 게시
 
+이 노트는 Raft snapshot을 단순 백업 파일이 아니라 로그 접두부를 상태로 대체하는 복구 기준으로 설명합니다. `commit`, `applied`, `lastIncludedIndex`를 같은 숫자로 뭉개지 않고, 일관된 view를 만든 뒤 게시·정리·follower 설치까지의 내구 경계를 따라갑니다.
+
 ## Commit index·applied index와 Snapshot 포함 위치
 
 commit index=120, applied index=115이면 현재 상태 머신은 115까지만 반영했습니다. 이 상태를 저장하면서 lastIncludedIndex=120이라고 기록하면 복구는 116~120을 이미 적용했다고 보고 건너뛸 수 있습니다. snapshot의 내용과 포함 위치가 같은 논리 시점이어야 합니다.
 
-snapshot은 키·값만 있는 파일이 아니라 어떤 로그 접두부를 상태로 대체했는지 나타내는 복구 기준입니다. lastIncludedIndex·그 index의 term·멤버 구성·필요한 client dedup 결과·outbox 상태 등 재생 의미에 필요한 데이터를 포함합니다.
+snapshot은 키·값만 있는 파일이 아니라 어떤 로그 접두부를 상태로 대체했는지 나타내는 복구 기준입니다. 예를 들어 상태가 115까지 apply된 시점이면 복구는 snapshot을 읽고 로그 116부터 재생해야 합니다. `commit=120`이라는 이유로 snapshot 경계를 120으로 올리려면 116~120의 상태와 dedup·outbox까지 실제로 그 시점에 함께 고정됐다는 증거가 있어야 합니다. lastIncludedIndex·그 index의 term·멤버 구성·필요한 client dedup 결과·outbox 상태 등 재생 의미에 필요한 데이터를 포함합니다.
 
 | 상태 | 예 | snapshot 처리 |
 | --- | --- | --- |
@@ -35,7 +37,7 @@ snapshot 복사에 걸리는 시간이 `T`이고 로그 추가율을 `r`(로그 
 
 임시 파일·metadata·checksum을 완성하고 필요한 내구화를 거친 뒤 manifest를 게시합니다. 새 snapshot이 재시작에서 유효하게 선택되기 전에 옛 log를 지우면 둘 다 사용할 수 없는 틈이 생깁니다. 반대로 게시 후 cleanup이 중단되면 옛 파일이 남을 수 있지만 다음 재시작에서 완성 세대를 선택하고 안전하게 정리할 수 있어야 합니다.
 
-파일 하나의 rename만으로 모든 저장 장치의 전원 손실 내구성이 증명되지는 않습니다. 파일시스템·OS·스토리지의 flush·directory persistence 계약을 따릅니다. checksum은 바이트 손상을 찾는 수단이지 내용이 올바른 applied 상태라는 증명은 아닙니다.
+파일 하나의 rename만으로 모든 저장 장치의 전원 손실 내구성이 증명되지는 않습니다. 파일시스템·OS·스토리지의 flush·directory persistence 계약을 따릅니다. checksum은 바이트 손상을 찾는 수단이지 내용이 올바른 applied 상태라는 증명은 아닙니다. 장애 진단에서는 `manifest가 가리킨 세대`, checksum 검증, lastIncludedIndex/term, 복구 후 apply 시작점, 구성·dedup 결과를 따로 확인합니다. 파일이 정상적으로 열려도 경계가 잘못되면 논리적으로는 유효하지 않은 snapshot입니다.
 
 ## Follower Snapshot의 임시 수신과 원자 설치
 
@@ -53,4 +55,4 @@ snapshot에 dedup 기록을 빼거나 너무 빨리 만료하면 복구 뒤 같�
 
 ## Snapshot 생성·게시·삭제·설치 중단 시험
 
-applied=115, commit=120 상태를 고정해 snapshot 복원 후 116부터 적용되는지 확인합니다. 임시 쓰기 중단·내구화 뒤 중단·manifest 뒤 중단·log cleanup·follower 부분 수신을 각각 시험하고 값·구성·요청 결과가 같은 기준으로 돌아오는지 봅니다. 현재 작업에서는 실제 Raft snapshot 구현을 실행하지 않았습니다. 본문은 복구 불변식과 저장 순서 설명입니다.
+applied=115, commit=120 상태를 고정해 snapshot 복원 후 116부터 적용되는지 확인합니다. 임시 쓰기 중단·내구화 뒤 중단·manifest 뒤 중단·log cleanup·follower 부분 수신을 각각 시험하고 값·구성·요청 결과가 같은 기준으로 돌아오는지 봅니다. 현재 작업에서는 실제 Raft snapshot 구현을 실행하지 않았습니다. 본문은 복구 불변식과 저장 순서 설명입니다. 따라서 제시한 중단 시험은 실행 결과가 아니라 구현자가 채워야 할 검증 행렬이며, 특정 저장장치의 rename·flush 내구성이나 Raft 라이브러리의 실제 계약을 이미 확인했다는 뜻은 아닙니다.

@@ -1,0 +1,53 @@
+{
+  "retrievedAt": "2026-09-18",
+  "sources": [
+    {
+      "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/initialization/",
+      "quote": "Page content unavailable; supplied content contained only Documentation. The page summary states that stored properties require initial values and class initialization uses two phases.",
+      "applicability": "Swift initialization model; summary only, not an exact quotation or release-specific claim.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/automaticreferencecounting/",
+      "quote": "Page content unavailable; supplied content contained only Documentation. The page summary states that strong references keep instances alive, weak references become nil, and unowned references require a lifetime guarantee.",
+      "applicability": "Swift ARC, weak, and unowned teaching; summary only.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://clang.llvm.org/docs/AutomaticReferenceCounting.html",
+      "quote": "assign implies __unsafe_unretained ownership; weak implies __weak ownership; __unsafe_unretained does not provide weak-reference tracking or automatic clearing.",
+      "applicability": "Objective-C ARC ownership qualifier distinction.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ConflictingLayouts.html",
+      "quote": "Unsatisfiable layouts occur when the system cannot find a valid solution for the current set of constraints. Auto Layout identifies the conflicting constraints, breaks constraints until it finds a valid layout, and logs the conflict. Apple recommends a symbolic breakpoint for UIViewAlertForUnsatisfiableConstraints.",
+      "applicability": "Auto Layout conflicting required constraints and diagnostics; archived Apple guide, not a claim of complete current UIKit behavior.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://www.sqlite.org/lang_altertable.html",
+      "quote": "SQLite supports a limited subset of ALTER TABLE. A column can be added; a NOT NULL added column must have a default value other than NULL. Arbitrary table format changes use create-new, copy, drop-old, rename-new sequence.",
+      "applicability": "SQLite ADD COLUMN migration and boundary between direct alteration and table reconstruction.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://developer.apple.com/documentation/objectivec/arc",
+      "quote": "Page returned HTTP 404 Not Found.",
+      "applicability": "Not used as evidence; Objective-C claims use the Clang ARC specification instead.",
+      "date": "2026-09-18"
+    },
+    {
+      "url": "https://developer.apple.com/documentation/coredata/migrating-your-persistent-store-using-lightweight-migration",
+      "quote": "Page returned HTTP 404 Not Found.",
+      "applicability": "This failed fetch is not supporting evidence. A separate host-authored inferred-mapping fixture was compiled and executed on macOS.",
+      "date": "2026-09-18"
+    }
+  ],
+  "unknowns": [
+    "Exact Swift Book quotations and precise Swift release applicability were unavailable from the fetched pages.",
+    "UIKit simulator/device execution and actual selected broken constraint were not run.",
+    "Objective-C dangling pointer dereference was not executed because it would be undefined behavior; only non-dereference ownership observations were run.",
+    "Simple optional-attribute Core Data inferred mapping ran on macOS; complex model compatibility and iOS execution remain unverified."
+  ]
+}

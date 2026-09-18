@@ -8,7 +8,11 @@ questionIds: [keda-scale-zero, warm-pod-versus-warm-node, queue-visible-inflight
 
 # Scale-to-zero의 첫 처리와 마지막 작업 종료
 
+Scale-to-zero의 품질은 replica 수가 0이 되는 순간이 아니라, 첫 메시지가 도착한 뒤 실제 효과와 ACK가 끝나는 시점까지의 전체 수명으로 판단합니다. 기동에서는 scaler·노드·Pod·앱·broker 준비를, 축소에서는 새 작업 수락 중단·진행 중 효과·재전달을 따로 세어야 합니다. “Running”이나 visible backlog=0만으로 준비·완료를 결론내리지 않는 것이 출발점입니다.
+
 ## Polling부터 첫 ACK까지의 준비 지연
+
+예를 들어 이벤트가 t=0에 도착하고 scaler 감지가 t=5, Node Ready가 t=35, 앱 초기화가 t=45, assignment가 t=52, 첫 효과와 ACK가 t=60에 끝났다면 cold-start SLO는 60초입니다. Pod Running이 t=40이었다는 사실만으로 40초에 처리 가능했다고 기록하면 안 됩니다. 각 시각을 같은 message ID로 연결해야 어느 단계가 p99를 만들었는지 알 수 있습니다.
 
 consumer가 0개일 때 메시지가 도착하면, 먼저 scaler가 이벤트를 감지해 workload 활성화를 요청하고, Pod를 생성한 뒤 노드에 배치해야 합니다. 이어 이미지·앱 초기화·broker 연결·assignment를 거쳐야 첫 처리를 시작할 수 있습니다.
 
@@ -34,6 +38,8 @@ warm이라고 이름 붙인 Pod가 실제 Ready·broker 연결 상태가 아니�
 허용 메시지 지연이 긴 배치와 즉시 응답해야 하는 사용자 요청은 다른 정책이 필요합니다. 긴 유휴 뒤 첫 메시지와 짧은 반복 burst의 비용을 따로 측정해 최소 용량을 정합니다.
 
 ## Visible backlog와 in-flight 작업
+
+최소 consumer를 유지할지는 첫 처리 SLO와 유휴 비용의 비교로 결정합니다. 긴 배치 지연을 허용할 수 있으면 warm node만 두고, 짧은 burst가 반복되며 rebalance 비용이 크면 Ready consumer나 cooldown을 유지하는 편을 검토합니다. 축소 장애에서는 visible=0, fetch 중단, 마지막 효과, ACK, process 종료를 각각 확인하고 어느 시점의 작업이 끊겼는지 진단합니다.
 
 worker가 큐에서 메시지를 가져간 뒤에는 visible backlog에서 사라져도 DB 쓰기나 외부 효과가 끝나지 않은 in-flight 작업일 수 있습니다. 예를 들어 visible backlog=0인 시점에 축소를 완료하면 아직 확정하지 않은 작업을 끊을 수 있으므로, broker가 in-flight를 어떻게 정의하는지와 지표 지연을 확인하고 ACK 또는 commit이 어느 단계에서 발생하는지 함께 기록합니다.
 

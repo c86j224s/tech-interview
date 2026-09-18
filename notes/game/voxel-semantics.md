@@ -10,6 +10,8 @@ questionIds: [voxel-occupancy-representation, voxel-static-dynamic-overlay, voxe
 
 ## 고체 점유와 Agent별 이동성
 
+복셀 질의는 저장 포맷을 고르는 문제보다 먼저 “무엇을 막는가”를 정의하는 문제입니다. 고체·유체·위험·시야 차단·동적 객체는 서로 다른 predicate일 수 있고, agent profile이 그 predicate를 이동 가능·불가능·미확인으로 해석합니다.
+
 물은 수영 가능 agent와 지상 agent에게 다르고 낮은 통로는 작은 몸체만 통과할 수 있습니다. 원본의 재질·고체 부피, 동적 문/객체 점유, 반경·높이·경사·계단·비행 능력을 나눕니다. 하나의 occupied bit는 저장은 작지만 필요한 질의 조건을 잃을 수 있습니다.
 
 예를 들어 물 위를 수영할 수 있어도 지상 agent가 그 cell을 걸을 수 있다는 뜻은 아니므로, 조회는 같은 source/profile/overlay version에서 clearance(주변 여유), 지지면, 필요한 부피, 이동 능력을 함께 읽습니다. 비행 agent는 발밑 cell 하나가 비어 있는지만 보지 않고 이동하는 전체 3D footprint를 검사합니다. 이 결과를 cache에 저장한다면 조회에 사용한 원본·profile·overlay·규칙 version에 종속시켜 서로 다른 버전의 결과를 섞지 않습니다.
@@ -37,6 +39,8 @@ questionIds: [voxel-occupancy-representation, voxel-static-dynamic-overlay, voxe
 
 hash에 청크가 없다는 사실은 로딩 중·영역 부재·명시적 빈 공간을 구분해야 합니다. 포맷 변환 실패도 empty로 반환하지 않습니다. 넓은 희소 공간이어도 active 영역의 무작위 query가 많으면 pointer/hash overhead가 dense보다 클 수 있습니다.
 
+선택은 점유율 하나가 아니라 접근 패턴으로 합니다. 전체 영역을 순회하거나 이웃을 자주 읽으면 dense 또는 연속 chunk가 유리할 수 있고, 활성 영역이 넓게 흩어져 load/unload가 빈번하면 hash chunk가 유리할 수 있습니다. octree는 큰 균일 영역을 잘 압축하지만 경계가 잦은 지형의 단일 cell 갱신 비용을 따로 측정해야 합니다.
+
 ## Palette와 Bitmap의 정보 표현 차이
 
 16³=4096 cell의 1-bit 점유 bitmap은 payload 512 bytes입니다. 4개 재질 palette의 2-bit index 배열은 1024 bytes에 palette metadata가 추가됩니다. bitmap만으로 네 재질을 표현할 수 없으므로 공정 비교는 같은 의미를 보존해야 합니다.
@@ -48,3 +52,5 @@ palette에 다섯 번째 재질을 추가하면 최소 index 폭이 2→3bit로 
 새 block을 완성한 뒤 version을 붙여 게시해도, 진행 중인 ray/path reader는 잠시 옛 block을 계속 읽을 수 있으므로 그 수명이 끝날 때까지 옛 block을 유지합니다. 최대 reader 수명은 취소·완료·admission 정책으로 정할 값이지, 아직 살아 있는 참조를 강제로 free해도 된다는 뜻은 아닙니다. 저장 포맷 version과 terrain source version은 서로 다른 변경 축으로 기록합니다.
 
 6/26 이웃 조회·임의 query·국소 수정·넓은 ray·복잡한 경계·load/unload·palette 폭 증가를 같은 데이터로 비교합니다. 저장 bytes·resident memory·update/query p99·streaming·retained old blocks를 봅니다. 이 노트는 표현 설계이며 실제 voxel 저장 엔진 benchmark 결과는 아닙니다.
+
+예상 결과는 문이 열릴 때 문 contribution만 제거하고 뒤 벽 contribution은 그대로 남는 것이며, palette에 다섯 번째 재질을 넣을 때 2-bit block이 3-bit 또는 다른 표현으로 재인코딩될 수 있는 것입니다. 옛 reader가 살아 있는 동안에는 새 block을 게시해도 old block을 즉시 free하지 않아야 합니다.

@@ -8,6 +8,8 @@ questionIds: [nats-slow-consumer, jetstream-pull-batch-ack-memory]
 
 # NATS Slow Consumer와 Pull Batch의 메모리 예산
 
+메시지 소비자의 메모리는 broker pending 하나로 설명되지 않습니다. 전달된 payload가 socket·client queue·worker·실행 중 상태·Ack pending을 거치는 동안 각 계층의 개수와 bytes가 누적되므로, 처리 여유를 확인한 뒤 가져오고 업무 효과가 확정된 뒤 Ack하는 수명을 예산으로 잡아야 합니다.
+
 ## Slow Subscriber 대기의 누적 계층
 
 메시지를 초당 1000개 받는데 callback이 600개만 처리하면 400개/s가 어딘가에 누적되거나 유실됩니다. server connection pending·socket buffer·client subscription queue·앱 worker queue·실행 중 payload를 각각 구분합니다. broker 지표 하나가 모든 대기 bytes를 보여 주지는 않습니다.
@@ -44,5 +46,7 @@ MaxAckPending은 해당 consumer에서 아직 Ack되지 않은 전달 수를 제
 긴 작업은 지원되는 진행 통지와 실제 최대 실행 한도를 함께 사용합니다. 진행 통지가 영원한 작업을 무한 연장하는 면허는 아닙니다. 효과 전에 Ack하면 crash로 업무를 잃을 수 있고, 효과 뒤 Ack가 유실되면 재전달되므로 내구 dedup·idempotent effect가 필요합니다.
 
 ## 메시지 유실·재전달과 업무 성공률의 분리
+
+검산할 때 `batch=1000`, 최대 payload 1MiB라는 입력은 payload만 약 1GiB의 상한 후보를 만들고, 동시 pull 두 개면 그 후보가 더 커질 수 있음을 먼저 계산합니다. 처리 완료 전에 Ack를 하면 crash 뒤 유실 가능성이 있고, 완료 뒤 Ack가 사라지면 중복 전달이 예상되므로 업무 효과의 dedup 결과까지 성공 기준에 넣습니다.
 
 Core의 drop·JetStream의 redelivery·업무 성공·DLQ·미완료 나이를 따로 보고합니다. 큰 payload·느린 DB·연결 재설정·Ack 유실·shutdown drain·fetch 취소를 시험합니다. shutdown에서는 새 pull을 멈추고 실제 작업 완료 또는 안전한 미확인 재처리 정책을 적용합니다. 현재 작업에서는 NATS/JetStream server 실험을 실행하지 않았습니다.

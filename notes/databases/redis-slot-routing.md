@@ -8,6 +8,8 @@ questionIds: [redis-sentinel-cluster, redis-cluster-hash-tags, redis-cross-accou
 
 # Redis Cluster 슬롯·Hash Tag·장애 라우팅
 
+Redis의 장애 감시와 키 공간 분산은 서로 다른 문제이며, Cluster에서도 원자성은 전체 데이터베이스가 아니라 같은 슬롯에 배치된 명령 범위에서 출발합니다. 키를 어떻게 만들고 요청이 어느 노드로 가며 실패 뒤 무엇을 재시도할지를 한 흐름으로 추적해야 hash tag가 제공하는 이점과 잃는 분산성을 함께 판단할 수 있습니다.
+
 ## 장애 전환과 키 공간 분산의 요구 분리
 
 Sentinel은 한 데이터셋의 primary·replica를 감시하고 장애 판단·승격·새 primary 발견을 돕습니다. 키를 여러 primary에 나누는 샤딩은 하지 않습니다. Cluster는 키를 16,384 hash slot으로 나누어 여러 primary에 배치하고 replica·승격·client routing을 함께 다룹니다.
@@ -42,6 +44,8 @@ Sentinel은 한 데이터셋의 primary·replica를 감시하고 장애 판단·
 MOVED는 슬롯의 소유 위치가 다른 곳임을 알려 slot cache를 갱신하게 할 수 있습니다. ASK는 이동 중 임시 목적지에서 해당 요청을 처리하도록 유도하며 ASKING 등 프로토콜 절차가 필요합니다. ASK 하나를 영구 slot 소유 이전으로 캐시하면 잘못될 수 있습니다. 검증된 cluster client를 사용하고 재연결·다중 key·pipeline의 실제 처리 방식을 확인합니다.
 
 Sentinel client는 새 primary 주소를 다시 발견하고 오래된 연결을 처리하는 다른 경로입니다. 어떤 방식이든 timeout은 명령 미실행의 증명이 아닙니다. 동일 요청 key·fingerprint·결과를 확인하고 증분 명령을 무조건 반복하지 않습니다. 복제 승격에서 dedupe 기록까지 잃는 한계는 권위 원장·대사와 연결합니다.
+
+실패를 진단할 때 먼저 요청 key들의 계산 슬롯, 응답 코드가 MOVED인지 ASK인지, client slot cache가 언제 갱신됐는지를 같은 요청 ID로 묶습니다. 그 다음 timeout이나 연결 단절이면 명령이 실행됐는지 확인할 수 있는 읽기·멱등 기록·원장 대사를 거쳐야 하며, 단순 재전송으로 잔액 차감 같은 증분 효과를 두 번 만들지 않아야 합니다.
 
 ## 키 이름 규칙과 데이터 이전
 

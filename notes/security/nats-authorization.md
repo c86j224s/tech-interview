@@ -8,13 +8,19 @@ questionIds: [nats-subject-isolation, nats-account-import-export-trust]
 
 # NATS Subject 권한과 Account 간 신뢰
 
+NATS 보안의 기본 모델은 subject 이름이 아니라 broker가 연결의 publish·subscribe 능력을 검사한다는 점입니다. 이 노트는 account namespace, wildcard, request-reply inbox, account 간 import/export, 기존 연결 회수를 최소 권한과 실제 전달 결과로 점검합니다.
+
 ## 테넌트 이름과 broker 구독 권한
+
+subject를 `tenant-a.prod.orders.created`로 잘 만들었어도 broker 정책이 다른 연결에 `>`를 허용하면 이름은 보안 경계가 아닙니다. 요청 처리에서는 사용자가 보낸 tenant 문자열을 신뢰하지 않고 인증된 주체의 내부 식별자와 허용된 환경·이벤트를 조합해야 하며, 거절은 subject 생성 단계와 broker 결과 양쪽에서 확인합니다.
 
 이벤트를 `tenant-a.prod.orders.created`에 보낸다고 합시다. 이름은 잘 분류되어 있지만 다른 테넌트 연결이 넓은 `>` 구독 권한을 가지면 메시지를 받을 수 있습니다. 명명 규칙은 경계를 표현하고, broker의 account·사용자 자격·publish/subscribe 권한이 경계를 강제합니다.
 
 애플리케이션이 사용자의 tenant 문자열을 그대로 subject에 붙이면 이름 생성 단계부터 경계가 흔들릴 수 있습니다. 인증된 주체의 내부 tenant ID와 허용된 환경·이벤트 목록으로 조립하고, 점·wildcard 토큰·예약 응답 이름을 임의로 넣지 못하게 합니다.
 
 ## Wildcard와 행동 권한 제한
+
+구독과 발행을 별도 축으로 그리면 “읽는 서비스가 명령도 보낼 수 있는” 과잉 권한이 드러납니다. `tenant-a.>` 정책을 추가한 뒤 새 민감 subject가 자동으로 노출되는지, `*`와 `>`가 각각 어느 토큰 수를 포함하는지 작은 subject 집합으로 테스트해 정책 범위를 추측하지 않습니다.
 
 | 요소 | 의미 | 정책 영향 |
 | --- | --- | --- |
@@ -28,6 +34,8 @@ questionIds: [nats-subject-isolation, nats-account-import-export-trust]
 
 ## Account 기본 분리와 명시적 연결
 
+account A와 B가 같은 문자열을 사용해도 기본 namespace가 분리되는지 먼저 확인한 후, A의 최소 export와 B의 명시적 import를 하나씩 추가합니다. 예상 결과는 지정한 이벤트만 B의 local alias로 도착하고 역방향·미지 subject는 계속 거절되는 것이며, stream과 service export를 같은 전달 의미로 취급하지 않습니다.
+
 `NATS account`는 서로 다른 subject namespace를 제공하는 기본 격리 경계입니다. 예를 들어 분석 account가 주문 account의 일부 이벤트만 읽어야 하면, 주문 account가 `export`로 공개 범위를 정하고 분석 account가 `import`로 그 범위를 자기 쪽 subject에 들여옵니다. `stream` export와 `service` export는 전달·응답 경로가 다를 수 있으므로 종류와 매핑을 따로 확인해야 하며, 어느 쪽 설정도 양방향 전체 신뢰를 자동으로 만들지는 않습니다.
 
 ```diagram
@@ -38,17 +46,23 @@ stream export와 request-reply service export는 전달·응답 경로가 다릅
 
 ## Reply inbox 권한 범위
 
+request-reply 테스트는 요청 publish 성공만으로 끝내지 않고 정상 reply, 다른 inbox로의 publish, 허용된 메시지 수·수명 초과를 각각 확인합니다. 동적 reply permission의 정확한 범위는 사용 중인 서버·인증 구성에서 확인해야 하며, 지원되지 않는 제한을 있다고 가정해 설계를 설명하지 않습니다.
+
 request-reply는 요청 subject 외에 응답을 돌려받을 inbox를 사용합니다. 편의를 위해 모든 subject publish를 열면 최소 권한이 무너집니다. 필요한 응답 권한·메시지 수·수명을 제한하는 제품 기능을 확인하고 사용자 입력의 reply subject를 임의 공개 대상으로 신뢰하지 않습니다.
 
 동적 response permission을 쓸 때는, 요청에 필요한 reply subject 하나만 허용하는지 아니면 더 넓은 범위를 여는지 서버 버전과 인증 구성의 계약으로 확인합니다. 정상 응답 한 건에 필요한 권한과 다른 테넌트의 inbox에 무기한 publish하는 권한은 다르므로, 제품 계약을 확인해 지원되는 메시지 수·수명 제한만 적용하고 지원되지 않는 제한을 있다고 가정하지 않습니다. account 경계를 넘는 응답 매핑도 정상 응답과 잘못된 inbox 거절을 함께 시험합니다.
 
 ## 자격 회수와 기존 연결 관찰
 
+정책 회수 실험은 자격 변경 시각, 새 연결의 거절, 기존 subscriber의 마지막 수신 시각을 분리해 기록합니다. 설정 파일을 바꾼 사실만으로 기존 TCP 연결이 즉시 차단됐다고 결론내리지 않고, 서버 재적용·JWT claim 전파·명시적 연결 종료 정책의 실제 결과를 근거로 합니다.
+
 자격 파일을 바꿨다고 장기 TCP 연결이 즉시 모든 구독을 멈춘다는 보장은 없습니다. 인증 방식·서버 설정 재적용·JWT claim 전파·연결 종료 정책의 실제 동작을 확인합니다. 새 연결 거절과 기존 subscriber의 마지막 수신 시각을 따로 측정합니다.
 
 감사 로그에는 주체·account·subject·publish 또는 subscribe·허용 결과를 남길 수 있지만 원문 자격과 민감 payload는 최소화합니다. 네트워크 TLS를 사용해도 subject 인가가 없으면 인증된 다른 서비스가 데이터를 읽을 수 있습니다.
 
 ## 정상 전달과 교차 경계 거절 시험
+
+테스트 매트릭스에는 정상 이벤트, 다른 account의 같은 이름, 역방향 import, 넓은 wildcard, 잘못된 inbox, 회수 뒤 기존 연결을 포함합니다. 라벨이나 로그의 “authorized” 문구가 아니라 수신 payload의 주체·subject와 broker 거절 결과를 함께 판정해야 정책이 실제 경계를 지키는지 알 수 있습니다.
 
 격리된 테스트 broker에 account A·B와 서로 다른 사용자 자격을 두고 같은 subject 문자열을 사용해 기본 분리가 유지되는지 확인합니다. 제한된 export/import를 추가한 뒤 필요한 이벤트만 통과하는지, 역방향·다른 subject·넓은 wildcard·잘못된 inbox는 거절되는지 검사합니다.
 

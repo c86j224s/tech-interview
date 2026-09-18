@@ -8,6 +8,8 @@ questionIds: [agent-a2a-vs-mcp, agent-a2a-task-lifecycle, agent-a2a-trust]
 
 # 원격 에이전트의 Task·산출물·위임 신뢰
 
+이 노트의 판단 단위는 “무엇을 호출했는가”가 아니라 “누가 어떤 수명과 결과 책임을 맡는가”입니다. 아래 흐름에서 요청을 받은 client, 작업을 소유하는 원격 server, 결과를 소비하는 사용자를 분리해 보면 연결이 끊기거나 입력이 늦게 도착해도 같은 작업을 안전하게 이어 갈 수 있습니다.
+
 ## 내부 LLM 유무보다 중요한 외부 계약의 책임 범위
 
 주문 ID로 주문을 반환하는 기능은 명확한 tool/API 계약입니다. “비용 이상을 조사해 근거 보고서를 만들어 달라”는 요청은 원격 담당자가 경로를 선택하고 추가 입력·여러 산출물을 만들 수 있습니다. MCP는 주로 도구·자료 연결, A2A는 독립 원격 agent와 메시지·작업 수명·산출물을 교환하는 경계입니다. 복잡한 서비스라도 기존 job API로 충분하면 새 프로토콜을 반드시 도입할 필요는 없습니다.
@@ -35,7 +37,11 @@ streaming을 광고하는 server의 nonterminal task에 재구독하면 현재 s
 {"title":"연결이 끊겨도 Task를 기준으로 결과를 확인합니다","caption":"화살표는 관찰·재조회 흐름입니다. message나 artifact 조각만으로 완료를 판단하지 않고 task와 최종 산출물을 따로 검사합니다.","rows":[[{"id":"request","label":"목표·제약·논리 요청 ID"}],[{"id":"task","label":"원격 task ID·상태"}],[{"id":"input","label":"입력 대기·사용자 응답"},{"id":"stream","label":"snapshot·갱신·산출물 조각"}],[{"id":"verify","label":"종결 상태·최종 산출물 검증"}]],"edges":[{"from":"request","to":"task","label":"제한된 위임"},{"from":"task","to":"input","label":"추가 조건"},{"from":"task","to":"stream","label":"지원된 관측"},{"from":"input","to":"verify","label":"상태 전이 확인"},{"from":"stream","to":"verify","label":"완전성 확인"}]}
 ```
 
-artifact ID·append/replace 의미를 지켜 조각을 결합하고 중복 수신으로 문단을 중복 추가하지 않습니다. task completed는 상대의 종료 선언이지 요구 품질·근거·현재 실제 상태까지 참이라는 보장이 아닙니다. 최종 결과를 별도로 검사합니다.
+artifact ID·append/replace 의미를 지켜 조각을 결합하고 중복 수신으로 문단을 중복 추가하지 않습니다.
+
+예를 들어 client가 논리 요청 `audit-17`을 보내 task `task-42`를 받고, server가 `input-required`로 멈췄다고 하겠습니다. 재시도는 새 task를 만들기 전에 `audit-17`과 `task-42`의 현재 상태를 조회하고, 사용자의 답을 outstanding request ID에 한 번만 연결해야 합니다. 답이 처리된 뒤 `completed`가 와도 artifact의 ID·버전·필수 항목을 확인한 다음 사용자에게 성공을 표시합니다. 이 순서를 지키면 timeout 뒤 늦게 도착한 성공과 client 재시도로 생긴 중복 작업을 서로 다른 사건으로 진단할 수 있습니다.
+
+실무 선택에서는 단일 동기 조회와 짧은 작업은 direct message나 기존 job API가 단순하고, 추가 입력·스트리밍·여러 산출물·긴 실행이 있으면 task 계약의 가치가 커집니다. 장애 조사에서는 먼저 논리 요청 ID→task ID→artifact ID의 연결이 끊긴 지점을 찾고, 그 다음 상태 전이와 owner 인가를 확인합니다. task completed는 상대의 종료 선언이지 요구 품질·근거·현재 실제 상태까지 참이라는 보장이 아닙니다. 최종 결과를 별도로 검사합니다.
 
 ## 인증된 상대에 대한 자료 제공·행동 권한 최소화
 

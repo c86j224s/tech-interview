@@ -8,6 +8,8 @@ questionIds: [k8s-requests-limits, k8s-resource-qos-eviction, sidecar-log-resour
 
 # Kubernetes 자원 요청·상한·노드 여유 계산
 
+이 노트는 Kubernetes 자원 설정을 “Pod 하나의 숫자”가 아니라 scheduler 배치, cgroup 집행, 노드 압력, HPA 입력이 연결된 예산 모델로 설명합니다. request와 limit의 의미를 분리한 뒤 앱 외 구성요소와 관측 신호를 같은 노드 단위로 대조합니다.
+
 ## Request 배치 기준과 Limit 사용 상한
 
 컨테이너의 CPU request=500m, limit=1이면 scheduler는 요청 자원을 배치 계산에 사용하고 런타임은 설정된 CPU 상한을 집행합니다. request가 최대 사용량이 아니고 limit가 항상 확보되는 CPU도 아닙니다. 노드 경쟁·quota 주기·throttling이 실제 지연에 영향을 줍니다.
@@ -22,7 +24,7 @@ questionIds: [k8s-requests-limits, k8s-resource-qos-eviction, sidecar-log-resour
 | node pressure | 노드 전체 자원 부족 | kubelet eviction·시스템 OOM |
 | Pod priority·QoS | 압력·스케줄 정책 요소 | 절대 생존 보장 아님 |
 
-request를 낮추면 scheduler는 같은 노드에 더 많은 Pod를 넣을 수 있지만 정상 피크 때 CPU 경쟁이 커질 수 있고, 높이면 실제 유휴가 있어도 Pending이 될 수 있습니다. CPU utilization 기반 HPA는 사용량을 request로 나누어 비율을 계산하므로, 같은 사용량이어도 request를 바꾸면 확장 입력이 달라집니다. 따라서 request 조정은 배치 가능 수와 HPA가 보는 비율을 함께 다시 계산해야 합니다.
+request를 낮추면 scheduler는 같은 노드에 더 많은 Pod를 넣을 수 있지만 정상 피크 때 CPU 경쟁이 커질 수 있고, 높이면 실제 유휴가 있어도 Pending이 될 수 있습니다. 예를 들어 request를 500m에서 250m로 낮추면 8 vCPU 노드의 산술상 배치 수와 HPA utilization 분모가 동시에 바뀝니다. 실제 선택은 p95/p99 사용량, burst 허용 시간, 노드 수·비용, latency SLO를 함께 대입해야 합니다. CPU utilization 기반 HPA는 사용량을 request로 나누어 비율을 계산하므로, 같은 사용량이어도 request를 바꾸면 확장 입력이 달라집니다. 따라서 request 조정은 배치 가능 수와 HPA가 보는 비율을 함께 다시 계산해야 합니다.
 
 ## QoS 분류와 종료 순서 결정 조건
 
@@ -32,7 +34,7 @@ node pressure eviction은 request 대비 초과 사용·priority·상대 사용�
 
 ## 노드 용량과 앱 외 자원 예산
 
-노드 capacity가 CPU 8, 메모리 32 GiB이고 시스템 예약·kubelet·eviction 여유를 반영한 allocatable이 CPU 7, 28 GiB라고 합시다. 배치될 DaemonSet이 CPU 1, 3 GiB를 요청하면 앱에 남는 요청 예산은 CPU 6, 25 GiB입니다. 앱 Pod가 CPU 2, 8 GiB씩이면 이 산술에서는 3개가 가능하지만 Pod 수·IP·volume attach 등 다른 상한도 만족해야 합니다.
+노드 capacity가 CPU 8, 메모리 32 GiB이고 시스템 예약·kubelet·eviction 여유를 반영한 allocatable이 CPU 7, 28 GiB라고 합시다. 배치될 DaemonSet이 CPU 1, 3 GiB를 요청하면 앱에 남는 요청 예산은 CPU 6, 25 GiB입니다. 앱 Pod가 CPU 2, 8 GiB씩이면 이 산술에서는 3개가 가능하지만 Pod 수·IP·volume attach 등 다른 상한도 만족해야 합니다. 진단에서는 `Pending`의 scheduler event, CPU throttling, `OOMKilled`, `Evicted`, node condition, HPA current/desired replica를 시간축으로 묶습니다. 메모리 limit 초과와 노드 pressure eviction은 모두 “메모리 문제”처럼 보일 수 있지만 조치 대상과 원인이 다릅니다.
 
 ```diagram
 {"title":"노드 총량에서 앱이 쓸 수 있는 배치 예산을 구합니다","caption":"화살표는 자원 예산 차감입니다. allocatable에 이미 반영된 시스템 예약을 다시 빼지 않고, 그 노드에 실제 배치될 DaemonSet과 기존 Pod 요청을 계산합니다.","rows":[[{"id":"capacity","label":"Node capacity"}],[{"id":"allocatable","label":"Node allocatable","detail":["시스템 예약·여유 반영"]}],[{"id":"daemon","label":"DaemonSet·기존 요청 제외"}],[{"id":"apps","label":"새 앱 Pod 배치 가능량"}]],"edges":[{"from":"capacity","to":"allocatable","label":"노드 예약 정책"},{"from":"allocatable","to":"daemon","label":"실제 배치 집합"},{"from":"daemon","to":"apps","label":"CPU·메모리·기타 상한"}]}
@@ -52,4 +54,4 @@ init container·native sidecar·Pod overhead의 유효 request는 단순 앱 컨
 
 같은 앱 부하에서 CPU quota·노드 CPU 경쟁·메모리 피크·로그 sink 지연을 하나씩 바꿉니다. throttled time·run queue·GC·OOM·eviction 사건과 p99를 대조합니다. request 조정 뒤 Pending·노드 수·HPA 계산까지 함께 확인합니다.
 
-현재 작업에서는 클러스터 자원 설정이나 OOM 실험을 실행하지 않았습니다. 수치 예는 배치 계산을 설명하는 가정이며 실제 인스턴스의 성능·생존 보장이 아닙니다.
+현재 작업에서는 클러스터 자원 설정이나 OOM 실험을 실행하지 않았습니다. 수치 예는 배치 계산을 설명하는 가정이며 실제 인스턴스의 성능·생존 보장이 아닙니다. Kubernetes 버전·admission 정책·cgroup 모드·노드 이미지에 따른 세부 동작은 대상 클러스터의 공식 문서와 describe/event/metrics 결과로 확인해야 합니다.

@@ -8,11 +8,15 @@ questionIds: [kafka-idempotent-producer, kafka-idempotence-inflight-order, kafka
 
 # Kafka Producer 중복·Transaction·외부 DB의 범위
 
+이 노트는 Kafka가 중복 전송을 판별하는 물리적 producer 상태와 애플리케이션이 같은 업무 효과인지 판별하는 논리적 ID를 분리합니다. Kafka transaction의 원자 범위도 외부 DB나 HTTP 효과까지 자동으로 확장되지 않으므로, 각 시스템의 commit 경계와 재시도 경계를 시간 순서로 따라가야 합니다.
+
 ## Broker 저장 후 ACK 유실에 따른 배치 재전송
 
 broker에 배치가 먼저 기록됐지만 ACK가 유실되면 producer는 같은 배치를 다시 보냅니다. idempotent producer는 producer ID·epoch·partition별 sequence를 비교해 이 재전송을 식별하고 중복 append를 줄입니다. 반대로 앱이 같은 payload를 두 번 새 이벤트로 만들어 다른 sequence로 보내면 Kafka는 이를 같은 전송으로 식별하지 않으므로, producer 전송 중복과 주문·포인트의 논리 중복을 따로 막아야 합니다.
 
 consumer가 Kafka 레코드를 읽고 DB transaction을 commit한 직후, Kafka offset을 저장하기 전에 죽을 수 있습니다. 재시작한 consumer는 저장되지 않은 offset부터 같은 레코드를 다시 읽으므로 DB 변경도 다시 시도될 수 있습니다. producer idempotence는 이 소비 시점과 외부 DB 효과까지 자동으로 한 번으로 만들지 않으므로 DB inbox·effect key 같은 별도 경계가 필요합니다.
+
+먼저 물리 레코드와 논리 효과를 구분하면 재시도 경로가 단순해집니다. PID·epoch·sequence는 특정 producer session이 특정 partition에 보낸 전송을 식별하지만, “주문 42를 두 번 지급하지 말라”는 업무 의미는 event ID·inbox·effect key가 담당합니다. consumer의 DB commit과 offset commit 사이의 창은 producer idempotence가 닫아 주지 않습니다.
 
 ## In-flight·ACK·Retry 설정의 단일 계약
 
@@ -28,6 +32,8 @@ idempotence 없이 여러 배치가 in-flight일 때 앞 배치가 실패·재�
 | 앱이 같은 주문을 새로 발행 | 업무 event/request ID | producer가 자동 동일시 안 함 |
 | consumer DB 재처리 | DB inbox·effect key | 변경과 같은 transaction |
 | 외부 HTTP 결제 | 제공자 멱등 키·조회 | Kafka transaction 밖 |
+
+선택 기준은 client가 제공하는 idempotence 계약을 그대로 사용할 수 있는지와 업무 순서를 어디에서 보장할지입니다. 한 producer·partition의 전송 순서와 여러 producer가 생성한 전역 업무 순서는 다른 문제이므로, 후자를 요구하면 partition key·단일 writer·업무 version 같은 별도 설계가 필요합니다. 설정값은 사용 언어와 client 버전의 공식 계약을 읽은 뒤 적용해야 합니다.
 
 ## Transactional ID와 논리 Producer 소유권
 
@@ -49,6 +55,8 @@ consumer position은 다음 fetch에서 사용할 현재 읽기 위치이고 com
 
 외부 API의 긴 대기를 Kafka transaction 안에 넣으면 외부 원자성은 얻지 못하면서 LSO·timeout·coordinator 비용을 늘릴 수 있습니다. transaction 길이·batch·timeout·abort·commit 응답 유실을 관리합니다.
 
+읽기 추적에서 consumer position, group committed offset, LSO, high watermark를 네 개의 별도 값으로 적어야 합니다. 미결정 transaction이 앞에 있으면 read_committed가 뒤 레코드를 바로 반환하지 않아 position이 진행되지 않는 것처럼 보일 수 있지만, 이것은 외부 DB가 원자적으로 묶였다는 의미가 아닙니다. 긴 외부 호출을 transaction 안에 넣을지 결정할 때 가시성 지연과 coordinator timeout을 함께 계산합니다.
+
 ## DB 선행·Kafka 선행 순서별 실패 구간
 
 DB commit 뒤 Kafka commit 전에 죽으면 DB 효과는 남고 입력은 다시 처리됩니다. Kafka commit 뒤 DB가 실패하면 출력·offset만 전진할 수 있습니다. 순서를 바꾸는 것으로 두 시스템이 하나의 transaction이 되지는 않습니다.
@@ -60,3 +68,5 @@ DB commit 뒤 Kafka commit 전에 죽으면 DB 효과는 남고 입력은 다시
 ACK 유실 재전송, producer 완전 재시작, 같은 업무의 새 이벤트, transactional.id 중첩, 열린 transaction, DB commit 뒤 중단을 나누어 시험합니다. broker log·read_committed 결과·group offset·DB 원장·외부 효과를 각각 대조합니다.
 
 현재 작업에서는 Kafka producer·transaction을 실행하지 않았습니다. 본문은 보장 범위를 설명하며 설정 호환성과 LSO 동작은 실제 사용 버전에서 검증해야 합니다.
+
+실패 시험은 각 경계의 결과를 별도 원장으로 남겨야 합니다. broker에 레코드가 몇 개 있는지, read_committed가 몇 개를 보았는지, group offset이 어디까지 갔는지, DB effect key가 몇 개인지, 외부 API 결과가 확정됐는지를 나란히 비교하면 “중복 레코드”와 “중복 업무 효과”를 구분할 수 있습니다. 이 노트에서는 실제 broker/client를 실행하지 않았으므로 수치 결과는 주장하지 않습니다.

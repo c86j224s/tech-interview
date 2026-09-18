@@ -8,6 +8,10 @@ questionIds: [paxos-prepare-accept, paxos-competing-proposers-liveness, multi-pa
 
 # Paxos Prepare·Accept와 Multi-Paxos 로그 계승
 
+Paxos의 안전성은 다수결 자체보다, 새 제안자가 이전 quorum과 겹치는 prepare 응답에서 이미 선택되었을 수 있는 값을 계승하는 규칙에 있습니다. Multi-Paxos에서는 이 규칙을 여러 슬롯과 순차 apply, 리더 교체, 외부 효과 분리까지 확장해 읽어야 합니다.
+
+상태를 `accepted=(ballot,value)`와 `promised=ballot`로 분리해 적으면 “가장 많은 값”을 고르는 오해를 피할 수 있습니다. prepare quorum에 accepted ballot 7의 X와 ballot 6의 Y가 함께 오면 표 수가 아니라 ballot 7의 X를 선택하며, 아무 accepted 기록이 없을 때만 새 값을 선택합니다.
+
 ## 새 Proposer의 최고 accepted ballot 값 계승
 
 acceptor A·B·C에서 ballot 7의 X를 A와 B가 수락했다면 X는 과반에 선택된 chosen 값입니다. proposer가 응답을 받기 전에 죽어도 그 사실은 생겼습니다. 새 proposer가 ballot 8로 B·C에 prepare하면 B의 accepted X를 보고 X를 이어받아야 합니다. C가 비어 있다는 이유로 Y를 새로 고르면 안 됩니다.
@@ -51,6 +55,8 @@ P가 ballot 8의 promise를 얻은 뒤 Q가 9를 얻으면 P의 accept가 거절
 슬롯 12가 chosen이어도 11이 아직 미정이면 순차 상태 머신은 10 뒤에 12를 먼저 적용하지 않습니다. 새 leader가 prepare로 이전 accepted 값을 확인하고 보존할 값이 없는 슬롯에만 새 명령 또는 no-op을 제안합니다. no-op도 accept quorum으로 chosen되어야 하며 로컬 배열의 빈 칸을 채우는 것으로 대신하지 않습니다.
 
 chosen은 결정 사실, learned는 그 사실을 아는 상태, applied는 순차 실행입니다. 클라이언트에 단순 접수 성공을 말하는지 실제 업무 결과를 말하는지에 따라 필요한 단계가 다릅니다. 요청 ID별 결과를 state machine·snapshot에 저장해 응답 유실 뒤 다른 슬롯에 실린 재요청이 효과를 반복하지 않게 합니다.
+
+재현 연습으로 A·B가 `(7,X)`를 accept한 뒤 proposer가 응답 전에 중단되고, 새 proposer가 B·C에서 prepare하도록 합니다. 예상 결과는 X의 재제안이며 Y는 선택되지 않습니다. 별도로 슬롯 12만 chosen된 상태에서 11을 no-op으로 chosen하면 apply는 11 뒤 12 순서여야 하고, 같은 client request ID 재실행은 상태 효과를 한 번만 만들어야 합니다.
 
 ## 외부 효과와 Paxos 프로토콜 검증의 분리
 

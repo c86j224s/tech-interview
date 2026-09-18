@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>브라우저 렌더링 실험실</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="lab-shell">
+    <header class="lab-header">
+      <p class="eyebrow">LOCAL WEB PLATFORM LAB</p>
+      <h1>DOM에서 paint까지 추적하기</h1>
+      <p>한 개의 접근 가능한 아코디언 컴포넌트에서 DOM, CSSOM, computed style, 레이아웃 기하와 프레임 측정을 관찰합니다.</p>
+    </header>
+
+    <section class="lab-card" aria-labelledby="trace-title">
+      <div class="lab-card__heading">
+        <div>
+          <p class="eyebrow">TRACE</p>
+          <h2 id="trace-title">실행 순서</h2>
+        </div>
+        <button class="button button--secondary" id="reset-trace" type="button">기록 지우기</button>
+      </div>
+      <ol class="trace" id="trace" aria-live="polite"></ol>
+    </section>
+
+    <section class="lab-grid" aria-label="렌더링 관찰 도구">
+      <article class="lab-card">
+        <div class="lab-card__heading">
+          <div>
+            <p class="eyebrow">DOM / CSSOM</p>
+            <h2>컴포넌트 변형</h2>
+          </div>
+          <span class="badge" id="variant-badge">기본</span>
+        </div>
+        <div class="toolbar" role="group" aria-label="컴포넌트 변형">
+          <button class="button button--primary" type="button" data-variant="default">기본</button>
+          <button class="button button--secondary" type="button" data-variant="dense">촘촘하게</button>
+          <button class="button button--secondary" type="button" data-variant="warning">경고 상태</button>
+        </div>
+        <div class="accordion accordion--default" id="demo-accordion" data-component="accordion">
+          <h3 class="accordion__heading">
+            <button class="accordion__trigger" id="accordion-trigger" type="button" aria-expanded="false" aria-controls="accordion-panel">
+              <span class="accordion__label">렌더링 상자 관찰</span>
+              <span class="accordion__icon" aria-hidden="true">+</span>
+            </button>
+          </h3>
+          <div class="accordion__panel" id="accordion-panel" role="region" aria-labelledby="accordion-trigger" hidden>
+            <p class="accordion__content">버튼을 열면 DOM 속성, pseudo-element의 generated content, computed style, getBoundingClientRect()를 같은 시점에 읽습니다.</p>
+          </div>
+        </div>
+        <p class="status" id="status" role="status">아코디언은 닫혀 있습니다.</p>
+      </article>
+
+      <article class="lab-card">
+        <div class="lab-card__heading">
+          <div>
+            <p class="eyebrow">CSSOM</p>
+            <h2>최종 스타일</h2>
+          </div>
+        </div>
+        <dl class="metrics">
+          <div><dt>color</dt><dd id="metric-color">-</dd></div>
+          <div><dt>display</dt><dd id="metric-display">-</dd></div>
+          <div><dt>padding-block</dt><dd id="metric-padding">-</dd></div>
+          <div><dt>pseudo content</dt><dd id="metric-pseudo">-</dd></div>
+          <div><dt>rect</dt><dd id="metric-rect">-</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="lab-card" aria-labelledby="frame-title">
+      <div class="lab-card__heading">
+        <div>
+          <p class="eyebrow">FRAME MEASUREMENT</p>
+          <h2 id="frame-title">읽기·쓰기 비용</h2>
+        </div>
+        <button class="button button--primary" id="measure-frame" type="button">측정하기</button>
+      </div>
+      <p>측정 버튼은 쓰기를 먼저 모은 뒤 기하 읽기를 한 번 수행합니다. 아래 값은 이 로컬 브라우저 실행의 관측값이며 다른 엔진의 paint 비용을 증명하지 않습니다.</p>
+      <div class="metrics metrics--wide">
+        <div><span class="metric-label">frame duration</span><strong id="frame-duration">-</strong></div>
+        <div><span class="metric-label">layout rect</span><strong id="frame-rect">-</strong></div>
+        <div><span class="metric-label">entries</span><strong id="frame-entries">-</strong></div>
+      </div>
+    </section>
+
+    <section class="lab-card lab-card--failure" aria-labelledby="failure-title">
+      <p class="eyebrow">FAILURE INJECTION</p>
+      <h2 id="failure-title">접근성 실패를 의도적으로 보기</h2>
+      <p>이 버튼은 실제 아코디언의 <code>aria-expanded</code>를 고장 낸 뒤 검사 결과를 표시하고, 다시 정상 계약으로 복구합니다.</p>
+      <div class="toolbar">
+        <button class="button button--danger" id="inject-failure" type="button">계약 깨기</button>
+        <button class="button button--secondary" id="repair-contract" type="button">계약 복구</button>
+      </div>
+      <pre class="diagnostic" id="diagnostic" aria-live="polite">진단 대기 중</pre>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

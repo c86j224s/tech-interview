@@ -8,7 +8,11 @@ questionIds: [elasticsearch-refresh-visibility, elasticsearch-get-search-readbac
 
 # Elasticsearch 검색 가시성과 Reindex 전환
 
+검색 시스템에서 저장 성공, 알려진 ID 조회, 일반 검색 노출은 서로 다른 관찰 경계입니다. Reindex도 문서를 새 index로 옮기는 스캔과 그동안 생긴 변경을 따라잡는 과정이 분리됩니다. 따라서 먼저 원본 권위와 허용할 가시성 지연을 정하고, 각 경계의 증거를 같은 문서 ID와 version으로 연결해야 안전한 alias 전환을 설명할 수 있습니다.
+
 ## 색인 ACK·ID GET·검색 가시성 지연
+
+예를 들어 10:00:00에 색인 ACK가 왔고 같은 시각 realtime GET은 version 8을 반환하지만 search는 version 7만 반환할 수 있습니다. 이때 바로 문서 유실로 결론내리지 말고 대상 index·routing·refresh 경계를 맞춘 뒤 다음 관측에서 search version이 8로 바뀌는지 확인합니다. DB commit 이전에 outbox가 멈췄다면 refresh를 반복해도 검색은 바뀌지 않는다는 점이 중요한 진단 분기입니다.
 
 문서 저장 ACK는 색인 요청이 처리됐다는 응답이고, 검색 reader가 새 segment를 읽기 시작하는 시점은 그 뒤일 수 있습니다. 그래서 같은 문서라도 저장 직후에는 알려진 ID의 GET이 새 값을 보여 줄 수 있지만 일반 search에는 아직 없을 수 있습니다.
 
@@ -42,6 +46,8 @@ refresh가 비활성화된 구성에서는 기다림이 길어질 수 있으므�
 모든 쓰기에 강제 refresh를 적용하면 작은 segment·후속 merge·검색·색인 I/O 비용이 늘 수 있습니다. bulk 요청의 batch·동시성·visibility SLO·색인 처리량을 같이 비교합니다. timeout은 색인이 없다는 증명이 아니므로 같은 문서 ID·source version으로 결과를 확인합니다.
 
 ## Reindex 완료와 동시 변경 반영 범위
+
+선택 기준은 검색 지연 SLO와 색인 처리량을 함께 보는 것입니다. 편집 직후 같은 문서를 보여 주는 화면은 ID GET이 더 적합할 수 있고, 목록 필터에 즉시 반영해야 하는 경우에만 wait_for를 선택하며, 대량 적재 전체에 강제 refresh를 붙이지 않습니다. 장애 시에는 스캔 완료 여부, delta 위치, 삭제 tombstone, alias 대상, 직접 index 이름을 쓰는 client를 순서대로 확인합니다.
 
 mapping을 바꾸려고 새 index를 만들고 reindex(기존 문서를 새 index로 복사하는 작업)하는 동안에도 old index나 원본 DB에는 write와 delete가 계속 들어올 수 있습니다. 먼저 reindex가 읽을 기준 snapshot(한 시점에 고정한 원본 상태)을 정하고, 그 snapshot을 읽은 뒤 발생한 변경을 식별할 위치를 확보해 새 index에 빠짐없이 이어서 적용해야 합니다.
 

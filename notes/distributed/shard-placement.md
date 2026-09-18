@@ -8,11 +8,15 @@ questionIds: [hash-sharding-and-resharding, consistent-hash-virtual-nodes, rende
 
 # 해시 배치·가상 노드·Rendezvous와 안전한 이동
 
+샤드 배치의 기본 모델은 키를 노드에 배정하는 함수와 데이터·쓰기 권위를 실제로 옮기는 절차를 분리하는 것입니다. ring이나 Rendezvous가 이동할 키 집합을 계산해 줄 수는 있지만 snapshot·증분 로그·handoff barrier가 완료되기 전에는 새 노드가 최신 데이터를 가진 권위라고 볼 수 없습니다.
+
 ## 키 수와 요청 비용 분포
 
 각 shard에 계정 100만 개씩 있어도 한 인기 계정이 대부분의 쓰기를 만들면 CPU·lock은 한 shard에 몰립니다. 값 크기·요청률·연산 비용·상위 key 비중을 각각 봅니다. 많은 키가 몰린 hot shard와 한 key 자체가 뜨거운 hot key는 해법이 다릅니다.
 
 `hash(key) mod N`에서 N이 바뀌면 많은 key의 목적지가 바뀔 수 있습니다. consistent hashing·논리 bucket·rendezvous는 이동 범위를 줄일 수 있지만 실제 데이터 복사와 쓰기 권위 전환을 없애지는 않습니다.
+
+배치 선택 전에 workload를 키 수, 값 바이트, 요청률, 연산 비용, hot key 비중으로 분해합니다. 키 개수가 균등해도 바이트나 lock 경합이 균등하지 않을 수 있으며, 한 hot key를 여러 shard에 나누는 순간에는 단순 배치 알고리즘이 아니라 잔액·중복 제거·순서 같은 도메인 불변식을 먼저 정해야 합니다.
 
 ## Ring 가상 노드와 범위 분산
 
@@ -55,3 +59,5 @@ handoff 직전에는 건수만 세지 말고 값·삭제 기록·참조·원본 
 대상에서 새 정상 변경을 받은 뒤 옛 원본으로 즉시 돌아가면 그 변경을 잃습니다. 역동기화·새 barrier·현재 권위 전환 또는 전진 복구를 정합니다. 원본 삭제는 옛 독자·backfill·복구 보관·개인정보 정책을 확인한 뒤 수행합니다.
 
 시험은 node 추가·삭제의 이동 집합, hot key·값 편중, snapshot 중 변경·삭제, 옛 routing·pause worker·rollback을 포함합니다. 본문은 배치와 이동 설계이며 실제 sharded DB를 이전한 결과는 아닙니다.
+
+실패 진단은 (1) 같은 입력이 모든 client에서 같은 목적지를 계산하는지, (2) target이 snapshot 이후 log와 delete를 모두 적용했는지, (3) barrier 이후 늦은 이전 generation write를 거절하는지, (4) 역전환 때 새 변경을 보존하는지 순서대로 확인합니다. 예상 결과는 node 추가 시 일부 key만 이동하고, handoff 중 변경은 최종 barrier에 포함되며, rollback은 옛 원본을 덮어써서 새 변경을 잃지 않는 것입니다.

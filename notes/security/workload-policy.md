@@ -14,6 +14,10 @@ Pod가 Kubernetes API 서버에 TCP 연결할 수 있어도 Secret을 읽을 권
 
 NetworkPolicy는 지원하는 네트워크 구현에서 선택된 Pod의 ingress·egress를 제한합니다. ServiceAccount는 workload의 API 신원을 나타내며, 그 신원이 어떤 verb·resource·namespace에 접근하는지는 RBAC 등 인가가 결정합니다.
 
+Kubernetes workload의 접근 경계는 네트워크 패킷이 도달할 수 있는가와 API가 허용하는 행동이 무엇인가로 나뉩니다. NetworkPolicy, ServiceAccount, RBAC, 토큰 회전을 한 흐름으로 추적하되 각 경계의 판정 주체와 실패 증거는 따로 확인해야 합니다.
+
+접근 trace를 `Pod의 egress 허용 → API endpoint 도달 → ServiceAccount token 인증 → RBAC verb/resource 판정`으로 나누면 실패 지점을 구분할 수 있습니다. 네트워크는 성공했지만 RBAC에서 403이 날 수 있고, RBAC가 넓어도 egress가 차단되어 API에 도달하지 못할 수 있습니다. 연습에서는 같은 Pod에 라벨을 바꾸고 다른 namespace peer를 추가한 뒤 적용 정책의 합집합을 다시 계산하며, 토큰 파일이 회전된 뒤 앱이 새 파일을 읽는지와 옛 토큰이 만료·철회 시 거절되는지를 별도로 기록합니다.
+
 ## NetworkPolicy 대상 Pod와 격리 범위
 
 | 항목 | 의미 | 확인할 점 |

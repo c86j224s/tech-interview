@@ -8,6 +8,8 @@ questionIds: [js-prototype-lookup, js-property-existence-undefined, prototype-ch
 
 # JavaScript 프로퍼티 조회와 객체 그래프 복사
 
+JavaScript 객체를 이해하는 기본 모델은 값을 보는 것과 프로퍼티 슬롯·prototype 연결·객체 참조를 보는 것을 분리하는 것입니다. 같은 `undefined`라도 own 프로퍼티가 있는 경우와 아예 없는 경우가 다르고, 루트 객체를 복사해도 중첩 노드의 참조가 공유될 수 있으므로 조회·복사·불변 업데이트를 각각 추적해야 합니다.
+
 ## 삭제 이후 값 재등장과 상속 경로
 
 객체에서 프로퍼티를 읽으면 own 프로퍼티를 먼저 찾고 없을 때 prototype 연결을 따라갑니다. own 값이 undefined라도 프로퍼티 자체가 있으면 상속값을 가립니다. 삭제하면 그제야 다음 prototype의 값이 보일 수 있습니다.
@@ -24,7 +26,11 @@ console.log(item.kind, 'kind' in item, Object.hasOwn(item, 'kind'));
 // base, true, false
 ```
 
-describe는 base에서 찾았지만 `item.describe()`로 호출했으므로 this는 item입니다. 메서드가 저장된 곳과 호출 receiver는 다릅니다. 위의 대입은 쓰기 가능한 일반 데이터 프로퍼티를 전제로 합니다. 상속된 setter나 읽기 전용 속성이 있으면 대입이 항상 새 own data property를 만드는 것은 아닙니다.
+describe는 base에서 찾았지만 `item.describe()`로 호출했으므로 this는 item입니다. 메서드가 저장된 곳과 호출 receiver는 다릅니다.
+
+이 차이를 디버깅할 때는 `Object.hasOwn`, `in`, 실제 읽기 결과를 한 행에 함께 기록합니다. 삭제 뒤 값이 다시 나타나면 먼저 prototype chain에서 온 것인지 확인하고, getter나 Proxy가 있다면 검사 자체가 사용자 코드를 실행했을 가능성도 로그로 분리합니다. 존재성은 값의 허용 여부나 권한을 자동으로 증명하지 않습니다.
+
+ 위의 대입은 쓰기 가능한 일반 데이터 프로퍼티를 전제로 합니다. 상속된 setter나 읽기 전용 속성이 있으면 대입이 항상 새 own data property를 만드는 것은 아닙니다.
 
 ## 존재성과 값의 분리 검사
 
@@ -85,3 +91,5 @@ Proxy 기반 라이브러리는 draft에 대한 변경을 추적해 필요한 �
 ## 참조 관계와 descriptor 검사
 
 루트와 중첩 객체의 ===, 순환의 자기 참조, getter 실행 횟수, Object.getOwnPropertyDescriptor 결과를 확인합니다. 변환 실패·transfer 뒤 원본 접근·원본 불변성도 검사합니다. 성능 비교는 기능 결과가 같은지 먼저 확인하고 warmup·할당·GC·실제 접근 분포를 기록합니다. 이 노트는 기대 계약을 설명하며 별도 성능 측정을 수행한 결과는 아닙니다.
+
+재현 연습은 own `undefined`, 상속 값, getter, 순환 그래프, spread 뒤 중첩 수정, structured clone의 공유 별칭을 한 세트로 검사하는 것입니다. 예상 결과는 own `undefined`가 상속값을 가리고, spread 루트는 새롭지만 중첩 참조는 공유하며, structured clone은 지원되는 그래프 안에서 원본과 분리된 새 노드를 만든다는 것입니다. 성능 결론은 이 기능 결과 검사가 통과한 뒤 동일한 엔진·옵션·warmup 조건에서만 비교합니다.

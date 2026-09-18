@@ -8,6 +8,8 @@ questionIds: [karpenter-node-provisioning, pvc-nodepool-zone-conflict, cloud-cap
 
 # Karpenter 노드 공급의 제약 교집합과 준비 단계
 
+노드 공급은 “Pod가 늘었다”에서 “애플리케이션이 처리할 수 있는 Ready 용량이 생겼다”까지 이어지는 제약 만족 과정입니다. workload replica, scheduler, Karpenter, 클라우드 인스턴스, kubelet과 앱 readiness를 단계별 상태로 분리해야 Pending의 원인을 올바른 계층에서 찾을 수 있습니다.
+
 ## Replica 확장과 노드 공급 Controller의 역할
 
 HPA가 desired를 3에서 10으로 늘리면 workload controller가 Pod를 만듭니다. 기존 노드에 배치할 수 없는 Pod를 관찰한 Karpenter는 그 Pod의 요구와 허용 정책을 만족하는 노드 용량을 공급합니다. Karpenter가 앱의 적절한 replica 수나 DB 처리 병렬성을 직접 결정하는 것은 아닙니다.
@@ -24,7 +26,11 @@ HPA가 desired를 3에서 10으로 늘리면 workload controller가 Pod를 만�
 | PVC·PV | 볼륨 topology·접근·attach | compute가 있어도 저장소 불일치 |
 | 클라우드 | quota·subnet IP·실제 capacity·권한 | 생성·등록 실패 |
 
-예를 들어 zone A에 이미 Bound된 PV인데 NodePool이 zone B만 허용하면, Karpenter가 노드를 더 만들어도 그 노드에는 PV를 붙일 수 없어 Pod는 계속 Pending일 수 있습니다. 반대로 `WaitForFirstConsumer`로 아직 바인딩되지 않은 동적 볼륨은 첫 Pod를 배치할 때까지 위치를 정하지 않으므로, 이미 위치나 zone 제약이 정해진 PV와 같은 방식으로 판단하지 않습니다.
+예를 들어 zone A에 이미 Bound된 PV인데 NodePool이 zone B만 허용하면, Karpenter가 노드를 더 만들어도 그 노드에는 PV를 붙일 수 없어 Pod는 계속 Pending일 수 있습니다.
+
+실제 trace를 `Pod Pending event → NodeClaim 유무 → provider 요청 → Node Ready → allocatable → Pod Ready` 순서로 기록하면 “노드가 안 생김”과 “노드는 생겼지만 볼륨을 못 붙임”을 구분할 수 있습니다. 예를 들어 NodeClaim과 인스턴스는 존재하지만 Node가 Ready가 아니면 replica 수를 더 늘리는 대신 bootstrap·kubelet·CNI 로그를 봐야 합니다. Node Ready 뒤에도 DaemonSet과 PVC가 allocatable을 소진하면 사용자 Pod는 계속 Pending일 수 있습니다.
+
+후보를 넓히는 선택은 architecture·zone·capacity type·성능·가격을 검증한 범위에서만 합니다. burst 시험에서는 공급 완료 시간만 보지 말고 warm 용량이 없는 구간의 요청 거절률, 앱 readiness 시간, DB·partition의 처리율을 함께 측정해 새 노드가 실제 병목을 줄였는지 확인합니다. 반대로 `WaitForFirstConsumer`로 아직 바인딩되지 않은 동적 볼륨은 첫 Pod를 배치할 때까지 위치를 정하지 않으므로, 이미 위치나 zone 제약이 정해진 PV와 같은 방식으로 판단하지 않습니다.
 
 원인을 없애려고 제약을 무조건 지우면 데이터 위치·보안·성능 요구를 어길 수 있으므로, StorageClass의 binding mode와 PV의 binding 상태·topology/NodeAffinity를 확인해 허용 zone과의 교집합을 대조합니다.
 

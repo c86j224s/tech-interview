@@ -14,6 +14,8 @@ questionIds: [iocp-cancel-drain, iocp-worker-shutdown, iocp-stop-packets-after-d
 
 종료의 핵심은 **새 일을 멈추는 것과 이미 맡긴 일을 정리하는 것을 순서대로 수행하는 것**입니다. 새 일을 받지 않으면서 기존 작업을 마무리하는 과정을 드레이닝(draining)이라고 부릅니다.
 
+IOCP 작업 하나의 수명을 `WSARecv 제출 → CancelIoEx 취소 요청 → 완료 패킷 dequeue → buffer 후속 처리 → 마지막 참조 해제`로 추적합니다. 취소 요청 반환은 두 번째 단계의 결과일 뿐이며 네 번째 단계가 끝나기 전에는 OVERLAPPED나 사용자 버퍼를 삭제할 수 없습니다. 재현 시험에서는 취소 직전 정상 완료가 큐에 들어가는 경우와 취소 완료 패킷이 늦게 도착하는 경우를 각각 넣고, 완료 종류와 무관하게 operation이 정확히 한 번 종결되는지와 worker join 뒤 잔존 참조가 없는지를 확인합니다.
+
 ## CancelIoEx 반환과 버퍼 수명
 
 CancelIoEx는 취소를 요청합니다. 호출 직전에 작업이 이미 완료됐거나 완료 큐로 이동 중일 수 있고, 취소와 정상 완료가 경쟁할 수 있습니다. 성공 반환이나 ERROR_NOT_FOUND를 버퍼 해제의 근거로 삼으면 안 됩니다. 애플리케이션이 추적한 작업의 실제 종결을 확인해야 합니다.

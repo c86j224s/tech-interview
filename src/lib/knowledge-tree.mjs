@@ -5,9 +5,9 @@ const group = (id, title, noteIds = '', children = []) => ({ id, title, noteIds:
 export const knowledgeStructure = group('knowledge', '기술 지식', '', [
   group('computer-science', '컴퓨터 과학', 'computer-science-foundations', [
     group('operating-systems', '운영체제', '', [
-      group('processes', '프로세스·스레드', 'execution-boundaries cpu-scheduling'),
+      group('processes', '프로세스·스레드', 'execution-boundaries cpu-scheduling os-foundations-lab'),
       group('memory', '메모리 관리', 'address-translation virtual-memory page-replacement memory-accounting numa'),
-      group('io', '입출력', 'io-model-selection file-state io-readiness', [
+      group('io', '입출력', 'io-model-selection file-state io-readiness linux-io-bounded-loop windows-io-lab', [
         group('epoll', 'epoll', 'epoll-foundations'),
         group('kqueue', 'kqueue', 'kqueue-foundations'),
         group('io-uring', 'io_uring', 'io-uring-foundations io-uring-lifetimes'),
@@ -16,7 +16,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       ]),
     ]),
     group('concurrency', '동시성', '', [
-      group('ownership', '객체 소유권·참조 카운팅', 'reference-counting-foundations concurrent-ownership'),
+      group('ownership', '객체 소유권·참조 카운팅', 'reference-counting-foundations concurrent-ownership ownership-sync-lab'),
       group('synchronization', '동기화', 'synchronization-foundations condition-variables semaphore deadlock'),
       group('memory-model', '메모리 모델·회수', 'atomic-publication safe-reclamation'),
       group('async', '비동기 실행·수명', 'async-execution cancellation admission-control'),
@@ -24,7 +24,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     group('networking', '네트워크', '', [
       group('transport', '전송 계층', 'tcp-handshake tcp tcp-close tcp-throughput small-write-latency datagram-contracts wire-format'),
       group('http', 'HTTP', 'http-method-retry http-cache http-preconditions http-multiplexing http-pools'),
-      group('network-routing', '이름 해석·프록시', 'dns-transition proxy-boundaries'),
+      group('network-routing', '이름 해석·프록시', 'dns-transition proxy-boundaries dns-balancing-lab'),
       group('realtime', '실시간 통신', 'event-stream-recovery'),
     ]),
     group('data-structures', '자료구조', '', [
@@ -34,7 +34,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       group('specialized-structures', '필터·캐시·타이머', 'bloom-filter cache-policy timing-wheel top-k-ranking'),
     ]),
     group('algorithms', '알고리즘', 'algorithm-strategies', [
-      group('search-sort', '탐색·정렬', 'sorting-foundations binary-search sort-stability quicksort radix-sort external-sort'),
+      group('search-sort', '탐색·정렬', 'sorting-foundations sorting-lab binary-search sort-stability quicksort radix-sort external-sort'),
       group('graph-algorithms', '그래프 알고리즘', 'graph-search dijkstra astar zero-one-bfs topological-sort minimum-spanning-tree'),
       group('range-algorithms', '구간 질의', 'monotonic-stack sliding-window-maximum fenwick-tree lazy-segment-tree'),
       group('dp-number', '동적 계획법·정수론', 'dynamic-programming prime-sieve'),
@@ -43,7 +43,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
   ]),
   group('languages', '프로그래밍 언어', 'programming-language-foundations', [
     group('cpp', 'C++', 'cpp-move cpp-storage-validity cpp-exception-state cpp-shared-ownership cpp-coroutine-lifetime'),
-    group('java', 'Java', 'java-collections java-access-contracts', [
+    group('java', 'Java', 'java-collections java-access-contracts java-access-and-collections-lab', [
       group('java-types', '타입·객체', 'java-value-contract java-dispatch-erasure java-equality-immutability java-metadata'),
       group('java-runtime', 'JVM·동시성', 'java-shared-state java-context-lifetime java-execution-lifetime java-resource-reachability jvm-warmup'),
     ]),
@@ -53,7 +53,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     ]),
     group('python', 'Python', '', [
       group('python-values', '객체·프로토콜', 'python-object-state python-iteration python-protocol-mro python-ordering python-resource-lifetime'),
-      group('python-runtime', '실행 환경·동시성', 'python-async-scope python-parallel-boundary pypy-tracing celery-delivery'),
+      group('python-runtime', '실행 환경·동시성', 'python-runtime-lab python-async-scope python-parallel-boundary pypy-tracing celery-delivery'),
     ]),
     group('go', 'Go', 'go-slice-storage go-interface-values go-map-state go-channel-lifecycle go-request-lifetime go-runtime-diagnosis'),
   ]),
@@ -76,14 +76,14 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
       group('distributed-effects', '분산 작업·중복 처리', 'idempotency fencing distributed-commit transactional-outbox consumer-inbox retry-circuit'),
       group('distributed-data', '캐시·배치·이관', 'cache-refill singleflight shard-placement migration-state'),
       group('messaging', '메시징·스트림', 'event-contracts broker-redelivery stream-time-state', [
-        group('kafka', 'Kafka', 'kafka-foundations kafka-application kafka-operations kafka-partition-order kafka-consumer-offset kafka-replication-acks kafka-retained-state kafka-transaction-scope kraft-control-plane'),
-        group('pulsar', 'Pulsar', 'pulsar-foundations pulsar-application pulsar-operations'),
+        group('kafka', 'Kafka', 'kafka-lab kafka-foundations kafka-application kafka-operations kafka-partition-order kafka-consumer-offset kafka-replication-acks kafka-retained-state kafka-transaction-scope kraft-control-plane'),
+        group('pulsar', 'Pulsar', 'pulsar-foundations pulsar-application pulsar-operations pulsar-producer-consumer-lab'),
         group('nats', 'NATS·JetStream', 'nats-routing jetstream-storage'),
       ]),
     ]),
   ]),
   group('software-design', '소프트웨어 설계', 'software-design-foundations', [
-    group('msa', '마이크로서비스', 'msa-foundations msa-order-workflow msa-production'),
+    group('msa', '마이크로서비스', 'msa-foundations msa-order-workflow msa-production msa-local-saga-lab'),
     group('object-design', '객체·의존성', 'invariant-boundaries behavioral-subtyping policy-ports singleton-publication'),
     group('state-design', '상태·데이터 모델', 'pure-state snapshot-lifetime state-correction model-ownership identity-representation calendar-time account-rights-merge'),
     group('api-design', 'API·서비스 계약', 'rest-reactive-foundations api-meaning grpc-execution messaging-ownership'),
@@ -106,7 +106,7 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     ]),
   ]),
   group('security', '보안', 'security-foundations', [
-    group('oauth-oidc', 'OAuth 2.0·OpenID Connect', 'oauth2-foundations oidc-foundations oauth-deployment'),
+    group('oauth-oidc', 'OAuth 2.0·OpenID Connect', 'oauth2-foundations oidc-foundations oauth-deployment auth-protocol-lab'),
     group('identity-security', '인증·계정', 'authentication login-transaction account-linking device-authorization password-verification account-recovery passkey-binding'),
     group('credentials', '세션·자격 관리', 'session-authority refresh-rotation key-rotation secret-delivery'),
     group('transport-security', '통신·서비스 권한', 'tls-trust early-data-replay nats-authorization workload-policy'),
@@ -114,18 +114,18 @@ export const knowledgeStructure = group('knowledge', '기술 지식', '', [
     group('data-security', '파일·외부 연동', 'file-publication presigned-capability webhook-intake'),
   ]),
   group('clients', '웹·모바일', 'client-foundations', [
-    group('web', '웹', 'web-platform-tooling', [
+    group('web', '웹', 'web-platform-tooling web-platform-rendering-lab', [
       group('browser', '브라우저·통신', 'browser-navigation cors'),
       group('rendering', '스타일·렌더링', 'css-cascade css-reset rendering-layout hydration'),
       group('dom', 'DOM·이벤트', 'event-delegation'),
     ]),
-    group('ios', 'iOS', 'ios-runtime-storage view-lifecycle view-coordinates arc-ownership observation-contracts scene-persistence'),
+    group('ios', 'iOS', 'ios-runtime-storage ios-initialization-arc-storage view-lifecycle view-coordinates arc-ownership observation-contracts scene-persistence'),
   ]),
   group('game', '게임 서버', 'game-server-foundations', [
     group('simulation', '시뮬레이션·권위', 'simulation-budget tick-overload input-authority world-authority'),
     group('spatial', '공간·충돌', 'spatial-candidates aoi-disclosure continuous-contact rewind-evidence'),
-    group('pathfinding', '경로 탐색·행동', 'pathfinding-foundations navigation-production flow-field-foundations navigation-clearance astar-frontier jump-point-search path-execution space-time-reservations behavior-lifetime'),
-    group('voxels', '복셀', 'voxel-pipeline voxel-semantics voxel-version-bundle dda-boundaries'),
+    group('pathfinding', '경로 탐색·행동', 'pathfinding-foundations pathfinding-lab navigation-production flow-field-foundations navigation-clearance astar-frontier jump-point-search path-execution space-time-reservations behavior-lifetime'),
+    group('voxels', '복셀', 'voxel-pipeline recast-voxel-reference-lab voxel-semantics voxel-version-bundle dda-boundaries'),
     group('game-rewards', '랭킹·보상', 'ranking-entitlement'),
   ]),
   group('ai', '머신러닝·AI 에이전트', 'learning-agent-foundations', [

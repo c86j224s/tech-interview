@@ -8,9 +8,13 @@ questionIds: [fixed-timestep-catchup, ai-update-frequency-combat-fairness, cross
 
 # 고정 Tick의 Catch-up·과부하·교차 사건 순서
 
+고정 tick은 시뮬레이션의 시간 간격을 일정하게 만들어 입력과 충돌을 재현하기 위한 모델입니다. 서버가 늦어졌을 때 따라잡을지, backlog를 버릴지, 비핵심 작업만 늦출지는 게임 규칙과 공정성의 문제이며 CPU 최적화 하나로 자동 결정되지 않습니다.
+
 ## 틱 계산 시간·주기와 backlog 누적·catch-up 불능
 
-50ms 주기의 서버가 500ms 멈추면 약 10틱이 밀립니다. 정상 계산이 틱당 20ms면 제한된 추가 실행으로 따라잡을 여지가 있지만 60ms면 한 틱을 처리하는 동안 다시 1틱 이상 시간이 지나 backlog가 계속 늘어납니다. 이를 spiral of death라고 부릅니다.
+50ms 주기의 서버가 500ms 멈추면 약 10틱이 밀립니다.
+
+상태 trace는 wall elapsed=500ms, accumulator=500ms, fixedDt=50ms, backlog=10틱입니다. 한 틱 비용이 60ms이면 10틱을 처리하는 동안 약 600ms가 지나 backlog가 줄지 않고, `maxSteps=4`라면 초기에 쌓인 10틱 가운데 최소 6틱은 선언된 overload policy의 대상이 됩니다. 전투 피해를 조용히 건너뛰지 않으려면 입력·피해·자원 이벤트의 적용/보류/거절 결과를 tick과 함께 기록해야 합니다. 정상 계산이 틱당 20ms면 제한된 추가 실행으로 따라잡을 여지가 있지만 60ms면 한 틱을 처리하는 동안 다시 1틱 이상 시간이 지나 backlog가 계속 늘어납니다. 이를 spiral of death라고 부릅니다.
 
 고정 dt는 수치·입력 재현에 도움되지만 실제 wall time과 simulation time이 항상 같게 만들지는 않습니다. 500ms를 큰 dt 한 번으로 계산하면 중간 충돌·입력·cooldown 결과가 달라질 수 있습니다. 누적 시간을 버리면 세계 시간이 느려진다는 다른 변화가 생깁니다.
 

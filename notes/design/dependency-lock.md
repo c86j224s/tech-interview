@@ -8,11 +8,13 @@ questionIds: [build-dependency-lockfiles]
 
 # Lockfile과 재현 가능한 설치의 경계
 
+이 노트는 lockfile을 “버전 숫자를 고정하는 파일”이 아니라 의존성 해결 결과와 설치 환경을 재현하기 위한 입력으로 해석합니다. manifest·lockfile·manager·플랫폼의 관계를 먼저 추적하고, clean install과 실제 build 결과가 무엇을 검증하지 못하는지도 구분합니다.
+
 ## Manifest 범위와 날짜별 의존성 그래프 변화
 
 manifest의 `^1.2.0`은 특정 파일 하나가 아니라 설치에 허용하는 version 범위입니다. 직접 dependency의 version을 고정해도 그 package가 다시 요구하는 전이 의존의 선택은 달라질 수 있습니다. lockfile은 직접·전이 dependency에 실제로 선택한 version, source, integrity(받은 내용의 일치 여부를 확인하는 정보) 같은 해결 정보를 기록해 같은 dependency graph를 다시 설치하도록 돕습니다.
 
-패키지 매니저마다 lockfile의 형식과 ‘잠금 설치’가 확인하는 범위가 다르므로 manager version·설정·registry·platform을 먼저 맞춥니다. 예를 들어 npm에서는 `npm ci`처럼 lockfile을 기준으로 설치하고 manifest와 lockfile이 맞지 않으면 오류로 드러내는 경로를 사용합니다. CI 실패를 없애려고 lockfile을 지우고 다시 해결하면, 검토했던 dependency 입력이 바뀌고 version graph도 달라질 수 있습니다.
+패키지 매니저마다 lockfile의 형식과 ‘잠금 설치’가 확인하는 범위가 다르므로 manager version·설정·registry·platform을 먼저 맞춥니다. 예를 들어 npm에서는 `npm ci`처럼 lockfile을 기준으로 설치하고 manifest와 lockfile이 맞지 않으면 오류로 드러내는 경로를 사용합니다. CI 실패를 없애려고 lockfile을 지우고 다시 해결하면, 검토했던 dependency 입력이 바뀌고 version graph도 달라질 수 있습니다. 상태를 `manifest 범위 → resolver가 선택한 graph → integrity 검증 → install script/native build → 산출물`로 기록하면 CI가 실패했을 때 lock 불일치, registry 접근, native ABI, 테스트 실패를 구분할 수 있습니다. lockfile이 동일해도 manager version과 설정이 다르면 같은 graph를 재현한다고 가정하지 않습니다.
 
 ## 고정된 의존성 그래프와 Binary 재현성의 차이
 
@@ -33,10 +35,10 @@ manifest의 `^1.2.0`은 특정 파일 하나가 아니라 설치에 허용하는
 
 ## 업데이트 Diff와 실행 행동 검토
 
-직접 package 변경이 전이 package·install script·권한·license·취약점·API 의미를 바꿀 수 있습니다. manifest와 lock diff를 함께 읽고 의도한 갱신인지 확인합니다. 영원히 고정하면 보안 수정도 놓치므로 정기 갱신·격리 시험·점진 적용·rollback 정책이 필요합니다.
+직접 package 변경이 전이 package·install script·권한·license·취약점·API 의미를 바꿀 수 있습니다. manifest와 lock diff를 함께 읽고 의도한 갱신인지 확인합니다. 영원히 고정하면 보안 수정도 놓치므로 정기 갱신·격리 시험·점진 적용·rollback 정책이 필요합니다. 업데이트 선택은 보안 수정의 긴급도, 직접·전이 변경 규모, native/postinstall 유무, 운영 rollback 가능성을 함께 보며, diff를 읽지 않은 채 자동 갱신만 통과시키지 않습니다.
 
 ## Clean 설치와 지원 Platform 확인
 
 warm cache에서만 설치가 통과하면 이미 저장된 package를 다시 써서 registry 가용성이나 integrity 문제를 보지 못할 수 있습니다. 따라서 cache가 비어 있는 격리된 환경에서 지원 OS/architecture별 clean install을 하고, native build와 런타임 test까지 실행한 범위를 기록합니다. package를 이전 version으로 rollback해도 이미 발생한 DB migration이나 외부 효과는 되돌아가지 않으므로, 설치 복구와 데이터·외부 상태 복구를 별도 계획으로 둡니다.
 
-이 노트는 설치 계약 설명이며 현재 작업에서 모든 지원 platform의 무캐시 설치를 새로 실행한 결과는 아닙니다.
+이 노트는 설치 계약 설명이며 현재 작업에서 모든 지원 platform의 무캐시 설치를 새로 실행한 결과는 아닙니다. 따라서 이 제안은 재현성 계약과 확인 순서를 보강한 것이며, 실제 지원 OS·architecture별 결과를 이미 확보했다는 뜻은 아닙니다.

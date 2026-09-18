@@ -14,6 +14,10 @@ key가 100만 개 있는 경우와 field가 100만 개인 hash 하나는 둘 다
 
 운영에서 크기를 찾을 때는 먼저 느린 명령과 명령별 지연을 모은 뒤, 그 명령의 응답 크기와 자료형별 cardinality를 함께 봅니다. 전체 값을 가져오는 HGETALL로 조사하면 조사 자체가 서버와 client를 압박할 수 있으므로, memory usage 표본처럼 일부를 보는 경로를 사용합니다. 이때 MEMORY USAGE의 샘플링 비용과 오차가 자료형·옵션에 따라 달라지므로, 사용한 자료형과 옵션을 기록해 표본 결과를 해석합니다.
 
+Redis 정리는 키를 발견하는 순회와 현재 상태를 확인한 뒤 삭제하는 결정을 분리해야 합니다. SCAN은 snapshot이 아니며 삭제 전에는 다른 writer가 값을 바꿀 수 있으므로, 재시작 가능성과 조건부 삭제를 작업의 기본 계약으로 둡니다.
+
+정리 trace는 `SCAN이 job:7/version=3 발견 → 다른 writer가 version=4 저장 → 삭제 worker가 현재 version 검사 → 조건 불일치로 skip`입니다. GET과 DEL을 따로 보내면 이 사이의 갱신을 막지 못하므로, 삭제 직전 원자 조건 검사가 없을 때는 새 값을 지울 수 있습니다. 연습에서는 동일 key의 중복 반환과 cursor 비0인 빈 batch를 주고, 재시작 시 처음부터 다시 훑어도 version·owner·만료 조건을 통과한 항목만 제거되는지와 lazyfree backlog·client bytes 상한이 유지되는지 확인합니다.
+
 ## SCAN cursor와 순회 보장 범위
 
 SCAN cursor는 불투명한 순회 상태입니다. `0`에서 시작해 반환 cursor가 `0`이 될 때 한 순회를 마칩니다. 중간 결과가 비어도 cursor가 0이 아니면 끝이 아닙니다. COUNT는 작업량 힌트이지 결과 수·실행 시간·응답 bytes의 엄격한 상한이 아닙니다. 작은 내부 인코딩의 collection은 한 번에 많이 나올 수도 있습니다.

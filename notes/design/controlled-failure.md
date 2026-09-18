@@ -8,6 +8,8 @@ questionIds: [deterministic-concurrency-testing, virtual-clock-timeout-testing, 
 
 # 결정적 경쟁·가상 시간·실패 주입의 경계
 
+결정적 실패 시험은 지연을 우연히 늘리는 일이 아니라, 업무 의미가 바뀌는 경계에서 선후 관계와 실패 시점을 고정하는 작업입니다. 이 노트는 경쟁, 시간, 저장소, 프로세스 상태를 제어해 관찰 가능한 불변식으로 검증하는 방법을 다룹니다.
+
 ## 재고 차감 경쟁과 요청별 성공 원장의 일관성
 
 재고가 1일 때 A와 B가 각각 1을 읽고 0을 저장하도록 허용하면 최종 재고는 비음수여도 판매 성공이 두 건으로 기록될 수 있습니다. 임의의 sleep 대신 두 읽기가 끝난 지점에 barrier(두 요청을 잠시 모아 두는 동기화 지점)를 두고, 두 요청이 모두 도착한 뒤 어느 쓰기를 먼저 통과시킬지 제어합니다. 그 뒤 최종 재고, 조건부 `UPDATE`의 영향 행 수, 성공 요청 수, 판매 원장, version을 함께 대조해 한 재고로 두 효과가 생겼는지 확인합니다.
@@ -19,6 +21,7 @@ questionIds: [deterministic-concurrency-testing, virtual-clock-timeout-testing, 
 ```
 
 ## 가상 Clock과 Timer 실행의 분리 제어
+테스트의 관찰 순서는 `deadline 계산 → timer 등록 → 시간 전진 → scheduler drain`처럼 기록합니다. 시간만 전진했는데 callback이 실행되었다고 가정하면 가상 시간 구현의 편의 기능과 실제 timer 계약을 혼동하게 되므로, 각 단계의 queue 상태와 업무 상태를 함께 assertion으로 남기는 편이 안전합니다.
 
 테스트 시계의 `clock.now`만 미래로 바꿔도 등록된 timer의 callback이 자동으로 실행되지는 않습니다. 시각 조회, timer 등록, scheduler의 실행 queue를 각각 주입한 뒤 테스트가 시간을 전진시키고, queue에서 어떤 callback을 먼저 꺼낼지 정해야 합니다. 그래서 deadline(제한 시각) 직전 완료→timeout(시간 초과), timeout→늦은 완료, 같은 시각에 도착한 두 callback의 순서를 각각 재현해 검사합니다.
 
@@ -40,6 +43,7 @@ questionIds: [deterministic-concurrency-testing, virtual-clock-timeout-testing, 
 fake는 정책 분기를 빠르게 확인하는 데 쓰고, real DB는 고유 제약, lock, 격리 수준, 연결 실패처럼 저장소가 실제로 조정하는 부분을 확인하는 데 씁니다. 단일 thread의 map fake는 두 요청이 동시에 들어오는 경쟁을 만들지 않아 실제 DB보다 강한 것처럼 보일 수 있습니다. 따라서 `exists`를 읽고 `insert`하는 두 단계가 경쟁을 허용한다면, port(저장소가 제공하는 계약)를 원자적 생성 한 번으로 바꾼 뒤 fake와 real DB에 같은 계약 test를 적용합니다.
 
 ## 종료·Pause·Partition·disk stall의 실패 의미
+실패 유형을 구분하는 진단 질문은 “상대가 실행을 멈췄는가, 메시지만 오가지 않는가, 저장이 진행되지 않는가”입니다. 같은 timeout을 관찰해도 pause는 옛 worker가 나중에 깨어나는 경로를 만들고, partition은 양쪽의 관찰이 달라지며, disk stall은 저장 완료 경계 자체를 지연시킵니다.
 
 process 종료는 메모리 상태·연결을 잃고, pause는 옛 권한·입력을 가진 채 나중에 깨어납니다. partition은 노드마다 서로 다른 생존 관측을 만들며 한 방향만 통하거나 응답만 유실될 수도 있습니다. disk stall도 network 단절과 다릅니다.
 

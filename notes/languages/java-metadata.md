@@ -8,11 +8,15 @@ questionIds: [java-annotation-retention, java-repeatable-annotation-retention, a
 
 # Java 어노테이션의 보존·조회·증분 생성
 
+Java 어노테이션은 실행 기능이 아니라 선언이나 타입 사용 위치에 붙는 메타데이터이며, 어느 단계의 어떤 소비자가 읽는지에 따라 생명주기가 달라집니다. 소스 처리, class 파일 보존, runtime reflection, 증분 생성은 연속된 한 기능이 아니라 서로 다른 관찰 지점입니다.
+
 ## 어노테이션 부착과 소비자의 조회·행동
 
 @Service라는 어노테이션을 만들었다고 JVM이 자동으로 객체를 등록하는 것은 아닙니다. 어노테이션은 메타데이터이고 컴파일러·annotation processor·프레임워크 같은 소비자가 정해진 시점에 읽어야 동작합니다. 같은 이름의 어노테이션이라도 누가 어느 위치를 읽는지 확인해야 합니다.
 
 @Retention은 어디까지 보존하는지, @Target은 어느 선언·타입 사용 위치에 붙일 수 있는지를 정합니다. 스캔 대상에서 빠졌다는 문제와 바이트코드에 정보 자체가 없다는 문제는 다릅니다.
+
+디버깅 순서는 “소스에 붙었는가 → processor가 읽었는가 → class 파일에 남았는가 → 조회 API가 그 위치를 읽는가”로 고정하는 것이 좋습니다. 예를 들어 SOURCE 어노테이션은 processor 입력으로 보일 수 있지만 `javap`나 runtime reflection에서 보이지 않는 것이 정상일 수 있어, 관찰 도구를 잘못 고르면 보존 실패와 소비자 미등록을 혼동합니다.
 
 ## Retention 단계와 소비자 연결
 
@@ -45,6 +49,8 @@ User 어노테이션에서 UserAdapter를 만드는 processor를 생각해 보�
 입력에는 대상 소스·참조 타입·공통 스키마·processor 버전·옵션·외부 설정이 포함될 수 있습니다. 여러 타입을 모아 registry 하나를 만드는 processor는 한 타입만의 독립 산출물과 다른 의존 범위를 가집니다. 빌드 도구의 isolating·aggregating 같은 분류를 실제 생성 의미와 맞추고 변경·삭제가 영향 주는 출력을 정확히 무효화합니다.
 
 출력 파일의 소유자를 기록해 자기 processor의 낡은 결과만 정리합니다. 다른 processor의 파일까지 광범위하게 지우는 것은 올바른 캐시 무효화가 아닙니다. 같은 파일을 두 생성기가 쓰지 않게 하고, 재현 가능한 순서·내용을 유지해 불필요한 rebuild도 줄입니다.
+
+재현 연습에서는 User 이름 변경·삭제, 공통 schema 변경, processor 옵션 변경을 각각 한 번씩 수행하고 clean output과 incremental output의 파일 목록·내용을 비교합니다. 예상 결과는 삭제된 User의 adapter가 incremental output에 남지 않고, aggregating registry는 영향 받는 입력을 다시 반영하며, SOURCE 어노테이션은 runtime reflection에 나타나지 않는 것입니다. 기존의 `javap`·reflection·processor 로그를 단계별 증거로 분리해 기록합니다.
 
 ## Clean·Incremental 결과의 동등성 검증
 

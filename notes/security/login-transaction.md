@@ -10,6 +10,8 @@ questionIds: [oauth-oidc-pkce, oidc-nonce-state-binding]
 
 ## callback code와 로그인 신원 확정의 분리
 
+로그인은 브라우저 왕복, authorization code 교환, ID token 검증, 서비스 계정 연결이라는 서로 다른 단계의 거래입니다. 앞 단계의 성공이 뒤 단계의 신원 확정을 대신하지 않으며, 각 단계가 같은 시도를 가리키는지 확인해야 합니다.
+
 브라우저 탭 A에서 공급자 P로 로그인을 시작하고 탭 B에서는 공급자 Q로 시작했다고 합시다. 두 탭의 콜백이 순서대로 돌아온다는 보장은 없습니다. 서버가 세션에 마지막 공급자 하나만 저장하거나, 콜백에 온 코드를 아무 token endpoint에나 보내면 서로 다른 로그인 시도가 섞입니다.
 
 **OAuth**는 API 접근 권한 위임을 다루며, **OIDC**는 그 위에서 로그인 신원을 확인하는 규칙을 제공합니다. access token을 받았다는 사실만으로 우리 서비스의 로그인 계정을 정하지 않습니다. OIDC ID token을 올바른 요청·발급자·클라이언트 문맥에서 검증한 뒤 계정 모델로 연결합니다.
@@ -34,6 +36,8 @@ PKCE의 S256 challenge는 `BASE64URL(SHA256(verifier))`입니다. authorization 
 
 `T={session_id, provider_id, redirect_uri, expires_at, state_hash, verifier, nonce, status}`처럼 시도별 레코드를 생각할 수 있습니다. verifier는 교환에 원문이 필요하므로 해시만 저장해서는 교환할 수 없습니다. 짧게 보관하고 접근을 제한하며 로그·추적 시스템에서 제외합니다. state 검증용 해시와 verifier의 보관 목적은 다릅니다.
 
+선택 기준은 공급자 수와 클라이언트 형태에 따라 달라집니다. 서버가 callback을 받는 confidential client라도 PKCE·state·redirect URI 검증을 별도로 유지하고, SPA·모바일처럼 client secret을 숨길 수 없는 클라이언트는 공개 클라이언트로 취급합니다. nonce는 OIDC 요청과 ID token의 결합에 사용하며 OAuth access token의 권한 범위를 대신하지 않습니다.
+
 탭 A와 B에는 서로 다른 T를 줍니다. callback 처리자가 T를 `pending → exchanging`으로 조건부 변경하면 같은 code를 두 worker가 동시에 교환하는 것을 줄일 수 있습니다. 서버가 교환 응답을 받기 전에 중단되면 provider에서는 code가 이미 소비됐을 수 있습니다. 로컬 상태를 pending으로 되돌린다고 provider의 일회성 code가 되살아나지는 않습니다. 결과를 확정할 수 없는 시도는 새 로그인을 안내하는 등 명시적인 복구 경로가 필요합니다.
 
 ## 서명 검증과 토큰 사용 문맥
@@ -49,3 +53,5 @@ redirect URI는 등록값과 프로토콜 규칙에 맞게 엄격히 제한합�
 테스트 계정과 로컬 가짜 공급자를 사용해 탭 A의 state를 B 세션에 붙이면 코드 교환 전에 거절되는지 확인합니다. 올바른 state라도 다른 verifier이면 token endpoint에서 실패해야 하고, 교환이 성공해도 nonce·issuer·audience가 다르면 로그인 세션을 만들면 안 됩니다.
 
 동일 callback 동시 도착, 만료된 시도, 교환 성공 직후 프로세스 중단, 공급자 Q의 유효한 토큰을 P 시도에 넣는 경우를 각각 시험합니다. 실패 로그에는 시도 ID와 단계·사유를 남기고 code·verifier·토큰 원문은 남기지 않습니다. 이 노트의 흐름은 설계 모형이며 특정 공급자의 실제 로그인을 실행한 결과는 아닙니다.
+
+예상 결과는 탭 A의 state를 탭 B의 시도 레코드에 넣으면 code 교환 전에 거절되고, 올바른 state에 잘못된 verifier를 넣으면 token endpoint 교환이 실패하는 것입니다. 교환 자체가 성공해도 nonce·issuer·audience 검증이 실패하면 서비스 로그인 세션을 만들지 않아야 하며, 응답 유실 뒤에는 code가 재사용되지 않을 수 있음을 UI 복구 경로에 반영합니다.

@@ -8,11 +8,15 @@ questionIds: [immutable-data-sharing, persistent-tree-path-copy, immutable-snaps
 
 # 깊은 불변 Snapshot·경로 복사·독자 수명
 
+불변 snapshot은 단순히 “읽기 전용 타입”을 만드는 일이 아니라, 한 요청이 같은 root를 읽고 writer가 새 버전을 안전하게 공개하며 reader가 끝날 때까지 옛 버전을 회수하지 않는 수명 계약입니다. 값의 깊은 불변과 root 교체 원자성, 메모리 회수는 각각 따로 검증해야 합니다.
+
 ## 참조 불변성과 자식 객체의 깊은 불변
 
 final 참조가 가리키는 목록을 다른 코드가 바꾸면 읽는 설정도 바뀝니다. 읽기 전용 view는 그 view를 통한 변경을 막을 뿐 원본 owner의 변경을 막지 않습니다. 생성 시 외부 가변 입력을 방어적으로 복사하고 중첩 map·list·원소의 변경 경로까지 닫아야 같은 snapshot의 값을 안정적으로 읽을 수 있습니다.
 
 작은 설정은 전체 복사가 단순하고 큰 빈번한 변경은 구조적 공유가 유리할 수 있습니다. 공유 노드가 가변이면 이전 snapshot도 같이 오염되므로 복사 범위보다 불변 계약이 먼저입니다.
+
+검증할 상태 추적은 `root.version` 하나로 충분한지부터 확인하는 것입니다. 요청이 root를 한 번 얻은 뒤 `min`과 `max`를 읽으면 두 값의 version이 같아야 하고, writer CAS가 실패하면 요청을 조용히 덮어쓰지 말고 최신 root에서 다시 계산해야 합니다. 이 검사는 원자 참조 교체가 있다는 사실과 논리적 snapshot 일관성을 구분해 줍니다.
 
 ## 단일 Root와 관련 필드의 동일 Version
 
@@ -42,6 +46,8 @@ reader가 `R`을 읽는 동안에는 옛 root를 메모리에서 회수하면 �
 | 느린 회수 | 구현별 retired bytes·grace period 관측 |
 
 독자 수명·동시 reader·retained bytes·보관 root 수를 함께 제한합니다. 상한에 도달하면 새 작업 수락이나 갱신을 제어해야지 사용 중 메모리를 일방 해제하지 않습니다.
+
+재현 연습으로 reader가 옛 root를 붙잡은 채 writer를 빠르게 1,000회 실행하고, reader가 읽은 모든 쌍의 불변식과 retired bytes를 기록합니다. 예상 결과는 reader가 보는 값이 한 version 안에서 일관되고, 보호가 끝나기 전 옛 노드는 회수되지 않으며, reader가 종료된 뒤에만 retained bytes가 줄어드는 것입니다. 상한을 넘으면 새 갱신을 제어하는지까지 확인합니다.
 
 ## 읽기 편의와 Snapshot 전체 비용
 

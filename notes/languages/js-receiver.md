@@ -8,6 +8,8 @@ questionIds: [js-this-binding, js-arrow-this, js-callback-bind-arrow-wrapper, js
 
 # JavaScript This와 콜백 함수의 정체성
 
+JavaScript의 `this`는 함수가 정의된 위치보다 호출 형태에 의해 결정되는 경우가 많고, 화살표 함수는 바깥 실행 문맥을 캡처합니다. 콜백을 넘길 때는 호출 receiver, 추가 인자, 함수 객체의 정체성, 등록 해제 시점을 함께 추적해야 문법 선택이 실제 수명과 일치합니다.
+
 ## 메서드 분리와 호출 receiver 상실
 
 ```js
@@ -80,6 +82,8 @@ class의 화살표 필드는 prototype 메서드와 상속·테스트 대역 방
 `addEventListener('click', handler.bind(this))` 뒤에 새 `handler.bind(this)`를 만들어 remove해도 다른 함수 객체라 등록이 제거되지 않습니다. bound 함수나 래퍼를 필드에 보관하거나 지원되는 AbortSignal로 등록 수명을 묶습니다. 제거는 이벤트 종류·동일 함수·capture 조건을 맞춥니다.
 
 오래된 전역 listener가 bound 함수나 화살표를 잡으면 receiver도 유지될 수 있습니다. 한번 실행이 필요한 이벤트에 once를 쓰더라도 이벤트가 영원히 오지 않을 때의 수명은 남습니다. 화면 종료에서 listener·timer·구독을 정리하고 늦은 결과의 세대도 확인합니다.
+
+재현 순서는 같은 `handler.bind(this)` 표현식을 등록과 제거에 각각 쓰고 이벤트를 한 번 발생시키는 것입니다. 제거가 성공했다고 가정한 기대와 달리 새 bound 함수는 원래 함수와 정체성이 다르므로 callback이 남습니다. 등록 시 만든 함수 참조를 변수·필드에 보관하거나 AbortSignal을 취소하면 이 차이를 확인할 수 있습니다.
 
 ## 반환·인자·수명과 외부 계약 검사
 

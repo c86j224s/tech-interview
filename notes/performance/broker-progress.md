@@ -8,6 +8,8 @@ questionIds: [kafka-lag-interpretation, kafka-commit-lag-versus-effect-lag]
 
 # Kafka Lag와 업무 효과의 완료 지점
 
+Kafka에서 lag는 하나의 숫자가 아니라 어떤 위치를 기준으로 삼았는지에 따른 거리입니다. log end와 fetch position은 전달의 경계이고 committed offset은 재시작 경계이며, 외부 효과가 연속해서 끝난 위치는 업무 경계입니다. 먼저 이 네 위치를 시간축에 놓은 뒤 partition별 병목과 재처리 계약을 해석해야 lag 0을 업무 성공으로 오해하지 않습니다.
+
 ## Commit과 업무 효과 완료 경계
 
 offset 100을 worker에게 넘기자마자 101을 commit하고 worker가 외부 결제를 아직 기다리면 broker 관점의 commit lag는 줄어도 업무는 미완료입니다. 반대로 업무가 완료됐지만 commit이 실패하면 lag가 커 보여도 재전달 시 dedup으로 끝날 수 있습니다. 서로 다른 경계를 같은 완료라고 부르지 않습니다.
@@ -23,6 +25,8 @@ offset 100을 worker에게 넘기자마자 101을 commit하고 worker가 외부 
 
 ## log end·fetch·commit·업무 완료의 네 경계
 
+예를 들어 offset 180의 외부 결제가 성공했지만 commit 전에 worker가 죽으면 committed offset은 180에 머물러 재전달될 수 있고, ledger의 effect ID는 이미 성공을 가리킵니다. 재시작 뒤 같은 ID가 기존 결과를 찾아 중복 결제를 막는 것이 예상 결과입니다. 반대로 offset을 먼저 commit했다면 별도 내구 ledger가 없다면 broker만으로 그 작업을 복구할 수 없습니다.
+
 로그 끝이 200, fetch position이 190, commit이 180, 업무가 연속 완료된 다음 위치가 160이라면 각각 fetch 차이 10·commit 차이 20·업무 경계 차이 40입니다. 160만 막히고 161–189가 완료됐을 수도 있어 경계 차이 40이 미완료 개수 40을 뜻하지는 않습니다. offset에는 제어 레코드·compaction 등에 따른 차이도 있으므로 bytes·실제 작업 수·가장 오래된 미완료 나이를 함께 기록합니다.
 
 ```diagram
@@ -36,6 +40,8 @@ offset 100을 worker에게 넘기자마자 101을 commit하고 worker가 외부 
 partition별 offset 차이·oldest age·유입/완료 bytes·처리 비용·retry·rebalance·paused 상태를 봅니다. 한 hot key가 한 partition을 지배하면 consumer 수를 더 늘려도 그 partition을 같은 group 안에서 둘에게 병렬 소유시킬 수 없습니다. 논리 순서와 partition 분할을 함께 재설계해야 할 수 있습니다.
 
 ## 업무 완료 관측과 독립 내구 상태
+
+lag 대응은 먼저 partition별 유입률과 연속 완료 위치를 비교한 뒤 선택합니다. 모든 consumer를 늘려도 한 hot partition은 빨라지지 않으므로 key 분할이나 업무 병렬성의 변경이 필요할 수 있습니다. 진단 시 log end·committed offset·ledger 완료 시각·DLQ 상태·retention 경계를 한 화면에 놓고, offset reset으로 숫자만 줄인 경우를 처리 완료로 세지 않습니다.
 
 외부 effect ID·idempotency key·완료 ledger·DLQ 상태로 실제 완료를 추적합니다. 이미 commit한 offset에 미완료 업무가 남는 설계라면 재시작 뒤 누가 그 업무를 회수하는지 별도의 내구 queue/ledger로 보장해야 합니다. 인메모리 worker queue만 남기면 프로세스 죽음으로 작업을 잃을 수 있습니다.
 

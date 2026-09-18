@@ -8,11 +8,14 @@ questionIds: [k8s-rolling-update-capacity, deployment-surge-unavailable-rounding
 
 # Deployment 롤링 교체의 용량·가용성·종료 예산
 
+롤링 교체의 안전성은 Pod 객체 수가 아니라 Ready·Available 상태, 종료 중 프로세스, 요청 drain, 구·신 버전의 데이터 호환성이 함께 만드는 시간축의 계약입니다. surge와 unavailable은 controller의 교체 예산일 뿐이며, 배치 실패나 readiness 오판, 연결·작업 종료 지연까지 자동으로 해결하지는 않습니다.
+
 ## 목표 Replica 수와 실제 서비스 용량
 
 replicas=4, maxSurge=1, maxUnavailable=1이면 rollout이 목표보다 하나 더 생성하는 여유와 Available을 목표보다 하나 적게 허용하는 여유를 갖습니다. 계획상 가용 하한은 3개입니다. 하지만 이는 장애가 없어야 유지되는 controller의 교체 예산이지 외부 장애에도 항상 최소 3개가 서비스한다는 보장이 아닙니다.
 
 새 Pod가 Pending이면 객체 수가 5여도 처리 용량은 늘지 않습니다. 종료 중인 옛 Pod는 프로세스·메모리를 아직 보유할 수 있으므로 5를 모든 순간의 총 프로세스·자원 사용 절대 상한으로 해석하지 않습니다.
+단일 replica에서 `maxUnavailable=0`, `maxSurge=1`이면 새 Pod가 실제로 Ready가 되기 전까지 옛 Pod를 유지할 여지가 있어야 합니다. 새 Pod가 Pending이면 객체 수는 2여도 처리 용량은 1이고, 옛 Pod가 terminating이면 프로세스·연결·메모리가 잠시 함께 남습니다. 따라서 상태 필드와 실제 요청 성공·지연을 같은 시간축으로 기록해야 “무중단”을 판단할 수 있습니다.
 
 ## maxSurge·maxUnavailable 백분율의 정수 올림·내림
 

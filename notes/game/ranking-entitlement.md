@@ -8,11 +8,14 @@ questionIds: [ranking-cutoff-rewards, ranking-reward-adjustment-ledger]
 
 # 랭킹 Cutoff·봉인 Snapshot·보상 정정 원장
 
+랭킹 보상은 화면에 보이는 현재 순위를 복사하는 일이 아니라, 허용된 event 집합을 규칙 버전과 cutoff으로 봉인하고 그 결과에서 계정별 권리를 한 번 만든 뒤 실제 지급을 대사하는 과정입니다. 잠정 순위와 확정 권리를 분리해야 늦은 event나 부정 정정이 과거 지급을 조용히 다시 쓰지 않습니다.
+
 ## 화면 순위 변동과 보상 입력 봉인
 
 시즌7 점수는 event가 발생한 시각으로 귀속하고, 마감 뒤에는 30초 동안 도착한 event까지 받는다고 가정합니다. 운영 중에는 event의 발생 시각과 수신 시각을 각각 기록한 다음, 30초 창 안에 도착했고 검증된 event는 집계하고 그 뒤 도착한 event는 폐기할지 정정 대기로 둘지 결정합니다. client timestamp만으로 시즌 귀속을 정하지 않고, server가 확인할 수 있는 tick·sequence·이벤트 근거를 함께 읽습니다.
 
 각 서버가 현재 시각 12시를 가리켜도 모든 shard가 같은 event까지 처리했다는 뜻은 아닙니다. shard별 마지막 처리 위치와 watermark(입력의 시간 진행을 추정하는 표시이며, 그 이후 늦은 사건이 절대 없다는 증명은 아님), 중복 제거(dedup) 상태, 부정 검증 상태, 규칙 version을 모아 `season7,cutoffVersion184` 같은 봉인판을 만든 뒤에만 확정합니다. 한 shard라도 실패하면 자동 확정하지 않고 미완료 집계로 남겨 재개합니다.
+예를 들어 shard A의 watermark는 cutoff까지 도달했지만 shard B가 아직 처리 중이면 화면에 Top-K를 표시할 수 있어도 지급 snapshot은 봉인하지 않습니다. 봉인 후 provider 응답이 유실되면 새 cutoff version을 만들어 다시 지급하지 않고 기존 `account·season·rewardType` key의 상태 조회를 반복합니다. 정정이 발생하면 원래 권리와 연결된 별도 adjustment를 만들어 이미 사용된 보상과 대사합니다.
 
 ## 잠정 순위와 확정 순위의 의미 분리
 

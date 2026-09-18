@@ -8,11 +8,15 @@ questionIds: [elasticsearch-shard-mapping, elasticsearch-docvalues-inverted-inde
 
 # Elasticsearch Mapping·역색인·Doc Values·Shard
 
+검색 시스템의 mapping은 저장 형식 설정을 넘어 “이 필드를 어떤 질문에 답하게 할 것인가”를 선언하는 질의 계약입니다. 본문을 찾는 표현, 정확히 같은 값을 필터링하는 표현, 문서별 값을 정렬·집계하는 표현을 먼저 나누면 역색인과 doc values, shard 비용을 한 기능으로 오해하지 않게 됩니다.
+
 ## 정확 값과 본문 검색 표현의 분리
 
 `mapping`은 필드마다 어떤 타입으로 저장하고 분석·색인·정렬·집계를 허용할지 정하는 색인 스키마입니다. 상품 ID `AB-123`에 `text` analyzer를 적용하면 문자열을 여러 `token`으로 나누어 검색할 수 있으므로 원문 전체와 같은 값인지 확인하는 ID 조회에는 맞지 않을 수 있고, shard(데이터를 나누어 저장하는 단위) 수를 늘려도 이 tokenization 의미는 바뀌지 않습니다.
 
-ID·tenant·분류처럼 정확히 같아야 하는 값은 보통 `keyword`, 본문 단어 검색은 `text`가 출발점이며, 같은 제목을 검색하면서 정확히 정렬하려면 하나의 원문에 두 표현을 두는 `multi-field`를 사용할 수 있습니다. 알려진 문서의 `_id`를 GET하는 경로와 일반 `keyword` 필드를 query하는 경로도 서로 다르므로 API 사용 목적을 먼저 나눕니다.
+선택을 검증할 때 `AB-123` 한 문서를 넣고 `text` 분석 결과의 token 목록, `keyword`의 단일 값, 두 필드의 exact query 결과를 나란히 확인합니다. 이어 같은 문서 집합에서 제목 검색·ID 필터·가격 정렬·tenant 집계를 각각 실행해, 후보를 찾는 단계와 문서 값을 읽는 단계 중 어느 표현이 필요했는지 기록합니다. 한 필드에 모든 목적을 몰아 fielddata를 켜는 것은 편리해 보여도 메모리 실패 경로를 숨길 수 있습니다.
+
+알려진 문서의 `_id`를 GET하는 경로와 일반 `keyword` 필드를 query하는 경로도 서로 다르므로 API 사용 목적을 먼저 나눕니다.
 
 | 요구 | 표현·접근 후보 | 확인할 것 |
 | --- | --- | --- |
@@ -49,4 +53,6 @@ custom routing은 일부 조회 fan-out을 줄일 수 있지만 tenant 편중·h
 
 새 index에 바꾼 mapping으로 대표 문서를 넣고 분석 token·정확 ID·정렬·NULL·집계 결과를 비교합니다. old/new query가 같은 사용자 요구를 만족하는지 확인한 뒤 reindex·동시 쓰기·삭제 추적·alias 전환을 설계합니다.
 
-현재 작업에서는 Elasticsearch를 실행하지 않았습니다. 이 노트는 표현과 비용의 학습 설명이며 shard 크기·query p99·fielddata 메모리 측정 결과가 아닙니다.
+장애 진단 시 먼저 `mapping`과 실제 query를 함께 고정한 뒤, 결과 누락이면 analyzer·정확값·refresh 상태를, 정렬·집계 실패면 doc values와 타입을, p99 상승이면 shard fan-out·bucket 수·coordinator 메모리를 분리해 봅니다. 이 순서를 지키면 shard 수를 늘리는 조치가 토큰화나 잘못된 필드 의미를 해결한다고 착각하는 일을 줄일 수 있습니다.
+
+현재 작업에서는 Elasticsearch를 실행하지 않았습니다.

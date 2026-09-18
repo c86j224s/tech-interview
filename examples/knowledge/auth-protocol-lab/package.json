@@ -1,0 +1,12 @@
+{
+  "name": "auth-protocol-lab",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "test": "node --test test/lab.test.mjs"
+  },
+  "dependencies": {
+    "jose": "6.1.0"
+  }
+}

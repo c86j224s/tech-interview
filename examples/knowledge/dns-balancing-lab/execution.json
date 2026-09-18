@@ -1,0 +1,17 @@
+{
+  "executedAt": "2026-09-18",
+  "status": "PASS_WITH_PLATFORM_LIMITS",
+  "environment": "macOS 27 arm64; Node 26.8.2 / Python 3.9.6 / Apple toolchain as applicable",
+  "workingDirectory": "examples/knowledge/dns-balancing-lab",
+  "commands": [
+    "npm test"
+  ],
+  "executed": "7 deterministic model tests",
+  "notRun": [
+    "DNS resolver",
+    "NGINX",
+    "HAProxy",
+    "HTTP/2 wire"
+  ],
+  "details": "docs/practical-knowledge-review.md"
+}

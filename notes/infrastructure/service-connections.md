@@ -8,6 +8,8 @@ questionIds: [k8s-service-network, headless-clusterip-selection-boundary]
 
 # Kubernetes Service 발견과 장기 연결의 분산
 
+Kubernetes Service 발견과 장기 연결을 이해하는 기본 모델은 주소 발견, backend 선택, 이미 열린 연결의 수명을 따로 보는 것입니다. EndpointSlice가 바뀌어도 TCP나 HTTP/2 연결의 소유 backend가 자동으로 이동하지 않으므로, scale-out 효과는 새 연결 생성과 client·proxy balancing 정책을 통해서만 나타날 수 있습니다.
+
 ## 새 Pod와 기존 TCP 연결의 backend 고정
 
 클라이언트가 api-0으로 HTTP/2 연결 하나를 열고 수천 요청을 보냅니다. api-1을 추가해 Ready로 만들었어도 기존 연결의 스트림이 자동으로 api-1로 이동하지는 않습니다. Service의 backend 선택 단위와 HTTP/2의 요청 다중화 단위가 다르기 때문입니다.
@@ -15,6 +17,8 @@ questionIds: [k8s-service-network, headless-clusterip-selection-boundary]
 연결 수준 분산에서는 새 TCP 연결이 만들어질 때 데이터 경로의 구성요소가 backend를 선택하고, 그 소켓이 살아 있는 동안에는 보통 같은 backend로 요청이 갑니다. 반대로 L7 프록시는 HTTP 요청을 본 뒤 한 client 연결 안에서도 요청마다 어느 backend로 보낼지 선택할 수 있으므로, 실제 배치에서 client·Service 경로·프록시 중 누가 이 선택을 맡는지 확인합니다.
 
 EndpointSlice 갱신과 kube-proxy·CNI 데이터 경로의 반영은 이미 열린 TCP 소켓을 다른 Pod로 이주시키는 기능이 아닙니다.
+
+문제 재현에서는 먼저 연결 ID와 backend Pod ID를 함께 기록한 뒤 endpoint 변경 전후의 기존 stream과 신규 연결을 구분합니다. 새 Pod가 Ready인데 기존 HTTP/2 연결의 요청이 계속 이전 Pod에 가는 것은 발견 실패가 아니라 연결 고정의 정상적인 결과일 수 있습니다. 반대로 신규 연결도 새 endpoint를 사용하지 않으면 resolver cache, proxy 정책, readiness·port 설정을 차례로 확인합니다.
 
 ## 주소 발견과 Backend 선택 책임
 
@@ -57,3 +61,5 @@ Endpoint 상태가 전파되어도 모든 프록시와 client가 같은 순간�
 테스트 클러스터에서 client 연결을 먼저 유지한 채 새 Pod를 추가하고, 기존 연결과 신규 연결의 backend를 따로 기록합니다. Headless resolver 갱신·DNS 지연·readiness 전파·scale down을 시험하고 사용자 요청의 오류·중복·재개 결과를 봅니다.
 
 현재 작업에서는 Kubernetes 네트워크 실험을 실행하지 않았습니다. 본문은 연결과 발견의 경계를 설명하며 실제 부하 분산 비율을 측정한 결과는 아닙니다.
+
+예상 결과를 명확히 하려면 기존 연결을 먼저 열고 api-1을 추가한 뒤, 기존 연결의 backend가 유지되는지와 새 연결이 api-1을 선택할 수 있는지를 별도로 확인합니다. scale down에서는 readiness·terminating 전파만으로 진행 중 stream이 자동 완료된다고 가정하지 않고, 앱의 새 작업 거부·기존 작업 drain·deadline 이후 재개를 각각 관찰해야 합니다.

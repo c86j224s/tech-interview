@@ -8,11 +8,15 @@ questionIds: [ios-view-lifecycle, ios-navigation-view-retention, ios-hidden-scre
 
 # iOS 화면 재등장과 작업 수명
 
+화면 생명주기의 기본 모델은 뷰 로드, appearance 전환, 화면 밖 상태, 객체 해제를 서로 다른 사건으로 기록하는 것입니다. navigation이나 tab 컨테이너가 controller를 보존하면 화면이 다시 보여도 `viewDidLoad`가 반복되지 않을 수 있고, `viewDidDisappear`가 호출되어도 객체가 해제됐다는 뜻은 아니므로 작업의 owner와 취소 정책을 별도로 정해야 합니다.
+
 ## 화면 재등장과 새 뷰 생성의 차이
 
 프로필에서 설정 화면으로 갔다가 돌아왔는데 `viewDidLoad`의 조회가 다시 실행되지 않는다면, 기존 프로필 뷰가 navigation stack에 남아 재사용된 것일 수 있습니다. 이때 `viewDidLoad`는 뷰 계층을 메모리에 올리는 시점이고, `viewWillAppear`·`viewDidAppear`는 화면이 다시 나타나는 시점이며, `deinit`은 객체 수명이 끝나는 시점입니다. 같은 화면으로 돌아왔다는 사실만으로 새 뷰가 만들어졌다고 판단하지 말고 객체 ID와 각 콜백을 함께 기록해야 합니다.
 
 초기 버튼 연결·정적 제약·서브뷰 구성은 로드 시점, 최신 데이터 표현은 재등장 시점, 실제 표시 후 안내·애니메이션은 전환 완료 시점에 맞추어 배치합니다. 메서드 이름보다 반복 실행과 소유 수명의 계약을 이해해야 합니다.
+
+Apple의 UIKit 계약에서도 `viewDidLoad`는 view가 메모리에 올라온 뒤의 초기화 지점이고, appearance 메서드는 여러 번 호출될 수 있으며, `deinit`은 ARC 객체 수명 사건입니다. 따라서 화면 갱신 문제에서 먼저 객체 ID와 callback 시각을 기록하고, 그 다음 container 보존·다른 owner의 retain·reference cycle을 확인하는 순서가 적합합니다.
 
 ## 시점별 뷰 생명주기 책임
 
@@ -71,4 +75,8 @@ Auto Layout의 frame은 계산 결과입니다. viewDidLoad에서 읽은 크기�
 
 push·pop·tab·modal·전환 취소를 반복하고 서브뷰·옵저버·타이머 수가 늘지 않는지 확인합니다. 느린 이전 조회와 빠른 새 조회를 역순 완료시켜 옛 결과가 화면을 덮지 않는지도 봅니다. 화면이 해제된 뒤 완료가 와도 공용 작업의 결과·임시 파일 정리가 누락되지 않아야 합니다.
 
-이 노트는 생명주기 설계 지침이며 실제 UIKit 버전·컨테이너 조합에서 콜백을 실행해 확인한 결과는 아닙니다. 테스트 환경에서 객체 ID와 시점을 기록하고 API 계약과 실제 로그를 함께 대조해야 합니다.
+이 노트는 생명주기 설계 지침이며 실제 UIKit 버전·컨테이너 조합에서 콜백을 실행해 확인한 결과는 아닙니다.
+
+재현 연습은 같은 controller를 push/pop, tab 전환, modal 취소로 반복하고 `viewDidLoad`·`viewWillAppear`·`viewDidAppear`·`viewDidDisappear`·`deinit`의 횟수를 비교하는 것입니다. 예상 결과는 재등장 때 load가 반드시 반복되지 않고, disappear 뒤에도 deinit이 지연될 수 있으며, 느린 이전 요청의 결과가 세대 검사에서 버려지는 것입니다. custom container를 쓴다면 appearance forwarding 계약도 별도로 확인합니다.
+
+ 테스트 환경에서 객체 ID와 시점을 기록하고 API 계약과 실제 로그를 함께 대조해야 합니다.

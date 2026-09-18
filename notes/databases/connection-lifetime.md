@@ -8,7 +8,11 @@ questionIds: [db-pool-long-transactions, idle-transaction-pool-starvation, datab
 
 # DB 연결의 대기·보유·취소·세션 초기화
 
+DB 연결 문제는 query가 느린가보다 “누가 언제 연결을 빌리고, 어떤 상태로 반환하는가”를 추적해야 풀립니다. 이 노트는 짧은 SQL, 외부 대기, 스트리밍, 취소, 세션 상태를 하나의 연결 수명 모델로 묶고 풀 고갈을 실제 원인별로 분해합니다.
+
 ## 풀 고갈 전 연결 보유 시간 분석
+
+예를 들어 pool 10개에서 10개 요청이 각각 SQL 20ms 뒤 결제 API를 2초 기다리면 DB CPU가 한가해도 새 요청은 연결 획득에서 막힙니다. 이 상태를 재현할 때는 pool 대기 시간, 실제 SQL 시간, 외부 대기 시간을 같은 trace에 놓고, pool 크기만 늘렸을 때 DB lock·CPU·최대 연결 수가 어떻게 변하는지 함께 기록합니다.
 
 `connection pool`은 여러 요청이 재사용할 물리 DB 연결을 모아 두고 요청이 빌려 쓰게 하는 관리 구조입니다. 주문을 읽은 뒤 같은 transaction 안에서 결제 API를 기다리면 SQL 자체는 짧아도 빌린 연결이 외부 지연 전체 동안 점유되고, pool을 키우면 잠시 대기만 줄어든 채 DB 동시성·lock·I/O 부담이 커질 수 있습니다.
 
@@ -26,11 +30,15 @@ questionIds: [db-pool-long-transactions, idle-transaction-pool-starvation, datab
 
 ## 거래 밖 대기와 재검증 조건
 
+연결을 반납하는 설계는 “대기 자원”을 “상태 정확성”과 교환합니다. 예약을 `pending`으로 먼저 확정하고 외부 결과 뒤 `pending + expected_version + request_id` 조건으로 완료하는 흐름에서, 다른 요청이 예약을 취소하면 조건부 갱신이 0행이 되고 그 결과를 성공으로 포장하지 않아야 합니다.
+
 외부 API를 기다리기 전에 DB에서 짧게 예약·읽기를 확정하고 연결을 반납한 뒤, 결과가 돌아오면 조건부 갱신하는 방식은 연결 보유 시간을 줄일 수 있습니다. 이 구성에서는 원래 transaction을 먼저 commit 또는 rollback으로 끝내고 연결을 반납합니다. 이후 외부 호출과 새 transaction은 하나의 원자적 작업이 아니므로, 예약 상태·`expected version`(읽을 때 확인한 버전)·논리 요청 ID를 함께 들고 있다가 돌아온 뒤 그 사이 변경과 중복 요청을 다시 확인해야 합니다. 코드 블록을 transaction 밖으로 옮겼다는 이유만으로 원래 정확성이 유지되지는 않습니다.
 
 서버 10개가 pool 20개씩 가지면 최대 200개 연결에 배치·관리·복제·다른 서비스의 연결 예산까지 더해지며, DB 최대 연결 수와 안정적으로 처리할 수 있는 실제 병렬도는 다릅니다. 하위 CPU·I/O·lock에 여유가 있고 정상 query의 동시성 제한이 실제 병목일 때 pool 증설을 검토합니다.
 
 ## 스트리밍의 메모리 절감과 연결 보유 시간 증가
+
+선택 기준은 결과 크기만이 아니라 연결을 보유해도 되는 최대 시간과 독자의 backpressure입니다. 예측 실험으로 같은 결과를 전체 적재와 1MB batch 스트리밍으로 각각 읽고 앱 RSS, 연결 보유 p99, 취소 후 반환 시간, 동시 export 수를 비교하면 메모리 절감이 연결 독점으로 바뀌는 지점을 볼 수 있습니다.
 
 큰 결과를 클라이언트 속도에 맞춰 조금씩 읽으면 앱 메모리는 줄일 수 있지만 DB cursor·transaction·연결이 오래 살아 있을 수 있습니다. 반대로 전체를 메모리에 담으면 연결은 빨리 돌려줘도 메모리 피크가 커집니다.
 
@@ -41,6 +49,8 @@ questionIds: [db-pool-long-transactions, idle-transaction-pool-starvation, datab
 ```
 
 ## Timeout·Cancel·Rollback 상태 구분
+
+장애 진단에서는 먼저 “클라이언트가 포기했는가”, “DB가 statement를 끝냈는가”, “transaction이 rollback됐는가”, “commit이 내구화됐는가”를 별도 사건으로 기록합니다. commit 응답만 유실된 경우 재시도보다 request ID 조회가 우선이며, 연결 상태를 모르면 폐기하는 것이 재사용으로 오염을 전파하는 것보다 안전합니다.
 
 client가 기다리기를 끝내고 취소 신호를 보냈어도 서버 query가 아직 실행 중이거나 commit이 이미 끝났을 수 있습니다. statement timeout·transaction timeout·connection 획득 timeout·전체 요청 deadline을 구분하고 정리 시간을 남깁니다.
 

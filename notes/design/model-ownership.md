@@ -8,6 +8,8 @@ questionIds: [service-boundary-design, cqrs-read-write-models, event-sourcing-re
 
 # 서비스 불변식·CQRS·Event Sourcing의 원본
 
+경계를 나누는 핵심 질문은 “테이블이 몇 개인가”가 아니라 “어떤 상태를 누가 최종적으로 바꾸며, 다른 상태와 언제까지 함께 맞아야 하는가”입니다. 즉시 원자성이 필요한 규칙과 지연·보상으로 허용할 수 있는 규칙을 먼저 구분한 뒤 CQRS나 Event Sourcing을 선택해야 읽기 모델 분리가 불필요한 분산 복잡성을 만들지 않습니다.
+
 ## 테이블 집합과 Service 경계의 불일치
 
 주문·결제·재고가 즉시 함께 확정돼야 하는지, 재고 예약→결제 승인→확정과 만료/보상을 허용할지 먼저 정합니다. 후자는 process 분리를 가능하게 할 수 있지만 중간 사용자 상태·늦은 승인·응답 유실·보상 실패를 새로 관리해야 합니다.
@@ -48,3 +50,5 @@ projection 계산과 외부 effect handler를 분리하고 replay 환경에서 �
 ## 분리 설계와 실제 운영 비용 비교
 
 단일 model 기준선과 조회 지연·command 복잡성·projection lag·재구축 시간·공동 변경·RPC 왕복·보상·장애 전파·팀 owner를 비교합니다. 오래된 event·snapshot 연결·삭제·중복·외부 자료 변경·부분 실패를 시험합니다. 이 노트는 구조 설계이며 실제 event store migration이나 replay를 실행한 결과는 아닙니다.
+
+선택을 진단하려면 하나의 주문 변경을 기준으로 command 확정 시각, projection 반영 시각, 사용자 조회 시각을 기록해 보십시오. command가 성공했는데 query가 이전 version을 반환하면 이는 원본 실패가 아니라 read model lag이며, 최소 version 대기나 확정 응답 사용으로 해결할 문제입니다. 반대로 replay 중 외부 결제가 다시 호출되면 projection과 effect handler의 실행 경계가 분리되지 않은 결함입니다.

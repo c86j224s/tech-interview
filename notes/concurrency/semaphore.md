@@ -29,6 +29,10 @@ questionIds: [semaphore-mutex, semaphore-acquire-cancel-race]
 {"title":"취소 시점에 따라 반환 책임이 달라집니다","caption":"화살표는 허가 수명의 순서입니다. acquire가 성공한 뒤부터 반환 책임이 생기며, 응답 종료가 아니라 제한 대상인 실제 작업 종료까지 유지합니다.","rows":[[{"id":"wait","label":"허가 대기","detail":["아직 release 책임 없음"]}],[{"id":"owned","label":"획득 성공","detail":["정확히 한 번 반환할 책임"]}],[{"id":"running","label":"실제 작업 실행"}],[{"id":"release","label":"실제 종결 후 반환"}]],"edges":[{"from":"wait","to":"owned","label":"acquire 확정"},{"from":"owned","to":"running","label":"시작 허용"},{"from":"running","to":"release","label":"성공·실패·취소 완료"}]}
 ```
 
+세마포어의 숫자는 동시에 허용할 작업 수를 나타내지만, 그 숫자가 작업의 소유권이나 종료를 자동으로 관리하지는 않습니다. 따라서 허가를 받은 순간부터 실제 작업이 끝나 반환되는 순간까지를 하나의 수명으로 추적해야 상한과 누수를 함께 설명할 수 있습니다.
+
+상태를 `available=2, active={}`로 시작해 두 요청 A·B가 각각 허가를 얻으면 `available=0, active={A,B}`가 됩니다. C의 acquire가 대기 중일 때 A의 사용자 응답이 먼저 끝나도 실제 외부 호출이 남아 있으면 A의 허가를 반환하지 않습니다. A의 외부 호출이 종결된 뒤에만 `active={B}`로 바꾸고 허가 하나를 C에게 넘깁니다. 이 순서를 테스트에서는 acquire 직전 취소, acquire 성공 직후 취소, 작업 제출 실패, 실제 작업이 취소를 무시하는 경우로 나누어 관찰하고 각 경우의 허가 수와 active 작업 집합을 함께 비교합니다.
+
 ## 허가 객체와 소유권 경계
 
 ```text

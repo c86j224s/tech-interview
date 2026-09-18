@@ -8,11 +8,15 @@ questionIds: [java-completablefuture-executor, java-interrupt-cooperation, java-
 
 # Java Future·Interrupt·가상 스레드의 실행 수명
 
+Java 비동기 코드를 읽을 때 Future의 상태와 실제 하위 작업의 수명을 분리하면 많은 오해가 사라집니다. 단계가 어느 executor에서 실행되는지, timeout·cancel·interrupt가 무엇을 끝내는지, 가상 스레드가 어떤 하위 자원의 병목을 해결하지 못하는지를 같은 실행 trace에서 확인해야 합니다.
+
 ## Future 단계의 실행 위치와 전용 Worker 보장 범위
 
 네트워크 응답을 완료한 스레드가 `CompletableFuture.thenApply`의 무거운 JSON 변환까지 맡으면 그 스레드는 변환이 끝날 때까지 다른 응답을 처리하지 못할 수 있습니다. `non-async` 단계는 future를 완료시키는 스레드 등에서 실행될 수 있고, 이미 완료된 future에 단계를 붙일 때는 단계를 등록한 스레드에서 실행될 수도 있습니다. 따라서 `thenApply`라는 이름만 보지 말고 빠른 완료와 늦은 완료에서 실제 실행 스레드와 대기 시간을 관찰해야 합니다.
 
 async 단계는 명시 executor 또는 기본 비동기 실행 정책을 사용합니다. 기본 CompletableFuture는 일반적으로 common ForkJoinPool을 사용하지만 기본 풀의 병렬성 등에 따른 예외와 하위 타입의 실행 정책을 확인합니다. async가 항상 새 전용 스레드를 만든다는 뜻은 아닙니다.
+
+실행 위치를 이해하려면 future를 즉시 완료시키는 경로와 지연 완료시키는 경로를 같은 단계로 비교해야 합니다. `thenApply` 내부에 thread name·시작/종료 시각·queue 대기 시간을 기록하고, 무거운 변환이 I/O completion thread를 붙잡는지 확인합니다. executor를 명시하는 변경은 실행 위치만 바꾸며, queue 상한·거절·작업 취소·종료 시점까지 자동으로 해결하지 않습니다.
 
 ## 단계 결과 형태와 실행 위치의 분리
 
@@ -32,6 +36,8 @@ async 단계는 명시 executor 또는 기본 비동기 실행 정책을 사용�
 
 `CompletableFuture.cancel`을 호출해도 임의의 계산이나 네트워크 작업에 강제로 `interrupt`가 전달된다고 가정하지 않습니다. 실제 작업 핸들과 사용 중인 라이브러리의 취소 계약을 연결해야 하며, timeout이나 cancel로 future 상태가 먼저 끝난 것과 하위 작업의 실제 종결은 별도로 확인합니다. 이미 서버나 DB에 커밋된 변경은 future의 exceptional completion으로 되돌아가지 않습니다.
 
+특히 `thenApply`가 반환한 `CompletableFuture<Future<T>>`와 `thenCompose`가 반환한 `CompletableFuture<T>`를 타입과 완료 trace로 함께 비교하면 중첩 누락을 찾기 쉽습니다. `exceptionally`로 기본값을 넣은 뒤에는 오류율이 낮아진 것이 아니라 오류가 정상 결과로 변환됐을 수 있으므로 원래 예외와 대체 결과를 별도 metric으로 남깁니다.
+
 ## Interrupt의 협력적 종료 신호
 
 interruptible 대기는 InterruptedException을 던질 수 있고 그 과정에서 interrupt 상태가 지워질 수 있습니다. 호출 계층에서 처리를 끝내거나 예외를 전파하고, 시그니처상 전파할 수 없으면 적절히 `Thread.currentThread().interrupt()`로 상태를 복원한 뒤 종료하는 등 정책을 정합니다. 로그만 남기고 같은 루프를 계속 돌면 종료 요청이 사라질 수 있습니다.
@@ -39,6 +45,8 @@ interruptible 대기는 InterruptedException을 던질 수 있고 그 과정에�
 Thread.interrupted는 현재 스레드 상태를 읽고 지우며 isInterrupted는 해당 상태를 확인하고 지우지 않습니다. CPU 루프는 적절한 단계마다 상태를 검사하고 자원을 정리합니다. 일반 synchronized monitor 획득과 interruptible lock 획득도 같은 취소 계약이 아닙니다. 소켓·파일·SDK별로 지원되는 중단 경로를 확인해야 합니다.
 
 신호를 보낸 시각, 실제 함수 반환·스레드 종료 시각, 외부 효과 확정 시각을 나눠 기록합니다. join·완료 핸들로 실제 끝을 확인하고 기한을 넘긴 작업의 격리·프로세스 단위 종료·결과 대사는 상위 운영 계약으로 정합니다. 위험한 임의 스레드 강제 종료를 정상 복구 방식으로 삼지 않습니다.
+
+취소 시험은 신호 시각, `InterruptedException` 또는 상태 확인 시각, finally 자원 정리 시각, 실제 thread 종료 시각을 각각 기록합니다. 예상 결과는 interruptible sleep은 종료 경로로 들어가지만, interrupt를 무시하는 CPU loop나 SDK I/O는 계속될 수 있다는 것입니다. 따라서 caller의 timeout을 worker 종료 assertion으로 사용하지 말고 join·작업 핸들·외부 결과 조회로 종결을 확인합니다.
 
 ## 가상 스레드와 DB 연결·대기 메모리의 별도 상한
 
@@ -48,8 +56,12 @@ CPU 계산은 실제 코어를 사용하므로 가상 스레드 수 증가가 �
 
 pinning·monitor·native 호출의 동작은 JDK 버전에 따라 바뀝니다. 예를 들어 오래된 가상 스레드의 synchronized 관련 조언을 최신 JDK에 무조건 적용하지 말고 실제 버전의 JFR·pinning 이벤트·지원 문서를 확인합니다. 이 노트는 특정 최신 JDK 동작을 실험했다고 주장하지 않습니다.
 
+가상 스레드의 선택 기준은 “blocking을 많이 표현해야 하는가”이지 “하위 자원을 더 많이 만들 수 있는가”가 아닙니다. 100개 연결에 10만 요청을 대기시키는 시험에서는 carrier 점유, connection waiters, heap, deadline 초과를 함께 측정하고 수락 상한을 낮춘 결과와 비교합니다. JDK 버전별 pinning·scheduler·blocking library 지원은 추가 주장 없이 해당 버전의 공식 문서와 JFR로 확인해야 합니다.
+
 ## 빠른 완료·느린 완료의 실행 수명 비교
 
 이미 완료된 future와 나중 완료되는 future에 같은 단계를 붙여 thread 이름·executor 큐를 관찰합니다. thenCompose 누락, 오류 기본값, 풀 포화, timeout 후 늦은 완료를 나눕니다. interruptible 대기·CPU 루프·취소 무시 I/O도 각각 시험합니다.
 
 가상 스레드 비교는 I/O 중심·CPU 중심·느린 DB·메모리 압력을 고정해 p99·대기 수·활성 연결·오류를 함께 봅니다. Homebrew OpenJDK 21.0.12.1의 `scripts/VerifyJavaStudy.java`로 thenCompose 결과와 가상 스레드 executor의 작은 작업 완료를 확인했습니다. JFR·pinning·실제 I/O 취소·가상 스레드 부하 성능은 측정하지 않았으며 이 기능 시험을 용량 검증으로 확대하지 않습니다.
+
+문서에 적힌 Java 시험은 thenCompose와 작은 executor 작업의 동작 확인으로 한정하고, I/O 취소·JFR·용량 성능을 검증한 것으로 확대하지 않습니다. 재현 시에는 동일 입력과 seed, executor 설정, JDK 버전을 고정하고 예상되는 단계별 thread와 완료 순서를 assertion으로 둡니다. 현재 작업에서 더 넓은 부하나 최신 JDK 동작을 실행했다는 주장은 추가하지 않습니다.

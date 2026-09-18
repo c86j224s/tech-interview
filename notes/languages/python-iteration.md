@@ -8,6 +8,8 @@ questionIds: [python-generator-iterator, python-yield-from-control]
 
 # Python Iterator의 소비 상태와 Yield From 제어
 
+Python의 iterable은 반복할 수 있다는 인터페이스이고, iterator는 현재 소비 위치를 가진 객체이며, generator는 그 상태를 지연 실행하는 한 구현입니다. 따라서 같은 데이터를 다시 순회할 수 있는지, next·send·throw·close가 어느 객체로 전달되는지, yield 사이에 자원이 얼마나 오래 살아 있는지를 구분해서 읽어야 합니다.
+
 ## Generator 호출과 Next 호출의 실행 시점
 
 ```python
@@ -25,6 +27,8 @@ print(list(it))
 ```
 
 generator 함수 호출은 generator 객체를 만들고 본문 실행은 next 등으로 값을 요구할 때 시작합니다. generator 객체는 현재 실행 위치와 지역 상태를 보관하는 iterator입니다. 한 번 소진한 객체를 다시 순회하면 처음부터 재생되지 않습니다.
+
+상태를 `iter(list)→next 한 번→list(iterator)→list(iterator)`로 기록하면 결과가 각각 현재 위치를 반영한다는 것을 확인할 수 있습니다. 같은 파일을 다시 여는 factory는 새 iterator를 만들지만 같은 snapshot을 보장하지 않으므로, “재순회 가능”과 “같은 결과 재생”을 API 계약에서 별도로 적습니다.
 
 ## Iterable 재순회와 Iterator 소비 상태
 
@@ -74,6 +78,8 @@ close는 정지한 generator에 GeneratorExit를 전달해 finally 정리를 진
 동기 next 안에서 느린 파일 읽기나 긴 계산을 하면 호출자도 그 시간만큼 막힙니다. asyncio 이벤트 루프에서 동기 generator를 순회한다고 자동으로 다른 스레드가 실행하지 않습니다. async iterator나 제한된 실행 분리가 필요할 수 있습니다.
 
 메모리는 전체 목록보다 줄일 수 있지만 프레임의 지역 객체·현재 원소·소비자가 보관한 결과는 남습니다. 무한 입력을 list로 물질화하거나 tee의 느린 소비자를 방치하면 지연 평가의 장점을 잃습니다.
+
+진단 실습은 첫 next 전 부수 효과, `send(None)`과 non-None send, child의 return 값, break 뒤 finally 실행을 각각 관찰하는 것입니다. 예상 결과와 다르면 generator 문법 자체보다 소비자가 iterator를 한 번 더 돌렸는지, close를 호출했는지, 파일·DB 자원을 별도 context가 소유하는지를 먼저 확인합니다.
 
 ## 소비 순서·소진 결과·종결 동작 확인
 

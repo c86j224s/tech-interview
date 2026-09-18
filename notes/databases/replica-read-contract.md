@@ -10,6 +10,8 @@ questionIds: [db-read-replica-consistency, db-read-your-writes-token, replica-lo
 
 ## 저장 성공과 Replica 조회 시점의 구분
 
+Replica 읽기 설계는 “얼마나 최신이어야 하는가”를 요청 종류별 계약으로 바꾸는 일입니다. 일반 목록은 stale read를 허용할 수 있지만, 방금 변경한 결제 상태나 현재 권한 판정은 최소 반영 위치 또는 원본 읽기가 필요할 수 있습니다.
+
 원본이 프로필 version=8을 커밋해 성공을 반환했지만 replica는 아직 version=7을 적용 중일 수 있습니다. 다음 새로고침이 replica로 가면 옛값이 보입니다. 이는 replica 지연의 관찰 계약이며 저장 실패와 같지 않습니다. 같은 DB 노드 안의 transaction snapshot이 옛값을 유지하는 문제와도 구분합니다.
 
 저장 응답의 최신값을 화면에 보이는 것은 UX를 돕지만 그 뒤 권위 조회가 같은 변경을 확인했다는 보장은 아닙니다. 기능별로 본인 쓰기 관찰·일반 stale read·강한 현재 인가를 나누어 설계합니다.
@@ -36,6 +38,8 @@ questionIds: [db-read-replica-consistency, db-read-your-writes-token, replica-lo
 
 클라이언트 토큰은 형식·cluster·epoch·scope·만료·서명 등 정책으로 검증하고 터무니없이 큰 위치를 요구해 무한 대기를 만들지 못하게 합니다. 조회 인가와 토큰 무결성은 별도입니다. 토큰이 없거나 다른 기기로 이동한 경우의 보장도 명시합니다.
 
+실무에서는 `read_requirement`를 `eventual`, `after_write(token)`, `authoritative_now`처럼 요청에 붙이고 라우터가 임의로 downgrade하지 않게 합니다. 토큰을 만족할 후보가 없으면 제한 시간 뒤 `stale_not_allowed`나 원본 우회로 명시적으로 실패해야 하며, 빈 결과를 정상적인 “데이터 없음”으로 바꾸면 지연 장애가 숨겨집니다.
+
 ## 긴 Replica 조회와 Replay·원본 정리 비용
 
 replica의 오래된 snapshot이 필요한 버전과 원본 cleanup·DDL 재생이 충돌할 수 있습니다. PostgreSQL standby는 설정에 따라 query를 취소하거나 replay를 기다릴 수 있고 hot_standby_feedback은 원본의 cleanup을 늦춰 bloat를 늘릴 수 있습니다. 모든 충돌을 feedback 하나로 해결하는 것은 아닙니다.
@@ -53,3 +57,5 @@ failover 뒤 같은 숫자가 다른 로그 계통을 뜻할 수 있으므로 ol
 ## 저장·재조회 Timeline 실험
 
 테스트에서는 저장 직후 같은 세션에서 replica로 읽고, receive 위치와 replay 위치가 다를 때 어떤 값을 보는지 기록합니다. 느린 보고서가 원본 cleanup과 충돌하는 경우, 원본 우회가 몰려 포화되는 경우, 승격 뒤 old token을 보내는 경우를 각각 재현해 조회 결과·취소·대기·라우팅을 확인합니다. 성공 응답된 쓰기와 응답 불확실 요청을 구분해 최종 원장·버전·사용자 결과를 비교하며, 현재 작업에서는 실제 복제·승격을 실행하지 않았으므로 본문은 관찰·보존 범위의 설계입니다.
+
+예상 결과는 commit 위치 115, receive 120, replay 110인 replica에서 `after_write(115)`가 즉시 성공하지 않고 대기·우회 중 하나를 택하는 것입니다. 승격으로 timeline이 바뀌면 숫자 115만 비교하지 않고 epoch와 복구 상태를 먼저 검사하며, 응답 유실 요청은 원장·멱등 기록과 대조해 `확정` 또는 `불확정`으로 남겨야 합니다.

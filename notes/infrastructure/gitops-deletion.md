@@ -8,6 +8,8 @@ questionIds: [argocd-prune-rollback, argocd-application-cascade-delete, gitops-p
 
 # Argo CD Prune·Cascade와 데이터 복원 경계
 
+GitOps에서 선언을 되돌리는 일과 이미 삭제된 상태·데이터를 복원하는 일은 서로 다른 경로입니다. 먼저 렌더된 리소스의 identity와 추적 집합을 확정하고, 그다음 저장소 보존 정책과 실제 복원 가능한 백업을 확인한 뒤에야 삭제나 복구의 성공 조건을 말할 수 있습니다.
+
 ## YAML 복귀와 삭제 볼륨 데이터 복원의 불일치
 
 Git에서 PVC 선언을 제거하고 prune으로 실제 PVC·백엔드 볼륨까지 삭제되었다면 Git revert는 예전 선언만 되살립니다. 새 PVC가 빈 볼륨을 받는 것은 데이터 복원이 아닙니다. 리소스 선언 복귀와 상태·데이터 복원을 구분해야 합니다.
@@ -49,6 +51,8 @@ finalizer가 남으면 소유 controller·외부 정리 상태를 먼저 확인�
 의도하지 않은 prune이 진행되었다면 추가 변경을 통제하고 실제 삭제된 객체·남은 PV·backend ID·snapshot을 확인해야 합니다. 같은 이름의 PVC를 급히 재생성하면 빈 새 저장소가 붙어 남아 있는 원본의 정체성을 혼동할 수 있습니다. 원본이 무엇인지 확인한 뒤 복원 경로를 선택합니다.
 
 Git revert·앱 이미지 rollback·DB 복원·외부 자원 복구·키 회수는 각자 다른 행동입니다. 유출 키는 가용성 회복을 위해 다시 살리는 것이 안전하지 않을 수 있습니다. 복구 성공은 Synced 표시가 아니라 필요한 데이터와 자격·서비스 결과가 정책을 만족하는지로 봅니다.
+
+삭제 검토 실습은 데이터 없는 격리 Application에서 파일명 변경, `metadata.name` 변경, 개별 prune, Application cascade를 각각 별도 실행 계획으로 비교하는 방식으로 제한하십시오. 예상 결과는 파일 경로만 바꾼 경우 identity가 같을 수 있지만 이름 변경은 새 객체와 옛 객체의 생성·prune 문제를 만들 수 있다는 것입니다. 실제 PVC나 외부 backend를 삭제하지 않고도 렌더된 GVK·namespace·name과 추적 집합의 차이를 검증할 수 있습니다.
 
 ## 추적 리소스 집합과 부분 실패 시험
 

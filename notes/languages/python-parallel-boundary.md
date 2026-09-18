@@ -8,6 +8,8 @@ questionIds: [python-gil-parallelism, python-c-extension-gil-release, python-mul
 
 # Python GIL·Native 계산·프로세스 전달 비용
 
+병렬화 선택은 “스레드인가 프로세스인가”를 먼저 고르는 문제가 아니라, 병목이 Python 바이트코드인지 native 계산인지 I/O인지 확인하는 문제입니다. 그 다음 전송 가능한 입력 크기와 native 내부 thread 수를 포함해 전체 시간을 비교합니다. 순수 Python CPU 작업은 프로세스 경계를 검토할 수 있지만, 작은 작업이나 큰 payload라면 직렬화 비용이 이득을 없앨 수 있습니다.
+
 ## 대기 작업과 Python 계산의 병목
 
 GIL이 활성인 일반 CPython에서 한 인터프리터가 Python 바이트코드를 실행할 때는 한 시점에 한 스레드가 그 바이트코드를 실행합니다. 그래서 순수 Python CPU 루프를 여러 스레드로 나누면 스레드 수만큼 여러 코어에서 바이트코드가 동시에 실행되지는 않아 이득이 제한됩니다. 반대로 파일·네트워크 I/O처럼 대기 중 GIL을 놓는 경로에서는 한 스레드가 기다리는 동안 다른 스레드가 실행해 대기를 겹칠 수 있습니다.
@@ -55,6 +57,8 @@ spawn은 새 인터프리터가 모듈을 읽으므로 import 가능한 worker �
 각 프로세스가 자기 매핑을 닫는 일과 공유 객체 이름을 제거하는 일은 같은 cleanup이 아니므로 분리해 추적합니다. 마지막으로 이 정리 순서와 resource tracker의 동작은 대상 플랫폼과 Python 버전에서 확인합니다.
 
 부모 취소 뒤 자식이 아직 읽는데 공유 메모리를 재사용·폐기하면 오류가 납니다. 실제 worker 종료를 확인하고 한 소유자가 최종 제거하도록 합니다. process future 대기 취소가 이미 실행 중인 계산을 자동 중단하는 것도 아닙니다. 강제 worker 종료는 부분 외부 효과와 공유 자원 정리의 복구를 필요로 합니다.
+
+작은 실험에서는 동일한 입력으로 순수 Python thread, process, native 호출을 각각 실행하고 결과의 CPU 시간뿐 아니라 pickle bytes·queue 대기·worker startup·RSS를 비교합니다. process 방식이 계산 구간만 빨라도 전체 wall time이 늘면 작업 단위가 프로세스 경계를 넘기기에 너무 작다는 진단을 내릴 수 있습니다.
 
 ## 계산·전송·메모리 비용 비교
 

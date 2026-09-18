@@ -8,6 +8,10 @@ questionIds: [authoritative-server-input, game-input-sequence-gap, client-predic
 
 # 서버 입력 권위·Sequence Gap·예측 재적용
 
+권위 서버 모델에서 client는 결과를 확정하는 주체가 아니라 입력 의도와 순서를 전달하는 주체입니다. 서버는 세션·엔티티 세대와 현재 상태를 기준으로 명령을 검증하고, client는 서버가 확정한 prefix 뒤에 남은 입력만 재생해 화면을 맞춥니다.
+
+기본 추적 단위는 `session`, `characterGeneration`, `inputSequence`, `serverTick`, `stateVersion`입니다. 이 중 세대가 바뀐 패킷은 sequence가 최신이어도 폐기해야 하며, 이동 결과나 피해량 같은 결과 필드는 입력 검증의 근거가 아니라 서버 계산의 출력으로만 취급해야 합니다.
+
 ## Client 의도와 Server 확정 결과
 
 이동 방향·버튼·조준·대상·입력 번호는 client의 주장으로 받습니다. 최종 위치·피해 100·처치 여부를 그대로 저장하지 않습니다. session/character 권한·형식·입력 빈도·sequence를 먼저 검사하고 서버의 직전 상태·dt·속도·충돌·지형으로 허용 이동을 계산합니다.
@@ -41,6 +45,8 @@ client가 101·102·103을 예측한 뒤 server가 101까지 적용한 상태 `S
 server/client의 dt·충돌 shape·corner 규칙·profile·지형 version·난수 전제를 맞춥니다. 코드 공유도 플랫폼 부동소수점·실행 순서를 자동 일치시키지는 않습니다. 차이는 권위 상태로 보정하고 visual smoothing은 표시만 조절합니다. 보정 허용 폭을 치팅 허가 범위와 혼동하지 않습니다.
 
 server 결과에는 기준 tick·마지막 적용 input·state version·필요한 reason code를 넣습니다. 내부 비밀 판정 자료를 과도하게 노출하지 않으면서 형식·권한·순서·규칙 오류를 구분해 진단합니다. 옛 session packet은 새 character generation에 적용되지 않아야 합니다.
+
+재현 연습에서 101·102·103을 예측한 client에 서버가 101까지 확정한 상태를 보내면 102·103만 replay되어야 합니다. sequence 10 뒤 12가 온 명령은 종류별 gap 정책에 따라 대기·대체·resync 중 하나로 기록되고, 새 character generation의 옛 패킷은 적용되지 않아야 합니다. 결과 로그에는 correction 원인과 자원 증분을 함께 남겨 정상 재정렬과 규칙 위반을 구분합니다.
 
 ## 고지연 입력과 악성 입력의 로그 구분
 

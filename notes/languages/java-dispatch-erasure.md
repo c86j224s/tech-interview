@@ -8,6 +8,8 @@ questionIds: [java-overload-override, java-field-hiding-dispatch, java-null-over
 
 # Java 호출 선택과 제네릭 타입 소거
 
+Java 호출을 설명할 때는 컴파일 시 receiver의 정적 타입으로 고르는 overload와 실행 시 객체의 override 구현으로 연결하는 dispatch를 두 단계로 나눕니다. 제네릭은 컴파일 검사 뒤 타입 인자를 소거하므로, bridge·cast·배열의 런타임 검사가 어디에서 계약을 지키는지 같은 순서로 추적해야 합니다.
+
 ## 정적 시그니처 선택과 동적 구현 호출 단계
 
 ```java
@@ -84,6 +86,8 @@ unchecked cast로 배열을 강제하면 실제 원소와 선언한 제네릭 �
 List<Integer>를 List<Number>로 대입할 수 없는 이유는 Number 목록을 통해 Double을 넣으면 원래 Integer 계약이 깨지기 때문입니다. 읽기에는 `? extends Number`, Integer 쓰기에는 `? super Integer`처럼 허용 연산을 좁힐 수 있습니다. wildcard가 모든 값을 안전하게 넣는 통로는 아닙니다.
 
 ## 컴파일 거절과 실행 Cast 실패의 분리 검사
+
+예상 결과를 구분해 기록합니다. `A a = new B(); a.f("hi")`는 `B:Object`, `((B)a).f("hi")`는 `B:String`이어야 하며, `f(null)`의 두 형제 overload는 실행 전 컴파일 오류여야 합니다. 반면 raw 목록에 넣은 `Integer`는 삽입 시점이 아니라 `String`으로 꺼내는 cast 지점에서 실패할 수 있습니다.
 
 부모·자식 참조와 cast, null 모호성, widening·boxing·varargs를 작은 소스로 컴파일해 선택을 확인합니다. bridge는 bytecode를 검사하고 raw 입력의 실패 위치와 정상 제네릭 호출을 대조합니다. 타입 토큰을 쓰는 직렬화기도 실제 원소를 검증하는지 별도로 시험합니다.
 

@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-09-18",
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc6749",
+      "quote": "The resource owner; the client; the authorization server; the resource server",
+      "applicability": "행위자, authorization/token endpoint, code·access·refresh token 목적을 설명하는 확정 OAuth 원문입니다.",
+      "date": "RFC 6749, October 2012, Proposed Standard"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc7636",
+      "quote": "BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))",
+      "applicability": "S256 PKCE challenge, per-request verifier, 43–128자 문법과 invalid_grant 실패를 실습 코드와 테스트에 적용합니다.",
+      "date": "RFC 7636, September 2015, Proposed Standard"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc9700",
+      "quote": "Authorization servers MUST support PKCE",
+      "applicability": "현재 OAuth 보안 BCP baseline으로 사용합니다. client 유형과 대안에 따른 normative strength를 동일 MUST로 일반화하지 않습니다.",
+      "date": "RFC 9700, BCP 240; official RFC Editor page checked 2026-09-18, exact publication month/day unresolved"
+    },
+    {
+      "url": "https://openid.net/specs/openid-connect-core-1_0.html",
+      "quote": "The nonce value is a case sensitive string value",
+      "applicability": "OIDC ID Token의 issuer·subject·audience·exp·iat·nonce를 OAuth access token과 분리해 검증합니다.",
+      "date": "OpenID Connect Core 1.0 errata set 2, Final, 2023-12-15"
+    },
+    {
+      "url": "https://openid.net/specs/openid-connect-discovery-1_0.html",
+      "quote": "MUST be identical",
+      "applicability": "trusted issuer, metadata issuer, ID Token iss의 정확한 비교와 trusted endpoint origin/path 선택의 근거입니다. provider별 rollover/cache timing은 규정하지 않는다는 한계를 보존합니다.",
+      "date": "OpenID Connect Discovery 1.0 errata set 2, Final, 2023-12-15; official page checked 2026-09-18"
+    },
+    {
+      "url": "https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-16",
+      "quote": "Active Internet-Draft",
+      "applicability": "OAuth 2.1은 2026-09-17 기준 draft-16이며 RFC로 표기하지 않습니다. 실습의 code+PKCE 선택 근거를 확정 RFC/BCP와 구분합니다.",
+      "date": "published 2026-09-03; IETF Datatracker checked 2026-09-18; Active Internet-Draft; intended RFC status none"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc7009",
+      "quote": "MUST support the revocation of refresh tokens",
+      "applicability": "실습 비범위인 revocation endpoint와 refresh family 회수의 프로토콜 경계를 설명할 때 참고합니다.",
+      "date": "RFC 7009, August 2013, Proposed Standard"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc7662",
+      "quote": "MUST require authentication",
+      "applicability": "실습 비범위인 authenticated introspection과 active 상태 질의를 구분하고, 이 lab이 RS/introspection을 구현한다고 과장하지 않습니다.",
+      "date": "RFC 7662, October 2015, Proposed Standard"
+    }
+  ],
+  "unknowns": [
+    "실제 provider·브라우저·Resource Server·분산 persistence·TLS를 실행하지 않았습니다.",
+    "RFC 9700의 정확한 publication month/day는 기존 검증 extract에서 확정되지 않았습니다.",
+    "OAuth 2.1 draft-16은 확인 당시 Active Internet-Draft이며 최종 RFC 발행 여부를 추론하지 않습니다.",
+    "provider별 JWKS cache lifetime·unknown-kid retry·rollover timing은 실습이 검증하지 않는 local policy입니다.",
+    "공식 OpenID Connect Discovery 페이지가 HTTPS와 TLS 인증서 검증을 요구하므로, 이 HTTP loopback mock은 그 배포 조건을 대표하지 않습니다.",
+    "이 fixture의 bounded in-memory maps와 refresh replay set은 단일 프로세스 교육용 방어 장치이며 distributed atomic persistence가 아닙니다."
+  ]
+}
