@@ -4,7 +4,7 @@ title: NavMesh Funnel Corridor·Waypoint 추출
 topic: 게임 서버
 summary: >-
   NavMesh polygon corridor의 portal 양쪽을 누적해 string-pulling으로 불필요한 waypoint를 줄이되
-  agent profile과 portal 유효성을 보존하는 제안입니다.
+  agent profile과 portal 유효성을 보존하는 지식 장입니다.
 questionIds: []
 prerequisites:
   - navigation-clearance

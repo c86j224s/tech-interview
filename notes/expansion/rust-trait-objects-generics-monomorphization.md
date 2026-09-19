@@ -2,7 +2,7 @@
 id: rust-trait-objects-generics-monomorphization
 title: Rust Trait Object와 Generic Monomorphization
 topic: 언어·런타임
-summary: Rust Trait Object와 Generic Monomorphization의 핵심 메커니즘·실패 조건·적용 경계를 다루는 제안입니다.
+summary: Rust Trait Object와 Generic Monomorphization의 핵심 메커니즘·실패 조건·적용 경계를 다루는 지식 장입니다.
 questionIds: []
 prerequisites:
   - java-dispatch-erasure

@@ -4,7 +4,7 @@ title: Snapshot 보간·Jitter Buffer
 topic: 게임 서버
 summary: >-
   권위 서버 snapshot을 즉시 표시하지 않고 지연 버퍼에서 두 시점 사이를 보간해 네트워크 jitter와 late packet을 다루는
-  제안입니다.
+  지식 장입니다.
 questionIds: []
 prerequisites:
   - datagram-contracts

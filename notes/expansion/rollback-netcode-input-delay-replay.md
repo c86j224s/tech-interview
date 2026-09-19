@@ -4,7 +4,7 @@ title: Rollback Netcode·Input Delay·Replay
 topic: 게임 서버
 summary: >-
   늦게 도착한 입력으로 과거 상태를 복원하고 입력을 재실행해 현재를 보정하는 rollback netcode의 저장·예측·효과 경계를 설명하는
-  제안입니다.
+  지식 장입니다.
 questionIds: []
 prerequisites:
   - input-authority

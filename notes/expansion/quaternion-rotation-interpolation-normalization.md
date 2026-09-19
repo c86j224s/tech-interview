@@ -2,7 +2,7 @@
 id: quaternion-rotation-interpolation-normalization
 title: Quaternion 회전 보간·정규화
 topic: 게임 서버
-summary: 'Quaternion의 단위 제약, shortest-arc 선택, SLERP와 정규화 시점을 게임 회전 보간에 적용하는 제안입니다.'
+summary: 'Quaternion의 단위 제약, shortest-arc 선택, SLERP와 정규화 시점을 게임 회전 보간에 적용하는 지식 장입니다.'
 questionIds: []
 prerequisites:
   - simulation-budget

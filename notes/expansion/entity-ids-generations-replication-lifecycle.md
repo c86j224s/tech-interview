@@ -4,7 +4,7 @@ title: Entity ID·Generation·Replication 수명
 topic: 게임 서버
 summary: >-
   재사용 가능한 entity ID와 generation을 조합해 spawn·despawn·replication·늦은 패킷이 새 객체를
-  오염시키지 않도록 하는 제안입니다.
+  오염시키지 않도록 하는 지식 장입니다.
 questionIds: []
 prerequisites:
   - input-authority

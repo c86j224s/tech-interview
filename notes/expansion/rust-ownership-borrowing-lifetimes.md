@@ -2,7 +2,7 @@
 id: rust-ownership-borrowing-lifetimes
 title: Rust 소유권·Borrowing·Lifetime
 topic: 언어·런타임
-summary: Rust 소유권·Borrowing·Lifetime의 핵심 메커니즘·실패 조건·적용 경계를 다루는 제안입니다.
+summary: Rust 소유권·Borrowing·Lifetime의 핵심 메커니즘·실패 조건·적용 경계를 다루는 지식 장입니다.
 questionIds: []
 prerequisites:
   - cpp-storage-validity

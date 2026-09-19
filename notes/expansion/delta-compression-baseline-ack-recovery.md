@@ -4,7 +4,7 @@ title: Delta Compression 기준 Snapshot·ACK 복구
 topic: 게임 서버
 summary: >-
   전체 snapshot 대신 확인된 baseline과 현재 상태의 차이를 보내고, ACK 유실·순서 역전·baseline 부재 시 full
-  snapshot으로 복구하는 제안입니다.
+  snapshot으로 복구하는 지식 장입니다.
 questionIds: []
 prerequisites:
   - datagram-contracts

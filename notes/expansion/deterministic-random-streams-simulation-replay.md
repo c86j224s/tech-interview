@@ -2,7 +2,7 @@
 id: deterministic-random-streams-simulation-replay
 title: 결정적 난수 스트림과 시뮬레이션 Replay
 topic: 게임 서버
-summary: 게임 시스템별 난수 스트림을 분리하고 seed·상태·소비 순서를 기록해 rollback과 replay에서 같은 난수를 재현하는 제안입니다.
+summary: 게임 시스템별 난수 스트림을 분리하고 seed·상태·소비 순서를 기록해 rollback과 replay에서 같은 난수를 재현하는 지식 장입니다.
 questionIds: []
 prerequisites:
   - pure-state

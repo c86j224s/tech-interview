@@ -2,7 +2,7 @@
 id: rust-send-sync-thread-contracts
 title: Rust Send·Sync 스레드 계약
 topic: 언어·런타임
-summary: Rust Send·Sync 스레드 계약의 핵심 메커니즘·실패 조건·적용 경계를 다루는 제안입니다.
+summary: Rust Send·Sync 스레드 계약의 핵심 메커니즘·실패 조건·적용 경계를 다루는 지식 장입니다.
 questionIds: []
 prerequisites:
   - concurrent-ownership
