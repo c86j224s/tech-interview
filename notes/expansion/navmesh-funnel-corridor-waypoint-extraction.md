@@ -35,11 +35,11 @@ A→B→C polygon 경로의 인접 공유 변이 portal입니다. 각 portal은 
 
 구현 상태는 `apex`, `left`, `right`, 각 endpoint의 portal index, 재처리 index로 둡니다. 새 left가 현재 left를 안쪽으로 좁히면 left를 갱신하고, 새 right도 대칭으로 갱신합니다. 한 경계가 다른 경계를 넘는 순간 현재 apex에서 corridor 전체를 볼 수 없으므로, crossing을 일으킨 현재 endpoint가 아니라 **반대편에서 마지막으로 안정적이었던 corner**를 출력하는 규약을 선택합니다.
 
-이 규칙은 orientation convention에 의존합니다. 예를 들어 right 갱신이 left를 넘었다면 left의 이전 안정 endpoint를 waypoint로 내보내고 그 점을 새 apex로 삼아 crossing을 유발한 portal부터 재처리하는 방식입니다. 다른 구현은 대칭 endpoint를 선택할 수 있으므로, “항상 left를 출력” 같은 보편 규칙으로 쓰지 않고 pseudocode와 trace로 고정해야 합니다. 동일 endpoint 반복, collinear, epsilon의 세부 정책도 termination invariant에 포함합니다.
+이 규칙은 orientation convention에 의존합니다. 예를 들어 right 갱신이 left를 넘으면 이전 left endpoint를 출력하고, left 갱신이 right를 넘으면 이전 right endpoint를 출력합니다. 새 apex가 속했던 portal index를 저장하고 그 다음 portal부터 다시 처리해야 합니다. crossing이 발생한 portal만 다시 보면 새 apex와 그 portal 사이의 제약을 놓칠 수 있습니다. 좌표계의 부호 관례를 바꾸더라도 같은 기하 조건에서 출력할 물리적 corner가 임의로 바뀌는 것은 아닙니다. 동일 endpoint 반복, collinear, epsilon의 세부 정책도 termination invariant에 포함합니다.
 
 ## 수치 Trace와 목표 연결
 
-S=(0,0), P1=(3,2)/(3,-2), P2=(6,1)/(6,-1), P3=(8,-3)/(8,1), G=(10,0)에서 endpoint를 진행 방향에 맞춰 넣고 signed area를 계산합니다. P1과 P2까지는 양쪽 경계가 좁혀지고, P3의 아래쪽 endpoint가 선택된 left/right convention에 따라 기존 경계를 넘으면 crossing을 발생시킵니다. 정상 알고리즘은 P3 endpoint를 무조건 waypoint로 내보내지 않고, 이전 안정 corner를 출력한 다음 P3를 새 apex 기준으로 다시 평가합니다. 이 좌표는 설명용 trace이며 특정 Detour release의 실행 결과가 아닙니다.
+2차원에서 +x 진행·+y 위쪽, `cross(a,b)=a.x*b.y-a.y*b.x`로 고정합니다. S=(0,0), P1=(left(3,2),right(3,-2)), P2=(left(6,1),right(6,-1))이면 funnel의 허용 기울기는 처음 [-2/3,2/3]에서 [-1/6,1/6]으로 좁아집니다. P3=(left(8,-3),right(8,-5))은 전체가 아래쪽에 있습니다. 새 left(8,-3)와 현재 right(6,-1)의 cross는 `8*(-1)-(-3)*6=10>0`이므로 새 left가 현재 right보다 아래로 내려가 두 경계가 교차합니다. 이때 이전 right(6,-1)를 corner로 출력하고 apex를 그 점으로 옮깁니다. 저장한 P2 index의 다음인 P3부터 재검사한 뒤 목표 G=(10,-4)를 종료 portal로 처리합니다. 원래 S→G 직선은 x=6에서 y=-2.4라 P2의 [-1,1]을 벗어나므로 그대로 선택할 수 없습니다. 이 좌표는 설명용 기하 계산이며 특정 Detour 실행 결과가 아닙니다.
 
 마지막 목표는 종료 portal로 넣어야 하며, 마지막 polygon 중심을 대신 쓰면 목표까지의 visibility 검사가 빠집니다. partial corridor라면 목표 좌표를 임의로 덧붙이지 않습니다. 아래의 partial 정책처럼 실제로 도달 가능한 종료점을 애플리케이션이 계산하고, 그 점까지 funnel을 수행합니다.
 
