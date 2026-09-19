@@ -23,7 +23,7 @@ test('all rendered prose resolves emphasis without changing code literals', asyn
 });
 test('enriched answers keep followup context and readable Markdown structure', async () => {
   const { questions } = await import(loader);
-  assert.equal(questions.length, 1000);
+  assert.equal(questions.length, 1500);
   assert.equal(questions.filter(({ category }) => category === 'AI 에이전트').length, 50);
   assert.equal(questions.filter(({ answerMinutes }) => answerMinutes === 5).length, 500);
   assert.equal(questions.filter(({ promotedFrom }) => promotedFrom).length, 500);

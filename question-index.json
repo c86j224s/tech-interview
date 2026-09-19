@@ -36,8 +36,44 @@
     "question": "계정 복구 직후 민감한 변경에 대기 시간을 둡니다. 허용 기능·알림·긴급 해제 정책을 어떻게 나누나요?"
   },
   {
+    "id": "acme-challenge-boundary",
+    "question": "ACME HTTP-01과 DNS-01 challenge를 어떤 도메인 통제 조건으로 선택하나요?"
+  },
+  {
     "id": "adaptive-concurrency-stability",
     "question": "지연에 따라 동시성 한도를 자동 조절합니다. 피드백 지연과 노이즈 때문에 한도가 출렁이지 않게 어떻게 하나요?"
+  },
+  {
+    "id": "admission-dryrun-sideeffects",
+    "question": "dry-run 요청에서 외부 티켓을 만들면 왜 잘못이며 sideEffects를 어떻게 검증하나요?"
+  },
+  {
+    "id": "admission-failure-policy-timeout",
+    "question": "admission webhook timeout에서 failurePolicy Ignore와 Fail은 어떤 정책 공백·가용성 비용을 각각 만드나요?"
+  },
+  {
+    "id": "admission-mutation-composition",
+    "question": "여러 mutating webhook의 순서와 reinvocation이 결과를 흔들지 않게 하려면 무엇을 고정해야 하나요?"
+  },
+  {
+    "id": "admission-reinvocation-idempotence",
+    "question": "mutating webhook이 sidecar를 추가할 때 reinvocation에도 하나만 남기려면 어떤 멱등 조건이 필요한가요?"
+  },
+  {
+    "id": "aead-associated-data-binding",
+    "question": "암호화하지 않는 tenant ID를 AEAD associated data에 넣는 이유는 무엇인가요?"
+  },
+  {
+    "id": "aead-nonce-encoding",
+    "question": "nonce와 AAD를 JSON으로 저장할 때 어떤 바이트 계약을 고정해야 하나요?"
+  },
+  {
+    "id": "aead-nonce-reuse",
+    "question": "AES-GCM에서 같은 키로 nonce를 재사용하면 왜 위험한가요?"
+  },
+  {
+    "id": "aead-tag-failure",
+    "question": "AEAD 태그 검증이 실패했을 때 평문을 일부라도 사용해도 되나요?"
   },
   {
     "id": "agent-a2a-task-lifecycle",
@@ -252,6 +288,206 @@
     "question": "과부하에서 NPC AI 평가 주기를 낮춥니다. 공격·회피의 공정성을 바꾸지 않으려면 어떤 규칙을 분리하나요?"
   },
   {
+    "id": "alg-aho-alphabet-storage",
+    "question": "Aho-Corasick에서 작은 고정 알파벳과 큰 희소 알파벳의 전이 저장 방식을 어떻게 선택하나요?"
+  },
+  {
+    "id": "alg-aho-dictionary-update",
+    "question": "운영 중 금지어를 추가했는데 기존 Aho-Corasick 자동자의 failure 링크를 그대로 써도 되나요?"
+  },
+  {
+    "id": "alg-aho-failure-transition",
+    "question": "Aho-Corasick에서 현재 trie 간선이 없을 때 failure link를 따라가면 무엇을 보존하나요?"
+  },
+  {
+    "id": "alg-aho-output-links",
+    "question": "한 텍스트 위치에서 짧은 패턴과 긴 패턴이 동시에 끝날 때 Aho-Corasick은 모든 출현을 어떻게 보고하나요?"
+  },
+  {
+    "id": "alg-articulation-root",
+    "question": "DFS root가 articulation point가 되는 조건이 일반 정점의 low[child] 조건과 다른 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-bellman-overflow-sentinel",
+    "question": "Bellman-Ford에서 INF에 음수 가중치를 더하면 어떤 오류가 생기며 어떻게 막나요?"
+  },
+  {
+    "id": "alg-bellman-reachable-cycle",
+    "question": "Bellman-Ford의 n번째 라운드에서 갱신되는 정점이 있으면 왜 source-reachable negative cycle을 의미하나요?"
+  },
+  {
+    "id": "alg-bellman-round",
+    "question": "Bellman-Ford에서 n-1회 모든 간선을 완화하면 충분한 이유와 조기 종료 조건은 무엇인가요?"
+  },
+  {
+    "id": "alg-bellman-unreachable-cycle",
+    "question": "그래프에 음수 사이클이 있지만 출발점에서 닿지 않는다면 Bellman-Ford의 단일 출발 결과는 어떻게 처리하나요?"
+  },
+  {
+    "id": "alg-bridge-incremental-boundary",
+    "question": "간선을 온라인으로 추가할 때 기존 bridge가 cycle로 사라지는 것은 어떤 경로의 간선들인가요?"
+  },
+  {
+    "id": "alg-bridge-parallel-edge",
+    "question": "무방향 그래프에서 DFS parent로 가는 평행 간선이 두 개라면 bridge 판정 코드는 무엇을 조심해야 하나요?"
+  },
+  {
+    "id": "alg-flow-edmonds-karp-complexity",
+    "question": "Edmonds-Karp가 Ford-Fulkerson과 같은 증가 경로 방법인데도 capacity 값에 독립적인 O(VE²) 상한을 갖는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-flow-integral-capacity",
+    "question": "모든 capacity가 정수일 때 Ford-Fulkerson의 flow가 정수로 남는 조건은 무엇인가요?"
+  },
+  {
+    "id": "alg-flow-mincut-reachability",
+    "question": "증가 경로가 더 이상 없을 때 residual graph에서 source로부터 도달 가능한 정점 집합으로 어떤 cut을 얻나요?"
+  },
+  {
+    "id": "alg-flow-residual-reverse",
+    "question": "최대 유량에서 residual reverse edge가 없으면 초기 경로 선택을 나중에 수정할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-floyd-negative-cycle",
+    "question": "Floyd-Warshall 결과의 음수 대각선은 어떤 cycle을 의미하며 모든 쌍의 거리가 무한히 작아지나요?"
+  },
+  {
+    "id": "alg-floyd-path-reconstruction",
+    "question": "Floyd-Warshall에서 거리 행렬만 저장하면 최단 경로 정점을 어떻게 복원할 수 없으며 어떤 보조 정보를 둬야 하나요?"
+  },
+  {
+    "id": "alg-floyd-sparse-tradeoff",
+    "question": "정점 수가 10만이고 간선이 희소한 그래프에도 Floyd-Warshall을 적용할 수 있나요?"
+  },
+  {
+    "id": "alg-floyd-stage",
+    "question": "Floyd-Warshall의 k번째 반복에서 D[i][j]를 D[i][k]+D[k][j]와 비교하는 상태 의미는 무엇인가요?"
+  },
+  {
+    "id": "alg-hash-collision-verification",
+    "question": "두 개의 서로 다른 모듈러 해시를 쓰면 문자열 동일성을 증명할 수 있나요?"
+  },
+  {
+    "id": "alg-hash-dynamic-window",
+    "question": "긴 텍스트에서 길이 K의 모든 부분 문자열 hash를 한 번씩 갱신할 때 어떤 항을 빼고 더하나요?"
+  },
+  {
+    "id": "alg-hash-normalization",
+    "question": "유니코드 문자열을 rolling hash로 비교할 때 원문이 같아 보여도 먼저 정규화해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-hash-rabin-karp",
+    "question": "Rabin-Karp에서 해시가 같은 두 윈도우를 발견했을 때 바로 match로 반환하면 안 되는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-interval-predecessor",
+    "question": "가중 구간 스케줄링에서 p(j)를 구할 때 왜 시작 시간이 아니라 이전 구간의 종료 시간으로 이진 탐색하나요?"
+  },
+  {
+    "id": "alg-interval-reconstruction",
+    "question": "가중 interval DP의 최댓값만 저장한 표에서 실제 선택 구간을 복원하려면 어떤 정보를 비교해야 하나요?"
+  },
+  {
+    "id": "alg-interval-recurrence",
+    "question": "가중 구간 스케줄링의 OPT(j) 점화식에서 현재 구간을 선택하지 않는 항을 빼면 왜 최적해를 잃나요?"
+  },
+  {
+    "id": "alg-kmp-period",
+    "question": "문자열이 반복 블록으로 이루어졌는지 prefix function으로 판단할 때 나눗셈 조건은 무엇인가요?"
+  },
+  {
+    "id": "alg-kmp-prefix-fallback",
+    "question": "패턴의 현재 문자와 일치하지 않을 때 KMP는 왜 패턴을 처음부터 다시 비교하지 않나요?"
+  },
+  {
+    "id": "alg-kmp-separator",
+    "question": "KMP의 패턴·구분자·텍스트 결합 방식에서 구분자가 입력에 포함되면 무엇이 잘못될 수 있나요?"
+  },
+  {
+    "id": "alg-kmp-streaming",
+    "question": "텍스트가 소켓으로 한 글자씩 들어올 때 KMP 상태만으로 패턴 매치를 계속 보고하려면 무엇을 보관하나요?"
+  },
+  {
+    "id": "alg-lca-ancestor-timestamps",
+    "question": "LCA query에서 한 정점이 다른 정점의 조상인지 먼저 tin/tout으로 검사하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-lca-jump-table",
+    "question": "Binary lifting에서 2^k번째 조상을 저장하면 임의의 d단계 상승을 어떻게 구성하나요?"
+  },
+  {
+    "id": "alg-lca-rootedness",
+    "question": "같은 트리의 LCA 질의마다 root가 바뀝니다. 고정 root 전처리 세 번의 LCA로 새 답을 구할 수 있나요?"
+  },
+  {
+    "id": "alg-lowlink-disconnected",
+    "question": "그래프가 여러 연결 요소로 나뉘었을 때 bridge와 articulation point를 모두 찾으려면 DFS를 어떻게 시작해야 하나요?"
+  },
+  {
+    "id": "alg-match-augmenting-path",
+    "question": "이분 매칭에서 이미 매칭된 간선을 잠시 취소하고 다른 상대를 찾아도 매칭 수가 늘어나는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-match-hopcroft-boundary",
+    "question": "Kuhn의 반복 DFS가 느린 큰 이분 그래프에서 Hopcroft-Karp로 바꿔도 어떤 계약은 그대로인가요?"
+  },
+  {
+    "id": "alg-match-partition-side",
+    "question": "이분 매칭의 DFS 시작 쪽을 더 작은 partition으로 바꾸면 정답과 비용에 어떤 영향이 있나요?"
+  },
+  {
+    "id": "alg-match-visited-token",
+    "question": "Kuhn 알고리즘에서 각 시작 정점마다 visited를 초기화하지 않고 timestamp token을 쓰는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-scc-condensation-dedup",
+    "question": "SCC를 축약한 condensation graph에서 평행 간선을 제거해야 하나요?"
+  },
+  {
+    "id": "alg-scc-kosaraju-order",
+    "question": "Kosaraju에서 첫 DFS의 종료 순서를 저장한 뒤 transpose를 역순으로 탐색하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-scc-reachability-dag",
+    "question": "서로 도달 가능한 정점을 먼저 SCC로 묶으면 왜 이후 component-level reachability에서 순환을 별도로 처리하지 않아도 되나요?"
+  },
+  {
+    "id": "alg-scc-tarjan-stack",
+    "question": "Tarjan에서 low[v]가 tin[v]와 같을 때 스택에서 어디까지 꺼내 하나의 SCC를 만들나요?"
+  },
+  {
+    "id": "alg-suffix-binary-search",
+    "question": "접미사 배열에 새 패턴을 찾을 때 한 번의 이진 탐색으로 끝나지 않고 범위를 두 번 찾는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-suffix-distinct-substrings",
+    "question": "suffix array와 LCP 합으로 서로 다른 부분 문자열 수를 계산할 때 중복을 어떻게 빼나요?"
+  },
+  {
+    "id": "alg-suffix-kasai-lcp",
+    "question": "Kasai 알고리즘이 인접 접미사 LCP를 선형 시간에 계산할 수 있는 핵심 재사용은 무엇인가요?"
+  },
+  {
+    "id": "alg-suffix-lcp-rmq",
+    "question": "두 임의 suffix의 LCP를 인접 LCP 배열의 RMQ로 바꿀 때 구간 끝은 어떻게 정하나요?"
+  },
+  {
+    "id": "alg-z-online-boundary",
+    "question": "Z 배열을 만든 문자열 뒤에 문자를 붙였습니다. 기존 Z값 중 끝에 닿던 항목이 바뀔 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "alg-z-pattern-search",
+    "question": "Z 배열로 패턴의 모든 출현 위치를 찾을 때 입력을 어떻게 합치고 결과를 해석하나요?"
+  },
+  {
+    "id": "alg-z-period",
+    "question": "Z값으로 길이 n 문자열의 반복 블록 후보를 검사할 때 어떤 조건을 적용하나요?"
+  },
+  {
+    "id": "alg-z-window-copy",
+    "question": "Z 알고리즘이 현재 위치의 비교를 이미 계산한 [l,r) 구간에서 시작할 수 있는 이유는 무엇인가요?"
+  },
+  {
     "id": "algorithm-bloom-deletion-counting",
     "question": "블룸 필터에서 삭제할 키의 비트를 지우면 왜 다른 키도 없다고 나올 수 있나요?"
   },
@@ -352,12 +588,32 @@
     "question": "새 버전의 앱이 변경된 DB 스키마를 요구합니다. Argo CD에서 마이그레이션과 앱 배포 순서를 어떻게 정하고, 앞 단계가 실패하면 어떻게 해야 하나요?"
   },
   {
+    "id": "arp-cache-hit-miss-request",
+    "question": "라우터가 다음 홉 IPv4 주소는 알지만 Ethernet MAC을 모릅니다. 데이터그램을 어떤 순서로 보낼까요?"
+  },
+  {
+    "id": "arp-duplicate-address-conflict",
+    "question": "두 장비가 같은 IPv4 주소를 사용하면 ARP 관찰만으로 무엇을 확인할 수 있나요?"
+  },
+  {
+    "id": "arp-proxy-next-hop-boundary",
+    "question": "호스트가 원격 서브넷의 주소를 ARP로 찾으려 합니다. 실제로는 누구의 MAC을 알아야 하나요?"
+  },
+  {
+    "id": "arp-unsolicited-sender-update",
+    "question": "ARP reply가 내가 요청하지 않은 형태로 도착했습니다. 기존 매핑을 갱신해도 되나요?"
+  },
+  {
     "id": "array-linked-list-choice",
     "question": "목록의 중간에 항목을 자주 삽입해 성능을 개선하려 합니다. 배열을 연결 리스트로 바꾸기 전에 삽입 위치를 찾는 방식과 조회 패턴을 왜 확인해야 하나요?"
   },
   {
     "id": "array-of-pointers-tradeoff",
     "question": "큰 객체 대신 포인터를 배열에 저장하면 삽입 이동량은 줄어듭니다. 추가되는 캐시·소유권 비용은 무엇인가요?"
+  },
+  {
+    "id": "artifact-digest-signer-verification",
+    "question": "mutable tag에 서명하지 말고 immutable digest와 signer identity를 검증해야 하는 이유는 무엇인가요?"
   },
   {
     "id": "asid-pcid-address-space-tags",
@@ -428,6 +684,18 @@
     "question": "백필이 읽은 값을 쓰기 전에 정상 요청이 같은 행을 바꿨습니다. checkpoint와 충돌 행을 어떻게 재개 가능하게 관리하나요?"
   },
   {
+    "id": "background-upload-file-lifetime",
+    "question": "background upload에서 메모리 Data와 파일 입력은 앱 종료 시 수명이 어떻게 다른가요?"
+  },
+  {
+    "id": "background-urlsession-relaunch-events",
+    "question": "앱 종료 중 background URLSession 다운로드가 끝나면 완료 callback은 어떻게 복원되나요?"
+  },
+  {
+    "id": "background-urlsession-stable-identifier",
+    "question": "background session identifier를 매번 UUID로 바꾸면 재실행 후 기존 task를 어떻게 찾나요?"
+  },
+  {
     "id": "backup-restore-rpo-rto",
     "question": "매일 DB 백업은 성공하지만 실제 복원은 해 본 적이 없습니다. 장애 때 감당할 데이터 유실과 중단 시간을 기준으로 무엇을 검증해야 하나요?"
   },
@@ -458,6 +726,22 @@
   {
     "id": "behavior-tree-running",
     "question": "NPC가 Behavior Tree로 이동하다가 도주 행동으로 바뀝니다. Running 상태의 이전 이동 작업과 늦은 완료는 어떻게 처리하나요?"
+  },
+  {
+    "id": "bfcache-beforeunload-eligibility",
+    "question": "beforeunload를 상시 등록한 페이지가 bfcache에 불리할 수 있는 이유와 대안은 무엇인가요?"
+  },
+  {
+    "id": "bfcache-logout-sensitive-state",
+    "question": "로그아웃 후 뒤로 가기로 개인 화면이 복원될 때 어느 경계에서 데이터를 재검증해야 하나요?"
+  },
+  {
+    "id": "bfcache-pageshow-revalidation",
+    "question": "pageshow.persisted가 true인 복원에서 데이터를 무조건 처음부터 다시 fetch해야 하나요?"
+  },
+  {
+    "id": "bfcache-resume-resources",
+    "question": "pagehide에서 모든 WebSocket과 timer를 취소하면 bfcache 복원 뒤 어떤 문제가 생길 수 있나요?"
   },
   {
     "id": "bfs-dfs-shortest-path",
@@ -494,6 +778,22 @@
   {
     "id": "bounded-queue-backpressure",
     "question": "DB 요청이 몰려 실행 대기 시간이 길어집니다. 동시에 실행할 작업 수와 기다리게 할 요청 수를 어떻게 제한하나요?"
+  },
+  {
+    "id": "branch-mispredict-architectural-state",
+    "question": "분기 예측이 틀려 speculative 경로가 예외를 일으킬 것처럼 보입니다. 왜 잘못된 경로의 결과가 architectural state에 남지 않도록 retirement를 제한하나요?"
+  },
+  {
+    "id": "branch-predictor-aliasing",
+    "question": "서로 다른 분기가 같은 predictor entry를 사용해 예측 정확도가 흔들립니다. predictor aliasing은 왜 생기며 어떤 입력으로 드러내나요?"
+  },
+  {
+    "id": "branch-speculation-memory-side-effect",
+    "question": "분기 조건이 거짓일 때도 뒤의 메모리 접근이 내부적으로 실행될 수 있습니다. architectural 결과와 관찰 가능한 microarchitectural 흔적을 어떻게 나누나요?"
+  },
+  {
+    "id": "branch-speculation-serializing-boundary",
+    "question": "추측 실행을 막아야 하는 경계가 있습니다. fence나 serializing instruction은 예측 성능과 어떤 비용을 교환하나요?"
   },
   {
     "id": "browser-microtask-starvation",
@@ -540,12 +840,20 @@
     "question": "데이터베이스를 수정한 뒤 캐시를 삭제하면 오래된 값이 다시 캐시에 들어갈 가능성은 없나요?"
   },
   {
+    "id": "cache-assoc-conflict-miss",
+    "question": "두 배열을 번갈아 읽을 때 캐시 용량은 충분한데 miss가 많습니다. associativity와 index 충돌로 이를 설명하려면 주소를 어떻게 분해하나요?"
+  },
+  {
     "id": "cache-cdc-refill-ordering",
     "question": "CDC로 캐시 무효화를 전달해도 늦은 옛 조회가 캐시를 채울 수 있나요? 두 경로의 버전을 어떻게 맞추나요?"
   },
   {
     "id": "cache-expiry-eviction-priority",
     "question": "TTL 만료와 메모리 eviction이 함께 일어납니다. 재생성 비용과 신선도를 기준으로 어떤 항목을 먼저 제거하나요?"
+  },
+  {
+    "id": "cache-hierarchy-inclusive-victim",
+    "question": "L1 miss가 L2 hit인데 L3에는 없을 수 있습니다. 캐시 계층의 inclusive·exclusive·victim 관계를 어떤 태그와 eviction 사건으로 설명하나요?"
   },
   {
     "id": "cache-negative-results",
@@ -560,6 +868,10 @@
     "question": "여러 코어가 같은 cache line을 읽기만 합니다. 쓰기 무효화가 있는 공유와 비용이 어떻게 다른가요?"
   },
   {
+    "id": "cache-replacement-set-locality",
+    "question": "한 set에 새 line이 계속 들어오고 기존 line 중 하나를 내보내야 합니다. LRU 근사와 random replacement를 어떤 접근 패턴으로 비교하나요?"
+  },
+  {
     "id": "cache-stale-while-revalidate",
     "question": "캐시가 만료돼도 옛 값을 먼저 주고 뒤에서 갱신하려 합니다. stale-while-revalidate는 어떤 데이터에 적합한가요?"
   },
@@ -568,8 +880,28 @@
     "question": "인기 상품의 캐시가 만료되자 여러 서버가 동시에 같은 데이터를 DB에서 읽습니다. 중복 조회와 사용자 대기를 어떻게 줄이나요?"
   },
   {
+    "id": "cache-storage-http-freshness",
+    "question": "HTTP 응답은 fresh한데 Service Worker Cache Storage가 오래된 응답을 갖고 있으면 어느 값이 보일 수 있나요?"
+  },
+  {
+    "id": "cache-storage-ignoresearch-identity",
+    "question": "Cache Storage match에서 ignoreSearch를 쓰면 어떤 데이터 혼합 위험이 생기나요?"
+  },
+  {
+    "id": "cache-storage-opaque-response",
+    "question": "opaque Response를 저장할 때 저장 성공만으로 콘텐츠를 검증할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "cache-storage-vary-match-contract",
+    "question": "Cache Storage의 match에서 Vary와 ignoreVary는 어떤 요청 헤더를 비교하며 언제 잘못된 표현을 반환하나요?"
+  },
+  {
     "id": "cache-version-barrier-eviction",
     "question": "캐시의 최신 버전 표식이 eviction됐습니다. 아직 진행 중인 옛 조회가 값을 다시 넣지 못하게 어떻게 보호하나요?"
+  },
+  {
+    "id": "cache-write-allocate-policy",
+    "question": "쓰기 miss에서 line을 먼저 읽어온 뒤 수정할지 바로 메모리에 쓸지 선택합니다. write-allocate와 no-write-allocate는 어떤 workload에 맞나요?"
   },
   {
     "id": "cancellation-completion-single-result",
@@ -578,6 +910,22 @@
   {
     "id": "cap-partition-tradeoff",
     "question": "네트워크가 두 지역으로 갈라진 동안에도 서비스를 계속 제공하려 합니다. CAP의 C와 A를 어떤 대가로 선택하나요?"
+  },
+  {
+    "id": "capabilities-bounding-ambient-reacquire",
+    "question": "부모가 capability를 drop한 뒤 자식이 file capability 실행 파일을 실행합니다. bounding set과 ambient set은 어떤 재획득 경계를 만들까요?"
+  },
+  {
+    "id": "capabilities-exec-effective-permitted",
+    "question": "permitted와 effective capability가 다를 때 실행 파일을 바꾸면 어떤 권한 변화가 가능한가요? execve 계산을 어떻게 추적하나요?"
+  },
+  {
+    "id": "capabilities-lsm-seccomp-diagnosis",
+    "question": "일반 파일은 열리지만 raw socket은 EPERM입니다. capability와 DAC·LSM·seccomp를 어떤 증거로 구분하겠습니까?"
+  },
+  {
+    "id": "capabilities-user-namespace-scope",
+    "question": "user namespace 안에서 CAP_NET_ADMIN을 가진 프로세스가 호스트 네트워크를 바꾸지 못할 수 있는 이유는 무엇인가요?"
   },
   {
     "id": "capture-versus-bubble-delegation",
@@ -596,12 +944,44 @@
     "question": "컨테이너 OOM 직전 파일 cache와 anonymous memory가 늘었습니다. 어떤 메모리가 회수 가능한지 어떻게 확인하나요?"
   },
   {
+    "id": "cgroupv2-delegated-subtree",
+    "question": "하위 팀에 cgroup subtree를 위임할 때 상위 제한을 바꾸거나 다른 프로세스를 옮기지 못하게 하려면 무엇을 검증하나요?"
+  },
+  {
+    "id": "cgroupv2-internal-process-rule",
+    "question": "cgroup v2에서 상위 cgroup에 프로세스가 남아 있을 때 subtree controller가 활성화되지 않습니다. 어떤 규칙을 확인하나요?"
+  },
+  {
+    "id": "cgroupv2-memory-high-max",
+    "question": "memory.high를 넘었지만 아직 OOMKilled가 아닙니다. memory.high·memory.max·memory.events를 어떻게 해석하나요?"
+  },
+  {
+    "id": "cgroupv2-parent-cpu-quota",
+    "question": "상위 cgroup CPU quota는 2코어인데 두 하위 서비스 limit 합은 4코어입니다. 처리량 예측이 틀리는 이유는 무엇인가요?"
+  },
+  {
     "id": "checkpoint-frequency-rework-budget",
     "question": "중단 가능한 worker의 checkpoint 주기를 정합니다. 기록 비용과 최대 재작업·불확정 효과를 어떻게 비교하나요?"
   },
   {
     "id": "ci-dummy-client-integration",
     "question": "서버 내부를 리팩토링한 뒤 로그인부터 요청·응답까지 기존 동작이 유지되는지 CI에서 확인하려 합니다. 더미 클라이언트는 무엇을 검증해야 하며 부하 테스트와는 어떻게 다른가요?"
+  },
+  {
+    "id": "cidr-longest-prefix-overlap",
+    "question": "10.0.0.0/8과 10.1.0.0/16 경로가 모두 있을 때 10.1.2.3에는 어느 경로를 사용하나요?"
+  },
+  {
+    "id": "cidr-multihoming-specificity",
+    "question": "멀티홈드 네트워크가 두 ISP에 같은 주소 블록을 광고할 때 CIDR 요약이 깨지는 이유는 무엇인가요?"
+  },
+  {
+    "id": "cidr-prefix-membership-boundary",
+    "question": "192.0.2.64/26에서 192.0.2.127과 192.0.2.128은 같은 블록인가요?"
+  },
+  {
+    "id": "cidr-summary-blackhole",
+    "question": "두 고객 경로를 하나의 요약 경로로 광고한 뒤 한 고객 경로만 사라졌습니다. 요약 라우터는 무엇을 해야 하나요?"
   },
   {
     "id": "circuit-breaker",
@@ -640,6 +1020,26 @@
     "question": "주문 테이블에 기본키와 고객 ID 인덱스가 있는데 고객별 주문 조회 비용이 예상보다 큽니다. DB의 실제 행 배치와 보조 인덱스가 행을 찾는 방식을 어떻게 확인하나요?"
   },
   {
+    "id": "coherence-versus-consistency",
+    "question": "두 코어가 서로 다른 변수에 쓴 뒤 읽는 순서가 예상과 다릅니다. cache coherence와 memory consistency 중 어느 계약이 깨졌다고 말해야 하나요?"
+  },
+  {
+    "id": "collation-index-version",
+    "question": "ICU 또는 OS collation 버전이 바뀐 뒤 기존 문자열 인덱스의 정렬 순서를 왜 재검증해야 하나요?"
+  },
+  {
+    "id": "collation-order-vs-bytes",
+    "question": "UTF-8 byte 정렬과 언어별 collation 정렬이 다른 이유와 ORDER BY 결과를 재현할 때 고정할 조건은 무엇인가요?"
+  },
+  {
+    "id": "collation-pagination-determinism",
+    "question": "문자열 collation을 바꾼 뒤 GROUP BY와 DISTINCT의 그룹 수가 달라질 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "collation-unique-case",
+    "question": "PostgreSQL deterministic collation과 nondeterministic collation은 바이트가 다른 동등 문자열을 어떻게 처리하나요?"
+  },
+  {
     "id": "collision-broad-narrow-phase",
     "question": "많은 캐릭터의 충돌을 검사하려 합니다. 충돌 후보를 먼저 추리는 broad phase와 실제 형상을 검사하는 narrow phase를 왜 나누나요?"
   },
@@ -654,6 +1054,22 @@
   {
     "id": "collision-toi-numerical-margin",
     "question": "계산한 최초 충돌 시점이 수치 오차로 벽 안에 놓입니다. 정지 위치와 접촉 여유를 어떻게 정하나요?"
+  },
+  {
+    "id": "column-batch-cache-fit",
+    "question": "벡터화 실행의 batch 크기를 키우면 어떤 cache·메모리 이득과 지연 비용이 생길 수 있나요?"
+  },
+  {
+    "id": "column-compression-cpu",
+    "question": "압축률은 높지만 CPU가 부족한 columnar scan에서 compression codec 선택을 어떤 비용으로 판단하나요?"
+  },
+  {
+    "id": "column-dictionary-benefit",
+    "question": "낮은 cardinality의 status 열을 Parquet dictionary encoding으로 저장할 때 어떤 반복과 비용이 줄어드나요?"
+  },
+  {
+    "id": "column-vector-selection",
+    "question": "필터가 1% 행만 통과하는 분석 쿼리에서 columnar vectorized execution이 어떤 데이터 이동을 줄이나요?"
   },
   {
     "id": "composite-index-column-order",
@@ -764,6 +1180,22 @@
     "question": "allocator가 다른 C++ 컨테이너끼리 이동합니다. 언제 저장 버퍼를 넘기지 못하고 원소별 이동이 필요한가요?"
   },
   {
+    "id": "cpp-concept-diagnostic-boundary",
+    "question": "템플릿 본문 오류를 concept으로 옮기면 호출자의 진단이 어떻게 달라지나요?"
+  },
+  {
+    "id": "cpp-concept-overload-order",
+    "question": "두 constrained overload가 모두 조건을 만족합니다. constraints subsumption은 어떤 후보를 선택하나요?"
+  },
+  {
+    "id": "cpp-concept-requires-expression",
+    "question": "requires 표현식이 컴파일되면 연산의 의미나 복잡도도 보장되나요?"
+  },
+  {
+    "id": "cpp-concept-short-circuit",
+    "question": "requires 절의 왼쪽 조건이 false일 때 오른쪽의 잘못된 타입 표현식은 어떻게 다뤄지나요?"
+  },
+  {
     "id": "cpp-coroutine-destruction-executor",
     "question": "C++ 코루틴 프레임을 다른 스레드에서 파괴할 수 있습니다. 스레드에 종속된 자원의 소멸 위치는 어떻게 보장하나요?"
   },
@@ -796,8 +1228,20 @@
     "question": "C++ 타입에 이동 생성자가 있는데 vector 확장 시 복사가 일어납니다. noexcept는 어떤 선택에 영향을 주나요?"
   },
   {
+    "id": "cpp-nrvo-named-local",
+    "question": "return local과 return T{}의 복사 생략 보장은 왜 다르나요?"
+  },
+  {
     "id": "cpp-object-lifetime-aliasing",
     "question": "C++에서 바이트 버퍼를 구조체 포인터로 캐스팅해 읽으려 합니다. 크기만 맞으면 안전한가요?"
+  },
+  {
+    "id": "cpp-prvalue-deleted-move",
+    "question": "복사·이동 생성자를 삭제했는데 return T{}가 C++17에서 가능한 이유는 무엇인가요?"
+  },
+  {
+    "id": "cpp-prvalue-materialization",
+    "question": "prvalue에 참조를 바인딩할 때 temporary materialization과 수명 연장은 어떤 관계인가요?"
   },
   {
     "id": "cpp-raii-exception-safety",
@@ -808,8 +1252,28 @@
     "question": "C++ release store 뒤 다른 스레드의 atomic RMW가 이어집니다. release sequence는 어떤 조건에서 이전 데이터를 공개하나요?"
   },
   {
+    "id": "cpp-return-move-nrvo",
+    "question": "지역 객체를 반환할 때 std::move를 붙이면 오히려 복사 생략을 방해할 수 있나요?"
+  },
+  {
     "id": "cpp-shared-pointer-lifetime",
     "question": "C++ 비동기 콜백에 shared_ptr를 복사해 넘겼습니다. 객체 수명과 여러 스레드의 필드 수정이 모두 안전해지나요?"
+  },
+  {
+    "id": "cpp-span-const-elements",
+    "question": "const std::span<int>와 std::span<const int>는 원소 수정에서 무엇이 다른가요?"
+  },
+  {
+    "id": "cpp-span-static-extent",
+    "question": "고정 extent와 동적 extent의 span을 선택할 때 크기 검사의 시점과 비용은 무엇인가요?"
+  },
+  {
+    "id": "cpp-string-view-null-terminator",
+    "question": "문자열 일부의 string_view.data()를 C 문자열 함수에 넘기면 어떤 경계를 잃나요?"
+  },
+  {
+    "id": "cpp-string-view-temporary",
+    "question": "임시 std::string으로 만든 string_view를 저장하면 왜 길이와 주소가 있어도 안전하지 않나요?"
   },
   {
     "id": "cpp-transactional-swap-publication",
@@ -824,12 +1288,60 @@
     "question": "두 스레드가 서로 다른 카운터만 수정하는데 함께 실행하면 느려집니다. 데이터 경합이 없어도 이런 일이 생길 수 있으며, 어떻게 확인하고 줄이나요?"
   },
   {
+    "id": "cpu-pipeline-control-hazard",
+    "question": "조건 분기 결과가 나오기 전에 뒤 명령어를 가져옵니다. 분기 결과가 바뀌면 파이프라인에서 무엇을 폐기하고 다시 채워야 하나요?"
+  },
+  {
+    "id": "cpu-pipeline-raw-forwarding",
+    "question": "앞선 명령어의 결과를 바로 다음 명령어가 사용합니다. 레지스터에 쓰기까지 기다리지 않고 실행하려면 어떤 forwarding과 stall 조건이 필요한가요?"
+  },
+  {
+    "id": "cpu-pipeline-stall-throughput",
+    "question": "파이프라인 깊이를 늘렸는데 단일 명령어 지연은 줄지 않고 처리량만 좋아질 수 있습니다. latency와 throughput을 어떻게 구분해 설명하나요?"
+  },
+  {
+    "id": "cpu-pipeline-structural-hazard",
+    "question": "두 명령어가 같은 사이클에 하나의 실행 자원을 요구합니다. 구조적 해저드는 데이터 해저드와 어떻게 다르고 어떤 설계로 줄이나요?"
+  },
+  {
     "id": "cpu-scheduling-policies",
     "question": "긴 계산 작업과 짧은 대화형 요청이 CPU를 함께 씁니다. FCFS, SJF, Round Robin은 대기 시간을 어떻게 바꾸나요?"
   },
   {
     "id": "cqrs-read-write-models",
     "question": "읽기 성능을 위해 CQRS를 도입하려 합니다. 읽기·쓰기 모델을 나누면 데이터베이스와 서비스도 반드시 분리해야 하나요?"
+  },
+  {
+    "id": "crd-conversion-webhook-outage",
+    "question": "conversion webhook이 중단된 동안 구버전 GET과 신버전 UPDATE는 어떤 경로에서 실패할 수 있나요?"
+  },
+  {
+    "id": "crd-pruning-conversion-loss",
+    "question": "unknown field가 version별 schema에서 pruning되는지 conversion 손실인지 어떻게 구분하나요?"
+  },
+  {
+    "id": "crd-served-storage-migration",
+    "question": "CRD에서 served version과 storage version은 어떻게 다르며 storage version 변경이 기존 객체를 즉시 모두 바꾼다고 할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "crd-storage-roundtrip-validation",
+    "question": "storage migration 뒤 객체 의미를 보존했는지 어떤 검증으로 확인하나요?"
+  },
+  {
+    "id": "cronjob-concurrency-policy-effects",
+    "question": "1분 schedule과 3분 작업에서 Allow·Forbid·Replace가 만드는 겹침·누락·중단을 비교하고 멱등성이 왜 별도인지 설명하세요."
+  },
+  {
+    "id": "cronjob-starting-deadline",
+    "question": "controller가 10분 중단됐다가 복구될 때 startingDeadlineSeconds는 어떤 실행을 허용하나요?"
+  },
+  {
+    "id": "cronjob-suspend-missed-schedules",
+    "question": "CronJob을 suspend했다가 재개하면 중단 중 모든 회차가 실행되나요? backlog 정책과 deadline을 어떻게 정하나요?"
+  },
+  {
+    "id": "cronjob-timezone-dst",
+    "question": "지역 9시 schedule이 DST 주간에 달라질 때 timeZone과 controller timezone을 어떻게 검증하나요?"
   },
   {
     "id": "cross-account-transfer-coordination",
@@ -886,6 +1398,18 @@
   {
     "id": "css-where-is-specificity",
     "question": "컴포넌트 스타일을 쉽게 덮어쓸 수 있게 만들려 합니다. :where와 :is의 명시도 차이는 무엇인가요?"
+  },
+  {
+    "id": "ct-acme-renewal-window",
+    "question": "ACME 인증서 자동 갱신을 어떤 수명 창과 실패 경로로 운영하나요?"
+  },
+  {
+    "id": "ct-misissuance-monitoring",
+    "question": "CT 로그에서 우리 도메인의 오발급을 어떻게 탐지하나요?"
+  },
+  {
+    "id": "ct-sct-meaning",
+    "question": "Certificate Transparency의 SCT가 인증서 신뢰 자체를 대신하지 않는 이유는 무엇인가요?"
   },
   {
     "id": "daemonset-node-capacity-overhead",
@@ -1080,6 +1604,14 @@
     "question": "두 스레드가 락 A와 B를 반대 순서로 잡다가 서로 멈췄습니다. 왜 스스로 풀리지 않으며 어떻게 예방하나요?"
   },
   {
+    "id": "decimal-currency-scale",
+    "question": "금액을 decimal(12,2)로 저장할 때 곱셈·세금·반올림으로 scale이 늘어나는 상황을 어떻게 계약하나요?"
+  },
+  {
+    "id": "decimal-overflow-boundary",
+    "question": "금액 컬럼의 precision을 줄이는 migration에서 기존 값과 계산 결과가 범위를 넘는 행을 어떻게 처리하나요?"
+  },
+  {
     "id": "denormalization-maintenance",
     "question": "조회 속도를 위해 주문 요약에 상품명과 합계 금액을 복사하려 합니다. 중복을 안전하게 유지하려면 무엇을 정해야 하나요?"
   },
@@ -1122,6 +1654,34 @@
   {
     "id": "device-session-account-revocation",
     "question": "기기 하나의 로그아웃과 계정 전체 회수를 지원합니다. 세션 계열·버전·검증 상태를 어떻게 나누나요?"
+  },
+  {
+    "id": "dhcp-decline-conflict",
+    "question": "DHCP ACK를 받은 직후 주소가 이미 사용 중임을 발견했습니다. client와 server는 어떤 상태를 남겨야 하나요?"
+  },
+  {
+    "id": "dhcp-dora-binding",
+    "question": "DHCPDISCOVER부터 DHCPACK까지 진행됐다고 해서 OFFER 시점에 임대가 확정된 것으로 보면 안 되는 이유는 무엇인가요?"
+  },
+  {
+    "id": "dhcp-relay-subnet-boundary",
+    "question": "DHCP server가 다른 subnet에 있어도 초기 broadcast가 처리되는 과정은 무엇인가요?"
+  },
+  {
+    "id": "dhcp-t1-t2-renew-rebind",
+    "question": "DHCP 임대가 T1을 지나고 T2에 도달하면 REQUEST의 대상과 전송 방식은 어떻게 달라지나요?"
+  },
+  {
+    "id": "direct-io-align",
+    "question": "O_DIRECT read가 EINVAL로 실패합니다. buffer 주소·length·file offset 정렬을 어떤 장치·filesystem 계약으로 확인하나요?"
+  },
+  {
+    "id": "direct-io-buffered-overlap",
+    "question": "한 프로세스는 O_DIRECT로 쓰고 다른 경로는 buffered read를 합니다. 같은 파일 범위를 혼용할 때 왜 일관성·성능을 따로 검증해야 하나요?"
+  },
+  {
+    "id": "direct-io-sync-durability",
+    "question": "O_DIRECT write가 반환됐는데 전원 장애 뒤 데이터가 남는다고 단정할 수 있나요? O_DIRECT와 O_SYNC의 계약을 어떻게 구분하나요?"
   },
   {
     "id": "distributed-clock-order",
@@ -1176,6 +1736,22 @@
     "question": "새 도메인 레코드를 만들었는데 일부 클라이언트는 계속 없다고 합니다. DNS의 음성 캐시는 어떻게 작동하나요?"
   },
   {
+    "id": "dnssec-ds-dnskey-chain",
+    "question": "부모 zone의 DS 레코드와 자식 zone의 DNSKEY는 DNSSEC 신뢰 사슬에서 어떤 역할을 하나요?"
+  },
+  {
+    "id": "dnssec-no-confidentiality",
+    "question": "DNSSEC 검증이 성공한 DNS 응답을 전송 중 비밀이라고 말할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "dnssec-nsec-denial",
+    "question": "존재하지 않는 DNS 이름에 DNSSEC 검증을 적용할 때 NSEC는 무엇을 증명하나요?"
+  },
+  {
+    "id": "dnssec-rrset-rrsig-validation",
+    "question": "DNS 응답에 RRSIG가 붙어 있으면 resolver는 무엇을 검증하며 레코드 하나가 아니라 RRset을 보는 이유는 무엇인가요?"
+  },
+  {
     "id": "dom-event-delegation",
     "question": "동적으로 추가되는 목록 항목의 클릭을 한 곳에서 처리하려면 이벤트 위임을 어떻게 적용하나요?"
   },
@@ -1186,6 +1762,22 @@
   {
     "id": "dp-greedy-divide-conquer",
     "question": "목표 금액을 가장 적은 수의 동전으로 만들려 합니다. 큰 동전부터 고르는 방법이 항상 맞는지 어떻게 판단하며, 동적 계획법과 분할 정복은 어떤 점이 다른가요?"
+  },
+  {
+    "id": "dpop-jti-replay",
+    "question": "DPoP의 jti와 iat를 왜 replay cache와 함께 검증하나요?"
+  },
+  {
+    "id": "dpop-key-rotation",
+    "question": "DPoP 키를 회전할 때 기존 access token의 유효성을 어떻게 결정하나요?"
+  },
+  {
+    "id": "dpop-proof-binding",
+    "question": "DPoP proof가 access token을 어떻게 특정 키와 HTTP 요청에 묶나요?"
+  },
+  {
+    "id": "dpop-proxy-uri",
+    "question": "프록시 뒤에서 DPoP htu를 검증할 때 내부 URL과 외부 URL을 어떻게 구분하나요?"
   },
   {
     "id": "dual-column-source-of-truth",
@@ -1240,6 +1832,54 @@
     "question": "Elasticsearch 쓰기에 refresh=wait_for와 강제 refresh를 적용하면 대기·세그먼트·병합 비용이 어떻게 다른가요?"
   },
   {
+    "id": "elf-got-plt-relocation",
+    "question": "위치 독립 코드가 외부 함수 주소를 매번 고정하지 않고 호출합니다. GOT/PLT와 lazy relocation을 어떤 실행 시점 경계로 설명하나요?"
+  },
+  {
+    "id": "elf-relocation-addend",
+    "question": "같은 relocation이라도 REL과 RELA가 addend를 저장하는 위치가 다릅니다. loader가 어떤 값으로 최종 주소를 계산하나요?"
+  },
+  {
+    "id": "elf-static-dynamic",
+    "question": "정적 링크와 동적 링크를 비교할 때 실행 파일에 무엇이 포함되고 실행 시 어떤 resolver가 추가로 필요하다고 설명하나요?"
+  },
+  {
+    "id": "elf-symbol-resolution",
+    "question": "실행 파일과 여러 shared library가 같은 symbol 이름을 제공합니다. symbol table 종류와 link/load 단계의 resolution 범위를 어떻게 구분하나요?"
+  },
+  {
+    "id": "endpointslice-multiple-slices",
+    "question": "EndpointSlice가 여러 객체로 분할될 때 한 Slice만 읽는 client의 누락은 어떻게 생기나요?"
+  },
+  {
+    "id": "endpointslice-publish-not-ready",
+    "question": "publishNotReadyAddresses를 켠 Service의 EndpointSlice ready 값을 일반 readiness 결과처럼 해석해도 되나요?"
+  },
+  {
+    "id": "endpointslice-serving-terminating",
+    "question": "Terminating endpoint가 terminating=true·serving=true·ready=false일 때 신규 연결과 기존 연결을 어떻게 나누어 해석하나요?"
+  },
+  {
+    "id": "endpointslice-topology-consumer",
+    "question": "zone topology 정보가 있어도 모든 client가 가까운 Pod를 고르지 않는 이유는 무엇인가요?"
+  },
+  {
+    "id": "envelope-dek-kek-roles",
+    "question": "DEK와 KEK를 왜 분리하며 각각 어디에 사용하나요?"
+  },
+  {
+    "id": "envelope-kms-outage",
+    "question": "KMS 장애 중 저장된 wrapped DEK를 어떻게 다뤄야 하나요?"
+  },
+  {
+    "id": "envelope-rewrap-rotation",
+    "question": "KEK를 회전할 때 모든 데이터를 다시 암호화해야 하나요?"
+  },
+  {
+    "id": "envelope-tenant-key-boundary",
+    "question": "테넌트별 DEK와 공용 KEK를 선택할 때 무엇을 비교하나요?"
+  },
+  {
     "id": "epoch-stalled-reader-memory",
     "question": "epoch 안에서 오래 멈춘 독자가 회수를 막습니다. 살아 있는 참조를 강제 해제하지 않고 메모리를 어떻게 제한하나요?"
   },
@@ -1248,8 +1888,40 @@
     "question": "EPOLLONESHOT으로 연결을 한 worker에게 맡깁니다. 처리·소유권 반환·재무장 순서에서 무엇을 지켜야 하나요?"
   },
   {
+    "id": "erasure-degraded-read-repair",
+    "question": "Erasure-coded 객체에서 shard 하나가 없어 degraded read를 제공할 때 읽기 latency와 repair traffic을 어떻게 분리해서 보나요?"
+  },
+  {
+    "id": "erasure-failure-domain-placement",
+    "question": "Erasure shard를 같은 rack에 배치하면 k+m 계산이 맞아도 어떤 장애를 견디지 못하나요?"
+  },
+  {
+    "id": "erasure-km-overhead",
+    "question": "Erasure coding에서 k data shard와 m parity shard를 늘리면 저장 overhead와 장애 허용 수가 어떻게 바뀌나요?"
+  },
+  {
     "id": "error-log-rate-sampling",
     "question": "같은 오류 로그가 폭주합니다. 최초 원인과 발생 빈도를 잃지 않으면서 상세 로그를 어떻게 제한하나요?"
+  },
+  {
+    "id": "ethernet-mac-flap-loop",
+    "question": "같은 출발지 MAC이 짧은 시간에 두 포트에서 학습됩니다. 이동 단말과 브리지 루프를 어떻게 구분하나요?"
+  },
+  {
+    "id": "ethernet-mac-learning-flood-aging",
+    "question": "스위치가 처음 본 목적지 MAC으로 프레임을 받았습니다. 어느 포트로 보내며 MAC 테이블은 언제 바뀌나요?"
+  },
+  {
+    "id": "ethernet-vlan-broadcast-domain",
+    "question": "같은 IPv4 대역을 쓰는 두 호스트를 서로 다른 VLAN에 넣으면 왜 ARP broadcast가 도달하지 않나요?"
+  },
+  {
+    "id": "ethernet-vlan-tag-native-boundary",
+    "question": "두 스위치 사이 trunk 링크에서 VLAN 태그가 붙은 프레임과 붙지 않은 프레임은 어떻게 해석되나요?"
+  },
+  {
+    "id": "event-cancelable-passive-boundary",
+    "question": "event.cancelable=false일 때 passive를 false로 바꿔도 해결되지 않는 것은 무엇인가요?"
   },
   {
     "id": "event-sourcing-replay",
@@ -1262,6 +1934,22 @@
   {
     "id": "event-versus-business-dedup-key",
     "question": "중복 방지 키로 event ID 대신 주문 ID를 씁니다. 같은 주문의 서로 다른 정상 이벤트를 합치지 않으려면 어떻게 하나요?"
+  },
+  {
+    "id": "exec-env-inheritance",
+    "question": "환경 변수와 파일 디스크립터를 새 image에 넘기는 launcher를 설계합니다. env 상속과 FD 상속은 각각 어떤 명시적 allowlist가 필요하나요?"
+  },
+  {
+    "id": "exec-env-reset",
+    "question": "execve로 새 프로그램을 실행할 때 argv와 envp는 누가 만들며 기존 heap·stack·signal handler는 어떻게 되나요?"
+  },
+  {
+    "id": "exec-fd-cloexec",
+    "question": "서버가 listening socket을 연 뒤 exec한 worker에 비밀 파일 FD가 노출됐습니다. FD_CLOEXEC를 언제 설정해야 race 없이 상속을 막나요?"
+  },
+  {
+    "id": "exec-multithread-reset",
+    "question": "여러 스레드가 있는 프로세스가 exec에 성공했습니다. 호출 thread 외의 스레드와 그들이 잡고 있던 사용자 공간 lock은 어떻게 되나요?"
   },
   {
     "id": "external-correlation-id-validation",
@@ -1340,6 +2028,26 @@
     "question": "같은 100ms를 한 번의 큰 dt와 여러 고정 dt로 계산합니다. 충돌·수치 적분·타이머 결과가 왜 달라질 수 있나요?"
   },
   {
+    "id": "flex-auto-minimum-pre",
+    "question": "Flex row의 긴 pre가 flex-shrink:1인데도 넘치는 이유는 무엇인가요?"
+  },
+  {
+    "id": "flex-overflow-clipping-vs-sizing",
+    "question": "부모 overflow:hidden과 child min-width:0은 flex overflow에서 어떤 계약 차이가 있나요?"
+  },
+  {
+    "id": "flex-shrink-scaled-basis",
+    "question": "같은 flex-shrink인데 한 item이 더 많이 줄어드는 이유는 무엇인가요?"
+  },
+  {
+    "id": "flex-wrap-align-content",
+    "question": "wrap된 flex에서 align-items와 align-content가 각각 정하는 것은 무엇인가요?"
+  },
+  {
+    "id": "float-sum-drift",
+    "question": "0.1을 천 번 더한 부동소수점 합이 기대한 100이 아닐 수 있는 이유와 금액에 대한 대안을 설명해 보세요."
+  },
+  {
     "id": "forced-quorum-recovery-reconciliation",
     "question": "과반을 영구적으로 잃어 강제 복구했습니다. 잃었을 수 있는 확정 기록과 옛 클러스터의 재등장을 어떻게 대사·차단하나요?"
   },
@@ -1368,16 +2076,232 @@
     "question": "같은 인자를 넘겼는데 함수 결과가 호출 시각과 전역 설정에 따라 달라집니다. 순수 함수로 만들려면 무엇을 바꿔야 하나요?"
   },
   {
+    "id": "futex-private-shared",
+    "question": "프로세스 안에서만 쓰는 lock과 shared memory에 놓인 lock의 futex flag를 다르게 둡니다. private futex 최적화의 전제는 무엇인가요?"
+  },
+  {
+    "id": "futex-timeout-interrupt",
+    "question": "futex wait가 timeout이나 signal로 돌아왔습니다. 반환 뒤 lock word를 다시 검사해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "futex-uncontended-userspace",
+    "question": "뮤텍스 획득 경쟁이 없을 때 Linux futex가 매번 커널에 들어가지 않는 이유는 무엇인가요?"
+  },
+  {
+    "id": "futex-wait-value-recheck",
+    "question": "futex 대기 직전에 다른 스레드가 lock을 풀었습니다. FUTEX_WAIT가 기대값을 함께 받는 이유와 EAGAIN 처리는 무엇인가요?"
+  },
+  {
+    "id": "game-delta-ack-loss-full-resync",
+    "question": "delta ACK가 유실되어 sender가 baseline을 오래 보관할 때 언제 full snapshot으로 전환하나요?"
+  },
+  {
+    "id": "game-delta-confirmed-baseline",
+    "question": "delta snapshot의 baseline을 “마지막으로 보낸 snapshot”이 아니라 “ACK된 snapshot”으로 잡아야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-delta-field-presence",
+    "question": "상태 delta에서 값이 0인 필드와 “이번 delta에 없음”을 어떻게 구분하나요?"
+  },
+  {
+    "id": "game-delta-out-of-order-chain",
+    "question": "서로 다른 baseline을 가진 delta가 순서 역전으로 도착하면 어떤 것을 적용하나요?"
+  },
+  {
+    "id": "game-ecs-archetype-move-on-add",
+    "question": "ECS에서 실행 중 컴포넌트를 추가할 때 엔티티 데이터는 어디로 이동하나요?"
+  },
+  {
+    "id": "game-ecs-archetype-query-transition-cost",
+    "question": "archetype 수가 지나치게 늘어날 때 query 비용과 구조 변경 비용을 어떻게 진단하나요?"
+  },
+  {
+    "id": "game-ecs-sparse-set-delete-reuse",
+    "question": "Sparse set에서 삭제 후 entity 번호를 재사용할 때 stale handle을 어떻게 막나요?"
+  },
+  {
+    "id": "game-ecs-structural-change-command-buffer",
+    "question": "ECS iteration 중 add/remove를 즉시 수행하지 않고 command buffer로 미루는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-entity-destroy-tombstone",
+    "question": "삭제 tombstone을 즉시 없애면 어떤 replication 문제가 생기나요?"
+  },
+  {
+    "id": "game-entity-id-allocator-restart",
+    "question": "서버 재시작 뒤 entity ID를 다시 발급할 때 이전 packet과 충돌하지 않게 하려면 무엇을 바꾸나요?"
+  },
+  {
+    "id": "game-entity-id-generation-reuse",
+    "question": "재사용된 entity ID의 늦은 replication packet을 어떻게 차단하나요?"
+  },
+  {
+    "id": "game-entity-replication-baseline-per-entity",
+    "question": "entity마다 replication baseline을 따로 두는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-float-fixed-point-boundary",
+    "question": "게임 규칙 중 어떤 값을 fixed-point나 정수로 옮기면 결정성에 도움이 되지만 어떤 비용이 생기나요?"
+  },
+  {
+    "id": "game-float-fma-determinism",
+    "question": "같은 float 수식인데 CPU에서 FMA 사용 여부가 달라지면 replay가 갈라질 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-float-iteration-order",
+    "question": "같은 entity 집합을 순회해 합산하는데 iteration 순서가 바뀌면 왜 결과가 달라질 수 있나요?"
+  },
+  {
+    "id": "game-float-state-hash-divergence",
+    "question": "lockstep replay에서 상태 hash가 처음 달라진 tick을 찾을 때 무엇을 기록하나요?"
+  },
+  {
     "id": "game-input-sequence-gap",
     "question": "서버가 받은 게임 입력 번호가 중간에 비었습니다. 기다림·다음 입력 처리·재동기화 중 무엇을 선택하나요?"
+  },
+  {
+    "id": "game-inventory-definition-instance",
+    "question": "같은 검을 두 개 가진 inventory에서 item definition과 item instance를 왜 분리하나요?"
+  },
+  {
+    "id": "game-inventory-stack-split-merge",
+    "question": "stackable item을 split/merge할 때 어떤 불변식을 원자적으로 지켜야 하나요?"
+  },
+  {
+    "id": "game-inventory-trade-idempotency",
+    "question": "거래 요청 응답이 유실된 뒤 같은 inventory 거래를 재시도해도 복제되지 않게 하려면 무엇을 저장하나요?"
+  },
+  {
+    "id": "game-matchmaking-team-rating",
+    "question": "팀 매칭에서 개인 rating 평균만 사용하는 것이 왜 위험할 수 있나요?"
+  },
+  {
+    "id": "game-matchmaking-uncertainty-new-player",
+    "question": "신규 플레이어의 rating uncertainty가 크다는 것을 매칭 범위에 어떻게 반영하나요?"
+  },
+  {
+    "id": "game-matchmaking-widening-cadence",
+    "question": "대기 시간이 길어질 때 rating 범위를 단계적으로 넓히는 이유와 위험은 무엇인가요?"
+  },
+  {
+    "id": "game-morton-bit-interleave",
+    "question": "2차원 좌표를 Morton code로 바꿀 때 bit interleave가 무엇을 보존하나요?"
+  },
+  {
+    "id": "game-morton-dynamic-update",
+    "question": "객체가 이동할 때 Morton key 정렬 index를 언제 다시 배치해야 하나요?"
+  },
+  {
+    "id": "game-morton-precision-overflow",
+    "question": "Morton code의 좌표 비트 수를 늘리면 어떤 비용과 overflow 경계를 확인해야 하나요?"
+  },
+  {
+    "id": "game-morton-range-box-intervals",
+    "question": "Morton 정렬 배열에서 사각형 범위 질의를 한 번의 연속 slice로 읽을 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-navmesh-funnel-apex-update",
+    "question": "funnel의 양쪽 경계가 서로 교차할 때 어느 점을 waypoint로 확정하나요?"
+  },
+  {
+    "id": "game-navmesh-funnel-clearance",
+    "question": "funnel이 만든 중심선이 agent 몸체에 안전하다고 바로 말할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-navmesh-funnel-dynamic-obstacle",
+    "question": "NavMesh 경로의 마지막 polygon이 목표 polygon이 아닙니다. partial corridor를 funnel에 넣기 전에 목표를 어떻게 정하나요?"
+  },
+  {
+    "id": "game-navmesh-funnel-portal-order",
+    "question": "funnel algorithm에서 portal의 left/right 방향이 뒤집히면 어떤 오류가 생기나요?"
+  },
+  {
+    "id": "game-orca-neighbor-index",
+    "question": "ORCA neighbor를 모두 검사하지 않고 공간 후보 index로 줄일 때 어떤 보수성을 지켜야 하나요?"
+  },
+  {
+    "id": "game-orca-no-feasible-velocity",
+    "question": "ORCA 제약의 교집합에 preferred velocity가 없거나 feasible velocity가 없는 경우 어떻게 처리하나요?"
+  },
+  {
+    "id": "game-orca-reciprocal-responsibility",
+    "question": "ORCA에서 두 agent가 충돌을 피할 책임을 절반씩 나눈다는 말은 어떤 계산을 뜻하나요?"
+  },
+  {
+    "id": "game-orca-time-horizon",
+    "question": "ORCA time horizon을 너무 짧거나 길게 잡으면 회피 행동이 어떻게 달라지나요?"
+  },
+  {
+    "id": "game-quaternion-normalize-after-integration",
+    "question": "매 틱 회전 quaternion을 곱한 뒤 정규화해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-quaternion-shortest-arc",
+    "question": "두 quaternion의 내적이 음수일 때 왜 한쪽 부호를 뒤집어 보간하나요?"
+  },
+  {
+    "id": "game-quaternion-slerp-small-angle",
+    "question": "작은 각도에서 SLERP를 NLERP로 근사할 때 무엇을 검증해야 하나요?"
+  },
+  {
+    "id": "game-quaternion-squad-discontinuity",
+    "question": "회전 keyframe 사이의 보간이 특정 프레임에서 튀는 경우 어떤 상태를 검사하나요?"
   },
   {
     "id": "game-reservation-deterministic-aging",
     "question": "NPC 예약의 기아를 줄이려 aging을 적용합니다. 우선순위 변경과 리플레이 결정성을 어떻게 함께 유지하나요?"
   },
   {
+    "id": "game-rng-deterministic-shuffle",
+    "question": "같은 entity 목록에 난수 순서를 적용할 때 먼저 목록 순서를 정규화해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "game-rng-save-restore-rollback",
+    "question": "rollback snapshot에 RNG seed만 저장하고 내부 state를 저장하지 않으면 어떤 문제가 생기나요?"
+  },
+  {
+    "id": "game-rng-stream-isolation",
+    "question": "전투 RNG와 전리품 RNG를 같은 전역 generator에서 읽으면 replay가 왜 쉽게 갈라지나요?"
+  },
+  {
+    "id": "game-rng-stream-splitting",
+    "question": "player별 RNG stream을 seed로 분할할 때 어떤 충돌과 상관을 검사해야 하나요?"
+  },
+  {
+    "id": "game-rollback-input-delay-choice",
+    "question": "고정 input delay를 늘리면 rollback 비용과 조작감은 어떻게 달라지나요?"
+  },
+  {
+    "id": "game-rollback-replay-side-effects",
+    "question": "rollback 재실행 중 같은 공격 sound와 damage event가 두 번 발생하지 않게 어떻게 하나요?"
+  },
+  {
+    "id": "game-rollback-state-ring",
+    "question": "rollback netcode에서 어떤 상태를 ring buffer에 저장해야 하나요?"
+  },
+  {
+    "id": "game-rollback-window-budget",
+    "question": "rollback window가 커질 때 무엇이 선형으로 늘고 무엇이 병목이 될 수 있나요?"
+  },
+  {
     "id": "game-server-tick-budget",
     "question": "대규모 전투 때 게임 서버의 틱이 늦어집니다. 틱 주기를 늘리기 전에 어떤 작업을 측정하고 분산해야 하나요?"
+  },
+  {
+    "id": "game-snapshot-buffer-delay",
+    "question": "snapshot jitter buffer를 너무 짧거나 길게 잡으면 어떤 trade-off가 생기나요?"
+  },
+  {
+    "id": "game-snapshot-extrapolation-cap",
+    "question": "snapshot이 끊겼을 때 extrapolation을 언제 중단해야 하나요?"
+  },
+  {
+    "id": "game-snapshot-late-despawn",
+    "question": "snapshot 간격은 같은데 네트워크 도착 간격이 흔들립니다. 보간 시각은 서버 timestamp와 도착 시각 중 무엇을 기준으로 하나요?"
+  },
+  {
+    "id": "game-snapshot-teleport-interpolation",
+    "question": "teleport snapshot을 일반 위치 보간에 넣으면 어떤 오표시가 생기나요?"
   },
   {
     "id": "game-state-input-delivery-classes",
@@ -1472,12 +2396,24 @@
     "question": "nil 포인터가 error interface에 들어 있습니다. Error 메서드가 nil 수신자를 허용하는지 어떻게 확인하나요?"
   },
   {
+    "id": "go-panic-defer-named-return",
+    "question": "panic을 recover한 뒤 함수가 원래 panic 지점부터 계속되나요? defer와 named return은 어떻게 작동하나요?"
+  },
+  {
     "id": "go-pointer-density-gc-scan",
     "question": "같은 바이트 크기라도 포인터가 많은 객체와 바이트 배열의 GC 스캔 비용은 왜 다른가요?"
   },
   {
     "id": "go-producer-failure-channel-close",
     "question": "여러 생산자 중 하나가 실패했습니다. 취소 전파·남은 송신·채널 close를 어떤 순서로 수행하나요?"
+  },
+  {
+    "id": "go-recover-direct-deferred",
+    "question": "defer 함수 안에서 helper를 통해 recover를 호출하면 왜 panic을 잡지 못할 수 있나요?"
+  },
+  {
+    "id": "go-recover-goroutine-boundary",
+    "question": "부모 고루틴의 recover로 자식 고루틴 panic을 잡을 수 없는 이유는 무엇인가요?"
   },
   {
     "id": "go-select-cancellation",
@@ -1520,8 +2456,24 @@
     "question": "격자 맵에서 목적지 칸은 비어 있지만 양옆에 벽이 있습니다. 캐릭터가 대각선으로 그 모서리를 지나가도 되나요?"
   },
   {
+    "id": "grid-image-intrinsic-ratio",
+    "question": "intrinsic width가 큰 이미지를 Grid에 넣을 때 track을 넓히지 않고 비율을 보존하려면 무엇을 정하나요?"
+  },
+  {
+    "id": "grid-min-max-content",
+    "question": "min-content와 max-content track은 긴 텍스트의 줄바꿈과 폭을 어떻게 다르게 만드나요?"
+  },
+  {
+    "id": "grid-minmax-zero-auto",
+    "question": "minmax(auto,1fr)의 긴 URL이 overflow되는 이유와 minmax(0,1fr)의 의미는 무엇인가요?"
+  },
+  {
     "id": "grid-path-parent-direction",
     "question": "격자 경로 복원에서 부모 포인터 대신 방향만 저장하려 합니다. 가능한 이동 모델과 복원·메모리 비용은 무엇인가요?"
+  },
+  {
+    "id": "grid-spanning-intrinsic-contribution",
+    "question": "두 track을 span하는 item의 intrinsic contribution을 한 열에 단순히 더하면 안 되는 이유는 무엇인가요?"
   },
   {
     "id": "group-commit-checkpoint-tradeoff",
@@ -1604,6 +2556,22 @@
     "question": "과거 hitbox 이력의 메모리를 줄입니다. 빠른 대상의 판정 오차와 샘플·압축 비용을 어떻게 맞추나요?"
   },
   {
+    "id": "hmac-canonical-request",
+    "question": "서명 검증자마다 JSON key 순서가 달라지면 HMAC을 어떻게 안정화하나요?"
+  },
+  {
+    "id": "hmac-constant-time",
+    "question": "HMAC 비교에서 일반 문자열 비교를 피해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "hmac-key-purpose-separation",
+    "question": "같은 HMAC 비밀을 webhook과 session 서명에 재사용하면 왜 안 되나요?"
+  },
+  {
+    "id": "hmac-replay-context",
+    "question": "HMAC 키가 해시 블록보다 길거나 출력 태그를 잘라 쓰면 어떤 규칙과 검증 길이를 합의해야 하나요?"
+  },
+  {
     "id": "hoare-mesa-monitor-signal",
     "question": "조건을 알린 뒤 실행권이 즉시 대기자에게 넘어가는 모니터와 나중에 경쟁하는 모니터는 무엇이 다른가요?"
   },
@@ -1636,12 +2604,24 @@
     "question": "언어와 로그인 상태에 따라 응답이 다른데 CDN에서 다른 사용자의 화면이 보입니다. 캐시 키와 Vary는 어떻게 확인하나요?"
   },
   {
+    "id": "http-compression-cache-variant",
+    "question": "같은 URL의 응답을 gzip과 identity로 각각 캐시한다면 어떤 요청 조건과 validator를 함께 구분해야 하나요?"
+  },
+  {
     "id": "http-connection-pool",
     "question": "외부 HTTP 호출에서 연결 풀 대기가 늘었습니다. 연결 수를 늘려도 되는 경우와 오히려 줄여야 하는 경우는 어떻게 구분하나요?"
   },
   {
+    "id": "http-content-encoding-order",
+    "question": "서버가 JSON 표현에 gzip과 다른 content coding을 차례로 적용했다면 Content-Encoding에는 어떤 순서로 적나요?"
+  },
+  {
     "id": "http-content-negotiation",
     "question": "같은 URL이 JSON과 HTML을 반환합니다. Accept와 Content-Type은 어떤 방향의 정보를 표현하나요?"
+  },
+  {
+    "id": "http-content-vs-transfer-coding",
+    "question": "HTTP 응답을 gzip으로 줄이는 Content-Encoding과 chunked Transfer-Encoding은 무엇을 각각 표현하나요?"
   },
   {
     "id": "http-cookies-samesite",
@@ -1724,6 +2704,22 @@
     "question": "물리 시각에 가까운 값과 논리 증가를 함께 쓰는 HLC는 어떤 순서를 표현하며 동시성·최신성을 어디까지 보장하나요?"
   },
   {
+    "id": "icmp-error-quoted-packet-correlation",
+    "question": "ICMP 오류 payload에 원래 패킷 일부가 포함되는 이유는 무엇이며 어떤 요청과 연결하나요?"
+  },
+  {
+    "id": "icmp-time-exceeded-traceroute",
+    "question": "traceroute가 TTL을 하나씩 늘리는 이유와 중간 홉의 응답이 없을 때의 해석은 무엇인가요?"
+  },
+  {
+    "id": "icmpv4-unreachable-code",
+    "question": "IPv4 패킷이 도착하지 않았다는 ICMP Destination Unreachable을 받았습니다. code를 왜 구분해야 하나요?"
+  },
+  {
+    "id": "icmpv6-packet-too-big-pmtud",
+    "question": "IPv6 경로에서 큰 응답만 멈추고 작은 요청은 성공합니다. ICMPv6 Packet Too Big은 무엇을 알려 주나요?"
+  },
+  {
     "id": "idempotency-record-expiry-contract",
     "question": "멱등 기록을 삭제한 뒤 오래된 재시도가 왔습니다. 새로운 요청으로 실행할지 거절할지 어떤 유효기간 계약을 두나요?"
   },
@@ -1768,12 +2764,64 @@
     "question": "점진적 재해시 중 같은 키가 갱신되거나 삭제됩니다. 옛·새 테이블의 조회·이동·tombstone은 어떤 순서를 지켜야 하나요?"
   },
   {
+    "id": "indexeddb-transaction-inactive-await",
+    "question": "readwrite 트랜잭션에서 비동기 공백 뒤에도 같은 트랜잭션이 유효하다고 보면 안 되는 이유는 무엇인가요?"
+  },
+  {
+    "id": "indexeddb-upgrade-blocked-tabs",
+    "question": "두 탭이 같은 IndexedDB를 열고 있을 때 스키마 업그레이드가 blocked가 되는 이유는 무엇인가요?"
+  },
+  {
+    "id": "indexeddb-upgrade-rollback",
+    "question": "onupgradeneeded의 두 번째 변경이 실패하면 첫 번째 변경은 어떤 상태로 남으며 재시도는 무엇을 기준으로 하나요?"
+  },
+  {
+    "id": "indexeddb-versionchange-close-contract",
+    "question": "오래 열린 탭 때문에 버전 업그레이드가 막힐 때 자동 새로고침보다 안전한 전환은 무엇인가요?"
+  },
+  {
     "id": "inheritance-composition",
     "question": "알림 채널마다 로깅·재시도 기능을 조합하다 보니 하위 클래스가 계속 늘어납니다. 어떤 책임을 분리하고 상속과 조합 중 무엇을 선택하나요?"
   },
   {
+    "id": "inode-hardlink-count",
+    "question": "두 이름이 같은 파일 내용을 가리킵니다. hard link가 같은 inode를 공유한다는 사실과 link count·unlink 결과를 어떻게 확인하나요?"
+  },
+  {
+    "id": "inode-hardlink-cross-device",
+    "question": "hard link 생성이 EXDEV로 실패하지만 symbolic link는 됩니다. hard link가 filesystem 경계를 넘을 수 없는 이유를 inode와 dentry 관점에서 설명해 보세요?"
+  },
+  {
+    "id": "inode-symlink-follow",
+    "question": "심볼릭 링크의 target 경로가 바뀌면 같은 이름을 열어도 다른 inode가 나옵니다. symlink와 hard link의 traversal·identity 차이는 무엇인가요?"
+  },
+  {
+    "id": "inode-unlink-open-fd",
+    "question": "파일 이름을 unlink한 뒤 이미 열어 둔 FD로 계속 읽을 수 있습니다. directory entry, inode, open file object의 수명을 어떻게 나누나요?"
+  },
+  {
     "id": "inplace-stable-sort-independence",
     "question": "제자리 정렬과 안정 정렬은 같은 속성인가요? 추가 메모리와 동점 순서 보장을 어떻게 구분하나요?"
+  },
+  {
+    "id": "interrupt-affinity-load",
+    "question": "한 CPU에 IRQ가 몰려 네트워크 지연이 튑니다. IRQ affinity를 바꾸면 어떤 실행 경로가 이동하고 무엇은 그대로 남나요?"
+  },
+  {
+    "id": "interrupt-hard-vs-softirq",
+    "question": "인터럽트가 들어왔을 때 모든 처리를 hard IRQ handler에서 끝내지 않고 softirq로 미룹니다. 두 문맥의 실행 제약은 무엇인가요?"
+  },
+  {
+    "id": "interrupt-softirq-budget",
+    "question": "패킷이 계속 들어와 softirq가 CPU를 오래 점유합니다. deferred work에 실행 예산을 두지 않으면 어떤 starvation이 생기며 workqueue는 무엇을 바꾸나요?"
+  },
+  {
+    "id": "interrupt-workqueue-sleep",
+    "question": "deferred callback에서 메모리 할당과 블로킹 I/O가 필요합니다. softirq callback 대신 어떤 실행 문맥을 선택해야 하나요?"
+  },
+  {
+    "id": "intersectionobserver-threshold-crossing",
+    "question": "IntersectionObserver threshold가 [0,0.5,1]일 때 ratio가 0.2에서 0.7로 바뀌면 알림은 무엇으로 결정되나요?"
   },
   {
     "id": "introsort-depth-fallback",
@@ -1912,8 +2960,32 @@
     "question": "화면으로 돌아올 때 `viewDidLoad`의 갱신 코드가 다시 실행되지 않습니다. `viewDidLoad`, `viewWillAppear`, `viewDidAppear`를 어떻게 나눠야 하나요?"
   },
   {
+    "id": "ipv6-dad-solicited-node",
+    "question": "IPv6 주소를 인터페이스에 붙이기 전에 왜 solicited-node multicast와 DAD가 필요한가요?"
+  },
+  {
+    "id": "ipv6-link-local-global-scope",
+    "question": "IPv6 link-local 주소로 인터넷의 다른 링크에 있는 서버와 통신할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "ipv6-ns-na-resolution",
+    "question": "IPv6 호스트가 같은 링크의 이웃 MAC을 알아낼 때 ARP 대신 어떤 메시지를 사용하나요?"
+  },
+  {
+    "id": "ipv6-ra-default-router-lifetime",
+    "question": "IPv6 Router Advertisement의 Router Lifetime이 0이면 prefix 정보도 모두 무효가 되나요?"
+  },
+  {
     "id": "isolation-two-read-experiment",
     "question": "같은 transaction에서 두 번 읽는 사이 다른 세션이 커밋합니다. 격리 수준별 가시성을 어떻게 재현하나요?"
+  },
+  {
+    "id": "jar-par-composition",
+    "question": "PAR와 JAR를 함께 쓰면 각각 어떤 신뢰 경계를 맡나요?"
+  },
+  {
+    "id": "jar-signed-parameters",
+    "question": "JAR 서명 요청 객체가 authorization parameter 변조를 어떻게 막나요?"
   },
   {
     "id": "java-absence-optional-default",
@@ -2004,6 +3076,38 @@
     "question": "Repeatable 어노테이션을 reflection으로 읽습니다. 반복 요소와 컨테이너의 retention·조회 API는 어떻게 맞추나요?"
   },
   {
+    "id": "java-resource-close-no-body-error",
+    "question": "본문은 성공했지만 두 자원의 close가 모두 실패했습니다. 대표 예외와 suppressed 순서는 무엇인가요?"
+  },
+  {
+    "id": "java-resource-close-reverse-order",
+    "question": "여러 자원을 선언한 try-with-resources는 어떤 순서로 닫으며 중간 생성 실패는 어떻게 정리하나요?"
+  },
+  {
+    "id": "java-resource-effectively-final",
+    "question": "이미 만든 자원을 try-with-resources에 넣을 때 effectively final이 필요한 이유는 무엇인가요?"
+  },
+  {
+    "id": "java-static-field-textual-order",
+    "question": "static 필드 초기화가 다른 필드의 기본값을 읽습니다. 선언 순서와 메서드 호출 우회를 어떻게 설명하나요?"
+  },
+  {
+    "id": "java-static-initialization-deadlock",
+    "question": "두 클래스의 초기화 코드가 서로 다른 스레드에서 상대 클래스를 사용하면 왜 교착할 수 있나요?"
+  },
+  {
+    "id": "java-static-initialization-failure",
+    "question": "static initializer가 처음 실패한 뒤 같은 클래스에 다시 접근하면 왜 다른 예외가 나올 수 있나요?"
+  },
+  {
+    "id": "java-static-initialization-trigger",
+    "question": "static final 상수를 읽는 경우와 static 메서드를 호출하는 경우 클래스 초기화 시점은 어떻게 다른가요?"
+  },
+  {
+    "id": "java-suppressed-close-exception",
+    "question": "try 본문과 close가 모두 예외를 던지면 호출자는 어느 예외를 받고 나머지는 어디에서 찾나요?"
+  },
+  {
     "id": "java-synchronized-volatile",
     "question": "공유 카운터에 volatile을 붙였는데도 최종 값이 작습니다. synchronized와 volatile은 가시성과 복합 연산을 어떻게 다르게 보장하나요?"
   },
@@ -2066,6 +3170,34 @@
   {
     "id": "jetstream-stream-replication",
     "question": "JetStream stream의 replicas를 1에서 3으로 늘리려 합니다. 저장 확인, 장애 대응, 자원 비용에서 무엇이 달라지나요?"
+  },
+  {
+    "id": "join-hash-memory-spill",
+    "question": "두 큰 입력의 등가 조인에서 hash join의 build side와 memory spill을 어떻게 판단하나요?"
+  },
+  {
+    "id": "join-merge-sorted-inputs",
+    "question": "두 입력이 이미 같은 join key로 정렬돼 있을 때 merge join이 추가 정렬을 피하는 조건은 무엇인가요?"
+  },
+  {
+    "id": "join-nested-loop-index",
+    "question": "작은 outer 입력과 inner 인덱스가 있는 질의에서 nested loop join이 hash join보다 유리할 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "join-selectivity-misestimate",
+    "question": "Hash join의 등가 조건과 merge join의 정렬 조건을 범위 부등호 조인에도 그대로 적용할 수 있나요?"
+  },
+  {
+    "id": "journal-full-data-mode",
+    "question": "ext4 data=journal은 file data와 metadata를 모두 journal합니다. ordered보다 강한 보호와 성능 비용이 왜 함께 생기나요?"
+  },
+  {
+    "id": "journal-ordered-mode",
+    "question": "ext4의 data=ordered에서 metadata journal commit 전에 file data flush가 선행된다고 합니다. crash 뒤 파일 내용 일관성과 metadata 일관성을 어떻게 구분하나요?"
+  },
+  {
+    "id": "journal-writeback-mode",
+    "question": "ext4 data=writeback을 성능 때문에 선택합니다. metadata가 복구돼도 오래된 또는 초기화되지 않은 file data가 보일 수 있는 이유는 무엇인가요?"
   },
   {
     "id": "jps-diagonal-orthogonal-jump",
@@ -2516,6 +3648,14 @@
     "question": "일부 시간 조회가 vDSO로 처리됩니다. 커널 진입을 줄이면서 시간 정보를 어떻게 안전하게 읽나요?"
   },
   {
+    "id": "list-resourceversion-match-contract",
+    "question": "resourceVersion 옵션이 다른 LIST의 최신성 의미를 어떻게 계약해야 하나요?"
+  },
+  {
+    "id": "listener-remove-capture-identity",
+    "question": "passive listener를 제거할 때 callback만 같게 넘기면 충분한가요?"
+  },
+  {
     "id": "load-balancer-health-draining",
     "question": "로드밸런서 헬스 체크가 성공한 서버가 실제 요청을 실패할 수 있고, 배포 중 기존 연결도 실패할 수 있는 이유는 무엇인가요?"
   },
@@ -2540,6 +3680,38 @@
     "question": "LRU 캐시에 대량 순차 조회가 들어온 뒤 자주 쓰던 항목까지 사라집니다. 왜 이런 일이 생기며 항목 크기와 접근 패턴을 반영해 정책을 어떻게 조정하나요?"
   },
   {
+    "id": "lsm-compaction-stall",
+    "question": "LSM compaction이 생산 속도를 따라가지 못할 때 write stall과 backpressure를 어떤 지표로 판단하나요?"
+  },
+  {
+    "id": "lsm-leveled-overlap",
+    "question": "Leveled compaction에서 상위 level의 key range overlap을 줄이는 이유와 overlap이 커질 때 읽기 비용을 설명해 보세요."
+  },
+  {
+    "id": "lsm-memtable-flush-boundary",
+    "question": "메모리 테이블이 가득 찬 LSM 저장소에서 WAL·immutable memtable·SSTable flush의 순서를 어떻게 설명하겠습니까?"
+  },
+  {
+    "id": "lsm-read-amplification-levels",
+    "question": "LSM에 같은 키가 여러 SSTable에 있을 때 최신 값을 찾는 읽기 경로와 read amplification을 어떻게 줄이겠습니까?"
+  },
+  {
+    "id": "lsm-tiered-burst-tradeoff",
+    "question": "쓰기 폭주 workload에서 tiered compaction이 leveled보다 유리할 수 있는 조건과 읽기 비용을 말해 보세요."
+  },
+  {
+    "id": "lsm-tombstone-compaction",
+    "question": "삭제 tombstone이 남아 있는 LSM에서 너무 이른 compaction이 왜 데이터를 부활시킬 수 있나요?"
+  },
+  {
+    "id": "lsm-universal-vs-leveled",
+    "question": "point lookup과 순차 쓰기가 모두 있는 LSM에서 universal과 leveled compaction을 비교할 때 어떤 workload를 고정해야 하나요?"
+  },
+  {
+    "id": "lsm-write-amplification-estimate",
+    "question": "하루에 같은 key를 반복 갱신하는 LSM workload에서 write amplification을 어떤 바이트 단위로 측정하겠습니까?"
+  },
+  {
     "id": "managed-queue-full-cost",
     "question": "관리형 큐 비용을 추정합니다. API 요청 수 외에 보관·재전달·데이터 이동·중복 처리 비용은 어떻게 포함하나요?"
   },
@@ -2562,6 +3734,18 @@
   {
     "id": "merge-sort-external",
     "question": "메모리에 다 들어가지 않는 큰 파일을 정렬하려 합니다. 병합 정렬은 어떻게 활용할 수 있나요?"
+  },
+  {
+    "id": "mesi-read-write-transition",
+    "question": "두 코어가 같은 cache line을 읽은 뒤 한 코어가 쓰려고 합니다. MESI에서 어떤 상태 전이와 무효화가 일어나나요?"
+  },
+  {
+    "id": "mesi-snoop-invalidate",
+    "question": "한 코어의 store가 다른 코어의 캐시 복사본을 stale하게 만듭니다. snoop과 invalidate가 load 결과를 어떻게 바꾸는지 설명해 보세요."
+  },
+  {
+    "id": "mesi-store-buffer-visibility",
+    "question": "store buffer에 값이 남아 있는 동안 다른 코어가 이전 값을 읽습니다. coherence 상태와 store buffer drain을 함께 설명하려면 무엇을 확인하나요?"
   },
   {
     "id": "message-consumer-idempotency",
@@ -2624,8 +3808,228 @@
     "question": "모델의 하이퍼파라미터를 여러 번 바꿔 가장 좋은 결과를 골랐습니다. 훈련·검증·테스트 데이터를 어떻게 분리해야 성능을 공정하게 추정할 수 있나요?"
   },
   {
+    "id": "mlsearch-bm25-analyzer-stats",
+    "question": "같은 BM25 파라미터인데 analyzer를 바꾸면 ranking이 달라지는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-bm25-idf-rare-term",
+    "question": "희귀 term과 흔한 term의 BM25 기여가 다른 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-bm25-length-normalization",
+    "question": "긴 문서가 같은 term 빈도여도 BM25에서 불리할 수 있는 이유와 b=0/1의 의미는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-bm25-tf-saturation",
+    "question": "같은 term이 1번과 20번 나와도 BM25 점수가 20배가 되지 않는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-boost-learning-rate-trees",
+    "question": "learning rate를 절반으로 줄이고 tree 수를 두 배로 늘리면 항상 같은 모델인가요?"
+  },
+  {
+    "id": "mlsearch-boost-multiclass-loss",
+    "question": "다중 분류 boosting에서 클래스별 확률 합이 1이 되도록 어떤 출력과 loss를 사용하나요?"
+  },
+  {
+    "id": "mlsearch-boost-squared-residual",
+    "question": "제곱 손실 boosting에서 다음 트리가 잔차를 맞춘다는 말의 정확한 뜻은 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-boost-subsample-stochastic",
+    "question": "boosting subsample=.7은 어떤 분산·편향과 재현성 변화를 만드나요?"
+  },
+  {
+    "id": "mlsearch-calibration-brier-decomposition",
+    "question": "Brier가 낮아졌는데 calibration과 discrimination 중 무엇이 좋아졌는지 어떻게 확인하나요?"
+  },
+  {
+    "id": "mlsearch-calibration-holdout-fit",
+    "question": "isotonic을 훈련 자료에 바로 fit하면 왜 curve가 낙관적일 수 있나요?"
+  },
+  {
+    "id": "mlsearch-calibration-ranking-vs-probability",
+    "question": "AUC가 같은 두 모델 중 한 모델의 0.8을 실제 80%로 읽을 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-calibration-shift-prevalence",
+    "question": "운영 양성 비율이 바뀌면 과거 calibration curve를 그대로 써도 되나요?"
+  },
+  {
+    "id": "mlsearch-embedding-cosine-dot",
+    "question": "L2 정규화된 임베딩에서 cosine과 dot 순위가 같고, 정규화 전에는 왜 다른가요?"
+  },
+  {
+    "id": "mlsearch-embedding-dimension-mismatch",
+    "question": "임베딩 차원이 768에서 1024로 바뀌면 인덱스 전환에서 무엇을 먼저 확인하나요?"
+  },
+  {
+    "id": "mlsearch-embedding-hubness",
+    "question": "소수 문서가 많은 query의 top-K에 반복 등장할 때 cosine 오류인지 어떻게 진단하나요?"
+  },
+  {
+    "id": "mlsearch-embedding-zero-vector",
+    "question": "encoder가 zero vector를 반환할 때 cosine 검색을 어떻게 처리해야 하나요?"
+  },
+  {
+    "id": "mlsearch-forest-bootstrap-oob",
+    "question": "Random forest의 OOB 샘플은 validation set과 어떻게 다르고 언제 믿기 어려운가요?"
+  },
+  {
+    "id": "mlsearch-forest-class-imbalance",
+    "question": "희소 양성에서 bootstrap tree가 양성을 거의 못 담을 때 sampling과 threshold를 어떻게 분리하나요?"
+  },
+  {
+    "id": "mlsearch-forest-feature-subspace-correlation",
+    "question": "max_features를 줄이면 나무 수를 늘리는 것과 다른 효과가 생기는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-forest-permutation-importance",
+    "question": "상관된 두 특징에서 impurity importance와 permutation importance가 다르면 어떤 결론을 보류해야 하나요?"
+  },
+  {
+    "id": "mlsearch-hnsw-construction-quality",
+    "question": "efConstruction을 크게 한 index가 작은 efSearch에서도 항상 높은 recall을 유지하나요?"
+  },
+  {
+    "id": "mlsearch-hnsw-delete-update",
+    "question": "HNSW 문서를 삭제·갱신할 때 tombstone과 재삽입을 어떻게 검증하나요?"
+  },
+  {
+    "id": "mlsearch-hnsw-ef-search-recall",
+    "question": "HNSW efSearch를 늘리면 recall과 latency에 어떤 변화가 생기나요?"
+  },
+  {
+    "id": "mlsearch-hnsw-m-memory",
+    "question": "HNSW M을 키우면 왜 graph memory와 build cost가 늘어나나요?"
+  },
+  {
+    "id": "mlsearch-hybrid-reranker-budget",
+    "question": "cross-encoder reranker에서 1차 K와 rerank K를 어떻게 정하고 어떤 지표를 고정하나요?"
+  },
+  {
+    "id": "mlsearch-hybrid-rrf-candidate-coverage",
+    "question": "각 retriever top-50만 RRF에 넣을 때 최종 top-10 recall이 낮아지는 조건은 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-hybrid-rrf-score-scale",
+    "question": "BM25와 cosine score를 단순 합산하면 왜 불안정하고 RRF는 무엇을 피하나요?"
+  },
+  {
+    "id": "mlsearch-kmeans-distance-scale",
+    "question": "유클리드 K-means에서 축 단위 변경이 군집 경계를 바꾸는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-kmeans-empty-cluster",
+    "question": "K-means 반복 중 cluster가 비면 어떻게 복구하고 무엇을 기록하나요?"
+  },
+  {
+    "id": "mlsearch-kmeans-k-selection",
+    "question": "inertia는 K가 커질수록 내려가는데 elbow와 silhouette를 어떻게 해석하나요?"
+  },
+  {
+    "id": "mlsearch-kmeans-plusplus",
+    "question": "K-means++ 초기화가 random initialization보다 줄이는 것과 보장하지 않는 것은 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-logistic-class-weight-probability",
+    "question": "희소 양성에 class weight를 주면 출력값을 그대로 확률로 읽어도 되나요?"
+  },
+  {
+    "id": "mlsearch-logistic-logit-threshold",
+    "question": "양성 확률 0.5가 아닌 임계값을 쓸 때 로짓과 판정은 어떻게 나누나요?"
+  },
+  {
+    "id": "mlsearch-logistic-logits-stability",
+    "question": "확률 0과 1 근처에서 로그 손실이 NaN이 됩니다. logits 손실을 쓰는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-logistic-regularization-scale",
+    "question": "L2 정규화를 키웠는데 계수와 확률이 달라졌습니다. 표준화와 penalty의 상호작용을 어떻게 판단하나요?"
+  },
+  {
+    "id": "mlsearch-pca-centering-variance",
+    "question": "PCA 전에 평균을 빼지 않으면 첫 주성분이 무엇을 따라갈 수 있나요?"
+  },
+  {
+    "id": "mlsearch-pca-components-selection",
+    "question": "explained variance 95%를 선택한 PCA에서 validation 성능이 더 나빠질 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-pca-split-fit",
+    "question": "PCA를 전체 자료에 fit하고 train/test를 나누면 label을 안 써도 왜 누출인가요?"
+  },
+  {
+    "id": "mlsearch-pca-whitening-noise",
+    "question": "whitening이 작은 eigenvalue 방향의 noise를 키울 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-scaling-distance-magnitude",
+    "question": "K-means와 선형 분류기에서 feature 단위를 100배 바꾸면 결과가 왜 달라질 수 있나요?"
+  },
+  {
+    "id": "mlsearch-scaling-fit-boundary",
+    "question": "시계열 미래 평균이 현재 예측에 섞이지 않도록 scaler를 어떤 순서로 fit하나요?"
+  },
+  {
+    "id": "mlsearch-scaling-outlier-robust",
+    "question": "평균·표준편차가 극단치 하나에 흔들릴 때 RobustScaler의 선택 근거는 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-scaling-tree-invariance",
+    "question": "결정 트리의 표준화 불변성은 어떤 조건에서만 성립하나요?"
+  },
+  {
+    "id": "mlsearch-transformer-cache-position",
+    "question": "KV cache 재사용에서 position이나 batch 순서를 잘못 관리하면 왜 요청 문맥이 섞이나요?"
+  },
+  {
+    "id": "mlsearch-transformer-causal-padding-mask",
+    "question": "padding mask와 causal mask는 어떤 attention edge를 각각 차단하나요?"
+  },
+  {
+    "id": "mlsearch-transformer-kv-cache-memory",
+    "question": "KV cache가 token당 계산을 줄이는 대신 어떤 메모리 상한을 만들나요?"
+  },
+  {
+    "id": "mlsearch-tree-continuous-threshold",
+    "question": "연속 특징의 결정 트리 threshold 후보를 만들 때 정렬과 중복값은 어떤 역할을 하나요?"
+  },
+  {
+    "id": "mlsearch-tree-gini-entropy-split",
+    "question": "같은 노드에서 Gini와 entropy가 서로 다른 분할을 고를 수 있는 조건은 무엇인가요?"
+  },
+  {
+    "id": "mlsearch-tree-missing-routing",
+    "question": "학습 때 보지 못한 결측값이 들어오면 결정 트리 예측을 어떻게 정의하나요?"
+  },
+  {
+    "id": "mlsearch-tree-pruning-path",
+    "question": "훈련 정확도 100%인 트리를 cost-complexity pruning으로 줄일 때 α는 어떻게 고르나요?"
+  },
+  {
+    "id": "modal-escape-layer-ownership",
+    "question": "중첩 popover 안 모달에서 Escape 한 번이 모든 레이어를 닫지 않게 하려면 무엇을 소유하나요?"
+  },
+  {
+    "id": "modal-focus-return-removed-trigger",
+    "question": "모달을 연 버튼이 닫기 전에 삭제되면 포커스를 어디에 복원해야 하나요?"
+  },
+  {
+    "id": "modal-inert-background",
+    "question": "z-index만 올린 모달에서 키보드 사용자가 배경을 조작할 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "modal-initial-focus-decision",
+    "question": "삭제 확인 모달의 첫 포커스를 제목·취소·삭제 중 어디에 둘지 어떤 기준으로 정하나요?"
+  },
+  {
     "id": "monitor-synchronization",
     "question": "여러 스레드가 공유 큐에 넣고 꺼내며 큐가 비었을 때 기다립니다. 모니터는 공유 상태·상호 배제·조건 대기를 어떻게 묶어 관리하나요?"
+  },
+  {
+    "id": "mount-propagation-direction",
+    "question": "bind mount한 디렉터리에서 하위 mount를 만들었습니다. mount propagation 설정에 따라 호스트에 무엇이 보일 수 있는지 어떻게 검증하나요?"
   },
   {
     "id": "moving-target-replan-cadence",
@@ -2744,6 +4148,10 @@
     "question": "작은 요청은 되는데 큰 TLS 응답에서 연결이 멈춥니다. MTU와 경로 MTU 탐색은 어떻게 의심하나요?"
   },
   {
+    "id": "network-namespace-port-space",
+    "question": "두 컨테이너가 같은 노드에서 같은 TCP 포트를 열 수 있는 이유와, veth·bridge를 연결하면 무엇이 다시 공유되는지 설명하세요."
+  },
+  {
     "id": "network-nat-port-exhaustion",
     "question": "아웃바운드 요청이 늘자 일부 연결이 실패하지만 앱의 FD는 여유가 있습니다. NAT 포트 고갈은 어떻게 확인하나요?"
   },
@@ -2792,6 +4200,10 @@
     "question": "NUMA 서버에서 작업 스레드를 늘렸는데 처리량이 떨어졌습니다. 메모리 배치와 CPU 이동이 원인인지 어떻게 확인하나요?"
   },
   {
+    "id": "numeric-rounding-location",
+    "question": "라인별 반올림 후 합산과 전체 합산 후 한 번 반올림이 다른데 어느 경계를 선택하겠습니까?"
+  },
+  {
     "id": "oauth-oidc-pkce",
     "question": "OAuth/OIDC 로그인에서 PKCE와 state는 콜백 흐름의 어떤 공격·혼동을 각각 줄이며, 둘만으로 검증이 끝나지 않는 이유는 무엇인가요?"
   },
@@ -2820,16 +4232,48 @@
     "question": "트레이스 저장 비용을 줄이려 합니다. head sampling과 tail sampling은 어떤 오류를 놓칠 수 있나요?"
   },
   {
+    "id": "observer-disconnect-lifetime",
+    "question": "화면이 제거됐는데 ResizeObserver callback이 계속 오면 어떤 수명 경계를 확인하나요?"
+  },
+  {
     "id": "obstacle-inflation-profile-storage",
     "question": "장애물을 캐릭터 반경만큼 팽창시키면 좁은 통로가 사라집니다. 여러 크기의 경로 데이터를 어떻게 저장하나요?"
+  },
+  {
+    "id": "oci-digest-diffid-compression",
+    "question": "같은 tar 내용인데 압축 방식이 달라 layer digest가 달라질 수 있습니다. compressed digest와 uncompressed diffID의 역할을 구분하세요."
+  },
+  {
+    "id": "oci-secret-deleted-layer",
+    "question": "빌드 레이어에서 secret 파일을 만든 뒤 삭제했습니다. 최종 rootfs에 없다는 것만으로 안전하지 않은 이유는 무엇인가요?"
+  },
+  {
+    "id": "oci-whiteout-layer-delete",
+    "question": "상위 이미지 레이어에서 파일을 삭제했는데 최종 rootfs에서 사라지는 이유를 whiteout으로 설명하세요."
   },
   {
     "id": "offline-client-snapshot-switch",
     "question": "오래 오프라인인 client가 이벤트 보관 범위를 벗어났습니다. snapshot과 증분 재생을 어떤 기준으로 전환하나요?"
   },
   {
+    "id": "oidc-front-channel-limits",
+    "question": "OIDC front-channel logout이 브라우저 상태를 완전히 정리하지 못하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "oidc-logout-local-session",
+    "question": "OP 로그아웃 성공 응답 뒤 RP의 local session과 refresh token은 어떻게 처리하나요?"
+  },
+  {
+    "id": "oidc-logout-sid-iss",
+    "question": "Back-Channel Logout의 sid와 iss는 어떤 세션을 찾기 위한 값인가요?"
+  },
+  {
     "id": "oidc-nonce-state-binding",
     "question": "OIDC의 nonce와 OAuth state는 각각 어떤 응답·세션에 묶이며 서로를 대체할 수 있나요?"
+  },
+  {
+    "id": "oidc-rp-initiated-logout",
+    "question": "RP-Initiated Logout 요청에서 어떤 값을 검증하고 무엇을 보장하지 않나요?"
   },
   {
     "id": "old-transaction-version-retention",
@@ -2876,6 +4320,10 @@
     "question": "여러 outbox 발행자가 claim합니다. lease 만료와 늦은 완료·재발행은 어떤 owner·버전으로 처리하나요?"
   },
   {
+    "id": "overlay-copyup-large-file",
+    "question": "lower layer의 큰 파일 한 바이트를 수정할 때 writable layer가 커질 수 있는 이유와 피하는 경로를 설명하세요."
+  },
+  {
     "id": "packet-replay-versus-state-scenario",
     "question": "과거 패킷 로그 재생과 상태 기반 더미 클라이언트 테스트는 각각 어떤 오류를 찾고 놓치나요?"
   },
@@ -2892,12 +4340,36 @@
     "question": "프로세스 메모리를 코드·데이터 같은 논리 영역으로 관리하는 방식과 고정 크기 블록으로 나누는 방식을 비교하려 합니다. 세그멘테이션과 페이징은 주소 변환·보호·단편화에서 어떻게 다른가요?"
   },
   {
+    "id": "par-expiry-replay",
+    "question": "PAR request URI의 만료와 재사용을 어떻게 설계하나요?"
+  },
+  {
+    "id": "par-request-uri",
+    "question": "PAR를 사용하면 브라우저 authorization request의 어떤 위험이 줄어드나요?"
+  },
+  {
+    "id": "parquet-page-index",
+    "question": "row group 통계만으로 충분하지 않은 경우 Parquet page index가 줄일 수 있는 읽기는 무엇인가요?"
+  },
+  {
+    "id": "parquet-page-vs-rowgroup",
+    "question": "Parquet row group과 page의 크기를 너무 작게 또는 크게 잡았을 때 scan과 predicate pushdown 비용이 어떻게 달라지나요?"
+  },
+  {
+    "id": "parquet-rowgroup-skip",
+    "question": "Parquet에서 WHERE date BETWEEN 조건이 row group을 건너뛸 수 있는 전제와 건너뛰지 못하는 경우를 설명해 보세요."
+  },
+  {
     "id": "partition-conflict-reconciliation",
     "question": "분할 중 양쪽 지역에서 받은 변경을 복구 후 합칩니다. 충돌 정정과 이미 외부에 준 성공 응답은 어떻게 다루나요?"
   },
   {
     "id": "partition-feature-slo-contract",
     "question": "지역 분할 중 좌석 확정과 좋아요 집계를 다르게 제공합니다. 기능별 성공·보류·잠정 결과를 SLO에 어떻게 반영하나요?"
+  },
+  {
+    "id": "passive-preventdefault-contract",
+    "question": "passive wheel listener의 preventDefault가 스크롤을 막지 못하는 이유는 무엇인가요?"
   },
   {
     "id": "password-hash-policy-migration",
@@ -2964,6 +4436,10 @@
     "question": "패스키와 OTP의 복구 경로를 설계합니다. 피싱 저항 수준이 복구·새 자격 등록에서 낮아지지 않게 어떻게 하나요?"
   },
   {
+    "id": "pid-namespace-init-exit",
+    "question": "PID namespace 안의 PID 1이 종료되면 남은 프로세스는 어떻게 되나요? 호스트에서 보이는 상태와 비교해 설명하세요."
+  },
+  {
     "id": "piercing-projectile-contact-order",
     "question": "관통 투사체가 한 틱에 여러 대상을 만납니다. 충돌 순서·반복 상한·이벤트 ID를 어떻게 정하나요?"
   },
@@ -2974,6 +4450,22 @@
   {
     "id": "portable-io-buffer-ownership",
     "question": "IOCP와 epoll을 같은 인터페이스로 감쌉니다. 버퍼 소유·준비·완료·취소를 어느 계층에서 표현하나요?"
+  },
+  {
+    "id": "postgres-autovacuum-age-priority",
+    "question": "변경률은 낮지만 transaction age가 높은 테이블이 있다면 autovacuum 정책을 어떤 축으로 우선순위화하나요?"
+  },
+  {
+    "id": "postgres-freeze-vs-bloat",
+    "question": "VACUUM freeze가 transaction ID wraparound를 막는 일과 bloat를 줄이는 일이 어떻게 다른가요?"
+  },
+  {
+    "id": "postgres-wraparound-warning",
+    "question": "PostgreSQL transaction ID가 오래된 테이블에서 wraparound 위험에 가까워질 때 일반 VACUUM 부하와 어떤 신호를 구분하나요?"
+  },
+  {
+    "id": "postgres-xid-monitoring",
+    "question": "PostgreSQL에서 FOR UPDATE 잠금이 많은 테이블은 일반 XID age와 별도로 MultiXact age를 왜 감시하나요?"
   },
   {
     "id": "precision-recall-base-rate-shift",
@@ -2990,6 +4482,22 @@
   {
     "id": "priority-fifo-sequence-wrap",
     "question": "동점 작업에 삽입 순번을 붙입니다. 순번 overflow와 재시작 뒤에도 FIFO를 유지하려면 어떻게 하나요?"
+  },
+  {
+    "id": "priority-inheritance-boost-drop",
+    "question": "최고 우선순위 waiter가 timeout으로 취소됐습니다. lock holder의 상속 우선순위는 언제 낮아져야 하며 무엇을 다시 계산하나요?"
+  },
+  {
+    "id": "priority-inheritance-chain",
+    "question": "높은 우선순위 작업이 A의 lock을 기다리고 A는 B의 lock을 기다립니다. priority inheritance는 어느 owner까지 전파되어야 하나요?"
+  },
+  {
+    "id": "priority-inheritance-vs-ceiling",
+    "question": "PI와 priority ceiling을 함께 검토합니다. 현재 lock holder의 우선순위를 올리는 방식과 lock 접근 전에 상한을 예약하는 방식은 어떤 전제가 다른가요?"
+  },
+  {
+    "id": "priority-inversion-unbounded",
+    "question": "높은 우선순위 작업이 낮은 우선순위의 lock holder를 기다리고 중간 우선순위 작업이 계속 실행됩니다. 왜 단순 priority queue만으로는 지연 상한이 없나요?"
   },
   {
     "id": "priority-queue-indexed-delete",
@@ -3056,6 +4564,10 @@
     "question": "prototype chain을 여러 단계로 늘렸습니다. lookup·최적화·디버깅 비용을 어떤 실제 접근 패턴으로 비교하나요?"
   },
   {
+    "id": "provenance-builder-material-policy",
+    "question": "trusted builder provenance가 있어도 악성 source revision을 빌드할 수 있습니다. materials와 builder를 어떤 정책으로 검증하나요?"
+  },
+  {
     "id": "pure-random-state-threading",
     "question": "난수를 쓰는 계산을 재현 가능한 함수로 만듭니다. seed와 다음 난수 상태를 어떻게 입출력으로 전달하나요?"
   },
@@ -3088,12 +4600,20 @@
     "question": "Celery 작업이 DB를 변경한 뒤 워커가 종료돼 같은 작업이 다시 실행됩니다. ACK·재시도·처리 완료를 어떻게 구분하고 중복 반영을 막나요?"
   },
   {
+    "id": "python-circular-import-partial",
+    "question": "순환 import에서 모듈 객체는 있는데 특정 이름을 읽을 수 없는 이유는 무엇인가요?"
+  },
+  {
     "id": "python-context-manager-errors",
     "question": "Python with 블록에서 예외가 났는데 호출자는 성공처럼 진행합니다. __exit__와 자원 정리는 어떤 계약인가요?"
   },
   {
     "id": "python-contextvars-async",
     "question": "asyncio에서 요청별 사용자 정보를 전역 변수나 thread-local에 넣으면 왜 섞일 수 있고 contextvars는 어떻게 도움이 되나요?"
+  },
+  {
+    "id": "python-data-descriptor-precedence",
+    "question": "인스턴스 __dict__에 같은 이름을 넣었는데 property가 먼저 읽히는 이유는 무엇인가요?"
   },
   {
     "id": "python-deepcopy-memo-aliasing",
@@ -3104,6 +4624,10 @@
     "question": "가변 기본값 공유와 closure의 late binding은 값이 결정되는 시점에서 어떻게 다른가요?"
   },
   {
+    "id": "python-descriptor-set-name",
+    "question": "한 descriptor를 클래스 속성으로 등록할 때 __set_name__은 어떤 정보를 언제 받나요?"
+  },
+  {
     "id": "python-duck-typing",
     "question": "서로 다른 클래스의 객체를 close() 메서드만으로 처리하려 합니다. Python의 Protocol로 무엇을 검사할 수 있으며 런타임에도 같은 계약이 보장되나요?"
   },
@@ -3112,12 +4636,32 @@
     "question": "큰 데이터를 generator로 한 번 순회한 뒤 다시 읽으니 아무 값도 나오지 않습니다. iterable·iterator·generator는 무엇이 다르며 다시 순회하려면 어떻게 해야 하나요?"
   },
   {
+    "id": "python-getattribute-getattr-fallback",
+    "question": "__getattribute__와 __getattr__를 함께 정의할 때 fallback과 무한 재귀를 어떻게 피하나요?"
+  },
+  {
     "id": "python-gil-parallelism",
     "question": "GIL이 켜진 CPython에서 파일을 기다리는 작업은 스레드를 늘려 빨라졌지만 순수 Python 계산은 그렇지 않습니다. 이유는 무엇이며 CPU 작업은 어떻게 병렬화하나요?"
   },
   {
     "id": "python-hash-randomization-order",
     "question": "Python set 순회 결과가 실행마다 달라집니다. 해시 무작위화와 결정적 출력은 어떻게 다루나요?"
+  },
+  {
+    "id": "python-import-failed-initialization",
+    "question": "모듈 초기화 중 예외가 나면 sys.modules와 이미 import한 하위 모듈은 어떻게 남나요?"
+  },
+  {
+    "id": "python-import-reload-old-reference",
+    "question": "importlib.reload 뒤 from 모듈 import 이름으로 받은 참조가 그대로인 이유는 무엇인가요?"
+  },
+  {
+    "id": "python-import-sys-modules",
+    "question": "같은 모듈을 여러 번 import해도 초기화가 반복되지 않는 이유와 sys.modules 삭제의 위험은 무엇인가요?"
+  },
+  {
+    "id": "python-method-bound-descriptor",
+    "question": "클래스 함수가 인스턴스에서 bound method가 되는 과정과 클래스에서 읽을 때의 차이는 무엇인가요?"
   },
   {
     "id": "python-mro-super",
@@ -3184,6 +4728,22 @@
     "question": "대기 메시지는 없지만 worker가 아직 처리 중입니다. visible·in-flight 지표를 scale-down과 종료에 어떻게 사용하나요?"
   },
   {
+    "id": "quic-active-migration-disabled-routing",
+    "question": "주소 기반 load balancer 뒤에서 QUIC migration을 허용하면 어떤 연결 라우팅 문제가 생길 수 있나요?"
+  },
+  {
+    "id": "quic-client-migration-new-path",
+    "question": "QUIC client가 새 네트워크로 이동한 직후 server가 새 주소로 데이터를 보내기 전에 무엇을 확인해야 하나요?"
+  },
+  {
+    "id": "quic-connection-id-routing-change",
+    "question": "QUIC client의 공인 IP와 UDP port가 바뀌었는데 기존 연결을 이어갈 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "quic-nat-rebinding-empty-cid",
+    "question": "NAT가 같은 QUIC 연결의 client port를 바꿨을 때 zero-length Connection ID가 위험한 이유는 무엇인가요?"
+  },
+  {
     "id": "quic-zero-rtt-replay",
     "question": "재연결 지연을 줄이려고 TLS·QUIC 0-RTT로 주문 요청을 보내려 합니다. 재생 공격과 멱등성을 왜 확인하나요?"
   },
@@ -3232,6 +4792,22 @@
     "question": "Raft 리더가 응답하지 않아 새 선거가 시작됐는데 이전 리더의 메시지가 뒤늦게 도착합니다. term과 투표 기록은 충돌을 어떻게 막으며 어떤 기록을 영속화해야 하나요?"
   },
   {
+    "id": "random-modulo-bias-security",
+    "question": "컨테이너나 VM snapshot 복원 뒤 사용자 공간 DRBG 상태가 복제되면 토큰 생성에 어떤 문제가 생기나요?"
+  },
+  {
+    "id": "random-purpose-separation",
+    "question": "세션 ID와 추첨용 난수를 같은 생성기 상태에서 함께 써도 되나요?"
+  },
+  {
+    "id": "random-source-failure",
+    "question": "운영체제 CSPRNG를 읽지 못할 때 fallback으로 시간을 seed로 써도 되나요?"
+  },
+  {
+    "id": "random-token-entropy",
+    "question": "비밀번호 재설정 토큰의 엔트로피를 어떻게 설명하고 점검하나요?"
+  },
+  {
     "id": "ranking-cutoff-rewards",
     "question": "게임 랭킹 마감 뒤 늦게 도착한 점수와 보상 지급을 어떤 기준 버전으로 확정하고 재처리하나요?"
   },
@@ -3262,6 +4838,22 @@
   {
     "id": "readiness-flapping-hysteresis",
     "question": "readiness가 켜졌다 꺼지며 남은 서버의 부하가 출렁입니다. 복귀·실패 임계와 실제 용량을 어떻게 조정하나요?"
+  },
+  {
+    "id": "recursive-cte-depth-guard",
+    "question": "조직 계층에 잘못된 cycle이 들어왔을 때 recursive CTE를 무한히 실행하지 않게 어떤 종료 방어를 두겠습니까?"
+  },
+  {
+    "id": "recursive-cte-order-traversal",
+    "question": "재귀 CTE 결과를 계층의 깊이 우선 또는 너비 우선 순서로 표시하려면 순회 순서를 어떻게 표현하나요?"
+  },
+  {
+    "id": "recursive-cte-union-all",
+    "question": "재귀 CTE에서 UNION과 UNION ALL을 바꾸면 중복 정점과 종료 조건이 어떻게 달라지나요?"
+  },
+  {
+    "id": "recursive-cte-write-safety",
+    "question": "재귀 CTE로 계층의 모든 하위 행을 찾은 뒤 삭제하려 할 때 cycle·외래키·중복 영향을 어떻게 검증하나요?"
   },
   {
     "id": "red-black-delete-black-height",
@@ -3396,6 +4988,14 @@
     "question": "기능별 예약 용량과 공용 여유 용량을 함께 둡니다. 장애 때 빌려 쓴 자원을 어떻게 회수하나요?"
   },
   {
+    "id": "resizeobserver-box-types",
+    "question": "ResizeObserver의 contentBoxSize·borderBoxSize·devicePixelContentBoxSize는 어떤 단위와 상자를 관찰하나요?"
+  },
+  {
+    "id": "resizeobserver-loop-feedback",
+    "question": "ResizeObserver callback에서 width를 매번 1px 키우면 왜 계속 실행되거나 loop error가 날 수 있나요?"
+  },
+  {
     "id": "restore-drill-data-isolation",
     "question": "실제 백업으로 복구 훈련을 합니다. 개인정보와 옛 outbox의 외부 효과를 어떻게 격리하나요?"
   },
@@ -3428,6 +5028,18 @@
     "question": "수신 ring buffer의 일부를 복사 없이 파싱 결과로 넘깁니다. wrap·확장·재사용에서 참조 수명을 어떻게 보호하나요?"
   },
   {
+    "id": "rls-bypass-role",
+    "question": "RLS를 적용한 테이블에서 관리자와 migration role은 어떻게 다뤄야 하나요?"
+  },
+  {
+    "id": "rls-connection-pool-context",
+    "question": "PostgreSQL의 permissive RLS policy 두 개는 OR로 결합됩니다. 테넌트 조건과 공개 조건을 따로 두면 어떤 행이 노출될 수 있나요?"
+  },
+  {
+    "id": "rls-using-with-check",
+    "question": "PostgreSQL RLS의 USING과 WITH CHECK는 각각 무엇을 제한하나요?"
+  },
+  {
     "id": "rollback-union-find-path-compression",
     "question": "Union-Find를 rollback하려 합니다. 경로 압축이 변경 이력과 충돌하는 이유와 대안은 무엇인가요?"
   },
@@ -3456,6 +5068,70 @@
     "question": "여러 프로세스가 페이지를 공유합니다. RSS 합과 PSS는 어떤 메모리 용량 판단에 각각 맞나요?"
   },
   {
+    "id": "rust-borrow-last-use",
+    "question": "불변 참조를 만든 뒤 같은 Vec에 push하려 합니다. 참조의 마지막 사용 위치가 컴파일 결과를 바꾸는 이유는 무엇인가요?"
+  },
+  {
+    "id": "rust-cell-sync-boundary",
+    "question": "Cell과 RefCell을 Arc로 감싸도 여러 스레드가 공유할 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "rust-dyn-compatible-trait",
+    "question": "제네릭 메서드나 Self 반환을 가진 trait을 dyn Trait로 만들 때 왜 제약이 생기나요?"
+  },
+  {
+    "id": "rust-dyn-heterogeneous-vector",
+    "question": "서로 다른 구현을 하나의 Vec에 담을 때 Box<dyn Trait>과 Vec<T>는 어떤 차이가 있나요?"
+  },
+  {
+    "id": "rust-future-drop-cancellation",
+    "question": "진행 중 Future를 drop하면 원격 요청도 취소된다고 볼 수 있나요?"
+  },
+  {
+    "id": "rust-future-lazy-poll",
+    "question": "async 함수를 호출해 Future만 만들었는데 작업이 시작되지 않습니다. poll과 executor는 무엇을 맡나요?"
+  },
+  {
+    "id": "rust-generic-code-size",
+    "question": "제네릭 함수에 많은 타입을 사용하자 실행 파일이 커집니다. monomorphization의 비용과 이점은 무엇인가요?"
+  },
+  {
+    "id": "rust-impl-trait-return-type",
+    "question": "impl Trait 반환에서 분기마다 다른 구체 타입을 반환할 수 없는 이유와 대안은 무엇인가요?"
+  },
+  {
+    "id": "rust-lifetime-two-inputs",
+    "question": "두 문자열 중 긴 쪽의 참조를 반환합니다. 입력 두 개와 반환값의 lifetime 관계를 어떻게 표시하나요?"
+  },
+  {
+    "id": "rust-move-string-use",
+    "question": "String을 다른 변수로 이동한 뒤 원래 변수를 읽으면 왜 컴파일 오류가 나며 정수 대입과는 무엇이 다른가요?"
+  },
+  {
+    "id": "rust-mutex-send-sync",
+    "question": "Mutex<T>가 공유될 때 T의 Send 조건이 필요한 이유와 guard의 수명은 무엇인가요?"
+  },
+  {
+    "id": "rust-pin-unpin-contract",
+    "question": "Pin<Box<T>>를 쓰면 포인터 변수도 움직일 수 없나요? Pin과 Unpin의 대상은 무엇인가요?"
+  },
+  {
+    "id": "rust-rc-arc-thread-transfer",
+    "question": "Rc를 다른 스레드로 옮기면 거절되는데 Arc는 언제 허용되나요?"
+  },
+  {
+    "id": "rust-return-local-reference",
+    "question": "함수 안에서 만든 String의 참조를 반환할 수 없는 이유와 소유 값을 반환하는 대안은 무엇인가요?"
+  },
+  {
+    "id": "rust-send-sync-references",
+    "question": "T: Send와 T: Sync는 각각 값 이동과 공유 참조 전달에 어떤 보장을 주나요?"
+  },
+  {
+    "id": "rust-waker-pending-progress",
+    "question": "Future가 Pending을 반환한 뒤 다시 poll되지 않습니다. Waker 등록과 깨움에서 무엇을 확인하나요?"
+  },
+  {
     "id": "safe-http-observational-effects",
     "question": "GET 처리도 로그와 통계 카운터를 바꿉니다. 안전한 메서드의 허용된 관찰 효과와 업무 변경을 어떻게 구분하나요?"
   },
@@ -3468,16 +5144,52 @@
     "question": "saga를 중앙 조정자나 이벤트 협력으로 만듭니다. 추적성·결합·순환·보상 책임은 어떻게 다른가요?"
   },
   {
+    "id": "sbom-inventory-completeness",
+    "question": "SBOM에 openssl이 없다는 사실만으로 artifact를 안전하다고 판단할 수 없는 이유는 무엇인가요?"
+  },
+  {
     "id": "scheduler-missed-runs",
     "question": "정기 작업 서버가 한 시간 멈췄습니다. 밀린 작업을 전부 실행할지 최신 한 번만 실행할지 어떻게 정하나요?"
+  },
+  {
+    "id": "scheduler-preemption-nonresource-constraints",
+    "question": "우선순위 높은 Pod가 낮은 Pod를 축출하지 못할 때 preemption이 해결하지 못하는 제약은 무엇인가요?"
+  },
+  {
+    "id": "scheduler-required-preferred-affinity",
+    "question": "required affinity와 preferred affinity가 충돌할 때 preferred 점수로 required를 어길 수 없는 이유는 무엇인가요?"
   },
   {
     "id": "scheduler-service-time-estimation",
     "question": "작업 실행 시간 예측이 자주 틀립니다. 스케줄러의 예상 비용과 실제 사용량을 어떻게 보정하나요?"
   },
   {
+    "id": "scheduler-taint-affinity-filter",
+    "question": "NoSchedule taint와 맞지 않는 toleration 때문에 Pending인지 affinity 때문인지 어떤 증거로 구분하나요?"
+  },
+  {
+    "id": "scheduler-toleration-not-attraction",
+    "question": "GPU 전용 taint에 toleration만 추가하면 일반 Pod가 밀려나고 GPU Pod가 그 노드를 선호하나요?"
+  },
+  {
     "id": "scoped-reset-typography-layers",
     "question": "컴포넌트 reset이 전역 글꼴과 링크 스타일을 덮습니다. 범위·상속·layer의 책임을 어떻게 정하나요?"
+  },
+  {
+    "id": "seccomp-ioctl-command-boundary",
+    "question": "syscall 번호만 검사하는 seccomp filter에서 ioctl을 허용하면 어떤 세부 효과가 남나요?"
+  },
+  {
+    "id": "seccomp-path-policy-limit",
+    "question": "openat은 필요하지만 mount와 ptrace는 금지해야 합니다. seccomp가 제한할 수 있는 범위와 파일 경로 정책의 한계를 설명하세요."
+  },
+  {
+    "id": "seccomp-tsync-thread-filters",
+    "question": "멀티스레드 프로세스에서 한 스레드에만 필터를 설치했습니다. TSYNC를 적용할 때 실패 조건과 적용 범위를 어떻게 확인하나요?"
+  },
+  {
+    "id": "seccomp-user-notification-supervisor",
+    "question": "seccomp user notification supervisor가 멈추거나 잘못된 응답을 보내면 어떤 보안·가용성 문제가 생기나요?"
   },
   {
     "id": "secret-env-file-refresh",
@@ -3576,6 +5288,22 @@
     "question": "서비스 레지스트리에서 인스턴스를 제거했는데 요청이 계속 갑니다. 발견과 연결 수명은 어떻게 분리하나요?"
   },
   {
+    "id": "serviceworker-activate-cache-retirement",
+    "question": "activate에서 이전 캐시를 지울 때 새 fetch와 namespace를 어떻게 일관되게 연결하나요?"
+  },
+  {
+    "id": "serviceworker-install-precache-failure",
+    "question": "install 중 precache 하나가 실패하면 활성 worker는 어떤 버전을 계속 제공해야 하나요?"
+  },
+  {
+    "id": "serviceworker-skipwaiting-control",
+    "question": "waiting worker에 skipWaiting을 호출해도 열린 탭의 모든 요청이 즉시 새 worker로 바뀌지 않는 이유는 무엇인가요?"
+  },
+  {
+    "id": "serviceworker-updateviacache-scripts",
+    "question": "updateViaCache는 worker script의 업데이트 검사와 runtime Cache Storage를 어떻게 다르게 다루나요?"
+  },
+  {
     "id": "session-revocation-cache-lag",
     "question": "세션을 회수했지만 검증 캐시에 남아 접근이 됩니다. 허용 회수 지연과 캐시·실행 경계는 어떻게 정하나요?"
   },
@@ -3632,6 +5360,22 @@
     "question": "큰 범위의 소수를 여러 번 조회하려 합니다. 매번 나눗셈 검사하는 것과 체를 만드는 것은 어떻게 다른가요?"
   },
   {
+    "id": "signals-disposition-exec",
+    "question": "execve 뒤 설치했던 signal handler가 사라졌습니다. 어떤 disposition은 default로 돌아가고 어떤 상태는 남는지 어떻게 확인하나요?"
+  },
+  {
+    "id": "signals-handler-safe",
+    "question": "SIGTERM handler에서 printf와 malloc을 호출하려 합니다. async-signal-safe가 필요한 이유와 안전한 종료 신호 처리 패턴은 무엇인가요?"
+  },
+  {
+    "id": "signals-mask-pending",
+    "question": "스레드가 SIGUSR1을 block한 동안 신호가 도착했습니다. blocked, pending, delivered 상태를 어떻게 구분하며 mask를 언제 바꾸나요?"
+  },
+  {
+    "id": "signals-thread-target",
+    "question": "멀티스레드 프로세스에서 한 스레드의 작업을 중단하려고 signal을 보냅니다. process-directed와 thread-directed signal의 대상 선택은 어떻게 다른가요?"
+  },
+  {
     "id": "signed-integer-radix-transform",
     "question": "음수 정수를 바이트 기반 기수 정렬에 넣습니다. 숫자 순서를 보존하는 unsigned 키는 어떻게 만드나요?"
   },
@@ -3682,6 +5426,22 @@
   {
     "id": "spot-ondemand-minimum-capacity",
     "question": "Spot과 on-demand를 섞습니다. 동시에 Spot을 잃어도 유지할 핵심 용량과 비용 상한은 어떻게 검증하나요?"
+  },
+  {
+    "id": "sqlite-wal-busy-retry",
+    "question": "SQLite WAL에서도 SQLITE_BUSY가 발생할 수 있는 상황과 busy timeout을 무조건 늘리면 안 되는 이유는 무엇인가요?"
+  },
+  {
+    "id": "sqlite-wal-checkpoint-mode",
+    "question": "자동 checkpoint와 애플리케이션 checkpoint를 선택할 때 WAL 크기·foreground latency·reader 수명을 어떻게 고려하나요?"
+  },
+  {
+    "id": "sqlite-wal-checkpoint-reader",
+    "question": "오래 열린 SQLite WAL reader가 checkpoint와 WAL 파일 축소를 어떻게 지연시킬 수 있나요?"
+  },
+  {
+    "id": "sqlite-wal-single-writer",
+    "question": "SQLite WAL에서 여러 reader가 동시에 읽어도 writer가 하나로 제한되는 이유를 어떻게 설명하나요?"
   },
   {
     "id": "sqlserver-rcsi-snapshot",
@@ -3748,16 +5508,72 @@
     "question": "운영 목표는 직접 미분하기 어렵습니다. 대체 손실을 선택할 때 목표와의 불일치·안정성을 어떻게 검증하나요?"
   },
   {
+    "id": "swift-actor-await-revalidation",
+    "question": "actor가 잔액 확인 뒤 await 결제를 기다릴 때 재개 후 검사를 다시 해야 하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "swift-actor-ordering-suspension",
+    "question": "같은 actor에 보낸 두 작업의 await 이전 코드가 전체 메서드 동안 독점된다고 볼 수 없는 이유는 무엇인가요?"
+  },
+  {
+    "id": "swift-actor-reference-element-transfer",
+    "question": "actor가 반환한 배열의 원소를 호출자가 바꿀 때 내부 상태 영향은 무엇을 확인하나요?"
+  },
+  {
+    "id": "swift-async-let-scope-join",
+    "question": "Swift async let을 만든 scope가 결과를 await하기 전에 끝나면 자식 작업의 취소와 대기는 어떻게 되나요?"
+  },
+  {
     "id": "swift-completion-cancel-once",
     "question": "Swift 비동기 작업의 취소와 완료가 겹칩니다. callback을 한 번만 전달하고 자원을 안전하게 회수하려면 어떻게 하나요?"
+  },
+  {
+    "id": "swift-detached-sendable-capture",
+    "question": "class를 Task.detached에 캡처할 때 Sendable 경고가 생기는 핵심 이유는 무엇인가요?"
+  },
+  {
+    "id": "swift-mainactor-sendable-boundary",
+    "question": "MainActor 격리 객체 전달은 Sendable 경고와 어떤 계약 차이가 있나요?"
+  },
+  {
+    "id": "swift-nonisolated-access",
+    "question": "actor isolated 프로퍼티를 일반 동기 함수가 직접 읽지 못하는 이유와 nonisolated 조건은 무엇인가요?"
   },
   {
     "id": "swift-task-closure-ownership-graph",
     "question": "화면·서비스·작업 핸들·클로저가 서로 참조합니다. 취소와 필수 작업 완료를 고려해 어느 참조를 약하게 하나요?"
   },
   {
+    "id": "swift-taskgroup-throw-cancel",
+    "question": "withThrowingTaskGroup에서 child 하나가 throw하면 다른 child에는 어떤 취소와 대기가 적용되나요?"
+  },
+  {
+    "id": "swiftui-conditional-state-lifetime",
+    "question": "조건부 branch 전환 때 같은 모양의 View @State가 초기화될 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "swiftui-foreach-stable-identity",
+    "question": "ForEach에서 index를 id로 사용한 뒤 앞에 행을 삽입하면 TextField state가 이동할 수 있는 이유는 무엇인가요?"
+  },
+  {
+    "id": "swiftui-task-id-cancellation",
+    "question": ".task(id: query)에서 query 변경 뒤 이전 결과를 다시 검사해야 하는 이유는 무엇인가요?"
+  },
+  {
     "id": "syscall-user-kernel",
     "question": "파일을 읽는 시스템 호출이 일반 함수 호출보다 비싸다고 합니다. 사용자 모드에서 커널로 들어갈 때 무엇이 달라지며 항상 다른 스레드로 전환되나요?"
+  },
+  {
+    "id": "tcp-aimd-additive-increase",
+    "question": "손실 없이 TCP congestion avoidance가 계속될 때 cwnd를 선형으로 키우는 이유는 무엇인가요?"
+  },
+  {
+    "id": "tcp-congestion-flight-size-threshold",
+    "question": "TCP loss 뒤 ssthresh를 cwnd가 아니라 FlightSize 기준으로 줄이는 이유는 무엇인가요?"
+  },
+  {
+    "id": "tcp-fast-retransmit-duplicate-acks",
+    "question": "TCP가 세 개의 duplicate ACK를 받았을 때 timeout까지 기다리지 않고 재전송할 수 있는 근거는 무엇인가요?"
   },
   {
     "id": "tcp-flow-vs-congestion-control",
@@ -3768,8 +5584,44 @@
     "question": "작은 TCP 메시지 지연이 튈 때 Nagle과 지연 ACK를 의심하되 TCP_NODELAY를 무조건 켜면 안 되는 이유는 무엇인가요?"
   },
   {
+    "id": "tcp-rto-clock-granularity-floor",
+    "question": "계산된 TCP RTO가 200ms인데 timer clock이 거칠다면 실제 timeout을 어떻게 정하나요?"
+  },
+  {
+    "id": "tcp-rto-exponential-backoff",
+    "question": "TCP 재전송 타이머가 만료될 때마다 RTO를 그대로 유지하면 왜 문제가 되나요?"
+  },
+  {
+    "id": "tcp-rtt-first-sample-estimator",
+    "question": "TCP에서 첫 RTT sample을 얻었습니다. SRTT와 RTTVAR를 어떤 초기값으로 시작하나요?"
+  },
+  {
+    "id": "tcp-rtt-karn-retransmission",
+    "question": "재전송된 segment가 ACK를 받았습니다. 그 ACK의 왕복 시간을 RTT sample로 써도 되나요?"
+  },
+  {
+    "id": "tcp-sack-multiple-loss-recovery",
+    "question": "한 window에서 segment 101과 105가 사라지고 102~104·106이 도착했습니다. SACK이 없을 때와 무엇이 달라지나요?"
+  },
+  {
+    "id": "tcp-sack-permitted-handshake",
+    "question": "TCP 수신자가 SACK block을 보내려면 연결 후 어떤 협상이 먼저 필요하나요?"
+  },
+  {
+    "id": "tcp-sack-range-boundaries",
+    "question": "SACK block의 시작과 끝 숫자가 100과 120이면 어떤 byte 범위를 받은 것인가요?"
+  },
+  {
+    "id": "tcp-sack-timeout-state-reset",
+    "question": "SACK 정보를 받은 뒤 retransmission timeout이 발생했습니다. 이전 SACK block을 그대로 재전송 판단에 써도 되나요?"
+  },
+  {
     "id": "tcp-simultaneous-open-state",
     "question": "양쪽 TCP endpoint가 동시에 SYN을 보냅니다. 일반 연결 시작과 상태 전이는 어떻게 다른가요?"
+  },
+  {
+    "id": "tcp-slow-start-ack-growth",
+    "question": "TCP 연결의 cwnd가 작을 때 ACK마다 1 MSS씩 늘리는 동작을 slow start라고 부르는 이유는 무엇인가요?"
   },
   {
     "id": "tcp-stream-message-framing",
@@ -3804,6 +5656,18 @@
     "question": "완료·취소 상태를 다시 바꿔야 하는 정정이 있습니다. 종료 상태를 몰래 덮지 않고 어떤 별도 전이를 두나요?"
   },
   {
+    "id": "terraform-saved-plan-staleness",
+    "question": "saved plan 생성 뒤 다른 운영자가 resource를 바꿨습니다. stale plan 적용을 어떻게 막나요?"
+  },
+  {
+    "id": "terraform-state-drift-identity",
+    "question": "state의 resource ID와 실제 cloud object가 다를 때 drift를 어떤 refresh·provider evidence로 확인하나요?"
+  },
+  {
+    "id": "terraform-state-lock-partial-apply",
+    "question": "두 CI가 같은 state에 apply할 때 state locking이 막는 것과 막지 못하는 것은 무엇인가요?"
+  },
+  {
     "id": "testing-property-based",
     "question": "경계값 예제를 몇 개 추가해도 버그가 계속 나옵니다. property-based testing은 어떤 성질을 검증하나요?"
   },
@@ -3814,6 +5678,22 @@
   {
     "id": "threadlocal-weak-key-value-retention",
     "question": "ThreadLocal 키는 약한 참조인데 장수 worker에서 값이 남습니다. 키 회수와 value 정리의 차이는 무엇인가요?"
+  },
+  {
+    "id": "threat-modeling-stride-assets",
+    "question": "결제 시스템에서 자산·신뢰 경계를 먼저 어떻게 정하나요?"
+  },
+  {
+    "id": "threat-modeling-stride-boundary-change",
+    "question": "외부 결제 provider를 추가하면 위협 모델에서 무엇이 바뀌나요?"
+  },
+  {
+    "id": "threat-modeling-stride-mitigation",
+    "question": "STRIDE 항목을 완화책과 검증 시험으로 어떻게 바꾸나요?"
+  },
+  {
+    "id": "threat-modeling-stride-residual-risk",
+    "question": "위협 모델의 잔여 위험을 언제 수용하거나 설계를 바꾸나요?"
   },
   {
     "id": "throughput-vs-latency",
@@ -3844,6 +5724,42 @@
     "question": "HTTPS 재요청에서 연결 재사용과 TLS session resumption은 어떤 작업을 각각 생략하나요?"
   },
   {
+    "id": "toast-compression-update",
+    "question": "TOAST 대상 값을 조금만 수정해도 큰 쓰기와 vacuum 부담이 생길 수 있는 이유를 설명해 보세요."
+  },
+  {
+    "id": "toast-index-boundary",
+    "question": "큰 값이 TOAST에 저장될 때 그 값을 대상으로 한 인덱스와 heap 접근 비용을 어떻게 구분하나요?"
+  },
+  {
+    "id": "toast-storage-vs-object",
+    "question": "대형 파일을 PostgreSQL TOAST와 object storage 중 어디에 둘지 결정할 때 일관성·백업·조회 패턴을 어떻게 비교하나요?"
+  },
+  {
+    "id": "toast-threshold-choice",
+    "question": "PostgreSQL 행의 큰 text/json 값을 TOAST가 inline 대신 외부에 저장하는 이유와 조회 비용은 무엇인가요?"
+  },
+  {
+    "id": "token-exchange-audience",
+    "question": "Token Exchange에서 audience와 scope를 새 서비스에 맞게 왜 좁혀야 하나요?"
+  },
+  {
+    "id": "token-exchange-delegation-chain",
+    "question": "여러 서비스가 연쇄적으로 token exchange할 때 감사 주체를 어떻게 보존하나요?"
+  },
+  {
+    "id": "token-exchange-impersonation-vs-delegation",
+    "question": "impersonation과 delegation을 어떤 정책 차이로 구분하나요?"
+  },
+  {
+    "id": "token-exchange-subject-actor",
+    "question": "Token Exchange에서 subject token과 actor token은 무엇이 다른가요?"
+  },
+  {
+    "id": "touch-action-passive-scroll",
+    "question": "스크롤 지연을 줄이려고 모든 touch listener를 passive로 바꾸기 전에 어떤 동작 계약을 확인해야 하나요?"
+  },
+  {
     "id": "trace-clock-skew-duration",
     "question": "서버 시계가 어긋나 자식 span이 부모보다 먼저 시작한 것처럼 보입니다. duration과 인과를 어떻게 해석하나요?"
   },
@@ -3864,8 +5780,32 @@
     "question": "주문 완료 상태는 DB에 저장됐는데 직후 서버가 꺼져 완료 메시지는 발행되지 않았습니다. transactional outbox로 유실을 어떻게 막고 재발행 중복은 어떻게 처리하나요?"
   },
   {
+    "id": "trusted-types-policy-boundary",
+    "question": "Trusted Types policy를 하나의 만능 sanitizer로 만들면 왜 위험한가요?"
+  },
+  {
+    "id": "trusted-types-report-enforce",
+    "question": "Trusted Types Report-Only와 enforce 모드를 어떻게 전환하나요?"
+  },
+  {
+    "id": "trusted-types-sink",
+    "question": "Trusted Types가 innerHTML 같은 DOM sink의 어떤 문제를 줄이나요?"
+  },
+  {
     "id": "try-lock-livelock-fairness",
     "question": "두 작업이 try-lock 실패 때 서로 양보하며 계속 재시도합니다. deadlock 없이도 진행하지 못하는 이유와 대책은 무엇인가요?"
+  },
+  {
+    "id": "ts-discriminated-union-exhaustive",
+    "question": "서로 다른 응답을 discriminated union으로 모델링할 때 never 검사가 누락된 분기를 어떻게 찾나요?"
+  },
+  {
+    "id": "ts-structural-excess-property",
+    "question": "같은 필드를 가진 객체인데 리터럴 대입만 excess property 오류가 나는 이유는 무엇인가요?"
+  },
+  {
+    "id": "ts-unknown-runtime-parse",
+    "question": "JSON을 타입 단언으로 바꿨는데 런타임에 필드가 없습니다. unknown과 런타임 검증을 어디에 두나요?"
   },
   {
     "id": "udp-reliability-choice",
@@ -3890,6 +5830,10 @@
   {
     "id": "upper-bound-duplicate-range",
     "question": "정렬 배열에서 target과 같은 값이 여러 개입니다. upper_bound로 동등 구간과 부재를 어떻게 구분하나요?"
+  },
+  {
+    "id": "user-namespace-root-mapping",
+    "question": "컨테이너 UID 0이 호스트 root와 같지 않을 수 있는 이유를 user namespace와 device·bind mount 조건으로 설명하세요."
   },
   {
     "id": "variance-behavioral-subtyping",
@@ -3956,6 +5900,18 @@
     "question": "첫 작업 지연을 줄이려 warm Pod나 warm node를 유지합니다. 이미지·시작·준비·비용을 어떻게 비교하나요?"
   },
   {
+    "id": "watch-bookmark-progress",
+    "question": "bookmark를 객체 변경으로 처리하면 안 되는 이유와 controller가 갱신할 상태를 설명하세요."
+  },
+  {
+    "id": "watch-resourceversion-expired-relist",
+    "question": "watch가 410 Gone을 반환하면 마지막 변경을 놓치지 않도록 cache를 어떻게 재구성하나요?"
+  },
+  {
+    "id": "watch-uid-delete-recreate",
+    "question": "LIST와 watch 사이 객체가 삭제·재생성될 때 이름만 cache key로 쓰면 어떤 오류가 생기나요?"
+  },
+  {
     "id": "weak-lock-logical-generation",
     "question": "weak_ptr::lock은 성공했지만 작업은 이미 취소됐습니다. 객체 생존과 현재 행동의 유효성을 어떻게 구분하나요?"
   },
@@ -3964,8 +5920,36 @@
     "question": "폰트와 이미지가 늦게 로딩되어 화면이 움직입니다. 공간 예약과 CLS 측정으로 무엇을 개선하나요?"
   },
   {
+    "id": "webauthn-aaguid-trust",
+    "question": "AAGUID 기반 허용 목록을 운영할 때 어떤 변경과 복구를 준비하나요?"
+  },
+  {
+    "id": "webauthn-attestation-format",
+    "question": "WebAuthn attestation의 fmt와 attStmt를 어떤 순서로 검증하나요?"
+  },
+  {
+    "id": "webauthn-attestation-policy",
+    "question": "WebAuthn attestation을 필수로 할지 선택적으로 받을지 무엇으로 결정하나요?"
+  },
+  {
+    "id": "webauthn-registration-challenge",
+    "question": "WebAuthn credential 등록에서 challenge와 RP ID를 어떻게 연결하나요?"
+  },
+  {
+    "id": "websocket-client-masking-key",
+    "question": "WebSocket client가 TLS를 사용해도 outbound frame을 mask해야 하는 이유와 masking 방식은 무엇인가요?"
+  },
+  {
+    "id": "websocket-fragment-continuation-control",
+    "question": "큰 WebSocket message를 세 frame으로 나누는 동안 Ping이 끼어들 수 있나요?"
+  },
+  {
     "id": "websocket-heartbeat-reconnect",
     "question": "WebSocket 하트비트로 연결 생존을 확인하고 재연결 뒤 누락·중복 메시지를 복구하려면 어떤 상태를 저장해야 하나요?"
+  },
+  {
+    "id": "websocket-upgrade-accept-key",
+    "question": "WebSocket client가 HTTP 101 응답을 받았는데도 곧바로 프레임을 보내면 안 되는 이유는 무엇인가요?"
   },
   {
     "id": "weighted-astar-quality-budget",
@@ -3978,6 +5962,22 @@
   {
     "id": "weighted-throughput-workload-mix",
     "question": "작은 조회와 큰 집계를 하나의 TPS로 보고합니다. 요청 혼합과 가중 처리량은 어떻게 정의해야 비교가 공정한가요?"
+  },
+  {
+    "id": "window-frame-default-surprise",
+    "question": "ORDER BY만 둔 window aggregate의 기본 frame 때문에 마지막 값까지 합쳐지는 오해를 어떻게 재현하고 고치나요?"
+  },
+  {
+    "id": "window-groups-frame",
+    "question": "동점 그룹 단위로 최근 세 그룹을 합산하려면 GROUPS frame을 ROWS 대신 선택하는 이유는 무엇인가요?"
+  },
+  {
+    "id": "window-range-peer-frame",
+    "question": "같은 ORDER BY 값인 행이 함께 누적되는 RANGE frame과 한 행씩 누적되는 ROWS frame은 언제 다른 결과를 내나요?"
+  },
+  {
+    "id": "window-rows-duplicate-order",
+    "question": "같은 날짜에 여러 거래가 있을 때 ROWS BETWEEN과 ORDER BY tie-breaker가 누적합을 어떻게 바꾸나요?"
   },
   {
     "id": "windows-epoll-porting",

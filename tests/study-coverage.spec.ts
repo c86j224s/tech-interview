@@ -5,7 +5,7 @@ test('학습 범위는 링크 유무와 본문 검토를 분리하고 검색한�
   await page.getByText('선택 연습 자료', { exact: true }).click();
   await page.getByRole('link', { name: '기존 질문과 학습 노트의 연결 검토 →' }).click();
   await expect(page).toHaveURL(/\/notes\/coverage\/$/);
-  await expect(page.locator('[data-coverage-entry]')).toHaveCount(1000);
+  await expect(page.locator('[data-coverage-entry]')).toHaveCount(1500);
   await page.getByRole('searchbox').fill('condition-variable-predicate');
   await expect(page.locator('[data-coverage-family]:not([hidden])')).toHaveCount(1);
   const family = page.locator('[data-coverage-family]:not([hidden])');
@@ -20,7 +20,7 @@ test('학습 범위 전체 목록은 JavaScript 없이도 읽을 수 있다', as
   try {
     const page = await context.newPage();
     await page.goto(`${baseURL}notes/coverage/`);
-    await expect(page.locator('[data-coverage-entry]')).toHaveCount(1000);
+    await expect(page.locator('[data-coverage-entry]')).toHaveCount(1500);
     await page.locator('[data-coverage-family]').first().locator('summary').click();
     await expect(page.locator('[data-coverage-family]').first().locator('li').first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

@@ -16,7 +16,7 @@ const categories = [...new Set(studyFamilies.map(({ question }) => question.cate
     <label>주제 또는 질문 찾기<input type="search" id="coverage-search" placeholder="예: 가상 메모리, Kafka, 토큰" /></label>
     <label>설명 상태<select id="coverage-status"><option value="">모든 상태</option>{Object.entries(coverageLabels).map(([status, label]) => <option value={status}>{label}</option>)}</select></label>
   </form>
-  <p id="coverage-results" role="status">전체 {studyFamilies.length}개 질문 묶음 · 1,000문항</p>
+  <p id="coverage-results" role="status">전체 {studyFamilies.length}개 질문 묶음 · {Object.values(coverageCounts).reduce((sum, count) => sum + count, 0).toLocaleString('ko-KR')}문항</p>
   {categories.map((category) => <section class="coverage-category" data-coverage-category>
     <h2>{category}</h2>
     {studyFamilies.filter(({ question }) => question.category === category).map(({ question, entries }) => <details class="coverage-family" data-coverage-family data-search={entries.map(({ question }) => `${question.id} ${question.title}`).join(' ')}>
